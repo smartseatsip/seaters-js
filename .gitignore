@@ -1,0 +1,7 @@
+coverage/
+node_modules/
+typings/
+lib/
+dist/
+npm-debug.log
+.vscode/

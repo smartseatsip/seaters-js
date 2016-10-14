@@ -1,0 +1,23 @@
+{
+  "name": "seaters-library",
+  "version": "1.0.0",
+  "description": "Seaters functionality in a box!",
+  "main": "lib/seaters.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rm -rf dist; rm -rf lib"
+  },
+  "author": "Pluto Bear",
+  "license": "ISC",
+  "dependencies": {
+    "pjson": "^1.0.7"
+  },
+  "devDependencies": {
+    "awesome-typescript-loader": "^2.2.4",
+    "string-replace-loader": "^1.0.5",
+    "ts-loader": "^0.9.1",
+    "typescript": "^2.0.3",
+    "typings": "^1.4.0",
+    "webpack": "^1.13.2"
+  }
+}

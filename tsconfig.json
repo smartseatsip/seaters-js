@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "lib"
+  },
+  "files": [
+    "src/index.ts",
+    "typings/index.d.ts",
+    "node_modules/pjson/pjson.d.ts"
+  ]
+}
