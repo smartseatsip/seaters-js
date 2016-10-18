@@ -3,5 +3,9 @@ node_modules/
 typings/
 lib/
 dist/
+!dist/seaters.js
+!dist/seaters.map.js
+!dist/seaters.min.js
 npm-debug.log
 .vscode/
+.errorShots/
