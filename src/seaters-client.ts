@@ -4,8 +4,8 @@ export class SeatersClient {
 
   }
 
-  greeter (name: string) {
-    console.log('Hello %s', name);
+  greeter (name: string): string {
+    return 'Hello, ' + name;
   }
 
 }

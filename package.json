@@ -6,22 +6,25 @@
   "scripts": {
     "gulp": "node_modules/gulp/bin/gulp.js",
     "typings": "node_modules/typings/dist/bin.js",
+    "jasmine": "node_modules/jasmine/bin/jasmine.js",
     "postinstall": "if [ -d \"node_modules/typings\" ]; then npm run typings install; fi"
   },
   "author": "Pluto Bear",
   "license": "ISC",
   "private": true,
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "awesome-typescript-loader": "^2.2.4",
     "connect": "^3.5.0",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
     "gulp-debug": "^2.1.2",
+    "gulp-jasmine": "^2.4.2",
     "gulp-rename": "^1.2.2",
+    "gulp-replace": "^0.5.4",
     "gulp-typescript": "^3.0.2",
     "gulp-webdriver": "^2.0.2",
+    "jasmine": "^2.5.2",
     "serve-static": "^1.11.1",
     "string-replace-loader": "^1.0.5",
     "through2": "^2.0.1",
