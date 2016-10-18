@@ -5,13 +5,13 @@
   "main": "lib/seaters.js",
   "scripts": {
     "gulp": "node_modules/gulp/bin/gulp.js",
-    "typings": "node_modules/typings/dist/bin.js"
+    "typings": "node_modules/typings/dist/bin.js",
+    "postinstall": "npm run typings install"
   },
   "author": "Pluto Bear",
   "license": "ISC",
   "private": true,
   "dependencies": {
-    "pjson": "^1.0.7"
   },
   "devDependencies": {
     "awesome-typescript-loader": "^2.2.4",
