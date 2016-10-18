@@ -4,8 +4,7 @@
   "description": "Seaters functionality in a box!",
   "main": "lib/seaters.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "clean": "rm -rf dist; rm -rf lib"
+    "gulp": "node_modules/gulp/bin/gulp.js"
   },
   "author": "Pluto Bear",
   "license": "ISC",
