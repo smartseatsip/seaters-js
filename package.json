@@ -6,7 +6,7 @@
   "scripts": {
     "gulp": "node_modules/gulp/bin/gulp.js",
     "typings": "node_modules/typings/dist/bin.js",
-    "postinstall": "if [ -z \"$npm_config_production\" ]; then npm run typings install; fi"
+    "postinstall": "if [ -d \"node_modules/typings\" ]; then npm run typings install; fi"
   },
   "author": "Pluto Bear",
   "license": "ISC",
