@@ -1,5 +1,5 @@
 {
-  "name": "seaters-library",
+  "name": "seaters",
   "version": "1.0.0",
   "description": "Seaters functionality in a box!",
   "main": "lib/seaters.js",
