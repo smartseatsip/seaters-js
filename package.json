@@ -4,7 +4,8 @@
   "description": "Seaters functionality in a box!",
   "main": "lib/seaters.js",
   "scripts": {
-    "gulp": "node_modules/gulp/bin/gulp.js"
+    "gulp": "node_modules/gulp/bin/gulp.js",
+    "typings": "node_modules/typings/dist/bin.js"
   },
   "author": "Pluto Bear",
   "license": "ISC",
