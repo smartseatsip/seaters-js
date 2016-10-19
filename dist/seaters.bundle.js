@@ -46,7 +46,7 @@ var SeatersSDK =
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	exports.version = "1.0.0";
+	exports.version = "0.0.1";
 	var seaters_client_1 = __webpack_require__(1);
 	exports.SeatersClient = seaters_client_1.SeatersClient;
 
@@ -69,4 +69,4 @@ var SeatersSDK =
 
 /***/ }
 /******/ ]);
-//# sourceMappingURL=seaters.js.map
+//# sourceMappingURL=seaters.bundle.js.map

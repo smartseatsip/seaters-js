@@ -18,30 +18,48 @@ var app = connect()
 var server = undefined;
 
 gulp.task('clean', function() {
-  return gulp.src(['dist', 'lib', 'errorShots'], {read:false})
+  return gulp.src(['dist', 'errorShots', 'lib'], {read:false})
     .pipe(clean());
 });
 
-gulp.task('build:dist', ['clean'], function() {
+gulp.task('build:bundle', ['clean'], function() {
   return gulp.src('src/index.ts')
     .pipe(webpack(require('./webpack.config.js')))
     .pipe(gulp.dest('.'));
 });
 
-gulp.task('build:lib', ['clean'], function() {
+function replaceVersion() {
+  var packageVersion = require('./package.json').version;
   return gulp.src('src/**/*.ts')
-    .pipe(replace('${package.version}', require('./package.json').version))
-    .pipe(typescript())
-    .pipe(gulp.dest('lib'));
+    .pipe(replace('${package.version}', packageVersion));
+}
+
+gulp.task('build:amd', ['clean'], function() {
+  return replaceVersion()
+    .pipe(typescript({
+      module: 'amd',
+      outFile: "./dist/seaters.amd.js",
+      declaration: true
+    }))
+    .pipe(gulp.dest('.'));
 });
 
-gulp.task('build', ['build:dist', 'build:lib']);
+gulp.task('build:lib', ['clean'], function() {
+  return replaceVersion()
+    .pipe(typescript({
+      target: 'es5',
+      declaration: true
+    }))
+    .pipe(gulp.dest('./lib'));
+});
+
+gulp.task('build', ['build:bundle', 'build:amd', 'build:lib']);
 
 gulp.task('http', function(done) {
    server = http.createServer(app).listen(3000, done);
 });
 
-gulp.task('test:e2e', ['build:dist', 'http'], function() {
+gulp.task('test:e2e', ['build:bundle', 'http'], function() {
   return gulp.src('wdio.conf.js')
     .pipe(webdriver())
     .on('end', function() {
@@ -49,7 +67,7 @@ gulp.task('test:e2e', ['build:dist', 'http'], function() {
     });
 });
 
-gulp.task('test:unit', ['build:lib'], function() {
+gulp.task('test:unit', ['build:amd'], function() {
   return gulp.src('spec/**/*.spec.js')
     .pipe(jasmine());
 });

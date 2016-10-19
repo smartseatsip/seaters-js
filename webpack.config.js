@@ -1,7 +1,7 @@
 module.exports = {
   entry: './src/index.ts',
   output: {
-    filename: 'dist/seaters.js',
+    filename: 'dist/seaters.bundle.js',
     libraryTarget: 'var',
     library: 'SeatersSDK',
   },
