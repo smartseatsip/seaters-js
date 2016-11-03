@@ -67,7 +67,7 @@ gulp.task('test:e2e', ['build:bundle', 'http'], function() {
     });
 });
 
-gulp.task('test:unit', ['build:amd'], function() {
+gulp.task('test:unit', ['build:lib'], function() {
   return gulp.src('spec/**/*.spec.js')
     .pipe(jasmine());
 });
