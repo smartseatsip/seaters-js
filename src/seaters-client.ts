@@ -11,4 +11,8 @@ export class SeatersClient {
     return 'Hello, ' + name;
   }
 
+  getAppEnv (): Promise<any> {
+    return request('/api/app/env');
+  }
+
 }

@@ -9,12 +9,20 @@ var replace = require('gulp-replace');
 
 var through = require('through2');
 var http = require('http');
+var proxy = require('http-proxy-middleware');
 var connect  = require('connect');
 var serveStatic = require('serve-static');
 
 var app = connect()
   .use(serveStatic('./e2e/fixtures'))
-  .use(serveStatic('./dist'));
+  .use(serveStatic('./dist'))
+  .use('/api', proxy({
+    target: 'https://api.dev-seaters.com',
+    changeOrigin: true,
+    xfwd: false,
+    port: 443,
+    https: true
+  }));
 var server = undefined;
 
 gulp.task('clean', function() {
