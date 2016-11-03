@@ -8,12 +8,15 @@
     "gulp": "node_modules/gulp/bin/gulp.js",
     "typings": "node_modules/typings/dist/bin.js",
     "jasmine": "node_modules/jasmine/bin/jasmine.js",
-    "setup": "npm i && npm run typings install && npm run gulp"
+    "tsc": "node_modules/typescript/bin/tsc",
+    "setup": "npm i && npm run typings i && npm run gulp"
   },
   "author": "Pluto Bear",
   "license": "ISC",
   "private": true,
-  "dependencies": {},
+  "dependencies": {
+    "popsicle": "^8.2.0"
+  },
   "devDependencies": {
     "awesome-typescript-loader": "^2.2.4",
     "connect": "^3.5.0",
@@ -26,6 +29,7 @@
     "gulp-typescript": "^3.0.2",
     "gulp-webdriver": "^2.0.2",
     "jasmine": "^2.5.2",
+    "jasmine-ts": "0.0.3",
     "serve-static": "^1.11.1",
     "string-replace-loader": "^1.0.5",
     "through2": "^2.0.1",

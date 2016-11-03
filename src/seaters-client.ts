@@ -1,10 +1,13 @@
+import { request } from 'popsicle';
+import { Promise } from 'es6-promise';
+
 export class SeatersClient {
 
   constructor () {
 
   }
 
-  greeter (name: string): string {
+  greet (name: string): string {
     return 'Hello, ' + name;
   }
 

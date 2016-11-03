@@ -59,7 +59,7 @@ var SeatersSDK =
 	var SeatersClient = (function () {
 	    function SeatersClient() {
 	    }
-	    SeatersClient.prototype.greeter = function (name) {
+	    SeatersClient.prototype.greet = function (name) {
 	        return 'Hello, ' + name;
 	    };
 	    return SeatersClient;

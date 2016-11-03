@@ -28,32 +28,30 @@ gulp.task('build:bundle', ['clean'], function() {
     .pipe(gulp.dest('.'));
 });
 
-function replaceVersion() {
+function replaceVersion(src) {
   var packageVersion = require('./package.json').version;
-  return gulp.src('src/**/*.ts')
+  return gulp.src(src||[
+    'src/index.ts',
+    'typings/index.d.ts'
+  ])
     .pipe(replace('${package.version}', packageVersion));
 }
 
-gulp.task('build:amd', ['clean'], function() {
-  return replaceVersion()
-    .pipe(typescript({
-      module: 'amd',
-      outFile: "./dist/seaters.amd.js",
-      declaration: true
-    }))
-    .pipe(gulp.dest('.'));
-});
-
 gulp.task('build:lib', ['clean'], function() {
-  return replaceVersion()
+  return replaceVersion([
+    'src/**/*.ts',
+    '!src/**/*.spec.ts',
+    'typings/index.d.ts'
+  ])
     .pipe(typescript({
       target: 'es5',
+      moduleResolution: 'node',
       declaration: true
     }))
     .pipe(gulp.dest('./lib'));
 });
 
-gulp.task('build', ['build:bundle', 'build:amd', 'build:lib']);
+gulp.task('build', ['build:bundle', 'build:lib']);
 
 gulp.task('http', function(done) {
    server = http.createServer(app).listen(3000, done);

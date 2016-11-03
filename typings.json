@@ -1,4 +1,9 @@
 {
   "name": "seaters-library",
-  "dependencies": {}
+  "dependencies": {
+    "popsicle": "npm:popsicle"
+  },
+  "globalDependencies": {
+    "node": "registry:dt/node#6.0.0+20161019125345"
+  }
 }
