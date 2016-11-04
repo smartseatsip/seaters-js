@@ -1,12 +1,11 @@
-import { HTTP_METHOD } from './http-method';
+import { ApiRequestDefinition } from './api-request-definition';
+import { ApiEndpoint } from './api-endpoint';
+import { Request } from 'popsicle';
 
 export interface ApiRequest {
 
-    abstractEndpoint: string,
-    method?: HTTP_METHOD,
-    endpointParams?: any,//TODO: Map<string, string>
-    queryParams?: any//TODO: Map<string, string>
-    body?: string,
-    headers?: any//TODO: Map<string, string>
+    requestDefinition: ApiRequestDefinition,
+    endpoint: ApiEndpoint,
+    popsicleRequest: Request
 
 }

@@ -15,7 +15,7 @@ export class SeatersClient {
   }
 
   getAppEnv (): Promise<any> {
-    return this.apiContext.createPopsicleRequest({
+    return this.apiContext.doRequest({
       abstractEndpoint: '/app/env',
       method: 'GET'
     });

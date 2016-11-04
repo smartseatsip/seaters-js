@@ -1,11 +1,15 @@
 import * as popsicle from 'popsicle';
+import { ApiRequestDefinition } from './api-request-definition';
 import { ApiRequest } from './api-request';
+import { Subject } from 'rxjs';
+import { ApiEndpoint } from './api-endpoint';
 
 export class ApiContext {
 
+    private requestStartedSubject: Subject<ApiRequest>;
+    
     constructor (private apiPrefix: string) {
-        // normalize apiPrefix: remove trailing '/'
-        this.apiPrefix = apiPrefix.replace(/\/$/,'');
+        this.requestStartedSubject = new Subject<ApiRequest>();
     }
 
     prefixConcreteEndpoint (concreteEndpoint: string): string {
@@ -14,23 +18,49 @@ export class ApiContext {
         return this.apiPrefix + '/' + concreteEndpoint;
     }
 
-    renderConcreteEndpoint (request: ApiRequest): string {
+    renderAbsoluteEndpoint (concreteEndpoint: string, queryParams: Map<string, string>): string {
+        return concreteEndpoint;//TODO: queryParams + concreteEndpoint
+    }
+
+    renderConcreteEndpoint (request: ApiRequestDefinition): string {
         return request.abstractEndpoint;//TODO: replace endpoint params
     }
 
-    createPopsicleRequest (request: ApiRequest): popsicle.Request {
-        var concreteEndpoint = this.renderConcreteEndpoint(request);
-        var popsicleRequestOptions = {
-            url: this.prefixConcreteEndpoint(concreteEndpoint),
-            method: request.method || 'GET',
-            query: request.queryParams,
-            headers: request.headers,
-            body: request.body
-        };
-
-        return popsicle.request(popsicleRequestOptions);
+    private createEndpoint (requestDefinition: ApiRequestDefinition): ApiEndpoint {
+        return new ApiEndpoint(
+            requestDefinition.abstractEndpoint,
+            requestDefinition.endpointParams || new Map<string, string>(),
+            requestDefinition.queryParams || new Map<string, string>(),
+            this.apiPrefix
+        );
     }
 
+    private createPopsicleRequestOptions (requestDefinition: ApiRequestDefinition, endpoint: ApiEndpoint) : any {
+        return {
+            url: endpoint.absoluteEndpoint,
+            method: requestDefinition.method || 'GET',
+            query: requestDefinition.queryParams,
+            headers: requestDefinition.headers,
+            body: requestDefinition.body
+        };
+    }
 
+    public doRawRequest (requestDefinition: ApiRequestDefinition): Promise<popsicle.Response> {
+        var endpoint = this.createEndpoint(requestDefinition);
+        var popsicleRequestOptions = this.createPopsicleRequestOptions(requestDefinition, endpoint);
+        var popsicleRequest = popsicle.request(popsicleRequestOptions);
+        var apiRequest: ApiRequest = {
+            requestDefinition: requestDefinition,
+            endpoint: endpoint,
+            popsicleRequest: popsicleRequest
+        };
+        this.requestStartedSubject.next(apiRequest);
+        return popsicleRequest;
+    }
+
+    public doJsonRequest<T> (requestDefinition: ApiRequestDefinition): Promise<T> {
+        return this.doRawRequest(requestDefinition)
+            .then(response => JSON.parse(response.body));
+    }
 
 }
