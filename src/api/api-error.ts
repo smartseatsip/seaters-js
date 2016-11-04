@@ -1,7 +1,7 @@
 import * as popsicle from 'popsicle';
 
 export enum ERROR_TYPE {
-    CLIENT, SERVER
+    CLIENT, SERVER, LIBRARY
 }
 
 export interface ApiError {

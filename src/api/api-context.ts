@@ -8,9 +8,12 @@ import { ApiError, ERROR_TYPE } from './api-error';
 export class ApiContext {
 
     private requestStartedSubject: Subject<ApiRequest>;
+
+    private headers: Map<string, string>;
     
     constructor (private apiPrefix: string) {
         this.requestStartedSubject = new Subject<ApiRequest>();
+        this.headers = new Map<string, string>();
     }
 
     prefixConcreteEndpoint (concreteEndpoint: string): string {
@@ -27,7 +30,7 @@ export class ApiContext {
         return request.abstractEndpoint;//TODO: replace endpoint params
     }
 
-    private createEndpoint (requestDefinition: ApiRequestDefinition): ApiEndpoint {
+    createEndpoint (requestDefinition: ApiRequestDefinition): ApiEndpoint {
         return new ApiEndpoint(
             requestDefinition.abstractEndpoint,
             requestDefinition.endpointParams || new Map<string, string>(),
@@ -36,7 +39,7 @@ export class ApiContext {
         );
     }
 
-    private createPopsicleRequestOptions (requestDefinition: ApiRequestDefinition, endpoint: ApiEndpoint) : any {
+    createPopsicleRequestOptions (requestDefinition: ApiRequestDefinition, endpoint: ApiEndpoint) : any {
         return {
             url: endpoint.absoluteEndpoint,
             method: requestDefinition.method || 'GET',
@@ -59,16 +62,16 @@ export class ApiContext {
         return popsicleRequest;
     }
 
-    public doJsonRequest<T> (requestDefinition: ApiRequestDefinition): Promise<T> {
+    doJsonRequest<T> (requestDefinition: ApiRequestDefinition): Promise<T> {
         return this.doRawRequest(requestDefinition)
             .then(response => JSON.parse(response.body));
     }
 
-    private handle2XXResponse<T> (response: popsicle.Response): Promise<T> {
+    handle2XXResponse<T> (response: popsicle.Response): Promise<T> {
         return Promise.resolve(JSON.parse(response.body));
     }
 
-    private tryParseJSON (json: string) {
+    tryParseJSON (json: string) {
         try {
             return JSON.parse(json);
         } catch (_error) {
@@ -76,18 +79,29 @@ export class ApiContext {
         }
     }
 
-    private handleUnexpectedResponse<T> (response: popsicle.Response): Promise<T> {
-        var error: ApiError = {
-            rawResponse: response,
-            type: ERROR_TYPE.SERVER,
-            error: 'api_unexpected-error',
-            errorMsg: 'status: ' + response.status + ' ' + response.statusText + '\n' +
-                response.body
-        };
-        return Promise.reject<T>(error);
+    handleUnexpectedResponse<T> (response: popsicle.Response): Promise<T> {
+        var apiError: ApiError;
+        if(response instanceof Error) {
+            apiError = {
+                rawResponse: response,
+                type: ERROR_TYPE.CLIENT,
+                error: 'api_unexpected-error',
+                errorMsg: response.toString()
+            }
+        }
+        else {
+            apiError = {
+                rawResponse: response,
+                type: ERROR_TYPE.SERVER,
+                error: 'api_unexpected-error',
+                errorMsg: 'status: ' + response.status + ' ' + response.statusText + '\n' +
+                    response.body
+            };
+        }
+        return Promise.reject<T>(apiError);
     }
     
-    private handle4XXResponse<T> (response: popsicle.Response): Promise<T> {
+    handle4XXResponse<T> (response: popsicle.Response): Promise<T> {
         var body = this.tryParseJSON(response.body);
         var error: ApiError;
         if (!body) {
@@ -108,7 +122,7 @@ export class ApiContext {
         return Promise.reject<T>(error);
     }
 
-    private handleResponse<T> (response: popsicle.Response): Promise<T> {
+    handleResponse<T> (response: popsicle.Response): Promise<T> {
         switch(response.status) {
             case 200:
             case 201:
@@ -118,9 +132,19 @@ export class ApiContext {
         }
     }
 
-    public doRequest<T> (requestDefinition: ApiRequestDefinition, status400Mappings?: Map<string, string>) {
+    public doRequest<T> (requestDefinition: ApiRequestDefinition) : Promise<T> {
         return this.doRawRequest(requestDefinition)
-        .then((response) => this.handleResponse(response), (error) => this.handleUnexpectedResponse(error));
+        .then(
+            (response) => this.handleResponse(response),
+            (error) => this.handleUnexpectedResponse(error)
+        );
+    }
+
+    public get<T> (abstractEndpoint: string, endpointParams?: Map<string, string>) : Promise<T> {
+        return this.doRequest({
+            abstractEndpoint: abstractEndpoint,
+            endpointParams: endpointParams || new Map<string, string>()
+        });
     }
 
 }

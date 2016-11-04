@@ -45,7 +45,7 @@ export class ApiEndpoint {
             return this.concreteEndpoint;
         }
         var params: string[] = [];
-        for(var queryParam in this.queryParams.entries()) {
+        for(var queryParam in this.queryParams.keys()) {
             params.push(
                 encodeURIComponent(queryParam) + '=' +
                 encodeURIComponent(this.queryParams.get(queryParam)) 

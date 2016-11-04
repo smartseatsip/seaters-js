@@ -1,7 +1,5 @@
-import { Promise } from 'es6-promise';
+import { SeatersApi } from './seaters-api';
 export declare class SeatersClient {
-    private apiContext;
+    api: SeatersApi;
     constructor(apiPrefix?: string);
-    greet(name: string): string;
-    getAppEnv(): Promise<any>;
 }
