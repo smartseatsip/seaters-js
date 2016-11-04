@@ -56,15 +56,19 @@ var SeatersSDK =
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var popsicle_1 = __webpack_require__(2);
+	var seaters_api_1 = __webpack_require__(2);
 	var SeatersClient = (function () {
-	    function SeatersClient() {
+	    function SeatersClient(apiPrefix) {
+	        this.apiContext = new seaters_api_1.ApiContext(apiPrefix || '/api');
 	    }
 	    SeatersClient.prototype.greet = function (name) {
 	        return 'Hello, ' + name;
 	    };
 	    SeatersClient.prototype.getAppEnv = function () {
-	        return popsicle_1.request('/api/app/env');
+	        return this.apiContext.createPopsicleRequest({
+	            abstractEndpoint: '/app/env',
+	            method: 'GET'
+	        });
 	    };
 	    return SeatersClient;
 	}());
@@ -76,22 +80,70 @@ var SeatersSDK =
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var FormData = __webpack_require__(3);
+	function __export(m) {
+	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+	}
+	__export(__webpack_require__(3));
+	__export(__webpack_require__(32));
+
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var popsicle = __webpack_require__(4);
+	var ApiContext = (function () {
+	    function ApiContext(apiPrefix) {
+	        this.apiPrefix = apiPrefix;
+	        // normalize apiPrefix: remove trailing '/'
+	        this.apiPrefix = apiPrefix.replace(/\/$/, '');
+	    }
+	    ApiContext.prototype.prefixConcreteEndpoint = function (concreteEndpoint) {
+	        // normalize concreteEndpoint
+	        concreteEndpoint = concreteEndpoint.replace(/^\//, '');
+	        return this.apiPrefix + '/' + concreteEndpoint;
+	    };
+	    ApiContext.prototype.renderConcreteEndpoint = function (request) {
+	        return request.abstractEndpoint; //TODO: replace endpoint params
+	    };
+	    ApiContext.prototype.createPopsicleRequest = function (request) {
+	        var concreteEndpoint = this.renderConcreteEndpoint(request);
+	        var popsicleRequestOptions = {
+	            url: this.prefixConcreteEndpoint(concreteEndpoint),
+	            method: request.method || 'GET',
+	            query: request.queryParams,
+	            headers: request.headers,
+	            body: request.body
+	        };
+	        return popsicle.request(popsicleRequestOptions);
+	    };
+	    return ApiContext;
+	}());
+	exports.ApiContext = ApiContext;
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var FormData = __webpack_require__(5);
 	exports.FormData = FormData;
-	var extend = __webpack_require__(4);
-	var request_1 = __webpack_require__(5);
+	var extend = __webpack_require__(6);
+	var request_1 = __webpack_require__(7);
 	exports.Request = request_1.default;
-	var response_1 = __webpack_require__(22);
+	var response_1 = __webpack_require__(24);
 	exports.Response = response_1.default;
-	var plugins = __webpack_require__(23);
+	var plugins = __webpack_require__(25);
 	exports.plugins = plugins;
-	var form_1 = __webpack_require__(26);
+	var form_1 = __webpack_require__(28);
 	exports.form = form_1.default;
-	var jar_1 = __webpack_require__(27);
+	var jar_1 = __webpack_require__(29);
 	exports.jar = jar_1.default;
-	var error_1 = __webpack_require__(19);
+	var error_1 = __webpack_require__(21);
 	exports.PopsicleError = error_1.default;
-	var index_1 = __webpack_require__(29);
+	var index_1 = __webpack_require__(31);
 	exports.createTransport = index_1.createTransport;
 	function defaults(defaultsOptions) {
 	    var transport = index_1.createTransport({ type: 'text' });
@@ -123,7 +175,7 @@ var SeatersSDK =
 	//# sourceMappingURL=common.js.map
 
 /***/ },
-/* 3 */
+/* 5 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -131,7 +183,7 @@ var SeatersSDK =
 	//# sourceMappingURL=form-data.js.map
 
 /***/ },
-/* 4 */
+/* 6 */
 /***/ function(module, exports) {
 
 	module.exports = extend
@@ -156,7 +208,7 @@ var SeatersSDK =
 
 
 /***/ },
-/* 5 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -165,12 +217,12 @@ var SeatersSDK =
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var arrify = __webpack_require__(6);
-	var extend = __webpack_require__(4);
-	var Promise = __webpack_require__(7);
-	var throwback_1 = __webpack_require__(10);
-	var base_1 = __webpack_require__(11);
-	var error_1 = __webpack_require__(19);
+	var arrify = __webpack_require__(8);
+	var extend = __webpack_require__(6);
+	var Promise = __webpack_require__(9);
+	var throwback_1 = __webpack_require__(12);
+	var base_1 = __webpack_require__(13);
+	var error_1 = __webpack_require__(21);
 	var Request = (function (_super) {
 	    __extends(Request, _super);
 	    function Request(options) {
@@ -348,7 +400,7 @@ var SeatersSDK =
 	//# sourceMappingURL=request.js.map
 
 /***/ },
-/* 6 */
+/* 8 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -362,18 +414,18 @@ var SeatersSDK =
 
 
 /***/ },
-/* 7 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(8)().Promise
+	module.exports = __webpack_require__(10)().Promise
 
 
 /***/ },
-/* 8 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	module.exports = __webpack_require__(9)(window, loadImplementation)
+	module.exports = __webpack_require__(11)(window, loadImplementation)
 	
 	/**
 	 * Browser specific loadImplementation.  Always uses `window.Promise`
@@ -393,7 +445,7 @@ var SeatersSDK =
 
 
 /***/ },
-/* 9 */
+/* 11 */
 /***/ function(module, exports) {
 
 	"use strict"
@@ -477,11 +529,11 @@ var SeatersSDK =
 
 
 /***/ },
-/* 10 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var Promise = __webpack_require__(7);
+	var Promise = __webpack_require__(9);
 	function compose(middleware) {
 	    if (!Array.isArray(middleware)) {
 	        throw new TypeError("Expected middleware to be an array, got " + typeof middleware);
@@ -521,13 +573,13 @@ var SeatersSDK =
 	//# sourceMappingURL=index.js.map
 
 /***/ },
-/* 11 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var url_1 = __webpack_require__(12);
-	var querystring_1 = __webpack_require__(16);
-	var extend = __webpack_require__(4);
+	var url_1 = __webpack_require__(14);
+	var querystring_1 = __webpack_require__(18);
+	var extend = __webpack_require__(6);
 	function lowerHeader(key) {
 	    var lower = key.toLowerCase();
 	    if (lower === 'referrer') {
@@ -689,7 +741,7 @@ var SeatersSDK =
 	//# sourceMappingURL=base.js.map
 
 /***/ },
-/* 12 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -715,8 +767,8 @@ var SeatersSDK =
 	
 	'use strict';
 	
-	var punycode = __webpack_require__(13);
-	var util = __webpack_require__(15);
+	var punycode = __webpack_require__(15);
+	var util = __webpack_require__(17);
 	
 	exports.parse = urlParse;
 	exports.resolve = urlResolve;
@@ -791,7 +843,7 @@ var SeatersSDK =
 	      'gopher:': true,
 	      'file:': true
 	    },
-	    querystring = __webpack_require__(16);
+	    querystring = __webpack_require__(18);
 	
 	function urlParse(url, parseQueryString, slashesDenoteHost) {
 	  if (url && util.isObject(url) && url instanceof Url) return url;
@@ -1427,7 +1479,7 @@ var SeatersSDK =
 
 
 /***/ },
-/* 13 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/*! https://mths.be/punycode v1.3.2 by @mathias */
@@ -1959,10 +2011,10 @@ var SeatersSDK =
 	
 	}(this));
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)(module), (function() { return this; }())))
 
 /***/ },
-/* 14 */
+/* 16 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
@@ -1978,7 +2030,7 @@ var SeatersSDK =
 
 
 /***/ },
-/* 15 */
+/* 17 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2000,17 +2052,17 @@ var SeatersSDK =
 
 
 /***/ },
-/* 16 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	exports.decode = exports.parse = __webpack_require__(17);
-	exports.encode = exports.stringify = __webpack_require__(18);
+	exports.decode = exports.parse = __webpack_require__(19);
+	exports.encode = exports.stringify = __webpack_require__(20);
 
 
 /***/ },
-/* 17 */
+/* 19 */
 /***/ function(module, exports) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -2096,7 +2148,7 @@ var SeatersSDK =
 
 
 /***/ },
-/* 18 */
+/* 20 */
 /***/ function(module, exports) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -2166,7 +2218,7 @@ var SeatersSDK =
 
 
 /***/ },
-/* 19 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2175,7 +2227,7 @@ var SeatersSDK =
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var makeErrorCause = __webpack_require__(20);
+	var makeErrorCause = __webpack_require__(22);
 	var PopsicleError = (function (_super) {
 	    __extends(PopsicleError, _super);
 	    function PopsicleError(message, code, original, popsicle) {
@@ -2191,7 +2243,7 @@ var SeatersSDK =
 	//# sourceMappingURL=error.js.map
 
 /***/ },
-/* 20 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2200,7 +2252,7 @@ var SeatersSDK =
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var makeError = __webpack_require__(21);
+	var makeError = __webpack_require__(23);
 	function makeErrorCause(value, _super) {
 	    if (_super === void 0) { _super = makeErrorCause.BaseError; }
 	    return makeError(value, _super);
@@ -2224,7 +2276,7 @@ var SeatersSDK =
 	//# sourceMappingURL=index.js.map
 
 /***/ },
-/* 21 */
+/* 23 */
 /***/ function(module, exports) {
 
 	// ISC @ Julien Fontanet
@@ -2372,7 +2424,7 @@ var SeatersSDK =
 
 
 /***/ },
-/* 22 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2381,7 +2433,7 @@ var SeatersSDK =
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var base_1 = __webpack_require__(11);
+	var base_1 = __webpack_require__(13);
 	var Response = (function (_super) {
 	    __extends(Response, _super);
 	    function Response(options) {
@@ -2409,27 +2461,27 @@ var SeatersSDK =
 	//# sourceMappingURL=response.js.map
 
 /***/ },
-/* 23 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	function __export(m) {
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
-	__export(__webpack_require__(24));
+	__export(__webpack_require__(26));
 	//# sourceMappingURL=browser.js.map
 
 /***/ },
-/* 24 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var Promise = __webpack_require__(7);
-	var FormData = __webpack_require__(3);
-	var arrify = __webpack_require__(6);
-	var querystring_1 = __webpack_require__(16);
-	var index_1 = __webpack_require__(25);
-	var form_1 = __webpack_require__(26);
+	var Promise = __webpack_require__(9);
+	var FormData = __webpack_require__(5);
+	var arrify = __webpack_require__(8);
+	var querystring_1 = __webpack_require__(18);
+	var index_1 = __webpack_require__(27);
+	var form_1 = __webpack_require__(28);
 	var JSON_MIME_REGEXP = /^application\/(?:[\w!#\$%&\*`\-\.\^~]*\+)?json$/i;
 	var URL_ENCODED_MIME_REGEXP = /^application\/x-www-form-urlencoded$/i;
 	var FORM_MIME_REGEXP = /^multipart\/form-data$/i;
@@ -2528,7 +2580,7 @@ var SeatersSDK =
 	//# sourceMappingURL=common.js.map
 
 /***/ },
-/* 25 */
+/* 27 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2549,11 +2601,11 @@ var SeatersSDK =
 	//# sourceMappingURL=browser.js.map
 
 /***/ },
-/* 26 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var FormData = __webpack_require__(3);
+	var FormData = __webpack_require__(5);
 	function form(obj) {
 	    var form = new FormData();
 	    if (obj) {
@@ -2568,11 +2620,11 @@ var SeatersSDK =
 	//# sourceMappingURL=form.js.map
 
 /***/ },
-/* 27 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var tough_cookie_1 = __webpack_require__(28);
+	var tough_cookie_1 = __webpack_require__(30);
 	function cookieJar(store) {
 	    return new tough_cookie_1.CookieJar(store);
 	}
@@ -2581,7 +2633,7 @@ var SeatersSDK =
 	//# sourceMappingURL=jar.js.map
 
 /***/ },
-/* 28 */
+/* 30 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2595,13 +2647,13 @@ var SeatersSDK =
 	//# sourceMappingURL=tough-cookie.js.map
 
 /***/ },
-/* 29 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var Promise = __webpack_require__(7);
-	var response_1 = __webpack_require__(22);
-	var index_1 = __webpack_require__(23);
+	var Promise = __webpack_require__(9);
+	var response_1 = __webpack_require__(24);
+	var index_1 = __webpack_require__(25);
 	function createTransport(options) {
 	    return {
 	        use: use,
@@ -2703,6 +2755,13 @@ var SeatersSDK =
 	    return rawHeaders;
 	}
 	//# sourceMappingURL=browser.js.map
+
+/***/ },
+/* 32 */
+/***/ function(module, exports) {
+
+	"use strict";
+
 
 /***/ }
 /******/ ]);

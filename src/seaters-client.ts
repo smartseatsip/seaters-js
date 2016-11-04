@@ -1,10 +1,13 @@
 import { request } from 'popsicle';
 import { Promise } from 'es6-promise';
+import { ApiContext } from './seaters-api';
 
 export class SeatersClient {
 
-  constructor () {
+  private apiContext: ApiContext;
 
+  constructor (apiPrefix?: string) {
+    this.apiContext = new ApiContext(apiPrefix || '/api');
   }
 
   greet (name: string): string {
@@ -12,7 +15,10 @@ export class SeatersClient {
   }
 
   getAppEnv (): Promise<any> {
-    return request('/api/app/env');
+    return this.apiContext.createPopsicleRequest({
+      abstractEndpoint: '/app/env',
+      method: 'GET'
+    });
   }
 
 }
