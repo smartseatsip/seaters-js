@@ -32,6 +32,7 @@
     "gulp-webdriver": "^2.0.2",
     "http-proxy-middleware": "^0.17.2",
     "jasmine": "^2.5.2",
+    "jasmine-expect": "^3.0.1",
     "jasmine-ts": "0.0.3",
     "serve-static": "^1.11.1",
     "string-replace-loader": "^1.0.5",

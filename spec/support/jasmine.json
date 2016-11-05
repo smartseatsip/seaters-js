@@ -4,6 +4,7 @@
     "**/*[sS]pec.js"
   ],
   "helpers": [
-    "helpers/**/*.js"
+    "helpers/index.js",
+    "../node_modules/jasmine-expect/index.js"
   ]
 }

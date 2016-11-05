@@ -16,20 +16,6 @@ export class ApiContext {
         this.headers = new Map<string, string>();
     }
 
-    prefixConcreteEndpoint (concreteEndpoint: string): string {
-        // normalize concreteEndpoint
-        concreteEndpoint = concreteEndpoint.replace(/^\//, '');
-        return this.apiPrefix + '/' + concreteEndpoint;
-    }
-
-    renderAbsoluteEndpoint (concreteEndpoint: string, queryParams: Map<string, string>): string {
-        return concreteEndpoint;//TODO: queryParams + concreteEndpoint
-    }
-
-    renderConcreteEndpoint (request: ApiRequestDefinition): string {
-        return request.abstractEndpoint;//TODO: replace endpoint params
-    }
-
     createEndpoint (requestDefinition: ApiRequestDefinition): ApiEndpoint {
         return new ApiEndpoint(
             requestDefinition.abstractEndpoint,
@@ -140,10 +126,15 @@ export class ApiContext {
         );
     }
 
-    public get<T> (abstractEndpoint: string, endpointParams?: Map<string, string>) : Promise<T> {
+    public get<T> (
+        abstractEndpoint: string,
+        endpointParams?: Map<string, string>,
+        queryParams?: Map<string, string>
+    ): Promise<T> {
         return this.doRequest({
             abstractEndpoint: abstractEndpoint,
-            endpointParams: endpointParams || new Map<string, string>()
+            endpointParams: endpointParams || new Map<string, string>(),
+            queryParams: queryParams || new Map<string, string>()
         });
     }
 

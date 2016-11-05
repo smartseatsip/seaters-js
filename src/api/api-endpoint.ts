@@ -40,16 +40,15 @@ export class ApiEndpoint {
         });
     }
 
-    private renderConcreteEndpointWithQueryParams() : string {
-        if(this.queryParams.size === 0) {
+    private renderQueryParams() : string {
+        return Array.from(this.queryParams).map(entry => {
+            return encodeURIComponent(entry[0]) + '=' + encodeURIComponent(entry[1])
+        }).join('&');
+    }
+
+    private renderConcreteEndpointWithQueryParams () : string {
+        if (this.queryParams.size === 0) {
             return this.concreteEndpoint;
-        }
-        var params: string[] = [];
-        for(var queryParam in this.queryParams.keys()) {
-            params.push(
-                encodeURIComponent(queryParam) + '=' +
-                encodeURIComponent(this.queryParams.get(queryParam)) 
-            );
         }
         var res = this.concreteEndpoint;
         // if there is already a query part
@@ -59,9 +58,9 @@ export class ApiEndpoint {
                 res = res + '&';
             }
         } else {
-            res =+ '?';
+            res = res + '?';
         }
-        return res + params.join('&');
+        return res + this.renderQueryParams();
     }
 
     private renderAbsoluteEndpoint () {

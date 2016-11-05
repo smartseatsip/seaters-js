@@ -10,6 +10,7 @@ export declare class ApiEndpoint {
     private normalizeAbstractEndpoint(abstractEndpoint);
     private renderEndpointParam(paramName);
     private renderConcreteEndpoint();
+    private renderQueryParams();
     private renderConcreteEndpointWithQueryParams();
     private renderAbsoluteEndpoint();
 }

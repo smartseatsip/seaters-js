@@ -1,11 +1,11 @@
 require('../../helpers');
 
-describe('App Api', function() {
+describe('GET /api/app/env', function() {
 
     var envP = client.api.app.env();
 
-    it('should fetch env', function(done) {
-        envP.then(null, apiFail('GET /api/app/env'))
+    it('should return 200-OK', function(done) {
+        envP.then(null, apiFail())
             .then(done, shouldNotCatch(done));
     });
 
