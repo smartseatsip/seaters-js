@@ -1,5 +1,6 @@
 import { Subject } from 'rxjs';
 import * as popsicle from 'popsicle';
+import * as core from 'core-js/library';
 import { ApiRequestDefinition } from './api-request-definition';
 import { ApiRequest } from './api-request';
 import { ApiEndpoint } from './api-endpoint';
@@ -13,14 +14,14 @@ export class ApiContext {
     
     constructor (private apiPrefix: string) {
         this.requestStartedSubject = new Subject<ApiRequest>();
-        this.headers = new Map<string, string>();
+        this.headers = new core.Map<string, string>();
     }
 
     createEndpoint (requestDefinition: ApiRequestDefinition): ApiEndpoint {
         return new ApiEndpoint(
             requestDefinition.abstractEndpoint,
-            requestDefinition.endpointParams || new Map<string, string>(),
-            requestDefinition.queryParams || new Map<string, string>(),
+            requestDefinition.endpointParams || new core.Map<string, string>(),
+            requestDefinition.queryParams || new core.Map<string, string>(),
             this.apiPrefix
         );
     }
@@ -133,8 +134,8 @@ export class ApiContext {
     ): Promise<T> {
         return this.doRequest({
             abstractEndpoint: abstractEndpoint,
-            endpointParams: endpointParams || new Map<string, string>(),
-            queryParams: queryParams || new Map<string, string>()
+            endpointParams: endpointParams || new core.Map<string, string>(),
+            queryParams: queryParams || new core.Map<string, string>()
         });
     }
 

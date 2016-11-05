@@ -1,3 +1,5 @@
+import * as core from 'core-js/library';
+
 export class ApiEndpoint {
 
     public abstractEndpoint;
@@ -41,7 +43,7 @@ export class ApiEndpoint {
     }
 
     private renderQueryParams() : string {
-        return Array.from(this.queryParams).map(entry => {
+        return core.Array.from(this.queryParams).map(entry => {
             return encodeURIComponent(entry[0]) + '=' + encodeURIComponent(entry[1])
         }).join('&');
     }
