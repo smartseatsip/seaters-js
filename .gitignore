@@ -5,3 +5,5 @@ npm-debug.log
 .vscode/
 .errorShots/
 .idea/
+test-configs/*
+!test-configs/default.json

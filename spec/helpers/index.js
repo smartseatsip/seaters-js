@@ -1,6 +1,7 @@
 var helpers = [
     require('./client-helper'),
-    require('./matching-helper')
+    require('./matching-helper'),
+    require('./debug-helper')
 ];
 
 var exports = {};

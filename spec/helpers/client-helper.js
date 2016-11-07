@@ -1,8 +1,9 @@
 var SeatersSDK = require('../../lib');
-var apiLocation = process.env.API_LOCATION || 'https://api.dev-seaters.com/api';
-var client = new SeatersSDK.SeatersClient(apiLocation);
+var testConfig = require(process.env.TEST_CONFIG || process.cwd() + '/test-configs/default.json');
+var client = new SeatersSDK.SeatersClient(testConfig.apiLocation);
 
 module.exports = {
     SeatersSDK: SeatersSDK,
-    client: client
+    client: client,
+    testConfig: testConfig
 };

@@ -8,12 +8,12 @@ import { ApiError, ERROR_TYPE } from './api-error';
 
 export class ApiContext {
 
-    private requestStartedSubject: Subject<ApiRequest>;
+    private requestsSubject: Subject<ApiRequest>;
 
     private headers: Map<string, string>;
     
     constructor (private apiPrefix: string) {
-        this.requestStartedSubject = new Subject<ApiRequest>();
+        this.requestsSubject = new Subject<ApiRequest>();
         this.headers = new core.Map<string, string>();
     }
 
@@ -45,7 +45,7 @@ export class ApiContext {
             endpoint: endpoint,
             popsicleRequest: popsicleRequest
         };
-        this.requestStartedSubject.next(apiRequest);
+        this.requestsSubject.next(apiRequest);
         return popsicleRequest;
     }
 
@@ -136,6 +136,21 @@ export class ApiContext {
             abstractEndpoint: abstractEndpoint,
             endpointParams: endpointParams || new core.Map<string, string>(),
             queryParams: queryParams || new core.Map<string, string>()
+        });
+    }
+
+    public put<T> (
+        abstractEndpoint: string,
+        body?: any,
+        endpointParams?: Map<string, string>,
+        queryParams?: Map<string, string>
+    ): Promise<T> {
+        return this.doRequest({
+            method: 'PUT',
+            abstractEndpoint: abstractEndpoint,
+            endpointParams: endpointParams || new core.Map<string, string>(),
+            queryParams: queryParams || new core.Map<string, string>(),
+            body: body
         });
     }
 

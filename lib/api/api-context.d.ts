@@ -3,7 +3,7 @@ import { ApiRequestDefinition } from './api-request-definition';
 import { ApiEndpoint } from './api-endpoint';
 export declare class ApiContext {
     private apiPrefix;
-    private requestStartedSubject;
+    private requestsSubject;
     private headers;
     constructor(apiPrefix: string);
     createEndpoint(requestDefinition: ApiRequestDefinition): ApiEndpoint;
@@ -17,4 +17,5 @@ export declare class ApiContext {
     handleResponse<T>(response: popsicle.Response): Promise<T>;
     doRequest<T>(requestDefinition: ApiRequestDefinition): Promise<T>;
     get<T>(abstractEndpoint: string, endpointParams?: Map<string, string>, queryParams?: Map<string, string>): Promise<T>;
+    put<T>(abstractEndpoint: string, body?: any, endpointParams?: Map<string, string>, queryParams?: Map<string, string>): Promise<T>;
 }

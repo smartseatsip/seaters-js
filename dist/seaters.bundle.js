@@ -75,6 +75,8 @@ var SeatersSDK =
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
 	__export(__webpack_require__(3));
+	__export(__webpack_require__(689));
+	__export(__webpack_require__(687));
 
 
 /***/ },
@@ -89,12 +91,14 @@ var SeatersSDK =
 	};
 	var api = __webpack_require__(4);
 	var app_api_1 = __webpack_require__(686);
+	var authentication_api_1 = __webpack_require__(688);
 	var SeatersApi = (function (_super) {
 	    __extends(SeatersApi, _super);
 	    function SeatersApi(prefix) {
 	        _super.call(this, prefix);
 	        this.prefix = prefix;
 	        this.app = new app_api_1.AppApi(this);
+	        this.authentication = new authentication_api_1.AuthenticationApi(this);
 	    }
 	    return SeatersApi;
 	}(api.ApiContext));
@@ -130,7 +134,7 @@ var SeatersSDK =
 	var ApiContext = (function () {
 	    function ApiContext(apiPrefix) {
 	        this.apiPrefix = apiPrefix;
-	        this.requestStartedSubject = new rxjs_1.Subject();
+	        this.requestsSubject = new rxjs_1.Subject();
 	        this.headers = new core.Map();
 	    }
 	    ApiContext.prototype.createEndpoint = function (requestDefinition) {
@@ -154,7 +158,7 @@ var SeatersSDK =
 	            endpoint: endpoint,
 	            popsicleRequest: popsicleRequest
 	        };
-	        this.requestStartedSubject.next(apiRequest);
+	        this.requestsSubject.next(apiRequest);
 	        return popsicleRequest;
 	    };
 	    ApiContext.prototype.doJsonRequest = function (requestDefinition) {
@@ -234,6 +238,15 @@ var SeatersSDK =
 	            abstractEndpoint: abstractEndpoint,
 	            endpointParams: endpointParams || new core.Map(),
 	            queryParams: queryParams || new core.Map()
+	        });
+	    };
+	    ApiContext.prototype.put = function (abstractEndpoint, body, endpointParams, queryParams) {
+	        return this.doRequest({
+	            method: 'PUT',
+	            abstractEndpoint: abstractEndpoint,
+	            endpointParams: endpointParams || new core.Map(),
+	            queryParams: queryParams || new core.Map(),
+	            body: body
 	        });
 	    };
 	    return ApiContext;
@@ -27373,6 +27386,30 @@ var SeatersSDK =
 	    return PagingOptions;
 	}());
 	exports.PagingOptions = PagingOptions;
+
+
+/***/ },
+/* 688 */
+/***/ function(module, exports) {
+
+	"use strict";
+	var AuthenticationApi = (function () {
+	    function AuthenticationApi(apiContext) {
+	        this.apiContext = apiContext;
+	    }
+	    AuthenticationApi.prototype.token = function (input) {
+	        return this.apiContext.put('/v2/authentication/token', input);
+	    };
+	    return AuthenticationApi;
+	}());
+	exports.AuthenticationApi = AuthenticationApi;
+
+
+/***/ },
+/* 689 */
+/***/ function(module, exports) {
+
+	"use strict";
 
 
 /***/ }
