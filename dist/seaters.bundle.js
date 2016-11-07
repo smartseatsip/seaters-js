@@ -46,7 +46,7 @@ var SeatersSDK =
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	exports.version = "0.0.2";
+	exports.version = "0.0.3";
 	var seaters_client_1 = __webpack_require__(1);
 	exports.SeatersClient = seaters_client_1.SeatersClient;
 
