@@ -15,8 +15,8 @@
   "license": "ISC",
   "private": true,
   "dependencies": {
-    "core-js": "^2.4.1",
-    "popsicle": "^8.2.0",
+    "core-js": "2.4.1",
+    "popsicle": "8.2.0",
     "rxjs": "5.0.0-rc.1"
   },
   "devDependencies": {
