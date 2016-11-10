@@ -13,7 +13,6 @@
   },
   "author": "Pluto Bear",
   "license": "ISC",
-  "private": true,
   "dependencies": {
     "core-js": "2.4.1",
     "popsicle": "8.2.0",
