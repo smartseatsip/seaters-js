@@ -1,7 +1,8 @@
 var helpers = [
     require('./client-helper'),
     require('./matching-helper'),
-    require('./debug-helper')
+    require('./debug-helper'),
+    require('./randomdata-helper')
 ];
 
 var exports = {};

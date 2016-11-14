@@ -11,7 +11,7 @@ export class ApiContext {
     private requestsSubject: Subject<ApiRequest>;
 
     private headers: Map<string, string>;
-    
+
     constructor (private apiPrefix: string) {
         this.requestsSubject = new Subject<ApiRequest>();
         this.headers = new core.Map<string, string>();
@@ -87,7 +87,7 @@ export class ApiContext {
         }
         return Promise.reject<T>(apiError);
     }
-    
+
     handle4XXResponse<T> (response: popsicle.Response): Promise<T> {
         var body = this.tryParseJSON(response.body);
         var error: ApiError;
@@ -152,6 +152,21 @@ export class ApiContext {
             queryParams: queryParams || new core.Map<string, string>(),
             body: body
         });
+    }
+
+    public post<T> (
+      abstractEndpoint: string,
+      body?: any,
+      endpointParams?: Map<string, string>,
+      queryParams?: Map<string, string>
+    ): Promise<T> {
+      return this.doRequest({
+          method: 'POST',
+          abstractEndpoint: abstractEndpoint,
+          endpointParams: endpointParams || new core.Map<string, string>(),
+          queryParams: queryParams || new core.Map<string, string>(),
+          body: body
+      });
     }
 
 }
