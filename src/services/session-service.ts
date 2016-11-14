@@ -2,6 +2,7 @@ import { SeatersApi } from '../seaters-api';
 import { AuthenticationTokenOutput, UserData, SessionToken } from '../seaters-api/authentication/token';
 import { Promise } from 'es6-promise';
 import * as moment from 'moment';
+import {fail} from "assert";
 
 const AUTH_HEADER = 'Authentication';
 const AUTH_BEARER = 'Seaters';
@@ -53,6 +54,27 @@ export class SessionService {
     doLogout () {
         this.api.unsetHeader(AUTH_HEADER);
         this.currentUser = undefined;
+    }
+
+
+    //TODO: user is not logged in yet after signup; need separate verify call first ?
+    //TODO: handle error case
+    doEmailPasswordSignUp (email:string, password: string, firstname: string, lastname: string, language?: string) : Promise<UserData> {
+        return this.api.authentication.signup({
+            email:email,
+            password:password,
+            firstName: firstname,
+            lastName: lastname,
+            language: language || 'en' //TODO: refer to config setting for default language
+        })
+    }
+
+    //TODO: proper return of data and/or error case ?
+    doValidation (email: string, code: string): Promise<UserData> {
+        return this.api.authentication.validate({
+            email: email,
+            code: code
+        })
     }
 
     whoami () {

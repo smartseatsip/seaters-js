@@ -3,17 +3,11 @@ export interface SignupData {
   email:string,
   lastName:string,
   firstName:string,
-  password:string,
-  username:string
+  password:string
 }
 
 
 export interface ValidationData {
   code:string,
-  email:string,
-  mobile:
-    {
-      countryCallingCode:string,
-      localNumber:string
-    }
+  email:string
 }
