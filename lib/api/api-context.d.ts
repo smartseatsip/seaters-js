@@ -6,6 +6,8 @@ export declare class ApiContext {
     private requestsSubject;
     private headers;
     constructor(apiPrefix: string);
+    setHeader(header: string, value: string): void;
+    unsetHeader(header: string): void;
     createEndpoint(requestDefinition: ApiRequestDefinition): ApiEndpoint;
     createPopsicleRequestOptions(requestDefinition: ApiRequestDefinition, endpoint: ApiEndpoint): any;
     doRawRequest(requestDefinition: ApiRequestDefinition): Promise<popsicle.Response>;
