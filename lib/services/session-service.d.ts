@@ -10,10 +10,10 @@ export declare class SessionService {
     private sessionStrategy;
     private currentUser;
     constructor(api: SeatersApi, sessionStrategy?: SESSION_STRATEGY);
-    doEmailPasswordLogin(email: string, password: string, mfaToken?: string): Promise<UserData>;
     private applyAutorenewSessionStrategy(token);
     private applyExpireSessionStrategy(token);
     private finishLogin(tokenOutput);
+    doEmailPasswordLogin(email: string, password: string, mfaToken?: string): Promise<UserData>;
     doLogout(): void;
     whoami(): UserData;
 }

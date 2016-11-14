@@ -16,6 +16,7 @@ var serveStatic = require('serve-static');
 var app = connect()
   .use(serveStatic('./e2e/fixtures'))
   .use(serveStatic('./dist'))
+  .use('/examples', serveStatic('./examples'))
   .use('/api', proxy({
     target: 'https://api.dev-seaters.com',
     changeOrigin: true,

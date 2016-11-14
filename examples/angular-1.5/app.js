@@ -12,17 +12,18 @@ angular.module('app',[])
     $scope.password = 'test';
     
     $scope.doLogin = function(email, password) {
-        Seaters.api.authentication.token({
-            emailPasswordCredentials: {
-                password: password,
-                email: email
-            }
-        }).then(function(res) {
+        Seaters.sessionService.doEmailPasswordLogin(email, password)
+        .then(function(res) {
+            console.log('logged in', res);
             $scope.error = undefined;
             $scope.result = res;
         }, function(err) {
             $scope.result = undefined;
-            $scope.error = err;
+            if(err instanceof Error) {
+                $scope.error = err.stack;
+            } else {
+                $scope.error = err;
+            }
         });
     };
 

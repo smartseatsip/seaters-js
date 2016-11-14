@@ -2,7 +2,7 @@ require('../helpers');
 
 describe('SessionService', function() {
 
-    var fan1 = testConfig.fan1;
+    var fan1 = testConfig.users.fan1;
 
     it('should allow login-password', (done) => {
         client.sessionService.doEmailPasswordLogin(fan1.email, fan1.password)
