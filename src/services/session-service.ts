@@ -1,6 +1,7 @@
 import { SeatersApi } from '../seaters-api';
 import { AuthenticationTokenOutput, UserData, SessionToken } from '../seaters-api/authentication/token';
 import { Promise } from 'es6-promise';
+import * as moment from 'moment';
 
 const AUTH_HEADER = 'Authentication';
 const AUTH_BEARER = 'Seaters';
@@ -22,22 +23,14 @@ export class SessionService {
             }
     }
 
-    doEmailPasswordLogin (email: string, password: string, mfaToken?: string): Promise<UserData> {
-        return this.api.authentication.token({
-            emailPasswordCredentials: {
-                email: email,
-                password: password,
-                mfaToken: mfaToken
-            }
-        }).then(this.finishLogin);
-    }
-
     private applyAutorenewSessionStrategy (token: SessionToken) {
-        console.log('autorenewing session on %s', token.expirationDate);
+        console.log('autorenewing session on %s (in %s minutes)',
+            token.expirationDate, moment.utc(token.expirationDate).diff(moment(), 'minutes'));//DEBUG
     }
 
     private applyExpireSessionStrategy (token: SessionToken) {
-        console.log('session expires on %s', token.expirationDate);
+        console.log('session expires on %s (in %s minutes)',
+            token.expirationDate, moment.utc(token.expirationDate).diff(moment(), 'minutes'));//DEBUG
     }
 
     private finishLogin (tokenOutput: AuthenticationTokenOutput) {
@@ -50,6 +43,16 @@ export class SessionService {
             default: this.applyExpireSessionStrategy(token);
         }
         return tokenOutput.userData;
+    }
+
+    doEmailPasswordLogin (email: string, password: string, mfaToken?: string): Promise<UserData> {
+        return this.api.authentication.token({
+            emailPasswordCredentials: {
+                email: email,
+                password: password,
+                mfaToken: mfaToken
+            }
+        }).then((r) => this.finishLogin(r));
     }
 
     doLogout () {

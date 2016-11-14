@@ -2,7 +2,7 @@ require('../../helpers');
 
 describe('PUT /api/v2/authentication/token', function() {
 
-    logRequest('v2/authentication/token');
+    // logRequest('v2/authentication/token');
 
     function buildPasswordLoginData(email, password) {
         return {
