@@ -7,7 +7,7 @@ const AUTH_HEADER = 'Authentication';
 const AUTH_BEARER = 'Seaters';
 
 export enum SESSION_STRATEGY {
-    AUTORENEW, EXPIRE
+    EXPIRE
 }
 
 export class SessionService {
@@ -23,14 +23,11 @@ export class SessionService {
             }
     }
 
-    private applyAutorenewSessionStrategy (token: SessionToken) {
-        console.log('autorenewing session on %s (in %s minutes)',
-            token.expirationDate, moment.utc(token.expirationDate).diff(moment(), 'minutes'));//DEBUG
-    }
-
     private applyExpireSessionStrategy (token: SessionToken) {
+        var expiration = moment.utc(token.expirationDate);
+        var now = moment();
         console.log('session expires on %s (in %s minutes)',
-            token.expirationDate, moment.utc(token.expirationDate).diff(moment(), 'minutes'));//DEBUG
+            token.expirationDate, expiration.diff(now, 'minutes'));
     }
 
     private finishLogin (tokenOutput: AuthenticationTokenOutput) {
@@ -38,8 +35,6 @@ export class SessionService {
         this.currentUser = tokenOutput.userData;
         var token = tokenOutput.token;
         switch (this.sessionStrategy) {
-            case SESSION_STRATEGY.AUTORENEW:
-                this.applyAutorenewSessionStrategy(token); break;
             default: this.applyExpireSessionStrategy(token);
         }
         return tokenOutput.userData;
