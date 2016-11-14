@@ -15,4 +15,16 @@ describe('PUT /api/auth/signup', function() {
             .then(done, shouldNotCatch(done));
     });
 
+  /**
+   * Cannot run this test normally, as the validation code needs to come from email
+   * Uncomment and adapt this test to manually perform the test
+   *
+  it('should return 200-OK found on validation of new user', function(done) {
+    client.api.authentication
+      .validate({ code:'1234', email:'test@test.com' })
+      .then(null, apiFail() )
+      .then(done, shouldNotCatch(done));
+  });
+  */
+
 });

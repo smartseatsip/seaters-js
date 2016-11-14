@@ -6,3 +6,14 @@ export interface SignupData {
   password:string,
   username:string
 }
+
+
+export interface ValidationData {
+  code:string,
+  email:string,
+  mobile:
+    {
+      countryCallingCode:string,
+      localNumber:string
+    }
+}
