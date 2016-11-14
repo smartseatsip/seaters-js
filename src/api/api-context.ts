@@ -17,6 +17,14 @@ export class ApiContext {
         this.headers = new core.Map<string, string>();
     }
 
+    setHeader (header: string, value: string) {
+        this.headers.set(header, value);
+    }
+
+    unsetHeader (header: string) {
+        this.headers.delete(header);
+    }
+
     createEndpoint (requestDefinition: ApiRequestDefinition): ApiEndpoint {
         return new ApiEndpoint(
             requestDefinition.abstractEndpoint,
