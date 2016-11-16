@@ -40,6 +40,11 @@
   font-style: italic;
 }
 
+.sl-general-error {
+  color: #D16F6F;
+  font-size: 1rem;
+}
+
 .sl-login-agree-to-terms {
   color: grey;
 }

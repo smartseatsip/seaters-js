@@ -5,26 +5,58 @@
     <title>Seaters Library E2E</title>
     <script type="text/javascript" src="/seaters.bundle.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.js"></script>
-    <script type="text/javascript" src="app.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-messages/1.5.8/angular-messages.min.js"></script>
+    <script type="text/javascript" src="login.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="foundation-mini.css">
+    <link rel="stylesheet" type="text/css" href="app.css">
   </head>
-  <body ng-app="app" ng-controller="AppController">
-    <h1>SeatersSDK (v{{SeatersSDK.version}}) Log In Test</h1>
+  <body ng-app="app" ng-controller="LoginController">
 
-    <form ng-submit="doLogin(email, password)">
-      <input type="text" ng-model="email" placeholder="email" /><br />
-      <input type="password" ng-model="password" placeholder="password" /><br />
-      <input type="submit" value="Log in" />
+  <div class="columns large-5">
+    <div class="sl-content sl-input-form">
+
+      <div class="sl-pb-10">
+        <h3>
+          <span>Login</span>
+        </h3>
+      </div>
+
+      <form name="loginForm" ng-submit="doLogin(loginForm, email, password)" novalidate autocomplete="off">
+        <!-- EMAIL -->
+        <div class="row collapse">
+          <div class="columns large-12">
+            <div ng-messages="loginForm.email.$error" ng-show="loginForm.$submitted || error.details" role="alert">
+              <div class="sl-input-error" ng-message="required">Mandatory</div>
+              <div class="sl-input-error" ng-show="email && (error.details[0].field=='emailPasswordCredentials.email')">{{error.details[0].error.defaultMessage}}</div>
+            </div>
+            <input name="email" ng-model="email" placeholder="Email" type="text" required="true">
+          </div>
+        </div>
+        <!-- PASSWORD -->
+        <div class="row collapse">
+          <div class="columns large-12">
+            <div ng-messages="loginForm.password.$error" ng-show="loginForm.$submitted" role="alert">
+              <div class="sl-input-error" ng-message="required">Mandatory</div>
+            </div>
+            <input name="password" ng-model="password" placeholder="Password" type="password" required="true">
+          </div>
+        </div>
+
+        <div class="row collapse sl-flex-centered sl-pb-10" ng-show="error.error.defaultMessage || error.errorMsg">
+          <span class="sl-general-error">Unable to login: {{error.error.defaultMessage || error.errorMsg}}</span>
+        </div>
+
+        <div class="row collapse">
+          <div class="columns large-12">
+            <button class="sl-button success expand" type="submit" ng-disabled="formProcessing">
+              <span>Login</span>
+            </button>
+          </div>
+        </div>
     </form>
-
-    <div ng-show="result">
-      <h2>Result</h2>
-      <pre>{{result|json}}</pre>
     </div>
-
-    <div ng-show="error">
-      <h2>Error</h2>
-      <pre>{{error|json}}</pre>
-    </div>
+  </div>
 
   </body>
 </html>
