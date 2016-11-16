@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Seaters Library E2E</title>
+  <script type="text/javascript" src="/seaters.bundle.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-messages/1.5.8/angular-messages.min.js"></script>
+  <script type="text/javascript" src="signup.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="foundation-mini.css">
+  <link rel="stylesheet" type="text/css" href="app.css">
+</head>
+<body ng-app="app" ng-controller="SignupController">
+
+
+  <div class="columns large-5">
+    <div class="sl-content sl-input-form">
+      <form name="signupForm" ng-submit="doSignup(signupForm,email,password,firstname,lastname)" novalidate autocomplete="off">
+        <!-- novalidate prevents HTML5 validation since we will be validating ourselves -->
+        <div class="row collapse">
+          <!-- FIRST NAME -->
+          <div class="columns large-6 l-rpadding">
+            <div ng-messages="signupForm.firstname.$error" ng-show="signupForm.$submitted" role="alert">
+              <div class="sl-input-error" ng-message="required">Mandatory</div>
+            </div>
+            <input name="firstname" ng-model="firstname" placeholder="First Name" type="text" required>
+          </div>
+
+          <!-- LAST NAME -->
+          <div class="columns large-6">
+            <div ng-messages="signupForm.lastname.$error" ng-show="signupForm.$submitted" role="alert">
+              <div class="sl-input-error" ng-message="required">Mandatory</div>
+            </div>
+            <input name="lastname" ng-model="lastname" placeholder="Last Name" type="text" required="true">
+          </div>
+        </div>
+
+        <!-- EMAIL -->
+        <div class="row collapse">
+          <div class="columns large-12">
+            <div ng-messages="signupForm.email.$error" ng-show="signupForm.$submitted || error.message" role="alert">
+              <div class="sl-input-error" ng-message="required">Mandatory</div>
+              <div class="sl-input-error" ng-show="error.message">{{error.message}}</div>
+            </div>
+            <input name="email" ng-model="email" placeholder="Email" type="text" required="true">
+          </div>
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="row collapse">
+          <div class="columns large-12">
+            <div ng-messages="signupForm.password.$error" ng-show="signupForm.$submitted" role="alert">
+              <div class="sl-input-error" ng-message="required">Mandatory</div>
+            </div>
+            <input name="password" ng-model="password" placeholder="Password" type="password" required="true">
+          </div>
+        </div>
+
+        <!-- T&C -->
+        <div class="row sl-login-agree-to-terms collapse">
+      <span><p>By signing up, you agree to Seaters' <a href="http://getseaters.com/user-agreement/">Terms &amp; Conditions</a>
+        and <a href="http://getseaters.com/privacy/">Privacy Policy</a></p>
+      </span>
+        </div>
+
+        <!-- SUBMIT BUTTON  -->
+        <div class="row collapse">
+          <div class="columns large-12">
+            <button class="sl-button success expand" type="submit" ng-disabled="signupProcessing">
+              <i class="fa fa-lg fa-spin fa-cog ng-hide"></i>
+              <span>Sign up!</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>
+
