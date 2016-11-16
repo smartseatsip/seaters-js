@@ -8,4 +8,5 @@ export declare class SeatersClient {
     wlService: WlService;
     joinWlService: JoinWlService;
     constructor(apiPrefix?: string);
+    test(): void;
 }

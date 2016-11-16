@@ -18,12 +18,14 @@
     "core-js": "2.4.1",
     "moment": "^2.16.0",
     "moment-timezone": "^0.5.9",
+    "node-noop": "^1.0.0",
     "popsicle": "8.2.0",
     "rxjs": "5.0.0-rc.1"
   },
   "devDependencies": {
     "awesome-typescript-loader": "^2.2.4",
     "connect": "^3.5.0",
+    "css-loader": "^0.25.0",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
     "gulp-debug": "^2.1.2",
@@ -37,6 +39,7 @@
     "jasmine-expect": "^3.0.1",
     "jasmine-ts": "0.0.3",
     "serve-static": "^1.11.1",
+    "source-map-support": "^0.4.6",
     "string-replace-loader": "^1.0.5",
     "through2": "^2.0.1",
     "ts-loader": "^0.9.1",

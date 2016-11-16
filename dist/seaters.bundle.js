@@ -67,6 +67,10 @@ var SeatersSDK =
 	        this.wlService = new wl_service_1.WlService(this.api);
 	        this.joinWlService = new join_wl_service_1.JoinWlService(this.wlService, this.sessionService);
 	    }
+	    SeatersClient.prototype.test = function () {
+	        //DEBUG
+	        throw 'FOOBAR';
+	    };
 	    return SeatersClient;
 	}());
 	exports.SeatersClient = SeatersClient;

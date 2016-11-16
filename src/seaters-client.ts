@@ -22,4 +22,9 @@ export class SeatersClient {
     this.joinWlService = new JoinWlService(this.wlService, this.sessionService);
   }
 
+  test () {
+    //DEBUG
+    throw 'FOOBAR';
+  }
+
 }

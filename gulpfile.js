@@ -35,7 +35,7 @@ gulp.task('clean', function() {
 
 gulp.task('build:bundle', ['clean'], function() {
   return gulp.src('src/index.ts')
-    .pipe(webpack(require('./conf/webpack.config.js')))
+    .pipe(webpack(require('./conf/webpack-bundle.config.js')))
     .pipe(gulp.dest('.'));
 });
 
