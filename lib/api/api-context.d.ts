@@ -20,4 +20,5 @@ export declare class ApiContext {
     doRequest<T>(requestDefinition: ApiRequestDefinition): Promise<T>;
     get<T>(abstractEndpoint: string, endpointParams?: Map<string, string>, queryParams?: Map<string, string>): Promise<T>;
     put<T>(abstractEndpoint: string, body?: any, endpointParams?: Map<string, string>, queryParams?: Map<string, string>): Promise<T>;
+    post<T>(abstractEndpoint: string, body?: any, endpointParams?: Map<string, string>, queryParams?: Map<string, string>): Promise<T>;
 }

@@ -13,5 +13,7 @@ export declare class SessionService {
     private finishLogin(tokenOutput);
     doEmailPasswordLogin(email: string, password: string, mfaToken?: string): Promise<UserData>;
     doLogout(): void;
+    doEmailPasswordSignUp(email: string, password: string, firstname: string, lastname: string, language?: string): Promise<UserData>;
+    doValidation(email: string, code: string): Promise<UserData>;
     whoami(): UserData;
 }
