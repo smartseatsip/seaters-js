@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Seaters Library E2E</title>
+  <script type="text/javascript" src="/seaters.bundle.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-messages/1.5.8/angular-messages.min.js"></script>
+  <script type="text/javascript" src="validate.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="foundation-mini.css">
+  <link rel="stylesheet" type="text/css" href="app.css">
+</head>
+<body ng-app="app" ng-controller="ValidateController">
+
+  <div class="columns large-6">
+    <div class="sl-content sl-flex-centered sl-flex-column">
+      <div class="sl-pb-10">
+        <h3>
+          <span>Welcome. It's nice to meet you</span>
+          <span>{{userData.firstName}}</span>
+        </h3>
+      </div>
+      <div class="sl-pb-10">
+        <span>We just sent you a confirmation email. In order to confirm your registration, please enter the code mentioned in the email below.</span>
+      </div>
+      <form name="validateForm" ng-submit="doValidate(validateForm, confirmationCode)" class="sl-flex-centered sl-flex-column small-12" novalidate autocomplete="off">
+        <div class="small-12">
+          <div ng-messages="validateForm.confirmationCode.$error" ng-show="validateForm.$submitted || error.errorMsg" role="alert">
+            <div class="sl-input-error" ng-message="required">Mandatory</div>
+            <div class="sl-input-error" ng-show="error.errorMsg">Wrong validation code</div>
+          </div>
+          <input type="text" name="confirmationCode" ng-model="confirmationCode" placeholder="Your personal code" required>
+        </div>
+        <div>
+          <button class="button sl-button success" type="submit" ng-disabled="formProcessing">Confirm email</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>

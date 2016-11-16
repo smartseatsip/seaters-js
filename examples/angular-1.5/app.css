@@ -3,6 +3,19 @@
   outline: 0 !important;
 }
 
+.sl-flex-centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sl-flex-column {
+  flex-direction: column;
+}
+
+.sl-pb-10 {
+  padding-bottom: .8rem;
+}
+
 @media only screen and (min-width: 64.0625em) {
   .l-rpadding {
     padding-right: .9375rem!important;
@@ -18,9 +31,6 @@
   margin: 0;
   text-shadow: none;
   color: #000;
-}
-
-.sl-input-form {
   padding: 1rem 2rem!important;
 }
 
