@@ -25,7 +25,7 @@ module.exports = {
         loader: 'string-replace',
         query: {
           search: '${package.version}',
-          replace: require('./package.json').version
+          replace: require('../package.json').version
         }
       },
       {

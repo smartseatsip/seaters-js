@@ -14,8 +14,9 @@ var connect  = require('connect');
 var serveStatic = require('serve-static');
 
 var app = connect()
-  .use(serveStatic('./e2e/fixtures'))
+  .use(serveStatic('./e2e-browser/fixtures'))
   .use(serveStatic('./dist'))
+  .use('/components', serveStatic('./components'))
   .use('/examples', serveStatic('./examples'))
   .use('/api', proxy({
     target: 'https://api.dev-seaters.com',
@@ -23,7 +24,8 @@ var app = connect()
     xfwd: false,
     port: 443,
     https: true
-  }));
+  }));//TODO - remove as soon as cors is properly working
+
 var server = undefined;
 
 gulp.task('clean', function() {
@@ -33,7 +35,7 @@ gulp.task('clean', function() {
 
 gulp.task('build:bundle', ['clean'], function() {
   return gulp.src('src/index.ts')
-    .pipe(webpack(require('./webpack.config.js')))
+    .pipe(webpack(require('./conf/webpack.config.js')))
     .pipe(gulp.dest('.'));
 });
 
@@ -60,24 +62,28 @@ gulp.task('build:lib', ['clean'], function() {
     .pipe(gulp.dest('./lib'));
 });
 
-gulp.task('build', ['build:bundle', 'build:lib']);
-
 gulp.task('http', function(done) {
    server = http.createServer(app).listen(3000, done);
 });
 
-gulp.task('test:e2e', ['build:bundle', 'http'], function() {
-  return gulp.src('wdio.conf.js')
+gulp.task('test:e2e-browser', ['build:bundle', 'http'], function() {
+  return gulp.src('./conf/wdio.conf.js')
     .pipe(webdriver())
     .on('end', function() {
       server.close();
     });
 });
 
-gulp.task('test:unit', ['build:lib'], function() {
-  return gulp.src('spec/**/*.spec.js')
+gulp.task('test:e2e-node', ['build:lib'], function() {
+  return gulp.src('./e2e-node/**/*.spec.js')
     .pipe(jasmine());
 });
+
+gulp.task('build', ['build:bundle', 'build:lib']);
+
+gulp.task('test:e2e', ['test:e2e-browser', 'test:e2e-node']);
+
+gulp.task('test:unit', []);//TODO
 
 gulp.task('test', ['test:e2e', 'test:unit']);
 

@@ -10,7 +10,7 @@ exports.config = {
     // directory is where your package.json resides, so `wdio` will be called from there.
     //
     specs: [
-        './e2e/**/*.spec.js'
+        './e2e-browser/**/*.spec.js'
     ],
     // Patterns to exclude.
     exclude: [
@@ -121,7 +121,7 @@ exports.config = {
     // Test reporter for stdout.
     // The only one supported by default is 'dot'
     // see also: http://webdriver.io/guide/testrunner/reporters.html
-    reporters: ['dot', 'spec', 'concise'],
+    reporters: ['dot'/*, 'spec', 'concise'*/],
 
     //
     // Options to be passed to Jasmine.

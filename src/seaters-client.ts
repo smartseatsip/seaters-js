@@ -16,7 +16,7 @@ export class SeatersClient {
   public joinWlService: JoinWlService;
 
   constructor (apiPrefix?: string) {
-    this.api = new SeatersApi(apiPrefix || '/api');
+    this.api = new SeatersApi(apiPrefix || '/api'/*'https://api.dev-seaters.com/api'*/);
     this.sessionService = new SessionService(this.api);
     this.wlService = new WlService(this.api);
     this.joinWlService = new JoinWlService(this.wlService, this.sessionService);

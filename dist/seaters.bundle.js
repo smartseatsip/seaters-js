@@ -62,7 +62,7 @@ var SeatersSDK =
 	var join_wl_service_1 = __webpack_require__(803);
 	var SeatersClient = (function () {
 	    function SeatersClient(apiPrefix) {
-	        this.api = new seaters_api_1.SeatersApi(apiPrefix || '/api');
+	        this.api = new seaters_api_1.SeatersApi(apiPrefix || '/api' /*'https://api.dev-seaters.com/api'*/);
 	        this.sessionService = new session_service_1.SessionService(this.api);
 	        this.wlService = new wl_service_1.WlService(this.api);
 	        this.joinWlService = new join_wl_service_1.JoinWlService(this.wlService, this.sessionService);
