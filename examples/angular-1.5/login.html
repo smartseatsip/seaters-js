@@ -13,16 +13,17 @@
   </head>
   <body ng-app="app" ng-controller="LoginController">
 
-  <div class="columns large-5">
-    <div class="sl-content sl-input-form">
 
-      <div class="sl-pb-10">
+    <div class="sl-content">
+
+      <div class="row sl-pb-10">
         <h3>
           <span>Login</span>
         </h3>
       </div>
 
-      <form name="loginForm" ng-submit="doLogin(loginForm, email, password)" novalidate autocomplete="off">
+      <div class="row">
+        <form name="loginForm" ng-submit="doLogin(loginForm, email, password)" novalidate autocomplete="off">
         <!-- EMAIL -->
         <div class="row collapse">
           <div class="columns large-12">
@@ -43,7 +44,7 @@
           </div>
         </div>
 
-        <div class="row collapse sl-flex-centered sl-pb-10" ng-show="error.error.defaultMessage || error.errorMsg">
+        <div class="row collapse sl-flex sl-flex-row sl-flex-center-h sl-pb-10" ng-show="error.error.defaultMessage || error.errorMsg">
           <span class="sl-general-error">Unable to login: {{error.error.defaultMessage || error.errorMsg}}</span>
         </div>
 
@@ -55,8 +56,9 @@
           </div>
         </div>
     </form>
+      </div>
     </div>
-  </div>
+
 
   </body>
 </html>

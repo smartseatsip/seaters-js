@@ -3,13 +3,20 @@
   outline: 0 !important;
 }
 
-.sl-flex-centered {
+.sl-flex {
   display: flex;
-  align-items: center;
-  justify-content: center;
+}
+.sl-flex-row {
+  flex-direction: row;
 }
 .sl-flex-column {
   flex-direction: column;
+}
+.sl-flex-column.sl-flex-center-h, .sl-flex-row.sl-flex-center-v{
+  align-items: center;
+}
+.sl-flex-column.sl-flex-center-v, .sl-flex-row.sl-flex-center-h{
+  justify-content: center;
 }
 
 .sl-pb-10 {
@@ -23,10 +30,8 @@
 }
 
 .sl-content {
-  box-shadow: 0 0 4px 0 rgba(128,128,128,.5);
   padding: 1.875rem 0;
   background-color: #F2F2F2;
-  border-radius: 0 0 .25rem .25rem;
   height: 100%;
   margin: 0;
   text-shadow: none;
