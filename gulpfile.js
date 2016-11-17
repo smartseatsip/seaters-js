@@ -39,6 +39,12 @@ gulp.task('build:bundle', ['clean'], function() {
     .pipe(gulp.dest('.'));
 });
 
+gulp.task('build:module', ['clean'], function() {
+  return gulp.src('src/index.ts')
+    .pipe(webpack(require('./conf/webpack-module.config.js')))
+    .pipe(gulp.dest('.'));
+});
+
 function replaceVersion(src) {
   var packageVersion = require('./package.json').version;
   return gulp.src(src||[
@@ -79,7 +85,7 @@ gulp.task('test:e2e-node', ['build:lib'], function() {
     .pipe(jasmine());
 });
 
-gulp.task('build', ['build:bundle', 'build:lib']);
+gulp.task('build', ['build:bundle', 'build:lib', 'build:module']);
 
 gulp.task('test:e2e', ['test:e2e-browser', 'test:e2e-node']);
 

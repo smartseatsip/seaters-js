@@ -14,5 +14,6 @@ export declare class JoinWlService {
     private setupOverlay();
     private setupModal();
     private setupIframe();
+    private setupLoginScreen();
     joinWl(wlId: any): void;
 }

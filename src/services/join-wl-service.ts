@@ -86,6 +86,7 @@ export class JoinWlService {
         this.modal.style.padding = '8px';
         
         this.overlay.appendChild(this.modal);
+
         return this.modal;
     }
 
@@ -105,12 +106,23 @@ export class JoinWlService {
         return this.iframe;
     }
 
+    private setupLoginScreen () {
+        var modal = this.modal;
+        var loginScreen = <HTMLButtonElement>document.createElement('button');
+        loginScreen.innerHTML = 'Click me!';
+        loginScreen.onclick = function () {
+            modal.innerHTML = 'second screen';
+        }
+        this.modal.appendChild(loginScreen);
+    }
+
     joinWl (wlId) {
         this.setupOverlay();
         this.setupModal();
-        this.setupIframe();
-        this.showOverlay();
-        console.log('launching JoinWl popup for %s', wlId);
+        this.setupLoginScreen();
+        // this.setupIframe();
+        // this.showOverlay();
+        // console.log('launching JoinWl popup for %s', wlId);
     }
 
 }
