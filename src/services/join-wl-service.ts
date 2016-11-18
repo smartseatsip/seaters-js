@@ -45,6 +45,7 @@ export class JoinWlService {
     private hideOverlay () {
         console.log('hiding seaters overlay');
         this.overlay.style.display = 'none';
+        this.modal.innerHTML = '';
     }
 
     private setupOverlay () {
@@ -94,9 +95,9 @@ export class JoinWlService {
 
     private setModalContent (template: string, style: string) {
         this.modal.innerHTML = template;
-        // var styleElement = <HTMLStyleElement>document.createElement('style');
-        // styleElement.innerHTML = style;
-        // this.modal.appendChild(styleElement);
+        var styleElement = <HTMLStyleElement>document.createElement('style');
+        styleElement.innerHTML = style;
+        this.modal.appendChild(styleElement);
     }
 
     private setupTest () {

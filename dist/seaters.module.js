@@ -7799,6 +7799,7 @@ require("source-map-support").install();
 	    JoinWlService.prototype.hideOverlay = function () {
 	        console.log('hiding seaters overlay');
 	        this.overlay.style.display = 'none';
+	        this.modal.innerHTML = '';
 	    };
 	    JoinWlService.prototype.setupOverlay = function () {
 	        var _this = this;
@@ -7839,9 +7840,9 @@ require("source-map-support").install();
 	    };
 	    JoinWlService.prototype.setModalContent = function (template, style) {
 	        this.modal.innerHTML = template;
-	        // var styleElement = <HTMLStyleElement>document.createElement('style');
-	        // styleElement.innerHTML = style;
-	        // this.modal.appendChild(styleElement);
+	        var styleElement = document.createElement('style');
+	        styleElement.innerHTML = style;
+	        this.modal.appendChild(styleElement);
 	    };
 	    JoinWlService.prototype.setupTest = function () {
 	        var _this = this;

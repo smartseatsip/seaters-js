@@ -42431,6 +42431,7 @@ var SeatersSDK =
 	    JoinWlService.prototype.hideOverlay = function () {
 	        console.log('hiding seaters overlay');
 	        this.overlay.style.display = 'none';
+	        this.modal.innerHTML = '';
 	    };
 	    JoinWlService.prototype.setupOverlay = function () {
 	        var _this = this;
@@ -42471,9 +42472,9 @@ var SeatersSDK =
 	    };
 	    JoinWlService.prototype.setModalContent = function (template, style) {
 	        this.modal.innerHTML = template;
-	        // var styleElement = <HTMLStyleElement>document.createElement('style');
-	        // styleElement.innerHTML = style;
-	        // this.modal.appendChild(styleElement);
+	        var styleElement = document.createElement('style');
+	        styleElement.innerHTML = style;
+	        this.modal.appendChild(styleElement);
 	    };
 	    JoinWlService.prototype.setupTest = function () {
 	        var _this = this;
@@ -42503,7 +42504,7 @@ var SeatersSDK =
 /* 804 */
 /***/ function(module, exports) {
 
-	module.exports = "<div>\n    I am test.html. My background is green<br />\n    <button class=\"strs-join-button\">go to test2.html<button>\n</div>";
+	module.exports = "<div>\n    I am test.html. My background is green<br />\n    <button class=\"strs-join-button\">go to test2.html</button>\n</div>";
 
 /***/ },
 /* 805 */
