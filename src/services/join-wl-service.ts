@@ -4,6 +4,8 @@ import { SessionService } from './session-service';
 import { WlService } from './wl-service';
 import { Promise } from 'es6-promise';
 
+declare var require: any;
+
 export class JoinWlService {
 
     private overlay: HTMLElement;
@@ -90,39 +92,39 @@ export class JoinWlService {
         return this.modal;
     }
 
-    private setupIframe () {
-        if (this.iframe) {
-            return this.iframe;
-        }
-        
-        this.iframe = document.createElement('iframe');
-        this.iframe.id = 'seaters-iframe';
-        this.iframe.src = '/components/join-wl-button';
-        this.iframe.style.border = '0';
-        this.iframe.style.width = '100%';
-        this.iframe.style.height = '100%';
-        
-        this.modal.appendChild(this.iframe);
-        return this.iframe;
+    private setModalContent (template: string, style: string) {
+        this.modal.innerHTML = template;
+        // var styleElement = <HTMLStyleElement>document.createElement('style');
+        // styleElement.innerHTML = style;
+        // this.modal.appendChild(styleElement);
     }
 
-    private setupLoginScreen () {
-        var modal = this.modal;
-        var loginScreen = <HTMLButtonElement>document.createElement('button');
-        loginScreen.innerHTML = 'Click me!';
-        loginScreen.onclick = function () {
-            modal.innerHTML = 'second screen';
-        }
-        this.modal.appendChild(loginScreen);
+    private setupTest () {
+        this.setModalContent(
+            require('./join-wl/test.html'),
+            require('./join-wl/test.css')
+        );
+        var joinBtn = <HTMLButtonElement>this.findByStrsClass('strs-join-button');
+        joinBtn.onclick = () => this.setupTest2();
+    }
+
+    private setupTest2 () {
+        this.setModalContent(
+            require('./join-wl/test2.html'),
+            require('./join-wl/test2.css')
+        );
+    }
+
+    private findByStrsClass (cssClass: string) {
+        return this.modal.getElementsByClassName(cssClass)[0];
     }
 
     joinWl (wlId) {
+        console.log('launching JoinWl popup for %s', wlId);
         this.setupOverlay();
         this.setupModal();
-        this.setupLoginScreen();
-        // this.setupIframe();
-        // this.showOverlay();
-        // console.log('launching JoinWl popup for %s', wlId);
+        this.setupTest();
+        this.showOverlay();
     }
 
 }

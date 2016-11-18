@@ -13,7 +13,9 @@ export declare class JoinWlService {
     private hideOverlay();
     private setupOverlay();
     private setupModal();
-    private setupIframe();
-    private setupLoginScreen();
+    private setModalContent(template, style);
+    private setupTest();
+    private setupTest2();
+    private findByStrsClass(cssClass);
     joinWl(wlId: any): void;
 }

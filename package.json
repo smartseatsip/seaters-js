@@ -33,6 +33,7 @@
     "gulp-replace": "^0.5.4",
     "gulp-typescript": "^3.0.2",
     "gulp-webdriver": "^2.0.2",
+    "html-loader": "^0.4.4",
     "http-proxy-middleware": "^0.17.2",
     "jasmine": "^2.5.2",
     "jasmine-expect": "^3.0.1",

@@ -7770,7 +7770,7 @@ require("source-map-support").install();
 
 /***/ },
 /* 325 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../node_modules/typescript/lib/lib.d.ts" />
 	"use strict";
@@ -7837,39 +7837,43 @@ require("source-map-support").install();
 	        this.overlay.appendChild(this.modal);
 	        return this.modal;
 	    };
-	    JoinWlService.prototype.setupIframe = function () {
-	        if (this.iframe) {
-	            return this.iframe;
-	        }
-	        this.iframe = document.createElement('iframe');
-	        this.iframe.id = 'seaters-iframe';
-	        this.iframe.src = '/components/join-wl-button';
-	        this.iframe.style.border = '0';
-	        this.iframe.style.width = '100%';
-	        this.iframe.style.height = '100%';
-	        this.modal.appendChild(this.iframe);
-	        return this.iframe;
+	    JoinWlService.prototype.setModalContent = function (template, style) {
+	        this.modal.innerHTML = template;
+	        // var styleElement = <HTMLStyleElement>document.createElement('style');
+	        // styleElement.innerHTML = style;
+	        // this.modal.appendChild(styleElement);
 	    };
-	    JoinWlService.prototype.setupLoginScreen = function () {
-	        var modal = this.modal;
-	        var loginScreen = document.createElement('button');
-	        loginScreen.innerHTML = 'Click me!';
-	        loginScreen.onclick = function () {
-	            modal.innerHTML = 'second screen';
-	        };
-	        this.modal.appendChild(loginScreen);
+	    JoinWlService.prototype.setupTest = function () {
+	        var _this = this;
+	        this.setModalContent(__webpack_require__(326), __webpack_require__(326));
+	        var joinBtn = this.findByStrsClass('strs-join-button');
+	        joinBtn.onclick = function () { return _this.setupTest2(); };
+	    };
+	    JoinWlService.prototype.setupTest2 = function () {
+	        this.setModalContent(__webpack_require__(326), __webpack_require__(326));
+	    };
+	    JoinWlService.prototype.findByStrsClass = function (cssClass) {
+	        return this.modal.getElementsByClassName(cssClass)[0];
 	    };
 	    JoinWlService.prototype.joinWl = function (wlId) {
+	        console.log('launching JoinWl popup for %s', wlId);
 	        this.setupOverlay();
 	        this.setupModal();
-	        this.setupLoginScreen();
-	        // this.setupIframe();
-	        // this.showOverlay();
-	        // console.log('launching JoinWl popup for %s', wlId);
+	        this.setupTest();
+	        this.showOverlay();
 	    };
 	    return JoinWlService;
 	}());
 	exports.JoinWlService = JoinWlService;
+
+
+/***/ },
+/* 326 */
+/***/ function(module, exports) {
+
+	(function(exports) {
+	  exports.noop = function(){};
+	})(typeof module === 'object' && typeof module.exports === 'object' ? module.exports : window);
 
 
 /***/ }

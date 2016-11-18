@@ -42402,7 +42402,7 @@ var SeatersSDK =
 
 /***/ },
 /* 803 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../node_modules/typescript/lib/lib.d.ts" />
 	"use strict";
@@ -42469,39 +42469,130 @@ var SeatersSDK =
 	        this.overlay.appendChild(this.modal);
 	        return this.modal;
 	    };
-	    JoinWlService.prototype.setupIframe = function () {
-	        if (this.iframe) {
-	            return this.iframe;
-	        }
-	        this.iframe = document.createElement('iframe');
-	        this.iframe.id = 'seaters-iframe';
-	        this.iframe.src = '/components/join-wl-button';
-	        this.iframe.style.border = '0';
-	        this.iframe.style.width = '100%';
-	        this.iframe.style.height = '100%';
-	        this.modal.appendChild(this.iframe);
-	        return this.iframe;
+	    JoinWlService.prototype.setModalContent = function (template, style) {
+	        this.modal.innerHTML = template;
+	        // var styleElement = <HTMLStyleElement>document.createElement('style');
+	        // styleElement.innerHTML = style;
+	        // this.modal.appendChild(styleElement);
 	    };
-	    JoinWlService.prototype.setupLoginScreen = function () {
-	        var modal = this.modal;
-	        var loginScreen = document.createElement('button');
-	        loginScreen.innerHTML = 'Click me!';
-	        loginScreen.onclick = function () {
-	            modal.innerHTML = 'second screen';
-	        };
-	        this.modal.appendChild(loginScreen);
+	    JoinWlService.prototype.setupTest = function () {
+	        var _this = this;
+	        this.setModalContent(__webpack_require__(804), __webpack_require__(805));
+	        var joinBtn = this.findByStrsClass('strs-join-button');
+	        joinBtn.onclick = function () { return _this.setupTest2(); };
+	    };
+	    JoinWlService.prototype.setupTest2 = function () {
+	        this.setModalContent(__webpack_require__(807), __webpack_require__(808));
+	    };
+	    JoinWlService.prototype.findByStrsClass = function (cssClass) {
+	        return this.modal.getElementsByClassName(cssClass)[0];
 	    };
 	    JoinWlService.prototype.joinWl = function (wlId) {
+	        console.log('launching JoinWl popup for %s', wlId);
 	        this.setupOverlay();
 	        this.setupModal();
-	        this.setupLoginScreen();
-	        // this.setupIframe();
-	        // this.showOverlay();
-	        // console.log('launching JoinWl popup for %s', wlId);
+	        this.setupTest();
+	        this.showOverlay();
 	    };
 	    return JoinWlService;
 	}());
 	exports.JoinWlService = JoinWlService;
+
+
+/***/ },
+/* 804 */
+/***/ function(module, exports) {
+
+	module.exports = "<div>\n    I am test.html. My background is green<br />\n    <button class=\"strs-join-button\">go to test2.html<button>\n</div>";
+
+/***/ },
+/* 805 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(806)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "body {\n    background-color: green;\n}", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 806 */
+/***/ function(module, exports) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	// css base code, injected by the css-loader
+	module.exports = function() {
+		var list = [];
+	
+		// return the list of modules as css string
+		list.toString = function toString() {
+			var result = [];
+			for(var i = 0; i < this.length; i++) {
+				var item = this[i];
+				if(item[2]) {
+					result.push("@media " + item[2] + "{" + item[1] + "}");
+				} else {
+					result.push(item[1]);
+				}
+			}
+			return result.join("");
+		};
+	
+		// import a list of modules into the list
+		list.i = function(modules, mediaQuery) {
+			if(typeof modules === "string")
+				modules = [[null, modules, ""]];
+			var alreadyImportedModules = {};
+			for(var i = 0; i < this.length; i++) {
+				var id = this[i][0];
+				if(typeof id === "number")
+					alreadyImportedModules[id] = true;
+			}
+			for(i = 0; i < modules.length; i++) {
+				var item = modules[i];
+				// skip already imported module
+				// this implementation is not 100% perfect for weird media query combinations
+				//  when a module is imported multiple times with different media queries.
+				//  I hope this will never occur (Hey this way we have smaller bundles)
+				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+					if(mediaQuery && !item[2]) {
+						item[2] = mediaQuery;
+					} else if(mediaQuery) {
+						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+					}
+					list.push(item);
+				}
+			}
+		};
+		return list;
+	};
+
+
+/***/ },
+/* 807 */
+/***/ function(module, exports) {
+
+	module.exports = "I am test2.html. My background is pink";
+
+/***/ },
+/* 808 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(806)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "body {\n    background-color: pink;\n}", ""]);
+	
+	// exports
 
 
 /***/ }
