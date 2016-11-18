@@ -401,7 +401,7 @@ export class JoinWlService {
         this.setupOverlay();
         this.setupModal();
         //this.setupTest();
-        this.setupEmailValidation();
+        this.setupLogin();
         this.showOverlay();
     }
 
