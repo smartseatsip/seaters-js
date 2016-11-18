@@ -59,18 +59,18 @@ var SeatersSDK =
 	var seaters_api_1 = __webpack_require__(2);
 	var session_service_1 = __webpack_require__(691);
 	var wl_service_1 = __webpack_require__(802);
-	var join_wl_service_1 = __webpack_require__(803);
+	var modal_service_1 = __webpack_require__(803);
+	var join_wl_service_1 = __webpack_require__(804);
+	var join_wl_service_2 = __webpack_require__(810);
 	var SeatersClient = (function () {
 	    function SeatersClient(apiPrefix) {
 	        this.api = new seaters_api_1.SeatersApi(apiPrefix || '/api' /*'https://api.dev-seaters.com/api'*/);
 	        this.sessionService = new session_service_1.SessionService(this.api);
 	        this.wlService = new wl_service_1.WlService(this.api);
+	        this.modalService = new modal_service_1.ModalService();
 	        this.joinWlService = new join_wl_service_1.JoinWlService(this.wlService, this.sessionService);
+	        this.joinWlService2 = new join_wl_service_2.JoinWlService(this.modalService, this.wlService, this.sessionService);
 	    }
-	    SeatersClient.prototype.test = function () {
-	        //DEBUG
-	        throw 'FOOBAR';
-	    };
 	    return SeatersClient;
 	}());
 	exports.SeatersClient = SeatersClient;
@@ -42402,6 +42402,100 @@ var SeatersSDK =
 
 /***/ },
 /* 803 */
+/***/ function(module, exports) {
+
+	/// <reference path="../../node_modules/typescript/lib/lib.d.ts" />
+	"use strict";
+	var ModalService = (function () {
+	    function ModalService() {
+	    }
+	    ModalService.prototype.onEscape = function (callback) {
+	        function escapeListener(evt) {
+	            if (evt.key == 'Escape') {
+	                callback();
+	                evt.preventDefault();
+	            }
+	        }
+	        function removeEscapeListener() {
+	            window.removeEventListener('keydown', escapeListener, true);
+	        }
+	        window.addEventListener('keydown', escapeListener, true);
+	        return removeEscapeListener;
+	    };
+	    ModalService.prototype.showOverlay = function () {
+	        console.log('showing seaters overlay');
+	        this.overlay.style.display = 'block';
+	    };
+	    ModalService.prototype.hideOverlay = function () {
+	        console.log('hiding seaters overlay');
+	        this.overlay.style.display = 'none';
+	    };
+	    ModalService.prototype.setupOverlay = function () {
+	        var _this = this;
+	        if (this.overlay !== undefined) {
+	            return this.overlay;
+	        }
+	        this.overlay = document.createElement('div');
+	        this.overlay.id = 'seaters-overlay';
+	        this.overlay.style.position = 'fixed';
+	        this.overlay.style.left = '0px';
+	        this.overlay.style.right = '0px';
+	        this.overlay.style.top = '0px';
+	        this.overlay.style.bottom = '0px';
+	        this.overlay.style.backgroundColor = 'rgba(30, 30, 30, 0.3)';
+	        this.overlay.style.display = 'none';
+	        this.onEscape(function () { return _this.hideOverlay(); });
+	        document.getElementsByTagName('body')[0].appendChild(this.overlay);
+	        return this.overlay;
+	    };
+	    ModalService.prototype.setupModal = function () {
+	        if (this.modal !== undefined) {
+	            return this.modal;
+	        }
+	        this.modal = document.createElement('div');
+	        this.modal.id = 'seaters-modal';
+	        this.modal.style.marginLeft = 'auto 50%';
+	        this.modal.style.marginRight = 'auto 50%';
+	        this.modal.style.minHeight = '300px';
+	        this.modal.style.backgroundColor = '#fff';
+	        this.modal.style.borderRadius = '5px';
+	        this.modal.style.boxShadow = '2px 2px 5px #888888';
+	        this.modal.style.width = '332px';
+	        this.modal.style.margin = '0px auto';
+	        this.modal.style.marginTop = '200px';
+	        this.modal.style.padding = '8px';
+	        this.overlay.appendChild(this.modal);
+	        return this.modal;
+	    };
+	    ModalService.prototype.showModal = function (template, style) {
+	        this.setupOverlay();
+	        this.setupModal();
+	        this.modal.innerHTML = template;
+	        var styleElement = document.createElement('style');
+	        styleElement.innerHTML = style;
+	        this.modal.appendChild(styleElement);
+	        this.showOverlay();
+	    };
+	    ModalService.prototype.closeModal = function () {
+	        this.hideOverlay();
+	        this.modal.innerHTML = '';
+	    };
+	    ModalService.prototype.findElementByClass = function (cssClass) {
+	        return this.modal.getElementsByClassName(cssClass)[0];
+	    };
+	    ModalService.prototype.findElementByTagName = function (tagName) {
+	        return this.modal.getElementsByTagName(tagName)[0];
+	    };
+	    ModalService.prototype.findElementById = function (id) {
+	        return document.getElementById(id);
+	    };
+	    return ModalService;
+	}());
+	exports.ModalService = ModalService;
+
+
+/***/ },
+/* 804 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../node_modules/typescript/lib/lib.d.ts" />
@@ -42478,12 +42572,12 @@ var SeatersSDK =
 	    };
 	    JoinWlService.prototype.setupTest = function () {
 	        var _this = this;
-	        this.setModalContent(__webpack_require__(804), __webpack_require__(805));
+	        this.setModalContent(__webpack_require__(805), __webpack_require__(806));
 	        var joinBtn = this.findByStrsClass('strs-join-button');
 	        joinBtn.onclick = function () { return _this.setupTest2(); };
 	    };
 	    JoinWlService.prototype.setupTest2 = function () {
-	        this.setModalContent(__webpack_require__(807), __webpack_require__(808));
+	        this.setModalContent(__webpack_require__(808), __webpack_require__(809));
 	    };
 	    JoinWlService.prototype.findByStrsClass = function (cssClass) {
 	        return this.modal.getElementsByClassName(cssClass)[0];
@@ -42501,27 +42595,27 @@ var SeatersSDK =
 
 
 /***/ },
-/* 804 */
+/* 805 */
 /***/ function(module, exports) {
 
 	module.exports = "<div>\n    I am test.html. My background is green<br />\n    <button class=\"strs-join-button\">go to test2.html</button>\n</div>";
 
 /***/ },
-/* 805 */
+/* 806 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(806)();
+	exports = module.exports = __webpack_require__(807)();
 	// imports
 	
 	
 	// module
-	exports.push([module.id, "body {\n    background-color: green;\n}", ""]);
+	exports.push([module.id, "#seaters-modal {\n    background-color: green !important;\n}", ""]);
 	
 	// exports
 
 
 /***/ },
-/* 806 */
+/* 807 */
 /***/ function(module, exports) {
 
 	/*
@@ -42577,23 +42671,52 @@ var SeatersSDK =
 
 
 /***/ },
-/* 807 */
+/* 808 */
 /***/ function(module, exports) {
 
 	module.exports = "I am test2.html. My background is pink";
 
 /***/ },
-/* 808 */
+/* 809 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(806)();
+	exports = module.exports = __webpack_require__(807)();
 	// imports
 	
 	
 	// module
-	exports.push([module.id, "body {\n    background-color: pink;\n}", ""]);
+	exports.push([module.id, "#seaters-modal {\n    background-color: pink !important;\n}", ""]);
 	
 	// exports
+
+
+/***/ },
+/* 810 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var JoinWlService = (function () {
+	    function JoinWlService(modalService, wlService, sessionService) {
+	        this.modalService = modalService;
+	        this.wlService = wlService;
+	        this.sessionService = sessionService;
+	    }
+	    JoinWlService.prototype.setupTest = function () {
+	        var _this = this;
+	        this.modalService.showModal(__webpack_require__(805), __webpack_require__(806));
+	        var joinBtn = this.modalService.findElementByClass('strs-join-button');
+	        joinBtn.onclick = function () { return _this.setupTest2(); };
+	    };
+	    JoinWlService.prototype.setupTest2 = function () {
+	        this.modalService.showModal(__webpack_require__(808), __webpack_require__(809));
+	    };
+	    JoinWlService.prototype.joinWl = function (wlId) {
+	        console.log('launching JoinWl popup for %s', wlId);
+	        this.setupTest();
+	    };
+	    return JoinWlService;
+	}());
+	exports.JoinWlService = JoinWlService;
 
 
 /***/ }
