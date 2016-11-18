@@ -43,6 +43,7 @@
   color: #D16F6F;
   font-size: .75rem;
   font-style: italic;
+  display: none;
 }
 
 .sl-general-error {

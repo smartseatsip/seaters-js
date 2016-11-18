@@ -3,19 +3,13 @@
   <head>
     <meta charset="utf-8">
     <title>Seaters Library E2E</title>
-    <script type="text/javascript" src="/seaters.bundle.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-messages/1.5.8/angular-messages.min.js"></script>
-    <script type="text/javascript" src="login.js"></script>
 
+    <script type="text/javascript" src="/seaters.bundle.js"></script>
     <link rel="stylesheet" type="text/css" href="foundation-mini.css">
     <link rel="stylesheet" type="text/css" href="app.css">
   </head>
-  <body ng-app="app" ng-controller="LoginController">
-
-
+  <body>
     <div class="sl-content">
-
       <div class="row sl-pb-10">
         <h3>
           <span>Login</span>
@@ -23,34 +17,26 @@
       </div>
 
       <div class="row">
-        <form name="loginForm" ng-submit="doLogin(loginForm, email, password)" novalidate autocomplete="off">
+        <form name="sl-login-form" novalidate autocomplete="off">
         <!-- EMAIL -->
         <div class="row collapse">
           <div class="columns large-12">
-            <div ng-messages="loginForm.email.$error" ng-show="loginForm.$submitted || error.details" role="alert">
-              <div class="sl-input-error" ng-message="required">Mandatory</div>
-              <div class="sl-input-error" ng-show="email && (error.details[0].field=='emailPasswordCredentials.email')">{{error.details[0].error.defaultMessage}}</div>
-            </div>
-            <input name="email" ng-model="email" placeholder="Email" type="text" required="true">
+            <div id = "sl-email-error" class="sl-input-error">Mandatory</div>
+            <div class="sl-input-error"></div>
+            <input id="sl-email" placeholder="Email" type="text" required>
           </div>
         </div>
         <!-- PASSWORD -->
         <div class="row collapse">
           <div class="columns large-12">
-            <div ng-messages="loginForm.password.$error" ng-show="loginForm.$submitted" role="alert">
-              <div class="sl-input-error" ng-message="required">Mandatory</div>
-            </div>
-            <input name="password" ng-model="password" placeholder="Password" type="password" required="true">
+            <div id="sl-password-error" class="sl-input-error"></div>
+            <input id="sl-password" placeholder="Password" type="password" required>
           </div>
-        </div>
-
-        <div class="row collapse sl-flex sl-flex-row sl-flex-center-h sl-pb-10" ng-show="error.error.defaultMessage || error.errorMsg">
-          <span class="sl-general-error">Unable to login: {{error.error.defaultMessage || error.errorMsg}}</span>
         </div>
 
         <div class="row collapse">
           <div class="columns large-12">
-            <button class="sl-button success expand" type="submit" ng-disabled="formProcessing">
+            <button id="sl-btn-login" type="button" class="sl-button success expand">
               <span>Login</span>
             </button>
           </div>
@@ -58,7 +44,140 @@
     </form>
       </div>
     </div>
-
-
   </body>
+
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+
+      var sdk = window.SeatersSDK;
+      var slClient = new sdk.SeatersClient();
+
+      /**
+       * Check for required field
+       * @param value
+       * @returns {boolean}
+       */
+      function validateRequired(value) {
+        return value!=undefined && value.trim().length > 0;
+      }
+
+      /**
+       * Hide all form field errors
+       */
+      function resetFormErrors() {
+        //Reset all errors
+        var errorFields = document.getElementsByClassName('sl-input-error');
+        for (var i=0;i<errorFields.length;i++){
+          errorFields[i].style.display = 'none';
+        }
+      }
+
+      /**
+       * Display a form field error
+       * @param field
+       * @param error
+       */
+      function showFieldError(field, error) {
+        var el = document.getElementById(field);
+        el.innerHTML = error;
+        el.style.display = 'block';
+      }
+
+      /**
+       * Client side form validation
+       * @param validationErrors
+       */
+      function showFormErrors(validationErrors) {
+        //set errors that apply
+        for (var i=0; i < validationErrors.length; i++) {
+          var field = validationErrors[i].field+'-error';
+          var error = validationErrors[i].error;
+          showFieldError(field,error);
+        }
+      }
+
+
+      /**
+       * Show client side login form errors
+       * @param email
+       * @param password
+       * @returns {Array}
+       */
+      function validateLoginForm(email, password) {
+        var validationErrors = [];
+
+        //Test email
+        if(!validateRequired(email)) {
+          //validationErrors.push({field:'sl-email', error:'sl_input_err_required'});
+          validationErrors.push({field:'sl-email', error:'Mandatory'});
+        }
+
+        //Test password
+        if(!validateRequired(password)) {
+          //validationErrors.push({field:'sl-password', error:'sl_input_err_required'});
+          validationErrors.push({field:'sl-password', error:'Mandatory'});
+        }
+        return validationErrors;
+      }
+
+      /**
+       * Show server side login form errors
+       * @param error
+       */
+      function showFormErrorsApiLogin(error) {
+
+        //Test for detailed errors
+        if (error.details.length > 0) {
+          if (error.details[0].field === 'emailPasswordCredentials.email'){
+            showFieldError('sl-email-error', error.details[0].error.defaultMessage);
+          }
+        }
+        //Test for general error
+        else {
+          showFieldError('sl-email-error',error.error.defaultMessage);
+        }
+      }
+
+
+      /**
+       * Perfor login
+       */
+      function login() {
+        //Reset form errors
+        resetFormErrors();
+
+        //Get fields
+        var email = document.getElementById("sl-email").value;
+        var password = document.getElementById("sl-password").value;
+
+        //..and do client validation first
+        var validationErrors = validateLoginForm(email, password);
+        if (validationErrors.length > 0)
+          showFormErrors(validationErrors);
+        else {
+          //Login
+          slClient.sessionService.doEmailPasswordLogin(email, password)
+            .then(function(res) {
+              alert("You have sucessfully logged in");
+            }, function(err) {
+
+              if(err instanceof Error) {
+                //$scope.error = err.stack;
+              } else {
+                //$scope.error = err;
+              }
+              showFormErrorsApiLogin(err);
+            });
+
+        }
+      }
+
+
+      var loginButton = document.getElementById("sl-btn-login");
+      loginButton.onclick = login;
+    });
+
+
+  </script>
 </html>

@@ -4,37 +4,29 @@
   <meta charset="utf-8">
   <title>Seaters Library E2E</title>
   <script type="text/javascript" src="/seaters.bundle.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-messages/1.5.8/angular-messages.min.js"></script>
-  <script type="text/javascript" src="validate.js"></script>
-
   <link rel="stylesheet" type="text/css" href="foundation-mini.css">
   <link rel="stylesheet" type="text/css" href="app.css">
 </head>
-<body ng-app="app" ng-controller="ValidateController">
+<body>
 
 
     <div class="sl-content sl-flex sl-flex-column sl-flex-center-h">
       <div class="sl-pb-10">
         <h3>
           <span>Welcome. It's nice to meet you</span>
-          <span>{{userData.firstName}}</span>
         </h3>
       </div>
       <div class="sl-pb-10">
         <span>We just sent you a confirmation email. In order to confirm your registration, please enter the code mentioned in the email below.</span>
       </div>
       <div class="row collapse">
-        <form name="validateForm" ng-submit="doValidate(validateForm, confirmationCode)" class="sl-flex sl-flex-column sl-flex-center-h small-12" novalidate autocomplete="off">
+        <form name="validateForm" class="sl-flex sl-flex-column sl-flex-center-h small-12" novalidate autocomplete="off">
           <div class="columns small-12">
-            <div ng-messages="validateForm.confirmationCode.$error" ng-show="validateForm.$submitted || error.errorMsg" role="alert">
-              <div class="sl-input-error" ng-message="required">Mandatory</div>
-              <div class="sl-input-error" ng-show="error.errorMsg">Wrong validation code</div>
-            </div>
-            <input type="text" name="confirmationCode" ng-model="confirmationCode" placeholder="Your personal code" required>
+            <div id="sl-confirmation-code-error" class="sl-input-error"></div>
+            <input id="sl-confirmation-code" type="text" name="confirmationCode" placeholder="Your personal code" required>
           </div>
           <div>
-            <button class="button sl-button success" type="submit" ng-disabled="formProcessing">Confirm email</button>
+            <button id="sl-btn-validate" class="button sl-button success" type="button">Confirm email</button>
           </div>
         </form>
       </div>
@@ -42,4 +34,115 @@
 
 
 </body>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+
+    var sdk = window.SeatersSDK;
+    var slClient = new sdk.SeatersClient();
+
+    /**
+     * Check for required field
+     * @param value
+     * @returns {boolean}
+     */
+    function validateRequired(value) {
+      return value!=undefined && value.trim().length > 0;
+    }
+
+    /**
+     * Hide all form field errors
+     */
+    function resetFormErrors() {
+      //Reset all errors
+      var errorFields = document.getElementsByClassName('sl-input-error');
+      for (var i=0;i<errorFields.length;i++){
+        errorFields[i].style.display = 'none';
+      }
+    }
+
+    /**
+     * Display a form field error
+     * @param field
+     * @param error
+     */
+    function showFieldError(field, error) {
+      var el = document.getElementById(field);
+      el.innerHTML = error;
+      el.style.display = 'block';
+    }
+
+    /**
+     * Client side form validation
+     * @param validationErrors
+     */
+    function showFormErrors(validationErrors) {
+      //set errors that apply
+      for (var i=0; i < validationErrors.length; i++) {
+        var field = validationErrors[i].field+'-error';
+        var error = validationErrors[i].error;
+        showFieldError(field,error);
+      }
+    }
+
+
+    /**
+     * Show client side validate form errors
+     * @param code
+     * @returns {Array}
+     */
+    function validateEmailValidationForm(code) {
+      var validationErrors = [];
+
+      //Test email
+      if(!validateRequired(code)) {
+        //validationErrors.push({field:'sl-confirmation-code', error:'sl_input_err_required'});
+        validationErrors.push({field:'sl-confirmation-code', error:'Mandatory'});
+      }
+
+      return validationErrors;
+    }
+
+    /**
+     * Perfor login
+     */
+    function validateEmail() {
+      //Reset form errors
+      resetFormErrors();
+
+      //Get fields
+      var confirmationCode = document.getElementById("sl-confirmation-code").value;
+      var email = "test@test.com";
+
+      //..and do client validation first
+      var validationErrors = validateEmailValidationForm(confirmationCode);
+      if (validationErrors.length > 0)
+        showFormErrors(validationErrors);
+      else {
+        //Login
+        slClient.sessionService.doValidation(email, confirmationCode)
+          .then(function(res) {
+            alert("You have confirmed your email");
+          }, function(err) {
+
+            if(err instanceof Error) {
+              //$scope.error = err.stack;
+            } else {
+              //$scope.error = err;
+            }
+
+            //For now, add general always show this error, as error info is in different format coming back
+            showFieldError('sl-confirmation-code-error',"Wrong validation code");
+          });
+
+      }
+    }
+
+
+    var validateEmailButton = document.getElementById("sl-btn-validate");
+    validateEmailButton.onclick = validateEmail;
+  });
+
+
+</script>
 </html>
