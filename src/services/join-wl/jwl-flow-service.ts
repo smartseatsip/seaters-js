@@ -12,6 +12,11 @@ export class JWLFlowService {
     ) {
     }
 
+    //Sets a button to either enabled or disabled
+    private enableButton(btnId: string, enabled:boolean) {
+      (<HTMLButtonElement>this.modalService.findElementById(btnId)).disabled = !enabled;
+    }
+
     /**
      * Show client side login form errors
      * @param email
@@ -70,11 +75,13 @@ export class JWLFlowService {
         this.modalService.showFormErrors(validationErrors);
       else {
         //Login
+        this.enableButton('sl-btn-login',false);
         this.sessionService.doEmailPasswordLogin(email, password)
           .then(function(res) {
+            _this.enableButton('sl-btn-login',true);
             alert("You have sucessfully logged in");
           }, function(err) {
-
+            _this.enableButton('sl-btn-login',true);
             if(err instanceof Error) {
               //$scope.error = err.stack;
             } else {
@@ -145,12 +152,14 @@ export class JWLFlowService {
         this.modalService.showFormErrors(validationErrors);
       else {
         //Login
+        this.enableButton('sl-btn-signup',false);
         this.sessionService.doEmailPasswordSignUp(email, password, firstname, lastname)
           .then(function(res) {
            //Continue with email validation
+            _this.enableButton('sl-btn-signup',true);
             _this.setupEmailValidation(res);
           }, function(err) {
-
+            _this.enableButton('sl-btn-signup',true);
             if(err instanceof Error) {
               //$scope.error = err.stack;
             } else {
@@ -196,12 +205,14 @@ export class JWLFlowService {
       if (validationErrors.length > 0)
         this.modalService.showFormErrors(validationErrors);
       else {
-        //Login
+        //Validate
+        this.enableButton('sl-btn-validate',false);
         this.sessionService.doValidation(email, confirmationCode)
           .then(function(res) {
+            _this.enableButton('sl-btn-validate',true);
             alert("You have confirmed your email");
           }, function(err) {
-
+            _this.enableButton('sl-btn-validate',true);
             if(err instanceof Error) {
               //$scope.error = err.stack;
             } else {
