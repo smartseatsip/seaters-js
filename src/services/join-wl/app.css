@@ -1529,10 +1529,10 @@ p aside {
   font-size: 1rem;
 }
 
-.sl-login-agree-to-terms {
+.sl-hint {
   color: grey;
 }
-.sl-login-agree-to-terms a, .sl-login-agree-to-terms a:active, .sl-login-agree-to-terms a:visited  {
+.sl-hint a, .sl-hint a:active, .sl-hint a:visited  {
   color:#10CCC2 !important;
   font-weight: bold;
 }

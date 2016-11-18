@@ -2,7 +2,8 @@
     <div class="sl-content sl-flex sl-flex-column sl-flex-center-h">
       <div class="sl-pb-10">
         <h3>
-          <span>Welcome. It's nice to meet you</span>
+          <span>Welcome. It's nice to meet you,</span>
+          <span id="sl-span-firstname"></span>
         </h3>
       </div>
       <div class="sl-pb-10">
@@ -11,11 +12,11 @@
       <div class="row sl-collapse">
         <form name="validateForm" class="sl-flex sl-flex-column sl-flex-center-h small-12" novalidate autocomplete="off">
           <div class="columns small-12">
-            <div class="sl-input-error sl-confirmation-code-error"></div>
-            <input class="sl-confirmation-code" type="text" name="confirmationCode" placeholder="Your personal code" required>
+            <div id="sl-confirmation-code-error" class="sl-input-error"></div>
+            <input id="sl-confirmation-code" type="text" name="confirmationCode" placeholder="Your personal code" required>
           </div>
           <div>
-            <button class="sl-btn-validate button sl-button success" type="button">Confirm email</button>
+            <button id="sl-btn-validate" class="button sl-button success" type="button">Confirm email</button>
           </div>
         </form>
       </div>

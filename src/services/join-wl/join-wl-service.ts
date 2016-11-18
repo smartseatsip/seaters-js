@@ -2,6 +2,8 @@ import { SessionService } from '../session-service';
 import { ModalService } from '../modal-service';
 import { WlService } from '../wl-service';
 import { Promise } from 'es6-promise';
+import { JWLFlowService } from './jwl-flow-service';
+
 
 declare var require: any;
 
@@ -9,6 +11,7 @@ export class JoinWlService {
 
     constructor (
         private modalService: ModalService,
+        private flowService: JWLFlowService,
         private wlService: WlService,
         private sessionService: SessionService
     ) {
@@ -30,9 +33,12 @@ export class JoinWlService {
         );
     }
 
+
     joinWl (wlId) {
         console.log('launching JoinWl popup for %s', wlId);
-        this.setupTest();
+        //this.setupTest();
+
+        this.flowService.startFlow();
     }
 
 }
