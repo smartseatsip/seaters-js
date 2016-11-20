@@ -29,6 +29,14 @@ module.exports = {
         }
       },
       {
+        test: /seaters-client\.ts$/,
+        loader: 'string-replace',
+        query: {
+          search: '${api.location}',
+          replace: process.env['strs.api.location'] || '/api'
+        }
+      },
+      {
         test: /\.html$/,
         loader: 'html-loader'
       },
