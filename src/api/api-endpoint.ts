@@ -38,7 +38,7 @@ export class ApiEndpoint {
     private renderConcreteEndpoint () : string {
         var endpointParamRx = /:([a-zA-Z][a-zA-Z0-9]*)/;
         return this.abstractEndpoint.replace(endpointParamRx, (match) => {
-            return this.renderEndpointParam(match[1]);
+            return this.renderEndpointParam(match.substr(1));
         });
     }
 

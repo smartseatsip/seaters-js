@@ -7338,15 +7338,21 @@ require("source-map-support").install();
 	    ApiContext.prototype.unsetHeader = function (header) {
 	        this.headers.delete(header);
 	    };
+	    ApiContext.prototype.mergeHeaders = function (otherHeaders) {
+	        var merged = {};
+	        this.headers.forEach(function (v, k) { return merged[k] = v; });
+	        return core.Object.assign(merged, otherHeaders);
+	    };
 	    ApiContext.prototype.createEndpoint = function (requestDefinition) {
 	        return new api_endpoint_1.ApiEndpoint(requestDefinition.abstractEndpoint, requestDefinition.endpointParams || new core.Map(), requestDefinition.queryParams || new core.Map(), this.apiPrefix);
 	    };
 	    ApiContext.prototype.createPopsicleRequestOptions = function (requestDefinition, endpoint) {
+	        var headers = this.mergeHeaders(requestDefinition.headers);
 	        return {
 	            url: endpoint.absoluteEndpoint,
 	            method: requestDefinition.method || 'GET',
 	            query: requestDefinition.queryParams,
-	            headers: requestDefinition.headers,
+	            headers: headers,
 	            body: requestDefinition.body
 	        };
 	    };
@@ -7507,7 +7513,7 @@ require("source-map-support").install();
 	        var _this = this;
 	        var endpointParamRx = /:([a-zA-Z][a-zA-Z0-9]*)/;
 	        return this.abstractEndpoint.replace(endpointParamRx, function (match) {
-	            return _this.renderEndpointParam(match[1]);
+	            return _this.renderEndpointParam(match.substr(1));
 	        });
 	    };
 	    ApiEndpoint.prototype.renderQueryParams = function () {
@@ -7782,6 +7788,7 @@ require("source-map-support").install();
 	        this.api.fan.waitingList(wlId).then(function (wl) { return _this.extendWl(wl); });
 	    };
 	    WlService.prototype.extendWl = function (wl) {
+	        console.log('wl', wl);
 	        return wl;
 	        //TODO - compute 'wl status' - see fanwebapp
 	    };

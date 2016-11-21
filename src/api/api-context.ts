@@ -25,6 +25,12 @@ export class ApiContext {
         this.headers.delete(header);
     }
 
+    private mergeHeaders (otherHeaders: any) {
+        var merged = {};
+        this.headers.forEach((v,k) => merged[k] = v);
+        return core.Object.assign(merged, otherHeaders);
+    }
+
     createEndpoint (requestDefinition: ApiRequestDefinition): ApiEndpoint {
         return new ApiEndpoint(
             requestDefinition.abstractEndpoint,
@@ -35,11 +41,12 @@ export class ApiContext {
     }
 
     createPopsicleRequestOptions (requestDefinition: ApiRequestDefinition, endpoint: ApiEndpoint) : any {
+        var headers = this.mergeHeaders(requestDefinition.headers);
         return {
             url: endpoint.absoluteEndpoint,
             method: requestDefinition.method || 'GET',
             query: requestDefinition.queryParams,
-            headers: requestDefinition.headers,
+            headers: headers,
             body: requestDefinition.body
         };
     }
