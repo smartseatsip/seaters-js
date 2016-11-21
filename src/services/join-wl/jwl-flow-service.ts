@@ -79,7 +79,10 @@ export class JWLFlowService {
         this.sessionService.doEmailPasswordLogin(email, password)
           .then(function(res) {
             _this.enableButton('sl-btn-login',true);
-            alert("You have sucessfully logged in");
+
+            //Navigate to WL info form
+            _this.setupWaitingListInfo();
+
           }, function(err) {
             _this.enableButton('sl-btn-login',true);
             if(err instanceof Error) {
@@ -260,6 +263,55 @@ export class JWLFlowService {
       loginBtn.onclick = () => this.doLogin();
       var navToSignup = this.modalService.findElementById('sl-nav-signup');
       navToSignup.onclick= (evt) => { evt.preventDefault(); this.setupSignup()};
+    }
+
+
+    /**
+     * Show WL info
+     *
+     */
+    private showWaitingListInfo() {
+      var dummywl = {
+        closed: false,
+        name: 'My Wish List',
+        likelihood: 13.33,
+        rank: 3,
+        fg: "mygroup"
+      };
+
+      var waitingListName = <HTMLElement>this.modalService.findElementById('sl-wl-name');
+      waitingListName.innerHTML = dummywl.name;
+      var displaySection;
+      if (!dummywl.closed) {
+        displaySection = this.modalService.findElementById('sl-wl-open');
+        displaySection.style.display = 'block';
+        //set wl group info
+        var waitingListLikelihood = <HTMLElement>this.modalService.findElementById('sl-wl-likelihood');
+        waitingListLikelihood.innerHTML = dummywl.likelihood+" %";
+        var waitingListRank = <HTMLElement>this.modalService.findElementById('sl-wl-rank');
+        waitingListRank.innerHTML = "# "+dummywl.rank;
+      }
+      else {
+        displaySection = this.modalService.findElementById('sl-wl-closed');
+        displaySection.style.display = 'block';
+        //set fan group slug
+        var fanGroupSlug = <HTMLAnchorElement>this.modalService.findElementById('sl-fg-slug');
+        fanGroupSlug.href = "http://www.seaters.com/"+dummywl.fg;
+      }
+    }
+
+    /**
+     *  Show WL information
+     */
+    setupWaitingListInfo () {
+      this.modalService.showModal(
+        require('./wl.html'),
+        require('./app.css')
+      );
+      var closeBtn = this.modalService.findElementById('sl-btn-close');
+      closeBtn.onclick = () => { this.modalService.closeModal()};
+
+      this.showWaitingListInfo();
     }
 
     startFlow (wlId: string) {

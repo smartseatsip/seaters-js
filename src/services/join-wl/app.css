@@ -1497,6 +1497,9 @@ p aside {
   justify-content: center;
 }
 
+.sl-mb-none {
+  margin-bottom: 0;
+}
 .sl-pb-10 {
   padding-bottom: .8rem;
 }
@@ -1532,10 +1535,11 @@ p aside {
 .sl-hint {
   color: grey;
 }
-.sl-hint a, .sl-hint a:active, .sl-hint a:visited  {
+a.sl-link, a.sl-link:active, a.sl-link:visited  {
   color:#10CCC2 !important;
   font-weight: bold;
 }
+
 
 button.disabled, button[disabled], .button.disabled, .button[disabled],
 button.disabled:hover,
@@ -1585,6 +1589,24 @@ button[disabled].success:focus,
   padding-left: .6875rem;
   padding-right: .6875rem;
   width: 100%;
+}
+
+.sl-wl-closed {
+  color: #888;
+}
+
+.sl-wl-data-title {
+  font-size:16px;
+  color: #A6A6A6;
+}
+.sl-wl-data-value {
+  color: #10ccc2;
+  font-size:22px;
+  font-weight: bold;
+}
+
+#sl-wl-open, #sl-wl-closed {
+  display: none;
 }
 
 
