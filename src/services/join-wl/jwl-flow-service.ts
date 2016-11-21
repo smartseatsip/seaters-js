@@ -5,7 +5,7 @@ import { WlService } from '../wl-service';
 
 declare var require: any;
 
-export class JWLFlowService {
+export class JwlFlowService {
 
     private wlId:string = "";
 
