@@ -34,6 +34,16 @@ export class WlService {
     }
 
     private computeWLActionStatus(wl: WaitingList) {
+
+        //     var seat = wl.seat;
+        //     var position = wl.position;
+        //     var request = wl.request;
+
+        //     // Not in FG
+        //     if(group && !group.membership.member) {
+        //         return createStatus(WAITINGLIST_ACTION_STATUS.BECOME_FAN);
+        // }
+
         var actionStatus = ACTION_STATUS.BECOME_FAN;
         var processing: boolean = false;
         return {
@@ -41,5 +51,6 @@ export class WlService {
             processing: processing
         }
     }
+    
 
 }

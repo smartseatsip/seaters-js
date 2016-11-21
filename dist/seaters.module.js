@@ -7646,8 +7646,13 @@ require("source-map-support").install();
 	    }
 	    FanApi.prototype.waitingList = function (waitingListId) {
 	        var endpointParams = new core.Map();
-	        endpointParams.set('wlId', waitingListId);
-	        return this.apiContext.get('/fan/waiting-lists/:wlId', endpointParams);
+	        endpointParams.set('waitingListId', waitingListId);
+	        return this.apiContext.get('/fan/waiting-lists/:waitingListId', endpointParams);
+	    };
+	    FanApi.prototype.fanGroup = function (fanGroupId) {
+	        var endpointParams = new core.Map();
+	        endpointParams.set('fanGroupId', fanGroupId);
+	        return this.apiContext.get('/fan/groups/:fanGroupId', endpointParams);
 	    };
 	    return FanApi;
 	}());
@@ -7780,6 +7785,17 @@ require("source-map-support").install();
 
 	"use strict";
 	var core = __webpack_require__(2);
+	(function (ACTION_STATUS) {
+	    ACTION_STATUS[ACTION_STATUS["BECOME_FAN"] = 0] = "BECOME_FAN";
+	    ACTION_STATUS[ACTION_STATUS["UNLOCK"] = 1] = "UNLOCK";
+	    ACTION_STATUS[ACTION_STATUS["SOON"] = 2] = "SOON";
+	    ACTION_STATUS[ACTION_STATUS["BOOK"] = 3] = "BOOK";
+	    ACTION_STATUS[ACTION_STATUS["WAIT"] = 4] = "WAIT";
+	    ACTION_STATUS[ACTION_STATUS["CONFIRM"] = 5] = "CONFIRM";
+	    ACTION_STATUS[ACTION_STATUS["GO_LIVE"] = 6] = "GO_LIVE";
+	    ACTION_STATUS[ACTION_STATUS["ERROR"] = 7] = "ERROR";
+	})(exports.ACTION_STATUS || (exports.ACTION_STATUS = {}));
+	var ACTION_STATUS = exports.ACTION_STATUS;
 	var WlService = (function () {
 	    function WlService(api) {
 	        this.api = api;
@@ -7789,7 +7805,14 @@ require("source-map-support").install();
 	        return this.api.fan.waitingList(wlId).then(function (wl) { return core.Object.assign(wl, _this.computeWLActionStatus(wl)); });
 	    };
 	    WlService.prototype.computeWLActionStatus = function (wl) {
-	        var actionStatus = 'JOIN';
+	        //     var seat = wl.seat;
+	        //     var position = wl.position;
+	        //     var request = wl.request;
+	        //     // Not in FG
+	        //     if(group && !group.membership.member) {
+	        //         return createStatus(WAITINGLIST_ACTION_STATUS.BECOME_FAN);
+	        // }
+	        var actionStatus = ACTION_STATUS.BECOME_FAN;
 	        var processing = false;
 	        return {
 	            actionStatus: actionStatus,
@@ -8004,7 +8027,8 @@ require("source-map-support").install();
 	            this.sessionService.doEmailPasswordLogin(email, password)
 	                .then(function (res) {
 	                _this.enableButton('sl-btn-login', true);
-	                alert("You have sucessfully logged in");
+	                //Navigate to WL info form
+	                _this.setupWaitingListInfo();
 	            }, function (err) {
 	                _this.enableButton('sl-btn-login', true);
 	                if (err instanceof Error) {
@@ -8152,6 +8176,48 @@ require("source-map-support").install();
 	        loginBtn.onclick = function () { return _this.doLogin(); };
 	        var navToSignup = this.modalService.findElementById('sl-nav-signup');
 	        navToSignup.onclick = function (evt) { evt.preventDefault(); _this.setupSignup(); };
+	    };
+	    /**
+	     * Show WL info
+	     *
+	     */
+	    JWLFlowService.prototype.showWaitingListInfo = function () {
+	        var dummywl = {
+	            closed: false,
+	            name: 'My Wish List',
+	            likelihood: 13.33,
+	            rank: 3,
+	            fg: "mygroup"
+	        };
+	        var waitingListName = this.modalService.findElementById('sl-wl-name');
+	        waitingListName.innerHTML = dummywl.name;
+	        var displaySection;
+	        if (!dummywl.closed) {
+	            displaySection = this.modalService.findElementById('sl-wl-open');
+	            displaySection.style.display = 'block';
+	            //set wl group info
+	            var waitingListLikelihood = this.modalService.findElementById('sl-wl-likelihood');
+	            waitingListLikelihood.innerHTML = dummywl.likelihood + " %";
+	            var waitingListRank = this.modalService.findElementById('sl-wl-rank');
+	            waitingListRank.innerHTML = "# " + dummywl.rank;
+	        }
+	        else {
+	            displaySection = this.modalService.findElementById('sl-wl-closed');
+	            displaySection.style.display = 'block';
+	            //set fan group slug
+	            var fanGroupSlug = this.modalService.findElementById('sl-fg-slug');
+	            fanGroupSlug.href = "http://www.seaters.com/" + dummywl.fg;
+	        }
+	    };
+	    /**
+	     *  Show WL information
+	     */
+	    JWLFlowService.prototype.setupWaitingListInfo = function () {
+	        var _this = this;
+	        this.modalService.showModal(__webpack_require__(327), __webpack_require__(327));
+	        var closeBtn = this.modalService.findElementById('sl-btn-close');
+	        closeBtn.onclick = function () { _this.modalService.closeModal(); };
+	        this.showWaitingListInfo();
 	    };
 	    JWLFlowService.prototype.startFlow = function (wlId) {
 	        //TODO: other parts of flow
