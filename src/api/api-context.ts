@@ -184,4 +184,10 @@ export class ApiContext {
       });
     }
 
+    public static buildEndpointParams(obj: Object): Map<string, string> {
+        var map = new core.Map<string, string>();
+        Object.keys(obj).forEach(k => map.set(k, obj[k]));
+        return map;
+    }
+
 }

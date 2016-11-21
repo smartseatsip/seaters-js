@@ -7467,6 +7467,11 @@ var SeatersSDK =
 	            body: body
 	        });
 	    };
+	    ApiContext.buildEndpointParams = function (obj) {
+	        var map = new core.Map();
+	        Object.keys(obj).forEach(function (k) { return map.set(k, obj[k]); });
+	        return map;
+	    };
 	    return ApiContext;
 	}());
 	exports.ApiContext = ApiContext;
@@ -27443,20 +27448,30 @@ var SeatersSDK =
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var core = __webpack_require__(2);
+	var api_1 = __webpack_require__(308);
 	var FanApi = (function () {
 	    function FanApi(apiContext) {
 	        this.apiContext = apiContext;
+	        this.fgEndpoint = '/fan/groups/:fanGroupId';
+	        this.wlEndpoint = '/fan/waiting-lists/:waitingListId';
 	    }
-	    FanApi.prototype.waitingList = function (waitingListId) {
-	        var endpointParams = new core.Map();
-	        endpointParams.set('waitingListId', waitingListId);
-	        return this.apiContext.get('/fan/waiting-lists/:waitingListId', endpointParams);
+	    FanApi.prototype.fgEndpointParams = function (fanGroupId) {
+	        return api_1.ApiContext.buildEndpointParams({ fanGroupId: fanGroupId });
 	    };
 	    FanApi.prototype.fanGroup = function (fanGroupId) {
-	        var endpointParams = new core.Map();
-	        endpointParams.set('fanGroupId', fanGroupId);
-	        return this.apiContext.get('/fan/groups/:fanGroupId', endpointParams);
+	        return this.apiContext.get(this.fgEndpoint, this.fgEndpointParams(fanGroupId));
+	    };
+	    FanApi.prototype.joinFanGroup = function (fanGroupId) {
+	        return this.apiContext.post(this.fgEndpoint, this.fgEndpointParams(fanGroupId));
+	    };
+	    FanApi.prototype.wlEndpointParams = function (waitingListId) {
+	        return api_1.ApiContext.buildEndpointParams({ waitingListId: waitingListId });
+	    };
+	    FanApi.prototype.waitingList = function (waitingListId) {
+	        return this.apiContext.get(this.wlEndpoint, this.wlEndpointParams(waitingListId));
+	    };
+	    FanApi.prototype.joinWaitingList = function (waitingListId) {
+	        return this.apiContext.post(this.wlEndpoint, this.wlEndpointParams(waitingListId));
 	    };
 	    return FanApi;
 	}());

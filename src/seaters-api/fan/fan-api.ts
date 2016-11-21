@@ -1,4 +1,3 @@
-import * as core from 'core-js/library';
 import { ApiContext } from '../../api';
 import { PagedResult } from '../paged-result';
 import { PagingOptions } from '../paging-options';
@@ -8,18 +7,35 @@ import { FanGroup } from './fan-group';
 export class FanApi {
 
     constructor (private apiContext: ApiContext) {
+
     }
 
-    waitingList (waitingListId: string): Promise<WaitingList> {
-        let endpointParams = new core.Map<string, string>();
-        endpointParams.set('waitingListId', waitingListId);
-        return this.apiContext.get<WaitingList>('/fan/waiting-lists/:waitingListId', endpointParams);
+    private fgEndpoint = '/fan/groups/:fanGroupId';
+
+    private fgEndpointParams (fanGroupId) {
+        return ApiContext.buildEndpointParams({fanGroupId: fanGroupId});
     }
 
     fanGroup (fanGroupId: string): Promise<FanGroup> {
-        let endpointParams = new core.Map<string, string>();
-        endpointParams.set('fanGroupId', fanGroupId);
-        return this.apiContext.get<FanGroup>('/fan/groups/:fanGroupId', endpointParams);
+        return this.apiContext.get<FanGroup>(this.fgEndpoint, this.fgEndpointParams(fanGroupId));
+    }
+
+    joinFanGroup (fanGroupId: string): Promise<FanGroup> {
+        return this.apiContext.post<FanGroup>(this.fgEndpoint, this.fgEndpointParams(fanGroupId));
+    }
+
+    private wlEndpoint = '/fan/waiting-lists/:waitingListId';
+
+    private wlEndpointParams (waitingListId) {
+        return ApiContext.buildEndpointParams({waitingListId: waitingListId});
+    }
+
+    waitingList (waitingListId: string): Promise<WaitingList> {
+        return this.apiContext.get<WaitingList>(this.wlEndpoint, this.wlEndpointParams(waitingListId));
+    }
+
+    joinWaitingList (waitingListId: string): Promise<WaitingList> {
+        return this.apiContext.post<WaitingList>(this.wlEndpoint, this.wlEndpointParams(waitingListId));
     }
 
 }
