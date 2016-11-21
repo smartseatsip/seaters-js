@@ -4,8 +4,8 @@ import { Promise } from 'es6-promise';
 import * as moment from 'moment';
 import {fail} from "assert";
 
-const AUTH_HEADER = 'Authentication';
-const AUTH_BEARER = 'Seaters';
+const AUTH_HEADER = 'Authorization';
+const AUTH_BEARER = 'SeatersBearer';
 
 export enum SESSION_STRATEGY {
     EXPIRE

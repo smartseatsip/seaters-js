@@ -1,14 +1,18 @@
 import { SessionService } from '../session-service';
 import { Promise } from 'es6-promise';
 import { ModalService } from '../modal-service';
+import { WlService } from '../wl-service';
 
 declare var require: any;
 
 export class JWLFlowService {
 
+    private wlId:string = "";
+
     constructor (
         private modalService: ModalService,
-        private sessionService: SessionService
+        private sessionService: SessionService,
+        private wlService : WlService
     ) {
     }
 
@@ -271,33 +275,43 @@ export class JWLFlowService {
      *
      */
     private showWaitingListInfo() {
-      var dummywl = {
-        closed: false,
-        name: 'My Wish List',
-        likelihood: 13.33,
-        rank: 3,
-        fg: "mygroup"
-      };
+      var _this = this;
 
-      var waitingListName = <HTMLElement>this.modalService.findElementById('sl-wl-name');
-      waitingListName.innerHTML = dummywl.name;
-      var displaySection;
-      if (!dummywl.closed) {
-        displaySection = this.modalService.findElementById('sl-wl-open');
-        displaySection.style.display = 'block';
-        //set wl group info
-        var waitingListLikelihood = <HTMLElement>this.modalService.findElementById('sl-wl-likelihood');
-        waitingListLikelihood.innerHTML = dummywl.likelihood+" %";
-        var waitingListRank = <HTMLElement>this.modalService.findElementById('sl-wl-rank');
-        waitingListRank.innerHTML = "# "+dummywl.rank;
-      }
-      else {
-        displaySection = this.modalService.findElementById('sl-wl-closed');
-        displaySection.style.display = 'block';
-        //set fan group slug
-        var fanGroupSlug = <HTMLAnchorElement>this.modalService.findElementById('sl-fg-slug');
-        fanGroupSlug.href = "http://www.seaters.com/"+dummywl.fg;
-      }
+      this.wlService.getExtendedWl(this.wlId).then(function(wl) {
+
+          console.log(wl);
+
+          //TODO: - handle no position situation -> auto join wl
+
+          var waitingListName = <HTMLElement>_this.modalService.findElementById('sl-wl-name');
+          waitingListName.innerHTML = wl.displayName;
+          var displaySection;
+
+          if (wl.waitingListStatus=='OPEN' && wl.position) {
+            displaySection = _this.modalService.findElementById('sl-wl-open');
+            displaySection.style.display = 'block';
+            //set wl group info
+            var waitingListLikelihood = <HTMLElement>_this.modalService.findElementById('sl-wl-likelihood');
+            waitingListLikelihood.innerHTML = wl.position.likelihood+" %";
+            var waitingListRank = <HTMLElement>_this.modalService.findElementById('sl-wl-rank');
+            waitingListRank.innerHTML = "# "+wl.position.rank;
+          }
+          else if (wl.waitingListStatus == 'CLOSED') {
+            displaySection = _this.modalService.findElementById('sl-wl-closed');
+            displaySection.style.display = 'block';
+            //set fan group slug
+            var fanGroupSlug = <HTMLAnchorElement>_this.modalService.findElementById('sl-fg-slug');
+            fanGroupSlug.innerHTML = wl.groupName.en;
+            fanGroupSlug.href = "http://www.seaters.com/"+wl.groupSlug;
+          }
+        },
+        function(err) {
+          //TODO
+        }
+      );
+
+
+
     }
 
     /**
@@ -315,13 +329,10 @@ export class JWLFlowService {
     }
 
     startFlow (wlId: string) {
+      this.wlId = wlId;
 
-      //TODO: other parts of flow
-
-      //Signup flow starts here
+      //For now, always start with signin flow
       this.setupLogin();
-
-
     }
 
 }
