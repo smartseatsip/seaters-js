@@ -4,7 +4,7 @@ import * as core from 'core-js/library';
 
 import { SeatersApi } from './seaters-api';
 import { SessionService } from './services/session-service';
-import { WlService } from './services/wl-service';
+import { WaitingListService } from './services/waiting-list-service';
 import { FanGroupService } from './services/fan-group-service';
 import { ModalService } from './services/modal-service';
 import { JwlFlowService } from './services/join-wl/jwl-flow-service';
@@ -23,7 +23,7 @@ export class SeatersClient {
 
   public sessionService : SessionService;
 
-  public wlService: WlService;
+  public waitingListService: WaitingListService;
 
   public fanGroupService: FanGroupService;
 
@@ -35,10 +35,10 @@ export class SeatersClient {
     options = core.Object.assign({}, SeatersClient.DEFAULT_OPTIONS, options);
     this.api = new SeatersApi(options.apiPrefix);
     this.sessionService = new SessionService(this.api);
-    this.wlService = new WlService(this.api);
+    this.waitingListService = new WaitingListService(this.api);
     this.fanGroupService = new FanGroupService(this.api);
     this.modalService = new ModalService();
-    this.jwlFlowService = new JwlFlowService(this.modalService, this.sessionService, this.wlService);
+    this.jwlFlowService = new JwlFlowService(this.modalService, this.sessionService, this.waitingListService);
   }
 
 }

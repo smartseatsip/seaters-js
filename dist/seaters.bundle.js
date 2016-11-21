@@ -50,7 +50,7 @@ var SeatersSDK =
 	var seaters_client_1 = __webpack_require__(1);
 	exports.SeatersClient = seaters_client_1.SeatersClient;
 	exports.SeatersClientOptions = seaters_client_1.SeatersClientOptions;
-	var join_wl_1 = __webpack_require__(812);
+	var join_wl_1 = __webpack_require__(816);
 	exports.joinWl = join_wl_1.joinWl;
 
 
@@ -62,19 +62,19 @@ var SeatersSDK =
 	var core = __webpack_require__(2);
 	var seaters_api_1 = __webpack_require__(306);
 	var session_service_1 = __webpack_require__(691);
-	var wl_service_1 = __webpack_require__(802);
-	var fan_group_service_1 = __webpack_require__(803);
-	var modal_service_1 = __webpack_require__(804);
-	var jwl_flow_service_1 = __webpack_require__(805);
+	var waiting_list_service_1 = __webpack_require__(802);
+	var fan_group_service_1 = __webpack_require__(807);
+	var modal_service_1 = __webpack_require__(808);
+	var jwl_flow_service_1 = __webpack_require__(809);
 	var SeatersClient = (function () {
 	    function SeatersClient(options) {
 	        options = core.Object.assign({}, SeatersClient.DEFAULT_OPTIONS, options);
 	        this.api = new seaters_api_1.SeatersApi(options.apiPrefix);
 	        this.sessionService = new session_service_1.SessionService(this.api);
-	        this.wlService = new wl_service_1.WlService(this.api);
+	        this.waitingListService = new waiting_list_service_1.WaitingListService(this.api);
 	        this.fanGroupService = new fan_group_service_1.FanGroupService(this.api);
 	        this.modalService = new modal_service_1.ModalService();
-	        this.jwlFlowService = new jwl_flow_service_1.JWLFlowService(this.modalService, this.sessionService);
+	        this.jwlFlowService = new jwl_flow_service_1.JwlFlowService(this.modalService, this.sessionService, this.waitingListService);
 	    }
 	    SeatersClient.DEFAULT_OPTIONS = {
 	        apiPrefix: '/api'
@@ -7459,6 +7459,7 @@ var SeatersSDK =
 	        });
 	    };
 	    ApiContext.prototype.post = function (abstractEndpoint, body, endpointParams, queryParams) {
+	        console.log('endpointParams', endpointParams);
 	        return this.doRequest({
 	            method: 'POST',
 	            abstractEndpoint: abstractEndpoint,
@@ -27462,7 +27463,7 @@ var SeatersSDK =
 	        return this.apiContext.get(this.fgEndpoint, this.fgEndpointParams(fanGroupId));
 	    };
 	    FanApi.prototype.joinFanGroup = function (fanGroupId) {
-	        return this.apiContext.post(this.fgEndpoint, this.fgEndpointParams(fanGroupId));
+	        return this.apiContext.post(this.fgEndpoint, null, this.fgEndpointParams(fanGroupId));
 	    };
 	    FanApi.prototype.wlEndpointParams = function (waitingListId) {
 	        return api_1.ApiContext.buildEndpointParams({ waitingListId: waitingListId });
@@ -27524,8 +27525,8 @@ var SeatersSDK =
 
 	"use strict";
 	var moment = __webpack_require__(692);
-	var AUTH_HEADER = 'Authentication';
-	var AUTH_BEARER = 'Seaters';
+	var AUTH_HEADER = 'Authorization';
+	var AUTH_BEARER = 'SeatersBearer';
 	(function (SESSION_STRATEGY) {
 	    SESSION_STRATEGY[SESSION_STRATEGY["EXPIRE"] = 0] = "EXPIRE";
 	})(exports.SESSION_STRATEGY || (exports.SESSION_STRATEGY = {}));
@@ -42433,51 +42434,1387 @@ var SeatersSDK =
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
+	var es6_promise_1 = __webpack_require__(803);
 	var core = __webpack_require__(2);
-	(function (ACTION_STATUS) {
-	    ACTION_STATUS[ACTION_STATUS["BECOME_FAN"] = 0] = "BECOME_FAN";
-	    ACTION_STATUS[ACTION_STATUS["UNLOCK"] = 1] = "UNLOCK";
-	    ACTION_STATUS[ACTION_STATUS["SOON"] = 2] = "SOON";
-	    ACTION_STATUS[ACTION_STATUS["BOOK"] = 3] = "BOOK";
-	    ACTION_STATUS[ACTION_STATUS["WAIT"] = 4] = "WAIT";
-	    ACTION_STATUS[ACTION_STATUS["CONFIRM"] = 5] = "CONFIRM";
-	    ACTION_STATUS[ACTION_STATUS["GO_LIVE"] = 6] = "GO_LIVE";
-	    ACTION_STATUS[ACTION_STATUS["ERROR"] = 7] = "ERROR";
-	})(exports.ACTION_STATUS || (exports.ACTION_STATUS = {}));
-	var ACTION_STATUS = exports.ACTION_STATUS;
-	var WlService = (function () {
-	    function WlService(api) {
+	var util_1 = __webpack_require__(805);
+	(function (WAITING_LIST_ACTION_STATUS) {
+	    WAITING_LIST_ACTION_STATUS[WAITING_LIST_ACTION_STATUS["UNLOCK"] = 0] = "UNLOCK";
+	    WAITING_LIST_ACTION_STATUS[WAITING_LIST_ACTION_STATUS["SOON"] = 1] = "SOON";
+	    WAITING_LIST_ACTION_STATUS[WAITING_LIST_ACTION_STATUS["BOOK"] = 2] = "BOOK";
+	    WAITING_LIST_ACTION_STATUS[WAITING_LIST_ACTION_STATUS["WAIT"] = 3] = "WAIT";
+	    WAITING_LIST_ACTION_STATUS[WAITING_LIST_ACTION_STATUS["CONFIRM"] = 4] = "CONFIRM";
+	    WAITING_LIST_ACTION_STATUS[WAITING_LIST_ACTION_STATUS["GO_LIVE"] = 5] = "GO_LIVE";
+	    WAITING_LIST_ACTION_STATUS[WAITING_LIST_ACTION_STATUS["ERROR"] = 6] = "ERROR";
+	})(exports.WAITING_LIST_ACTION_STATUS || (exports.WAITING_LIST_ACTION_STATUS = {}));
+	var WAITING_LIST_ACTION_STATUS = exports.WAITING_LIST_ACTION_STATUS;
+	var WaitingListService = (function () {
+	    function WaitingListService(api) {
 	        this.api = api;
 	    }
-	    WlService.prototype.getExtendedWl = function (wlId) {
+	    WaitingListService.prototype.getWaitingList = function (waitingListId) {
+	        return this.api.fan.waitingList(waitingListId);
+	    };
+	    WaitingListService.prototype.getWaitingListActionStatus = function (waitingList) {
+	        var seat = waitingList.seat;
+	        var position = waitingList.position;
+	        var request = waitingList.request;
+	        // Comming soon
+	        if (waitingList.waitingListStatus === 'PUBLISHED') {
+	            return WAITING_LIST_ACTION_STATUS.SOON;
+	        }
+	        // Not in WL
+	        if (!position) {
+	            // Code protected WL
+	            if (waitingList.accessMode === 'CODE_PROTECTED') {
+	                if (!request) {
+	                    return WAITING_LIST_ACTION_STATUS.UNLOCK;
+	                }
+	                else if (request.status === 'PENDING') {
+	                    return WAITING_LIST_ACTION_STATUS.UNLOCK; //-PENDING
+	                }
+	                else if (request.status === 'REJECTED') {
+	                    return WAITING_LIST_ACTION_STATUS.UNLOCK;
+	                }
+	                else if (request.status === 'ACCEPTED') {
+	                    return WAITING_LIST_ACTION_STATUS.BOOK;
+	                }
+	                else {
+	                    console.error('[WaitingListService] - unexpected request status: %s', request.status);
+	                    return WAITING_LIST_ACTION_STATUS.ERROR;
+	                }
+	            }
+	            else if (waitingList.accessMode === 'PUBLIC') {
+	                return WAITING_LIST_ACTION_STATUS.BOOK;
+	            }
+	            else {
+	                console.error('[WaitingListService] - unexpected accessMode: %s', waitingList.accessMode);
+	                return WAITING_LIST_ACTION_STATUS.ERROR;
+	            }
+	        }
+	        // In WL
+	        if (position.status === 'WAITING_SEAT') {
+	            return WAITING_LIST_ACTION_STATUS.WAIT;
+	        }
+	        // In WL with seat
+	        if (position.status === 'HAS_SEAT') {
+	            if (seat) {
+	                if (seat.status === 'ASSIGNED') {
+	                    // free WL
+	                    if (waitingList.freeWaitingList) {
+	                        return WAITING_LIST_ACTION_STATUS.CONFIRM;
+	                    }
+	                    else if (!position.transactionStatus) {
+	                        return WAITING_LIST_ACTION_STATUS.CONFIRM;
+	                    }
+	                    else if (['FAILURE', 'CANCELLED', 'REFUNDED'].indexOf(position.transactionStatus) >= 0) {
+	                        return WAITING_LIST_ACTION_STATUS.CONFIRM;
+	                    }
+	                    else if (['CREATING', 'CREATED', 'APPROVED', 'REFUNDING'].indexOf(position.transactionStatus) >= 0) {
+	                        return WAITING_LIST_ACTION_STATUS.CONFIRM; //-PENDING
+	                    }
+	                    else {
+	                        console.error('[WaitingListService] - unexpected transactionStatus: %s', position.transactionStatus);
+	                        return WAITING_LIST_ACTION_STATUS.ERROR;
+	                    }
+	                }
+	                else if (waitingList.seatDistributionMode === 'TICKET' && seat.ticketingSystemType) {
+	                    return WAITING_LIST_ACTION_STATUS.CONFIRM; //-PENDING
+	                }
+	                else if (seat.status === 'ACCEPTED') {
+	                    return WAITING_LIST_ACTION_STATUS.GO_LIVE;
+	                }
+	                else {
+	                    console.error('[WaitingListService] unexpected seat status: %s', seat.status);
+	                    return WAITING_LIST_ACTION_STATUS.ERROR;
+	                }
+	            }
+	            else {
+	                console.error('[WaitingListService] has seat without actual seat');
+	                return WAITING_LIST_ACTION_STATUS.ERROR;
+	            }
+	        }
+	        else if (position.status === 'BEING_PROCESSED') {
+	            return WAITING_LIST_ACTION_STATUS.WAIT; //-PENDING
+	        }
+	        else {
+	            console.error('[WaitinglistService] unexpected position status: %s', position.status);
+	            return WAITING_LIST_ACTION_STATUS.ERROR;
+	        }
+	    };
+	    WaitingListService.prototype.getExtendedWaitingList = function (waitingListId) {
 	        var _this = this;
-	        return this.api.fan.waitingList(wlId).then(function (wl) { return core.Object.assign(wl, _this.computeWLActionStatus(wl)); });
+	        return this.getWaitingList(waitingListId)
+	            .then(function (wl) { return core.Object.assign(wl, {
+	            actionStatus: _this.getWaitingListActionStatus(wl)
+	        }); });
 	    };
-	    WlService.prototype.computeWLActionStatus = function (wl) {
-	        //     var seat = wl.seat;
-	        //     var position = wl.position;
-	        //     var request = wl.request;
-	        //     // Not in FG
-	        //     if(group && !group.membership.member) {
-	        //         return createStatus(WAITINGLIST_ACTION_STATUS.BECOME_FAN);
-	        // }
-	        var actionStatus = ACTION_STATUS.BECOME_FAN;
-	        var processing = false;
-	        return {
-	            actionStatus: actionStatus,
-	            processing: processing
-	        };
+	    WaitingListService.prototype.joinWaitingList = function (waitingListId) {
+	        var _this = this;
+	        return this.api.fan.joinWaitingList(waitingListId)
+	            .then(function () {
+	            return util_1.retryUntil(function () { return _this.getExtendedWaitingList(waitingListId); }, function (fg) { return fg.actionStatus !== WAITING_LIST_ACTION_STATUS.BOOK; }, 10, 1000);
+	        });
 	    };
-	    return WlService;
+	    WaitingListService.prototype.joinWaitingListIfNeeded = function (wl) {
+	        if (wl.actionStatus === WAITING_LIST_ACTION_STATUS.CONFIRM ||
+	            wl.actionStatus === WAITING_LIST_ACTION_STATUS.WAIT ||
+	            wl.actionStatus === WAITING_LIST_ACTION_STATUS.GO_LIVE) {
+	            return es6_promise_1.Promise.resolve(wl);
+	        }
+	        else if (wl.actionStatus === WAITING_LIST_ACTION_STATUS.BOOK) {
+	            return this.joinWaitingList(wl.waitingListId);
+	        }
+	        else {
+	            return es6_promise_1.Promise.reject('Unsupported WL action status: ' + wl.actionStatus);
+	        }
+	    };
+	    return WaitingListService;
 	}());
-	exports.WlService = WlService;
+	exports.WaitingListService = WaitingListService;
 
 
 /***/ },
 /* 803 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var require;/* WEBPACK VAR INJECTION */(function(process, global) {/*!
+	 * @overview es6-promise - a tiny implementation of Promises/A+.
+	 * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
+	 * @license   Licensed under MIT license
+	 *            See https://raw.githubusercontent.com/stefanpenner/es6-promise/master/LICENSE
+	 * @version   4.0.5
+	 */
+	
+	(function (global, factory) {
+	     true ? module.exports = factory() :
+	    typeof define === 'function' && define.amd ? define(factory) :
+	    (global.ES6Promise = factory());
+	}(this, (function () { 'use strict';
+	
+	function objectOrFunction(x) {
+	  return typeof x === 'function' || typeof x === 'object' && x !== null;
+	}
+	
+	function isFunction(x) {
+	  return typeof x === 'function';
+	}
+	
+	var _isArray = undefined;
+	if (!Array.isArray) {
+	  _isArray = function (x) {
+	    return Object.prototype.toString.call(x) === '[object Array]';
+	  };
+	} else {
+	  _isArray = Array.isArray;
+	}
+	
+	var isArray = _isArray;
+	
+	var len = 0;
+	var vertxNext = undefined;
+	var customSchedulerFn = undefined;
+	
+	var asap = function asap(callback, arg) {
+	  queue[len] = callback;
+	  queue[len + 1] = arg;
+	  len += 2;
+	  if (len === 2) {
+	    // If len is 2, that means that we need to schedule an async flush.
+	    // If additional callbacks are queued before the queue is flushed, they
+	    // will be processed by this flush that we are scheduling.
+	    if (customSchedulerFn) {
+	      customSchedulerFn(flush);
+	    } else {
+	      scheduleFlush();
+	    }
+	  }
+	};
+	
+	function setScheduler(scheduleFn) {
+	  customSchedulerFn = scheduleFn;
+	}
+	
+	function setAsap(asapFn) {
+	  asap = asapFn;
+	}
+	
+	var browserWindow = typeof window !== 'undefined' ? window : undefined;
+	var browserGlobal = browserWindow || {};
+	var BrowserMutationObserver = browserGlobal.MutationObserver || browserGlobal.WebKitMutationObserver;
+	var isNode = typeof self === 'undefined' && typeof process !== 'undefined' && ({}).toString.call(process) === '[object process]';
+	
+	// test for web worker but not in IE10
+	var isWorker = typeof Uint8ClampedArray !== 'undefined' && typeof importScripts !== 'undefined' && typeof MessageChannel !== 'undefined';
+	
+	// node
+	function useNextTick() {
+	  // node version 0.10.x displays a deprecation warning when nextTick is used recursively
+	  // see https://github.com/cujojs/when/issues/410 for details
+	  return function () {
+	    return process.nextTick(flush);
+	  };
+	}
+	
+	// vertx
+	function useVertxTimer() {
+	  if (typeof vertxNext !== 'undefined') {
+	    return function () {
+	      vertxNext(flush);
+	    };
+	  }
+	
+	  return useSetTimeout();
+	}
+	
+	function useMutationObserver() {
+	  var iterations = 0;
+	  var observer = new BrowserMutationObserver(flush);
+	  var node = document.createTextNode('');
+	  observer.observe(node, { characterData: true });
+	
+	  return function () {
+	    node.data = iterations = ++iterations % 2;
+	  };
+	}
+	
+	// web worker
+	function useMessageChannel() {
+	  var channel = new MessageChannel();
+	  channel.port1.onmessage = flush;
+	  return function () {
+	    return channel.port2.postMessage(0);
+	  };
+	}
+	
+	function useSetTimeout() {
+	  // Store setTimeout reference so es6-promise will be unaffected by
+	  // other code modifying setTimeout (like sinon.useFakeTimers())
+	  var globalSetTimeout = setTimeout;
+	  return function () {
+	    return globalSetTimeout(flush, 1);
+	  };
+	}
+	
+	var queue = new Array(1000);
+	function flush() {
+	  for (var i = 0; i < len; i += 2) {
+	    var callback = queue[i];
+	    var arg = queue[i + 1];
+	
+	    callback(arg);
+	
+	    queue[i] = undefined;
+	    queue[i + 1] = undefined;
+	  }
+	
+	  len = 0;
+	}
+	
+	function attemptVertx() {
+	  try {
+	    var r = require;
+	    var vertx = __webpack_require__(804);
+	    vertxNext = vertx.runOnLoop || vertx.runOnContext;
+	    return useVertxTimer();
+	  } catch (e) {
+	    return useSetTimeout();
+	  }
+	}
+	
+	var scheduleFlush = undefined;
+	// Decide what async method to use to triggering processing of queued callbacks:
+	if (isNode) {
+	  scheduleFlush = useNextTick();
+	} else if (BrowserMutationObserver) {
+	  scheduleFlush = useMutationObserver();
+	} else if (isWorker) {
+	  scheduleFlush = useMessageChannel();
+	} else if (browserWindow === undefined && "function" === 'function') {
+	  scheduleFlush = attemptVertx();
+	} else {
+	  scheduleFlush = useSetTimeout();
+	}
+	
+	function then(onFulfillment, onRejection) {
+	  var _arguments = arguments;
+	
+	  var parent = this;
+	
+	  var child = new this.constructor(noop);
+	
+	  if (child[PROMISE_ID] === undefined) {
+	    makePromise(child);
+	  }
+	
+	  var _state = parent._state;
+	
+	  if (_state) {
+	    (function () {
+	      var callback = _arguments[_state - 1];
+	      asap(function () {
+	        return invokeCallback(_state, child, callback, parent._result);
+	      });
+	    })();
+	  } else {
+	    subscribe(parent, child, onFulfillment, onRejection);
+	  }
+	
+	  return child;
+	}
+	
+	/**
+	  `Promise.resolve` returns a promise that will become resolved with the
+	  passed `value`. It is shorthand for the following:
+	
+	  ```javascript
+	  let promise = new Promise(function(resolve, reject){
+	    resolve(1);
+	  });
+	
+	  promise.then(function(value){
+	    // value === 1
+	  });
+	  ```
+	
+	  Instead of writing the above, your code now simply becomes the following:
+	
+	  ```javascript
+	  let promise = Promise.resolve(1);
+	
+	  promise.then(function(value){
+	    // value === 1
+	  });
+	  ```
+	
+	  @method resolve
+	  @static
+	  @param {Any} value value that the returned promise will be resolved with
+	  Useful for tooling.
+	  @return {Promise} a promise that will become fulfilled with the given
+	  `value`
+	*/
+	function resolve(object) {
+	  /*jshint validthis:true */
+	  var Constructor = this;
+	
+	  if (object && typeof object === 'object' && object.constructor === Constructor) {
+	    return object;
+	  }
+	
+	  var promise = new Constructor(noop);
+	  _resolve(promise, object);
+	  return promise;
+	}
+	
+	var PROMISE_ID = Math.random().toString(36).substring(16);
+	
+	function noop() {}
+	
+	var PENDING = void 0;
+	var FULFILLED = 1;
+	var REJECTED = 2;
+	
+	var GET_THEN_ERROR = new ErrorObject();
+	
+	function selfFulfillment() {
+	  return new TypeError("You cannot resolve a promise with itself");
+	}
+	
+	function cannotReturnOwn() {
+	  return new TypeError('A promises callback cannot return that same promise.');
+	}
+	
+	function getThen(promise) {
+	  try {
+	    return promise.then;
+	  } catch (error) {
+	    GET_THEN_ERROR.error = error;
+	    return GET_THEN_ERROR;
+	  }
+	}
+	
+	function tryThen(then, value, fulfillmentHandler, rejectionHandler) {
+	  try {
+	    then.call(value, fulfillmentHandler, rejectionHandler);
+	  } catch (e) {
+	    return e;
+	  }
+	}
+	
+	function handleForeignThenable(promise, thenable, then) {
+	  asap(function (promise) {
+	    var sealed = false;
+	    var error = tryThen(then, thenable, function (value) {
+	      if (sealed) {
+	        return;
+	      }
+	      sealed = true;
+	      if (thenable !== value) {
+	        _resolve(promise, value);
+	      } else {
+	        fulfill(promise, value);
+	      }
+	    }, function (reason) {
+	      if (sealed) {
+	        return;
+	      }
+	      sealed = true;
+	
+	      _reject(promise, reason);
+	    }, 'Settle: ' + (promise._label || ' unknown promise'));
+	
+	    if (!sealed && error) {
+	      sealed = true;
+	      _reject(promise, error);
+	    }
+	  }, promise);
+	}
+	
+	function handleOwnThenable(promise, thenable) {
+	  if (thenable._state === FULFILLED) {
+	    fulfill(promise, thenable._result);
+	  } else if (thenable._state === REJECTED) {
+	    _reject(promise, thenable._result);
+	  } else {
+	    subscribe(thenable, undefined, function (value) {
+	      return _resolve(promise, value);
+	    }, function (reason) {
+	      return _reject(promise, reason);
+	    });
+	  }
+	}
+	
+	function handleMaybeThenable(promise, maybeThenable, then$$) {
+	  if (maybeThenable.constructor === promise.constructor && then$$ === then && maybeThenable.constructor.resolve === resolve) {
+	    handleOwnThenable(promise, maybeThenable);
+	  } else {
+	    if (then$$ === GET_THEN_ERROR) {
+	      _reject(promise, GET_THEN_ERROR.error);
+	    } else if (then$$ === undefined) {
+	      fulfill(promise, maybeThenable);
+	    } else if (isFunction(then$$)) {
+	      handleForeignThenable(promise, maybeThenable, then$$);
+	    } else {
+	      fulfill(promise, maybeThenable);
+	    }
+	  }
+	}
+	
+	function _resolve(promise, value) {
+	  if (promise === value) {
+	    _reject(promise, selfFulfillment());
+	  } else if (objectOrFunction(value)) {
+	    handleMaybeThenable(promise, value, getThen(value));
+	  } else {
+	    fulfill(promise, value);
+	  }
+	}
+	
+	function publishRejection(promise) {
+	  if (promise._onerror) {
+	    promise._onerror(promise._result);
+	  }
+	
+	  publish(promise);
+	}
+	
+	function fulfill(promise, value) {
+	  if (promise._state !== PENDING) {
+	    return;
+	  }
+	
+	  promise._result = value;
+	  promise._state = FULFILLED;
+	
+	  if (promise._subscribers.length !== 0) {
+	    asap(publish, promise);
+	  }
+	}
+	
+	function _reject(promise, reason) {
+	  if (promise._state !== PENDING) {
+	    return;
+	  }
+	  promise._state = REJECTED;
+	  promise._result = reason;
+	
+	  asap(publishRejection, promise);
+	}
+	
+	function subscribe(parent, child, onFulfillment, onRejection) {
+	  var _subscribers = parent._subscribers;
+	  var length = _subscribers.length;
+	
+	  parent._onerror = null;
+	
+	  _subscribers[length] = child;
+	  _subscribers[length + FULFILLED] = onFulfillment;
+	  _subscribers[length + REJECTED] = onRejection;
+	
+	  if (length === 0 && parent._state) {
+	    asap(publish, parent);
+	  }
+	}
+	
+	function publish(promise) {
+	  var subscribers = promise._subscribers;
+	  var settled = promise._state;
+	
+	  if (subscribers.length === 0) {
+	    return;
+	  }
+	
+	  var child = undefined,
+	      callback = undefined,
+	      detail = promise._result;
+	
+	  for (var i = 0; i < subscribers.length; i += 3) {
+	    child = subscribers[i];
+	    callback = subscribers[i + settled];
+	
+	    if (child) {
+	      invokeCallback(settled, child, callback, detail);
+	    } else {
+	      callback(detail);
+	    }
+	  }
+	
+	  promise._subscribers.length = 0;
+	}
+	
+	function ErrorObject() {
+	  this.error = null;
+	}
+	
+	var TRY_CATCH_ERROR = new ErrorObject();
+	
+	function tryCatch(callback, detail) {
+	  try {
+	    return callback(detail);
+	  } catch (e) {
+	    TRY_CATCH_ERROR.error = e;
+	    return TRY_CATCH_ERROR;
+	  }
+	}
+	
+	function invokeCallback(settled, promise, callback, detail) {
+	  var hasCallback = isFunction(callback),
+	      value = undefined,
+	      error = undefined,
+	      succeeded = undefined,
+	      failed = undefined;
+	
+	  if (hasCallback) {
+	    value = tryCatch(callback, detail);
+	
+	    if (value === TRY_CATCH_ERROR) {
+	      failed = true;
+	      error = value.error;
+	      value = null;
+	    } else {
+	      succeeded = true;
+	    }
+	
+	    if (promise === value) {
+	      _reject(promise, cannotReturnOwn());
+	      return;
+	    }
+	  } else {
+	    value = detail;
+	    succeeded = true;
+	  }
+	
+	  if (promise._state !== PENDING) {
+	    // noop
+	  } else if (hasCallback && succeeded) {
+	      _resolve(promise, value);
+	    } else if (failed) {
+	      _reject(promise, error);
+	    } else if (settled === FULFILLED) {
+	      fulfill(promise, value);
+	    } else if (settled === REJECTED) {
+	      _reject(promise, value);
+	    }
+	}
+	
+	function initializePromise(promise, resolver) {
+	  try {
+	    resolver(function resolvePromise(value) {
+	      _resolve(promise, value);
+	    }, function rejectPromise(reason) {
+	      _reject(promise, reason);
+	    });
+	  } catch (e) {
+	    _reject(promise, e);
+	  }
+	}
+	
+	var id = 0;
+	function nextId() {
+	  return id++;
+	}
+	
+	function makePromise(promise) {
+	  promise[PROMISE_ID] = id++;
+	  promise._state = undefined;
+	  promise._result = undefined;
+	  promise._subscribers = [];
+	}
+	
+	function Enumerator(Constructor, input) {
+	  this._instanceConstructor = Constructor;
+	  this.promise = new Constructor(noop);
+	
+	  if (!this.promise[PROMISE_ID]) {
+	    makePromise(this.promise);
+	  }
+	
+	  if (isArray(input)) {
+	    this._input = input;
+	    this.length = input.length;
+	    this._remaining = input.length;
+	
+	    this._result = new Array(this.length);
+	
+	    if (this.length === 0) {
+	      fulfill(this.promise, this._result);
+	    } else {
+	      this.length = this.length || 0;
+	      this._enumerate();
+	      if (this._remaining === 0) {
+	        fulfill(this.promise, this._result);
+	      }
+	    }
+	  } else {
+	    _reject(this.promise, validationError());
+	  }
+	}
+	
+	function validationError() {
+	  return new Error('Array Methods must be provided an Array');
+	};
+	
+	Enumerator.prototype._enumerate = function () {
+	  var length = this.length;
+	  var _input = this._input;
+	
+	  for (var i = 0; this._state === PENDING && i < length; i++) {
+	    this._eachEntry(_input[i], i);
+	  }
+	};
+	
+	Enumerator.prototype._eachEntry = function (entry, i) {
+	  var c = this._instanceConstructor;
+	  var resolve$$ = c.resolve;
+	
+	  if (resolve$$ === resolve) {
+	    var _then = getThen(entry);
+	
+	    if (_then === then && entry._state !== PENDING) {
+	      this._settledAt(entry._state, i, entry._result);
+	    } else if (typeof _then !== 'function') {
+	      this._remaining--;
+	      this._result[i] = entry;
+	    } else if (c === Promise) {
+	      var promise = new c(noop);
+	      handleMaybeThenable(promise, entry, _then);
+	      this._willSettleAt(promise, i);
+	    } else {
+	      this._willSettleAt(new c(function (resolve$$) {
+	        return resolve$$(entry);
+	      }), i);
+	    }
+	  } else {
+	    this._willSettleAt(resolve$$(entry), i);
+	  }
+	};
+	
+	Enumerator.prototype._settledAt = function (state, i, value) {
+	  var promise = this.promise;
+	
+	  if (promise._state === PENDING) {
+	    this._remaining--;
+	
+	    if (state === REJECTED) {
+	      _reject(promise, value);
+	    } else {
+	      this._result[i] = value;
+	    }
+	  }
+	
+	  if (this._remaining === 0) {
+	    fulfill(promise, this._result);
+	  }
+	};
+	
+	Enumerator.prototype._willSettleAt = function (promise, i) {
+	  var enumerator = this;
+	
+	  subscribe(promise, undefined, function (value) {
+	    return enumerator._settledAt(FULFILLED, i, value);
+	  }, function (reason) {
+	    return enumerator._settledAt(REJECTED, i, reason);
+	  });
+	};
+	
+	/**
+	  `Promise.all` accepts an array of promises, and returns a new promise which
+	  is fulfilled with an array of fulfillment values for the passed promises, or
+	  rejected with the reason of the first passed promise to be rejected. It casts all
+	  elements of the passed iterable to promises as it runs this algorithm.
+	
+	  Example:
+	
+	  ```javascript
+	  let promise1 = resolve(1);
+	  let promise2 = resolve(2);
+	  let promise3 = resolve(3);
+	  let promises = [ promise1, promise2, promise3 ];
+	
+	  Promise.all(promises).then(function(array){
+	    // The array here would be [ 1, 2, 3 ];
+	  });
+	  ```
+	
+	  If any of the `promises` given to `all` are rejected, the first promise
+	  that is rejected will be given as an argument to the returned promises's
+	  rejection handler. For example:
+	
+	  Example:
+	
+	  ```javascript
+	  let promise1 = resolve(1);
+	  let promise2 = reject(new Error("2"));
+	  let promise3 = reject(new Error("3"));
+	  let promises = [ promise1, promise2, promise3 ];
+	
+	  Promise.all(promises).then(function(array){
+	    // Code here never runs because there are rejected promises!
+	  }, function(error) {
+	    // error.message === "2"
+	  });
+	  ```
+	
+	  @method all
+	  @static
+	  @param {Array} entries array of promises
+	  @param {String} label optional string for labeling the promise.
+	  Useful for tooling.
+	  @return {Promise} promise that is fulfilled when all `promises` have been
+	  fulfilled, or rejected if any of them become rejected.
+	  @static
+	*/
+	function all(entries) {
+	  return new Enumerator(this, entries).promise;
+	}
+	
+	/**
+	  `Promise.race` returns a new promise which is settled in the same way as the
+	  first passed promise to settle.
+	
+	  Example:
+	
+	  ```javascript
+	  let promise1 = new Promise(function(resolve, reject){
+	    setTimeout(function(){
+	      resolve('promise 1');
+	    }, 200);
+	  });
+	
+	  let promise2 = new Promise(function(resolve, reject){
+	    setTimeout(function(){
+	      resolve('promise 2');
+	    }, 100);
+	  });
+	
+	  Promise.race([promise1, promise2]).then(function(result){
+	    // result === 'promise 2' because it was resolved before promise1
+	    // was resolved.
+	  });
+	  ```
+	
+	  `Promise.race` is deterministic in that only the state of the first
+	  settled promise matters. For example, even if other promises given to the
+	  `promises` array argument are resolved, but the first settled promise has
+	  become rejected before the other promises became fulfilled, the returned
+	  promise will become rejected:
+	
+	  ```javascript
+	  let promise1 = new Promise(function(resolve, reject){
+	    setTimeout(function(){
+	      resolve('promise 1');
+	    }, 200);
+	  });
+	
+	  let promise2 = new Promise(function(resolve, reject){
+	    setTimeout(function(){
+	      reject(new Error('promise 2'));
+	    }, 100);
+	  });
+	
+	  Promise.race([promise1, promise2]).then(function(result){
+	    // Code here never runs
+	  }, function(reason){
+	    // reason.message === 'promise 2' because promise 2 became rejected before
+	    // promise 1 became fulfilled
+	  });
+	  ```
+	
+	  An example real-world use case is implementing timeouts:
+	
+	  ```javascript
+	  Promise.race([ajax('foo.json'), timeout(5000)])
+	  ```
+	
+	  @method race
+	  @static
+	  @param {Array} promises array of promises to observe
+	  Useful for tooling.
+	  @return {Promise} a promise which settles in the same way as the first passed
+	  promise to settle.
+	*/
+	function race(entries) {
+	  /*jshint validthis:true */
+	  var Constructor = this;
+	
+	  if (!isArray(entries)) {
+	    return new Constructor(function (_, reject) {
+	      return reject(new TypeError('You must pass an array to race.'));
+	    });
+	  } else {
+	    return new Constructor(function (resolve, reject) {
+	      var length = entries.length;
+	      for (var i = 0; i < length; i++) {
+	        Constructor.resolve(entries[i]).then(resolve, reject);
+	      }
+	    });
+	  }
+	}
+	
+	/**
+	  `Promise.reject` returns a promise rejected with the passed `reason`.
+	  It is shorthand for the following:
+	
+	  ```javascript
+	  let promise = new Promise(function(resolve, reject){
+	    reject(new Error('WHOOPS'));
+	  });
+	
+	  promise.then(function(value){
+	    // Code here doesn't run because the promise is rejected!
+	  }, function(reason){
+	    // reason.message === 'WHOOPS'
+	  });
+	  ```
+	
+	  Instead of writing the above, your code now simply becomes the following:
+	
+	  ```javascript
+	  let promise = Promise.reject(new Error('WHOOPS'));
+	
+	  promise.then(function(value){
+	    // Code here doesn't run because the promise is rejected!
+	  }, function(reason){
+	    // reason.message === 'WHOOPS'
+	  });
+	  ```
+	
+	  @method reject
+	  @static
+	  @param {Any} reason value that the returned promise will be rejected with.
+	  Useful for tooling.
+	  @return {Promise} a promise rejected with the given `reason`.
+	*/
+	function reject(reason) {
+	  /*jshint validthis:true */
+	  var Constructor = this;
+	  var promise = new Constructor(noop);
+	  _reject(promise, reason);
+	  return promise;
+	}
+	
+	function needsResolver() {
+	  throw new TypeError('You must pass a resolver function as the first argument to the promise constructor');
+	}
+	
+	function needsNew() {
+	  throw new TypeError("Failed to construct 'Promise': Please use the 'new' operator, this object constructor cannot be called as a function.");
+	}
+	
+	/**
+	  Promise objects represent the eventual result of an asynchronous operation. The
+	  primary way of interacting with a promise is through its `then` method, which
+	  registers callbacks to receive either a promise's eventual value or the reason
+	  why the promise cannot be fulfilled.
+	
+	  Terminology
+	  -----------
+	
+	  - `promise` is an object or function with a `then` method whose behavior conforms to this specification.
+	  - `thenable` is an object or function that defines a `then` method.
+	  - `value` is any legal JavaScript value (including undefined, a thenable, or a promise).
+	  - `exception` is a value that is thrown using the throw statement.
+	  - `reason` is a value that indicates why a promise was rejected.
+	  - `settled` the final resting state of a promise, fulfilled or rejected.
+	
+	  A promise can be in one of three states: pending, fulfilled, or rejected.
+	
+	  Promises that are fulfilled have a fulfillment value and are in the fulfilled
+	  state.  Promises that are rejected have a rejection reason and are in the
+	  rejected state.  A fulfillment value is never a thenable.
+	
+	  Promises can also be said to *resolve* a value.  If this value is also a
+	  promise, then the original promise's settled state will match the value's
+	  settled state.  So a promise that *resolves* a promise that rejects will
+	  itself reject, and a promise that *resolves* a promise that fulfills will
+	  itself fulfill.
+	
+	
+	  Basic Usage:
+	  ------------
+	
+	  ```js
+	  let promise = new Promise(function(resolve, reject) {
+	    // on success
+	    resolve(value);
+	
+	    // on failure
+	    reject(reason);
+	  });
+	
+	  promise.then(function(value) {
+	    // on fulfillment
+	  }, function(reason) {
+	    // on rejection
+	  });
+	  ```
+	
+	  Advanced Usage:
+	  ---------------
+	
+	  Promises shine when abstracting away asynchronous interactions such as
+	  `XMLHttpRequest`s.
+	
+	  ```js
+	  function getJSON(url) {
+	    return new Promise(function(resolve, reject){
+	      let xhr = new XMLHttpRequest();
+	
+	      xhr.open('GET', url);
+	      xhr.onreadystatechange = handler;
+	      xhr.responseType = 'json';
+	      xhr.setRequestHeader('Accept', 'application/json');
+	      xhr.send();
+	
+	      function handler() {
+	        if (this.readyState === this.DONE) {
+	          if (this.status === 200) {
+	            resolve(this.response);
+	          } else {
+	            reject(new Error('getJSON: `' + url + '` failed with status: [' + this.status + ']'));
+	          }
+	        }
+	      };
+	    });
+	  }
+	
+	  getJSON('/posts.json').then(function(json) {
+	    // on fulfillment
+	  }, function(reason) {
+	    // on rejection
+	  });
+	  ```
+	
+	  Unlike callbacks, promises are great composable primitives.
+	
+	  ```js
+	  Promise.all([
+	    getJSON('/posts'),
+	    getJSON('/comments')
+	  ]).then(function(values){
+	    values[0] // => postsJSON
+	    values[1] // => commentsJSON
+	
+	    return values;
+	  });
+	  ```
+	
+	  @class Promise
+	  @param {function} resolver
+	  Useful for tooling.
+	  @constructor
+	*/
+	function Promise(resolver) {
+	  this[PROMISE_ID] = nextId();
+	  this._result = this._state = undefined;
+	  this._subscribers = [];
+	
+	  if (noop !== resolver) {
+	    typeof resolver !== 'function' && needsResolver();
+	    this instanceof Promise ? initializePromise(this, resolver) : needsNew();
+	  }
+	}
+	
+	Promise.all = all;
+	Promise.race = race;
+	Promise.resolve = resolve;
+	Promise.reject = reject;
+	Promise._setScheduler = setScheduler;
+	Promise._setAsap = setAsap;
+	Promise._asap = asap;
+	
+	Promise.prototype = {
+	  constructor: Promise,
+	
+	  /**
+	    The primary way of interacting with a promise is through its `then` method,
+	    which registers callbacks to receive either a promise's eventual value or the
+	    reason why the promise cannot be fulfilled.
+	  
+	    ```js
+	    findUser().then(function(user){
+	      // user is available
+	    }, function(reason){
+	      // user is unavailable, and you are given the reason why
+	    });
+	    ```
+	  
+	    Chaining
+	    --------
+	  
+	    The return value of `then` is itself a promise.  This second, 'downstream'
+	    promise is resolved with the return value of the first promise's fulfillment
+	    or rejection handler, or rejected if the handler throws an exception.
+	  
+	    ```js
+	    findUser().then(function (user) {
+	      return user.name;
+	    }, function (reason) {
+	      return 'default name';
+	    }).then(function (userName) {
+	      // If `findUser` fulfilled, `userName` will be the user's name, otherwise it
+	      // will be `'default name'`
+	    });
+	  
+	    findUser().then(function (user) {
+	      throw new Error('Found user, but still unhappy');
+	    }, function (reason) {
+	      throw new Error('`findUser` rejected and we're unhappy');
+	    }).then(function (value) {
+	      // never reached
+	    }, function (reason) {
+	      // if `findUser` fulfilled, `reason` will be 'Found user, but still unhappy'.
+	      // If `findUser` rejected, `reason` will be '`findUser` rejected and we're unhappy'.
+	    });
+	    ```
+	    If the downstream promise does not specify a rejection handler, rejection reasons will be propagated further downstream.
+	  
+	    ```js
+	    findUser().then(function (user) {
+	      throw new PedagogicalException('Upstream error');
+	    }).then(function (value) {
+	      // never reached
+	    }).then(function (value) {
+	      // never reached
+	    }, function (reason) {
+	      // The `PedgagocialException` is propagated all the way down to here
+	    });
+	    ```
+	  
+	    Assimilation
+	    ------------
+	  
+	    Sometimes the value you want to propagate to a downstream promise can only be
+	    retrieved asynchronously. This can be achieved by returning a promise in the
+	    fulfillment or rejection handler. The downstream promise will then be pending
+	    until the returned promise is settled. This is called *assimilation*.
+	  
+	    ```js
+	    findUser().then(function (user) {
+	      return findCommentsByAuthor(user);
+	    }).then(function (comments) {
+	      // The user's comments are now available
+	    });
+	    ```
+	  
+	    If the assimliated promise rejects, then the downstream promise will also reject.
+	  
+	    ```js
+	    findUser().then(function (user) {
+	      return findCommentsByAuthor(user);
+	    }).then(function (comments) {
+	      // If `findCommentsByAuthor` fulfills, we'll have the value here
+	    }, function (reason) {
+	      // If `findCommentsByAuthor` rejects, we'll have the reason here
+	    });
+	    ```
+	  
+	    Simple Example
+	    --------------
+	  
+	    Synchronous Example
+	  
+	    ```javascript
+	    let result;
+	  
+	    try {
+	      result = findResult();
+	      // success
+	    } catch(reason) {
+	      // failure
+	    }
+	    ```
+	  
+	    Errback Example
+	  
+	    ```js
+	    findResult(function(result, err){
+	      if (err) {
+	        // failure
+	      } else {
+	        // success
+	      }
+	    });
+	    ```
+	  
+	    Promise Example;
+	  
+	    ```javascript
+	    findResult().then(function(result){
+	      // success
+	    }, function(reason){
+	      // failure
+	    });
+	    ```
+	  
+	    Advanced Example
+	    --------------
+	  
+	    Synchronous Example
+	  
+	    ```javascript
+	    let author, books;
+	  
+	    try {
+	      author = findAuthor();
+	      books  = findBooksByAuthor(author);
+	      // success
+	    } catch(reason) {
+	      // failure
+	    }
+	    ```
+	  
+	    Errback Example
+	  
+	    ```js
+	  
+	    function foundBooks(books) {
+	  
+	    }
+	  
+	    function failure(reason) {
+	  
+	    }
+	  
+	    findAuthor(function(author, err){
+	      if (err) {
+	        failure(err);
+	        // failure
+	      } else {
+	        try {
+	          findBoooksByAuthor(author, function(books, err) {
+	            if (err) {
+	              failure(err);
+	            } else {
+	              try {
+	                foundBooks(books);
+	              } catch(reason) {
+	                failure(reason);
+	              }
+	            }
+	          });
+	        } catch(error) {
+	          failure(err);
+	        }
+	        // success
+	      }
+	    });
+	    ```
+	  
+	    Promise Example;
+	  
+	    ```javascript
+	    findAuthor().
+	      then(findBooksByAuthor).
+	      then(function(books){
+	        // found books
+	    }).catch(function(reason){
+	      // something went wrong
+	    });
+	    ```
+	  
+	    @method then
+	    @param {Function} onFulfilled
+	    @param {Function} onRejected
+	    Useful for tooling.
+	    @return {Promise}
+	  */
+	  then: then,
+	
+	  /**
+	    `catch` is simply sugar for `then(undefined, onRejection)` which makes it the same
+	    as the catch block of a try/catch statement.
+	  
+	    ```js
+	    function findAuthor(){
+	      throw new Error('couldn't find that author');
+	    }
+	  
+	    // synchronous
+	    try {
+	      findAuthor();
+	    } catch(reason) {
+	      // something went wrong
+	    }
+	  
+	    // async with promises
+	    findAuthor().catch(function(reason){
+	      // something went wrong
+	    });
+	    ```
+	  
+	    @method catch
+	    @param {Function} onRejection
+	    Useful for tooling.
+	    @return {Promise}
+	  */
+	  'catch': function _catch(onRejection) {
+	    return this.then(null, onRejection);
+	  }
+	};
+	
+	function polyfill() {
+	    var local = undefined;
+	
+	    if (typeof global !== 'undefined') {
+	        local = global;
+	    } else if (typeof self !== 'undefined') {
+	        local = self;
+	    } else {
+	        try {
+	            local = Function('return this')();
+	        } catch (e) {
+	            throw new Error('polyfill failed because global object is unavailable in this environment');
+	        }
+	    }
+	
+	    var P = local.Promise;
+	
+	    if (P) {
+	        var promiseToString = null;
+	        try {
+	            promiseToString = Object.prototype.toString.call(P.resolve());
+	        } catch (e) {
+	            // silently ignored
+	        }
+	
+	        if (promiseToString === '[object Promise]' && !P.cast) {
+	            return;
+	        }
+	    }
+	
+	    local.Promise = Promise;
+	}
+	
+	// Strange compat..
+	Promise.polyfill = polyfill;
+	Promise.Promise = Promise;
+	
+	return Promise;
+	
+	})));
+	//# sourceMappingURL=es6-promise.map
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(594), (function() { return this; }())))
+
+/***/ },
+/* 804 */
 /***/ function(module, exports) {
 
+	/* (ignored) */
+
+/***/ },
+/* 805 */
+/***/ function(module, exports, __webpack_require__) {
+
 	"use strict";
+	var retry_until_1 = __webpack_require__(806);
+	exports.retryUntil = retry_until_1.retryUntil;
+
+
+/***/ },
+/* 806 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var es6_promise_1 = __webpack_require__(803);
+	var RetryUntilTimeoutError = (function (_super) {
+	    __extends(RetryUntilTimeoutError, _super);
+	    function RetryUntilTimeoutError(limit) {
+	        _super.call(this, 'retryUntil - maximum number of tries was reached (' + limit + ')');
+	        this.limit = limit;
+	    }
+	    return RetryUntilTimeoutError;
+	}(Error));
+	exports.RetryUntilTimeoutError = RetryUntilTimeoutError;
+	function retryUntil(promiseFn, conditionFn, limit, delay) {
+	    function retry(attempt) {
+	        if (attempt > limit) {
+	            return es6_promise_1.Promise.reject(new RetryUntilTimeoutError(limit));
+	        }
+	        console.log('[retryUntil] - polling ... (%s/%s)', attempt, limit);
+	        promiseFn().then(function (result) {
+	            var conditionIsMet;
+	            try {
+	                conditionIsMet = conditionFn(result);
+	            }
+	            catch (e) {
+	                console.log('[retryUntil] - condition quit with an exception', e.stack);
+	                return es6_promise_1.Promise.reject(e);
+	            }
+	            if (conditionIsMet) {
+	                console.log('[retryUntil] - condition has been met');
+	                return es6_promise_1.Promise.resolve(result);
+	            }
+	            else {
+	                // delay the next attempt if needed
+	                return timeoutPromise(delay || 0)
+	                    .then(function () { return retry(attempt + 1); });
+	            }
+	        });
+	    }
+	    return retry(1);
+	}
+	exports.retryUntil = retryUntil;
+	function timeoutPromise(timeInMs) {
+	    return new es6_promise_1.Promise(function (resolve, reject) {
+	        setTimeout(function () { return resolve(); }, timeInMs);
+	    });
+	}
+
+
+/***/ },
+/* 807 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var es6_promise_1 = __webpack_require__(803);
+	var util_1 = __webpack_require__(805);
+	var library_1 = __webpack_require__(2);
 	(function (FAN_GROUP_ACTION_STATUS) {
 	    FAN_GROUP_ACTION_STATUS[FAN_GROUP_ACTION_STATUS["CAN_JOIN"] = 0] = "CAN_JOIN";
 	    FAN_GROUP_ACTION_STATUS[FAN_GROUP_ACTION_STATUS["CAN_LEAVE"] = 1] = "CAN_LEAVE";
@@ -42493,7 +43830,7 @@ var SeatersSDK =
 	    FanGroupService.prototype.getFanGroup = function (fanGroupId) {
 	        return this.api.fan.fanGroup(fanGroupId);
 	    };
-	    FanGroupService.prototype.getFanGroupStatus = function (fanGroup) {
+	    FanGroupService.prototype.getFanGroupActionStatus = function (fanGroup) {
 	        var membership = fanGroup.membership;
 	        if (membership.member) {
 	            return FAN_GROUP_ACTION_STATUS.CAN_LEAVE;
@@ -42516,9 +43853,31 @@ var SeatersSDK =
 	    FanGroupService.prototype.getExtendedFanGroup = function (fanGroupId) {
 	        var _this = this;
 	        return this.getFanGroup(fanGroupId)
-	            .then(function (fg) { return core.Object.assign(fg, {
-	            actionStatus: _this.getFanGroupStatus(fg)
+	            .then(function (fg) { return library_1.Object.assign(fg, {
+	            actionStatus: _this.getFanGroupActionStatus(fg)
 	        }); });
+	    };
+	    FanGroupService.prototype.joinFanGroup = function (fanGroupId) {
+	        var _this = this;
+	        return this.api.fan.joinFanGroup(fanGroupId)
+	            .then(function () {
+	            return util_1.retryUntil(function () { return _this.getExtendedFanGroup(fanGroupId); }, function (fg) { return fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_LEAVE; }, 10, 1000);
+	        });
+	    };
+	    FanGroupService.prototype.joinFanGroupIfNeeded = function (fanGroupId) {
+	        var _this = this;
+	        return this.getExtendedFanGroup(fanGroupId)
+	            .then(function (fg) {
+	            if (fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_LEAVE) {
+	                return es6_promise_1.Promise.resolve(fg);
+	            }
+	            else if (fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_JOIN) {
+	                return _this.joinFanGroup(fanGroupId);
+	            }
+	            else {
+	                return es6_promise_1.Promise.reject('Unsupported FG action status: ' + fg.actionStatus);
+	            }
+	        });
 	    };
 	    return FanGroupService;
 	}());
@@ -42526,7 +43885,7 @@ var SeatersSDK =
 
 
 /***/ },
-/* 804 */
+/* 808 */
 /***/ function(module, exports) {
 
 	/// <reference path="../../node_modules/typescript/lib/lib.d.ts" />
@@ -42660,17 +44019,19 @@ var SeatersSDK =
 
 
 /***/ },
-/* 805 */
+/* 809 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var JWLFlowService = (function () {
-	    function JWLFlowService(modalService, sessionService) {
+	var JwlFlowService = (function () {
+	    function JwlFlowService(modalService, sessionService, waitingListService) {
 	        this.modalService = modalService;
 	        this.sessionService = sessionService;
+	        this.waitingListService = waitingListService;
+	        this.wlId = "";
 	    }
 	    //Sets a button to either enabled or disabled
-	    JWLFlowService.prototype.enableButton = function (btnId, enabled) {
+	    JwlFlowService.prototype.enableButton = function (btnId, enabled) {
 	        this.modalService.findElementById(btnId).disabled = !enabled;
 	    };
 	    /**
@@ -42679,7 +44040,7 @@ var SeatersSDK =
 	     * @param password
 	     * @returns {Array}
 	     */
-	    JWLFlowService.prototype.validateLoginForm = function (email, password) {
+	    JwlFlowService.prototype.validateLoginForm = function (email, password) {
 	        var validationErrors = [];
 	        //Test email
 	        if (!this.modalService.validateRequired(email)) {
@@ -42697,7 +44058,7 @@ var SeatersSDK =
 	     * Show server side login form errors
 	     * @param error
 	     */
-	    JWLFlowService.prototype.showFormErrorsApiLogin = function (error) {
+	    JwlFlowService.prototype.showFormErrorsApiLogin = function (error) {
 	        //Test for detailed errors
 	        if (error.details.length > 0) {
 	            if (error.details[0].field === 'emailPasswordCredentials.email') {
@@ -42711,7 +44072,7 @@ var SeatersSDK =
 	    /**
 	     * Perform login
 	     */
-	    JWLFlowService.prototype.doLogin = function () {
+	    JwlFlowService.prototype.doLogin = function () {
 	        var _this = this;
 	        //Reset form errors
 	        this.modalService.resetFormErrors();
@@ -42748,7 +44109,7 @@ var SeatersSDK =
 	     * @param lastname
 	     * @returns {Array}
 	     */
-	    JWLFlowService.prototype.validateSignupForm = function (email, password, firstname, lastname) {
+	    JwlFlowService.prototype.validateSignupForm = function (email, password, firstname, lastname) {
 	        var validationErrors = [];
 	        //Test email
 	        if (!this.modalService.validateRequired(email)) {
@@ -42775,7 +44136,7 @@ var SeatersSDK =
 	    /**
 	     * Perform signup
 	     */
-	    JWLFlowService.prototype.doSignup = function () {
+	    JwlFlowService.prototype.doSignup = function () {
 	        var _this = this;
 	        //Reset form errors
 	        this.modalService.resetFormErrors();
@@ -42811,7 +44172,7 @@ var SeatersSDK =
 	     * @param code
 	     * @returns {Array}
 	     */
-	    JWLFlowService.prototype.validateEmailValidationForm = function (code) {
+	    JwlFlowService.prototype.validateEmailValidationForm = function (code) {
 	        var validationErrors = [];
 	        //Test email
 	        if (!this.modalService.validateRequired(code)) {
@@ -42823,7 +44184,7 @@ var SeatersSDK =
 	    /**
 	       * Perform email validation
 	       */
-	    JWLFlowService.prototype.doEmailValidation = function (userData) {
+	    JwlFlowService.prototype.doEmailValidation = function (userData) {
 	        var _this = this;
 	        //Reset form errors
 	        this.modalService.resetFormErrors();
@@ -42852,27 +44213,27 @@ var SeatersSDK =
 	            });
 	        }
 	    };
-	    JWLFlowService.prototype.setupEmailValidation = function (userData) {
+	    JwlFlowService.prototype.setupEmailValidation = function (userData) {
 	        var _this = this;
 	        console.log(userData);
-	        this.modalService.showModal(__webpack_require__(806), __webpack_require__(807));
+	        this.modalService.showModal(__webpack_require__(810), __webpack_require__(811));
 	        var validateEmailBtn = this.modalService.findElementById('sl-btn-validate');
 	        validateEmailBtn.onclick = function () { return _this.doEmailValidation(userData); };
 	        var userSpan = this.modalService.findElementById('sl-span-firstname');
 	        userSpan.innerHTML = userData.firstName;
 	    };
-	    JWLFlowService.prototype.setupSignup = function () {
+	    JwlFlowService.prototype.setupSignup = function () {
 	        var _this = this;
-	        this.modalService.showModal(__webpack_require__(809), __webpack_require__(807));
+	        this.modalService.showModal(__webpack_require__(813), __webpack_require__(811));
 	        var signupBtn = this.modalService.findElementById('sl-btn-signup');
 	        signupBtn.onclick = function () { return _this.doSignup(); };
 	    };
 	    /**
 	     *  Setup login
 	     */
-	    JWLFlowService.prototype.setupLogin = function () {
+	    JwlFlowService.prototype.setupLogin = function () {
 	        var _this = this;
-	        this.modalService.showModal(__webpack_require__(810), __webpack_require__(807));
+	        this.modalService.showModal(__webpack_require__(814), __webpack_require__(811));
 	        var loginBtn = this.modalService.findElementById('sl-btn-login');
 	        loginBtn.onclick = function () { return _this.doLogin(); };
 	        var navToSignup = this.modalService.findElementById('sl-nav-signup');
@@ -42882,65 +44243,67 @@ var SeatersSDK =
 	     * Show WL info
 	     *
 	     */
-	    JWLFlowService.prototype.showWaitingListInfo = function () {
-	        var dummywl = {
-	            closed: false,
-	            name: 'My Wish List',
-	            likelihood: 13.33,
-	            rank: 3,
-	            fg: "mygroup"
-	        };
-	        var waitingListName = this.modalService.findElementById('sl-wl-name');
-	        waitingListName.innerHTML = dummywl.name;
-	        var displaySection;
-	        if (!dummywl.closed) {
-	            displaySection = this.modalService.findElementById('sl-wl-open');
-	            displaySection.style.display = 'block';
-	            //set wl group info
-	            var waitingListLikelihood = this.modalService.findElementById('sl-wl-likelihood');
-	            waitingListLikelihood.innerHTML = dummywl.likelihood + " %";
-	            var waitingListRank = this.modalService.findElementById('sl-wl-rank');
-	            waitingListRank.innerHTML = "# " + dummywl.rank;
-	        }
-	        else {
-	            displaySection = this.modalService.findElementById('sl-wl-closed');
-	            displaySection.style.display = 'block';
-	            //set fan group slug
-	            var fanGroupSlug = this.modalService.findElementById('sl-fg-slug');
-	            fanGroupSlug.href = "http://www.seaters.com/" + dummywl.fg;
-	        }
+	    JwlFlowService.prototype.showWaitingListInfo = function () {
+	        var _this = this;
+	        this.waitingListService.getExtendedWaitingList(this.wlId)
+	            .then(function (wl) {
+	            console.log(wl);
+	            //TODO: - handle no position situation -> auto join wl
+	            var waitingListName = _this.modalService.findElementById('sl-wl-name');
+	            waitingListName.innerHTML = wl.displayName;
+	            var displaySection;
+	            if (wl.waitingListStatus === 'OPEN' && wl.position) {
+	                displaySection = _this.modalService.findElementById('sl-wl-open');
+	                displaySection.style.display = 'block';
+	                //set wl group info
+	                var waitingListLikelihood = _this.modalService.findElementById('sl-wl-likelihood');
+	                waitingListLikelihood.innerHTML = wl.position.likelihood + " %";
+	                var waitingListRank = _this.modalService.findElementById('sl-wl-rank');
+	                waitingListRank.innerHTML = "# " + wl.position.rank;
+	            }
+	            else if (wl.waitingListStatus === 'CLOSED') {
+	                displaySection = _this.modalService.findElementById('sl-wl-closed');
+	                displaySection.style.display = 'block';
+	                //set fan group slug
+	                var fanGroupSlug = _this.modalService.findElementById('sl-fg-slug');
+	                fanGroupSlug.innerHTML = wl.groupName.en;
+	                fanGroupSlug.href = "http://www.seaters.com/" + wl.groupSlug;
+	            }
+	        }, function (err) {
+	            //TODO
+	        });
 	    };
 	    /**
 	     *  Show WL information
 	     */
-	    JWLFlowService.prototype.setupWaitingListInfo = function () {
+	    JwlFlowService.prototype.setupWaitingListInfo = function () {
 	        var _this = this;
-	        this.modalService.showModal(__webpack_require__(811), __webpack_require__(807));
+	        this.modalService.showModal(__webpack_require__(815), __webpack_require__(811));
 	        var closeBtn = this.modalService.findElementById('sl-btn-close');
 	        closeBtn.onclick = function () { _this.modalService.closeModal(); };
 	        this.showWaitingListInfo();
 	    };
-	    JWLFlowService.prototype.startFlow = function (wlId) {
-	        //TODO: other parts of flow
-	        //Signup flow starts here
+	    JwlFlowService.prototype.startFlow = function (wlId) {
+	        this.wlId = wlId;
+	        //For now, always start with signin flow
 	        this.setupLogin();
 	    };
-	    return JWLFlowService;
+	    return JwlFlowService;
 	}());
-	exports.JWLFlowService = JWLFlowService;
+	exports.JwlFlowService = JwlFlowService;
 
 
 /***/ },
-/* 806 */
+/* 810 */
 /***/ function(module, exports) {
 
 	module.exports = "\n    <div class=\"sl-content sl-flex sl-flex-column sl-flex-center-h\">\n      <div class=\"sl-pb-10\">\n        <h3>\n          <span>Welcome. It's nice to meet you,</span>\n          <span id=\"sl-span-firstname\"></span>\n        </h3>\n      </div>\n      <div class=\"sl-pb-10\">\n        <span>We just sent you a confirmation email. In order to confirm your registration, please enter the code mentioned in the email below.</span>\n      </div>\n      <div class=\"row sl-collapse\">\n        <form name=\"validateForm\" class=\"sl-flex sl-flex-column sl-flex-center-h small-12\" novalidate autocomplete=\"off\">\n          <div class=\"columns small-12\">\n            <div id=\"sl-confirmation-code-error\" class=\"sl-input-error\"></div>\n            <input id=\"sl-confirmation-code\" type=\"text\" name=\"confirmationCode\" placeholder=\"Your personal code\" required>\n          </div>\n          <div>\n            <button id=\"sl-btn-validate\" class=\"button sl-button success\" type=\"button\">Confirm email</button>\n          </div>\n        </form>\n      </div>\n    </div>\n";
 
 /***/ },
-/* 807 */
+/* 811 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(808)();
+	exports = module.exports = __webpack_require__(812)();
 	// imports
 	
 	
@@ -42951,7 +44314,7 @@ var SeatersSDK =
 
 
 /***/ },
-/* 808 */
+/* 812 */
 /***/ function(module, exports) {
 
 	/*
@@ -43007,25 +44370,25 @@ var SeatersSDK =
 
 
 /***/ },
-/* 809 */
+/* 813 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"sl-content sl-input-form\">\n  <div class=\"row sl-pb-10\">\n    <h3>\n      <span>Sign up</span>\n    </h3>\n  </div>\n  <div class=\"row\">\n    <form name=\"signupForm\" novalidate autocomplete=\"off\">\n      <!-- novalidate prevents HTML5 validation since we will be validating ourselves -->\n      <div class=\"row sl-collapse\">\n        <!-- FIRST NAME -->\n        <div class=\"columns large-6 l-rpadding\">\n          <div id=\"sl-firstname-error\" class=\"sl-input-error\"></div>\n          <input id=\"sl-firstname\" placeholder=\"First Name\" type=\"text\" required>\n        </div>\n\n        <!-- LAST NAME -->\n        <div class=\"columns large-6\">\n          <div id=\"sl-lastname-error\" class=\"sl-input-error\"></div>\n          <input id=\"sl-lastname\" placeholder=\"Last Name\" type=\"text\" required>\n        </div>\n      </div>\n\n      <!-- EMAIL -->\n      <div class=\"row sl-collapse\">\n        <div class=\"columns large-12\">\n          <div id=\"sl-email-error\" class=\"sl-input-error\"></div>\n          <input id=\"sl-email\" placeholder=\"Email\" type=\"text\" required>\n        </div>\n      </div>\n\n      <!-- PASSWORD -->\n      <div class=\"row sl-collapse\">\n        <div class=\"columns large-12\">\n          <div id=\"sl-password-error\" class=\"sl-input-error\"></div>\n          <input id=\"sl-password\" placeholder=\"Password\" type=\"password\" required>\n        </div>\n      </div>\n\n      <!-- T&C -->\n      <div class=\"row sl-hint sl-collapse\">\n        <span><p>By signing up, you agree to Seaters' <a href=\"http://getseaters.com/user-agreement/\" class=\"sl-link\">Terms &amp; Conditions</a>\n        and <a href=\"http://getseaters.com/privacy/\" class=\"sl-link\">Privacy Policy</a></p>\n        </span>\n      </div>\n\n      <!-- SUBMIT BUTTON  -->\n      <div class=\"row sl-collapse\">\n        <div class=\"columns large-12\">\n          <button id=\"sl-btn-signup\" class=\"sl-button success expand\" type=\"button\">\n            <span>Sign up</span>\n          </button>\n        </div>\n      </div>\n    </form>\n  </div>\n</div>\n\n\n\n";
 
 /***/ },
-/* 810 */
+/* 814 */
 /***/ function(module, exports) {
 
 	module.exports = "\n  <div class=\"sl-content\">\n    <div class=\"row sl-pb-10\">\n      <h3>\n        <span>Login</span>\n      </h3>\n    </div>\n\n    <div class=\"row\">\n      <form name=\"sl-login-form\" novalidate autocomplete=\"off\">\n        <!-- EMAIL -->\n        <div class=\"row sl-collapse\">\n          <div class=\"columns large-12\">\n            <div id=\"sl-email-error\" class=\"sl-input-error\"></div>\n            <input id=\"sl-email\" placeholder=\"Email\" type=\"text\" required>\n          </div>\n        </div>\n        <!-- PASSWORD -->\n        <div class=\"row sl-collapse\">\n          <div class=\"columns large-12\">\n            <div id=\"sl-password-error\" class=\"sl-input-error\"></div>\n            <input id=\"sl-password\" placeholder=\"Password\" type=\"password\" required>\n          </div>\n        </div>\n\n        <!-- Button -->\n        <div class=\"row sl-collapse\">\n          <div class=\"columns large-12\">\n            <button id=\"sl-btn-login\" type=\"button\" class=\"sl-button success expand\">\n              <span>Login</span>\n            </button>\n          </div>\n        </div>\n\n        <!-- signup link -->\n        <div class=\"row sl-hint sl-collapse sl-flex sl-flex-row sl-flex-center-h\">\n          <span><p>No account yet ? <a id=\"sl-nav-signup\" href=\"#\" class=\"sl-link\">Signup here !</a></p></span>\n        </div>\n\n      </form>\n    </div>\n  </div>\n";
 
 /***/ },
-/* 811 */
+/* 815 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"sl-content sl-input-form\">\n\n  <div class=\"row sl-pb-10\">\n    <h3 id=\"sl-wl-name\">My Wish List</h3>\n    <div id=\"sl-wl-closed\">\n      <h4 class=\"sl-wl-closed sl-pb-10\">Closed</h4>\n      <span>\n        <p class=\"sl-mb-none\">This wish list has been closed.</p>\n        <p>Visit fan group <a id=\"sl-fg-slug\" href=\"http://www.seaters.com/myfangroup\" class=\"sl-link\">My Fan group</a></p>\n      </span>\n    </div>\n  </div>\n\n  <div id=\"sl-wl-open\">\n    <div class=\"row\">\n      <div class=\"columns small-6 sl-flex sl-flex-column sl-flex-center-h sl-wl-data-title\">Likelihood</div>\n      <div class=\"columns small-6 sl-flex sl-flex-column sl-flex-center-h sl-wl-data-title\">Rank</div>\n    </div>\n    <div class=\"row sl-pb-10\">\n      <div id=\"sl-wl-likelihood\" class=\"columns small-6 sl-flex sl-flex-column sl-flex-center-h sl-wl-data-value\">25.00 %</div>\n      <div id=\"sl-wl-rank\" class=\"columns small-6 sl-flex sl-flex-column sl-flex-center-h sl-wl-data-value\"># 1</div>\n    </div>\n  </div>\n\n  <div class=\"row sl-collapse\">\n    <div class=\"columns large-12\">\n      <button id=\"sl-btn-close\" class=\"sl-button success expand\" type=\"button\">\n        <span>Close</span>\n      </button>\n    </div>\n  </div>\n\n\n</div>\n";
 
 /***/ },
-/* 812 */
+/* 816 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";

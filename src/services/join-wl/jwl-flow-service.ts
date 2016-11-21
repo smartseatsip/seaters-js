@@ -1,7 +1,7 @@
 import { SessionService } from '../session-service';
 import { Promise } from 'es6-promise';
 import { ModalService } from '../modal-service';
-import { WlService } from '../wl-service';
+import { WaitingListService } from '../waiting-list-service';
 
 declare var require: any;
 
@@ -12,7 +12,7 @@ export class JwlFlowService {
     constructor (
         private modalService: ModalService,
         private sessionService: SessionService,
-        private wlService : WlService
+        private waitingListService : WaitingListService
     ) {
     }
 
@@ -277,7 +277,8 @@ export class JwlFlowService {
     private showWaitingListInfo() {
       var _this = this;
 
-      this.wlService.getExtendedWl(this.wlId).then(function(wl) {
+      this.waitingListService.getExtendedWaitingList(this.wlId)
+      .then(function(wl) {
 
           console.log(wl);
 
@@ -287,7 +288,7 @@ export class JwlFlowService {
           waitingListName.innerHTML = wl.displayName;
           var displaySection;
 
-          if (wl.waitingListStatus=='OPEN' && wl.position) {
+          if (wl.waitingListStatus === 'OPEN' && wl.position) {
             displaySection = _this.modalService.findElementById('sl-wl-open');
             displaySection.style.display = 'block';
             //set wl group info
@@ -296,7 +297,7 @@ export class JwlFlowService {
             var waitingListRank = <HTMLElement>_this.modalService.findElementById('sl-wl-rank');
             waitingListRank.innerHTML = "# "+wl.position.rank;
           }
-          else if (wl.waitingListStatus == 'CLOSED') {
+          else if (wl.waitingListStatus === 'CLOSED') {
             displaySection = _this.modalService.findElementById('sl-wl-closed');
             displaySection.style.display = 'block';
             //set fan group slug

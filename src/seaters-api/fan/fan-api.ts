@@ -21,7 +21,7 @@ export class FanApi {
     }
 
     joinFanGroup (fanGroupId: string): Promise<FanGroup> {
-        return this.apiContext.post<FanGroup>(this.fgEndpoint, this.fgEndpointParams(fanGroupId));
+        return this.apiContext.post<FanGroup>(this.fgEndpoint, null, this.fgEndpointParams(fanGroupId));
     }
 
     private wlEndpoint = '/fan/waiting-lists/:waitingListId';

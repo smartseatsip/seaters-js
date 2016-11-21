@@ -50,7 +50,7 @@ require("source-map-support").install();
 	var seaters_client_1 = __webpack_require__(1);
 	exports.SeatersClient = seaters_client_1.SeatersClient;
 	exports.SeatersClientOptions = seaters_client_1.SeatersClientOptions;
-	var join_wl_1 = __webpack_require__(329);
+	var join_wl_1 = __webpack_require__(332);
 	exports.joinWl = join_wl_1.joinWl;
 
 
@@ -62,19 +62,19 @@ require("source-map-support").install();
 	var core = __webpack_require__(2);
 	var seaters_api_1 = __webpack_require__(306);
 	var session_service_1 = __webpack_require__(322);
-	var wl_service_1 = __webpack_require__(324);
-	var fan_group_service_1 = __webpack_require__(325);
-	var modal_service_1 = __webpack_require__(326);
-	var jwl_flow_service_1 = __webpack_require__(327);
+	var waiting_list_service_1 = __webpack_require__(324);
+	var fan_group_service_1 = __webpack_require__(328);
+	var modal_service_1 = __webpack_require__(329);
+	var jwl_flow_service_1 = __webpack_require__(330);
 	var SeatersClient = (function () {
 	    function SeatersClient(options) {
 	        options = core.Object.assign({}, SeatersClient.DEFAULT_OPTIONS, options);
 	        this.api = new seaters_api_1.SeatersApi(options.apiPrefix);
 	        this.sessionService = new session_service_1.SessionService(this.api);
-	        this.wlService = new wl_service_1.WlService(this.api);
+	        this.waitingListService = new waiting_list_service_1.WaitingListService(this.api);
 	        this.fanGroupService = new fan_group_service_1.FanGroupService(this.api);
 	        this.modalService = new modal_service_1.ModalService();
-	        this.jwlFlowService = new jwl_flow_service_1.JWLFlowService(this.modalService, this.sessionService);
+	        this.jwlFlowService = new jwl_flow_service_1.JwlFlowService(this.modalService, this.sessionService, this.waitingListService);
 	    }
 	    SeatersClient.DEFAULT_OPTIONS = {
 	        apiPrefix: 'https://api.dev-seaters.com/api'
@@ -7459,6 +7459,7 @@ require("source-map-support").install();
 	        });
 	    };
 	    ApiContext.prototype.post = function (abstractEndpoint, body, endpointParams, queryParams) {
+	        console.log('endpointParams', endpointParams);
 	        return this.doRequest({
 	            method: 'POST',
 	            abstractEndpoint: abstractEndpoint,
@@ -7660,7 +7661,7 @@ require("source-map-support").install();
 	        return this.apiContext.get(this.fgEndpoint, this.fgEndpointParams(fanGroupId));
 	    };
 	    FanApi.prototype.joinFanGroup = function (fanGroupId) {
-	        return this.apiContext.post(this.fgEndpoint, this.fgEndpointParams(fanGroupId));
+	        return this.apiContext.post(this.fgEndpoint, null, this.fgEndpointParams(fanGroupId));
 	    };
 	    FanApi.prototype.wlEndpointParams = function (waitingListId) {
 	        return api_1.ApiContext.buildEndpointParams({ waitingListId: waitingListId });
@@ -7722,8 +7723,8 @@ require("source-map-support").install();
 
 	"use strict";
 	var moment = __webpack_require__(323);
-	var AUTH_HEADER = 'Authentication';
-	var AUTH_BEARER = 'Seaters';
+	var AUTH_HEADER = 'Authorization';
+	var AUTH_BEARER = 'SeatersBearer';
 	(function (SESSION_STRATEGY) {
 	    SESSION_STRATEGY[SESSION_STRATEGY["EXPIRE"] = 0] = "EXPIRE";
 	})(exports.SESSION_STRATEGY || (exports.SESSION_STRATEGY = {}));
@@ -7801,51 +7802,224 @@ require("source-map-support").install();
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
+	var es6_promise_1 = __webpack_require__(325);
 	var core = __webpack_require__(2);
-	(function (ACTION_STATUS) {
-	    ACTION_STATUS[ACTION_STATUS["BECOME_FAN"] = 0] = "BECOME_FAN";
-	    ACTION_STATUS[ACTION_STATUS["UNLOCK"] = 1] = "UNLOCK";
-	    ACTION_STATUS[ACTION_STATUS["SOON"] = 2] = "SOON";
-	    ACTION_STATUS[ACTION_STATUS["BOOK"] = 3] = "BOOK";
-	    ACTION_STATUS[ACTION_STATUS["WAIT"] = 4] = "WAIT";
-	    ACTION_STATUS[ACTION_STATUS["CONFIRM"] = 5] = "CONFIRM";
-	    ACTION_STATUS[ACTION_STATUS["GO_LIVE"] = 6] = "GO_LIVE";
-	    ACTION_STATUS[ACTION_STATUS["ERROR"] = 7] = "ERROR";
-	})(exports.ACTION_STATUS || (exports.ACTION_STATUS = {}));
-	var ACTION_STATUS = exports.ACTION_STATUS;
-	var WlService = (function () {
-	    function WlService(api) {
+	var util_1 = __webpack_require__(326);
+	(function (WAITING_LIST_ACTION_STATUS) {
+	    WAITING_LIST_ACTION_STATUS[WAITING_LIST_ACTION_STATUS["UNLOCK"] = 0] = "UNLOCK";
+	    WAITING_LIST_ACTION_STATUS[WAITING_LIST_ACTION_STATUS["SOON"] = 1] = "SOON";
+	    WAITING_LIST_ACTION_STATUS[WAITING_LIST_ACTION_STATUS["BOOK"] = 2] = "BOOK";
+	    WAITING_LIST_ACTION_STATUS[WAITING_LIST_ACTION_STATUS["WAIT"] = 3] = "WAIT";
+	    WAITING_LIST_ACTION_STATUS[WAITING_LIST_ACTION_STATUS["CONFIRM"] = 4] = "CONFIRM";
+	    WAITING_LIST_ACTION_STATUS[WAITING_LIST_ACTION_STATUS["GO_LIVE"] = 5] = "GO_LIVE";
+	    WAITING_LIST_ACTION_STATUS[WAITING_LIST_ACTION_STATUS["ERROR"] = 6] = "ERROR";
+	})(exports.WAITING_LIST_ACTION_STATUS || (exports.WAITING_LIST_ACTION_STATUS = {}));
+	var WAITING_LIST_ACTION_STATUS = exports.WAITING_LIST_ACTION_STATUS;
+	var WaitingListService = (function () {
+	    function WaitingListService(api) {
 	        this.api = api;
 	    }
-	    WlService.prototype.getExtendedWl = function (wlId) {
+	    WaitingListService.prototype.getWaitingList = function (waitingListId) {
+	        return this.api.fan.waitingList(waitingListId);
+	    };
+	    WaitingListService.prototype.getWaitingListActionStatus = function (waitingList) {
+	        var seat = waitingList.seat;
+	        var position = waitingList.position;
+	        var request = waitingList.request;
+	        // Comming soon
+	        if (waitingList.waitingListStatus === 'PUBLISHED') {
+	            return WAITING_LIST_ACTION_STATUS.SOON;
+	        }
+	        // Not in WL
+	        if (!position) {
+	            // Code protected WL
+	            if (waitingList.accessMode === 'CODE_PROTECTED') {
+	                if (!request) {
+	                    return WAITING_LIST_ACTION_STATUS.UNLOCK;
+	                }
+	                else if (request.status === 'PENDING') {
+	                    return WAITING_LIST_ACTION_STATUS.UNLOCK; //-PENDING
+	                }
+	                else if (request.status === 'REJECTED') {
+	                    return WAITING_LIST_ACTION_STATUS.UNLOCK;
+	                }
+	                else if (request.status === 'ACCEPTED') {
+	                    return WAITING_LIST_ACTION_STATUS.BOOK;
+	                }
+	                else {
+	                    console.error('[WaitingListService] - unexpected request status: %s', request.status);
+	                    return WAITING_LIST_ACTION_STATUS.ERROR;
+	                }
+	            }
+	            else if (waitingList.accessMode === 'PUBLIC') {
+	                return WAITING_LIST_ACTION_STATUS.BOOK;
+	            }
+	            else {
+	                console.error('[WaitingListService] - unexpected accessMode: %s', waitingList.accessMode);
+	                return WAITING_LIST_ACTION_STATUS.ERROR;
+	            }
+	        }
+	        // In WL
+	        if (position.status === 'WAITING_SEAT') {
+	            return WAITING_LIST_ACTION_STATUS.WAIT;
+	        }
+	        // In WL with seat
+	        if (position.status === 'HAS_SEAT') {
+	            if (seat) {
+	                if (seat.status === 'ASSIGNED') {
+	                    // free WL
+	                    if (waitingList.freeWaitingList) {
+	                        return WAITING_LIST_ACTION_STATUS.CONFIRM;
+	                    }
+	                    else if (!position.transactionStatus) {
+	                        return WAITING_LIST_ACTION_STATUS.CONFIRM;
+	                    }
+	                    else if (['FAILURE', 'CANCELLED', 'REFUNDED'].indexOf(position.transactionStatus) >= 0) {
+	                        return WAITING_LIST_ACTION_STATUS.CONFIRM;
+	                    }
+	                    else if (['CREATING', 'CREATED', 'APPROVED', 'REFUNDING'].indexOf(position.transactionStatus) >= 0) {
+	                        return WAITING_LIST_ACTION_STATUS.CONFIRM; //-PENDING
+	                    }
+	                    else {
+	                        console.error('[WaitingListService] - unexpected transactionStatus: %s', position.transactionStatus);
+	                        return WAITING_LIST_ACTION_STATUS.ERROR;
+	                    }
+	                }
+	                else if (waitingList.seatDistributionMode === 'TICKET' && seat.ticketingSystemType) {
+	                    return WAITING_LIST_ACTION_STATUS.CONFIRM; //-PENDING
+	                }
+	                else if (seat.status === 'ACCEPTED') {
+	                    return WAITING_LIST_ACTION_STATUS.GO_LIVE;
+	                }
+	                else {
+	                    console.error('[WaitingListService] unexpected seat status: %s', seat.status);
+	                    return WAITING_LIST_ACTION_STATUS.ERROR;
+	                }
+	            }
+	            else {
+	                console.error('[WaitingListService] has seat without actual seat');
+	                return WAITING_LIST_ACTION_STATUS.ERROR;
+	            }
+	        }
+	        else if (position.status === 'BEING_PROCESSED') {
+	            return WAITING_LIST_ACTION_STATUS.WAIT; //-PENDING
+	        }
+	        else {
+	            console.error('[WaitinglistService] unexpected position status: %s', position.status);
+	            return WAITING_LIST_ACTION_STATUS.ERROR;
+	        }
+	    };
+	    WaitingListService.prototype.getExtendedWaitingList = function (waitingListId) {
 	        var _this = this;
-	        return this.api.fan.waitingList(wlId).then(function (wl) { return core.Object.assign(wl, _this.computeWLActionStatus(wl)); });
+	        return this.getWaitingList(waitingListId)
+	            .then(function (wl) { return core.Object.assign(wl, {
+	            actionStatus: _this.getWaitingListActionStatus(wl)
+	        }); });
 	    };
-	    WlService.prototype.computeWLActionStatus = function (wl) {
-	        //     var seat = wl.seat;
-	        //     var position = wl.position;
-	        //     var request = wl.request;
-	        //     // Not in FG
-	        //     if(group && !group.membership.member) {
-	        //         return createStatus(WAITINGLIST_ACTION_STATUS.BECOME_FAN);
-	        // }
-	        var actionStatus = ACTION_STATUS.BECOME_FAN;
-	        var processing = false;
-	        return {
-	            actionStatus: actionStatus,
-	            processing: processing
-	        };
+	    WaitingListService.prototype.joinWaitingList = function (waitingListId) {
+	        var _this = this;
+	        return this.api.fan.joinWaitingList(waitingListId)
+	            .then(function () {
+	            return util_1.retryUntil(function () { return _this.getExtendedWaitingList(waitingListId); }, function (fg) { return fg.actionStatus !== WAITING_LIST_ACTION_STATUS.BOOK; }, 10, 1000);
+	        });
 	    };
-	    return WlService;
+	    WaitingListService.prototype.joinWaitingListIfNeeded = function (wl) {
+	        if (wl.actionStatus === WAITING_LIST_ACTION_STATUS.CONFIRM ||
+	            wl.actionStatus === WAITING_LIST_ACTION_STATUS.WAIT ||
+	            wl.actionStatus === WAITING_LIST_ACTION_STATUS.GO_LIVE) {
+	            return es6_promise_1.Promise.resolve(wl);
+	        }
+	        else if (wl.actionStatus === WAITING_LIST_ACTION_STATUS.BOOK) {
+	            return this.joinWaitingList(wl.waitingListId);
+	        }
+	        else {
+	            return es6_promise_1.Promise.reject('Unsupported WL action status: ' + wl.actionStatus);
+	        }
+	    };
+	    return WaitingListService;
 	}());
-	exports.WlService = WlService;
+	exports.WaitingListService = WaitingListService;
 
 
 /***/ },
 /* 325 */
 /***/ function(module, exports) {
 
+	module.exports = require("es6-promise");
+
+/***/ },
+/* 326 */
+/***/ function(module, exports, __webpack_require__) {
+
 	"use strict";
+	var retry_until_1 = __webpack_require__(327);
+	exports.retryUntil = retry_until_1.retryUntil;
+
+
+/***/ },
+/* 327 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var es6_promise_1 = __webpack_require__(325);
+	var RetryUntilTimeoutError = (function (_super) {
+	    __extends(RetryUntilTimeoutError, _super);
+	    function RetryUntilTimeoutError(limit) {
+	        _super.call(this, 'retryUntil - maximum number of tries was reached (' + limit + ')');
+	        this.limit = limit;
+	    }
+	    return RetryUntilTimeoutError;
+	}(Error));
+	exports.RetryUntilTimeoutError = RetryUntilTimeoutError;
+	function retryUntil(promiseFn, conditionFn, limit, delay) {
+	    function retry(attempt) {
+	        if (attempt > limit) {
+	            return es6_promise_1.Promise.reject(new RetryUntilTimeoutError(limit));
+	        }
+	        console.log('[retryUntil] - polling ... (%s/%s)', attempt, limit);
+	        promiseFn().then(function (result) {
+	            var conditionIsMet;
+	            try {
+	                conditionIsMet = conditionFn(result);
+	            }
+	            catch (e) {
+	                console.log('[retryUntil] - condition quit with an exception', e.stack);
+	                return es6_promise_1.Promise.reject(e);
+	            }
+	            if (conditionIsMet) {
+	                console.log('[retryUntil] - condition has been met');
+	                return es6_promise_1.Promise.resolve(result);
+	            }
+	            else {
+	                // delay the next attempt if needed
+	                return timeoutPromise(delay || 0)
+	                    .then(function () { return retry(attempt + 1); });
+	            }
+	        });
+	    }
+	    return retry(1);
+	}
+	exports.retryUntil = retryUntil;
+	function timeoutPromise(timeInMs) {
+	    return new es6_promise_1.Promise(function (resolve, reject) {
+	        setTimeout(function () { return resolve(); }, timeInMs);
+	    });
+	}
+
+
+/***/ },
+/* 328 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var es6_promise_1 = __webpack_require__(325);
+	var util_1 = __webpack_require__(326);
+	var library_1 = __webpack_require__(2);
 	(function (FAN_GROUP_ACTION_STATUS) {
 	    FAN_GROUP_ACTION_STATUS[FAN_GROUP_ACTION_STATUS["CAN_JOIN"] = 0] = "CAN_JOIN";
 	    FAN_GROUP_ACTION_STATUS[FAN_GROUP_ACTION_STATUS["CAN_LEAVE"] = 1] = "CAN_LEAVE";
@@ -7861,7 +8035,7 @@ require("source-map-support").install();
 	    FanGroupService.prototype.getFanGroup = function (fanGroupId) {
 	        return this.api.fan.fanGroup(fanGroupId);
 	    };
-	    FanGroupService.prototype.getFanGroupStatus = function (fanGroup) {
+	    FanGroupService.prototype.getFanGroupActionStatus = function (fanGroup) {
 	        var membership = fanGroup.membership;
 	        if (membership.member) {
 	            return FAN_GROUP_ACTION_STATUS.CAN_LEAVE;
@@ -7884,9 +8058,31 @@ require("source-map-support").install();
 	    FanGroupService.prototype.getExtendedFanGroup = function (fanGroupId) {
 	        var _this = this;
 	        return this.getFanGroup(fanGroupId)
-	            .then(function (fg) { return core.Object.assign(fg, {
-	            actionStatus: _this.getFanGroupStatus(fg)
+	            .then(function (fg) { return library_1.Object.assign(fg, {
+	            actionStatus: _this.getFanGroupActionStatus(fg)
 	        }); });
+	    };
+	    FanGroupService.prototype.joinFanGroup = function (fanGroupId) {
+	        var _this = this;
+	        return this.api.fan.joinFanGroup(fanGroupId)
+	            .then(function () {
+	            return util_1.retryUntil(function () { return _this.getExtendedFanGroup(fanGroupId); }, function (fg) { return fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_LEAVE; }, 10, 1000);
+	        });
+	    };
+	    FanGroupService.prototype.joinFanGroupIfNeeded = function (fanGroupId) {
+	        var _this = this;
+	        return this.getExtendedFanGroup(fanGroupId)
+	            .then(function (fg) {
+	            if (fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_LEAVE) {
+	                return es6_promise_1.Promise.resolve(fg);
+	            }
+	            else if (fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_JOIN) {
+	                return _this.joinFanGroup(fanGroupId);
+	            }
+	            else {
+	                return es6_promise_1.Promise.reject('Unsupported FG action status: ' + fg.actionStatus);
+	            }
+	        });
 	    };
 	    return FanGroupService;
 	}());
@@ -7894,7 +8090,7 @@ require("source-map-support").install();
 
 
 /***/ },
-/* 326 */
+/* 329 */
 /***/ function(module, exports) {
 
 	/// <reference path="../../node_modules/typescript/lib/lib.d.ts" />
@@ -8028,17 +8224,19 @@ require("source-map-support").install();
 
 
 /***/ },
-/* 327 */
+/* 330 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var JWLFlowService = (function () {
-	    function JWLFlowService(modalService, sessionService) {
+	var JwlFlowService = (function () {
+	    function JwlFlowService(modalService, sessionService, waitingListService) {
 	        this.modalService = modalService;
 	        this.sessionService = sessionService;
+	        this.waitingListService = waitingListService;
+	        this.wlId = "";
 	    }
 	    //Sets a button to either enabled or disabled
-	    JWLFlowService.prototype.enableButton = function (btnId, enabled) {
+	    JwlFlowService.prototype.enableButton = function (btnId, enabled) {
 	        this.modalService.findElementById(btnId).disabled = !enabled;
 	    };
 	    /**
@@ -8047,7 +8245,7 @@ require("source-map-support").install();
 	     * @param password
 	     * @returns {Array}
 	     */
-	    JWLFlowService.prototype.validateLoginForm = function (email, password) {
+	    JwlFlowService.prototype.validateLoginForm = function (email, password) {
 	        var validationErrors = [];
 	        //Test email
 	        if (!this.modalService.validateRequired(email)) {
@@ -8065,7 +8263,7 @@ require("source-map-support").install();
 	     * Show server side login form errors
 	     * @param error
 	     */
-	    JWLFlowService.prototype.showFormErrorsApiLogin = function (error) {
+	    JwlFlowService.prototype.showFormErrorsApiLogin = function (error) {
 	        //Test for detailed errors
 	        if (error.details.length > 0) {
 	            if (error.details[0].field === 'emailPasswordCredentials.email') {
@@ -8079,7 +8277,7 @@ require("source-map-support").install();
 	    /**
 	     * Perform login
 	     */
-	    JWLFlowService.prototype.doLogin = function () {
+	    JwlFlowService.prototype.doLogin = function () {
 	        var _this = this;
 	        //Reset form errors
 	        this.modalService.resetFormErrors();
@@ -8116,7 +8314,7 @@ require("source-map-support").install();
 	     * @param lastname
 	     * @returns {Array}
 	     */
-	    JWLFlowService.prototype.validateSignupForm = function (email, password, firstname, lastname) {
+	    JwlFlowService.prototype.validateSignupForm = function (email, password, firstname, lastname) {
 	        var validationErrors = [];
 	        //Test email
 	        if (!this.modalService.validateRequired(email)) {
@@ -8143,7 +8341,7 @@ require("source-map-support").install();
 	    /**
 	     * Perform signup
 	     */
-	    JWLFlowService.prototype.doSignup = function () {
+	    JwlFlowService.prototype.doSignup = function () {
 	        var _this = this;
 	        //Reset form errors
 	        this.modalService.resetFormErrors();
@@ -8179,7 +8377,7 @@ require("source-map-support").install();
 	     * @param code
 	     * @returns {Array}
 	     */
-	    JWLFlowService.prototype.validateEmailValidationForm = function (code) {
+	    JwlFlowService.prototype.validateEmailValidationForm = function (code) {
 	        var validationErrors = [];
 	        //Test email
 	        if (!this.modalService.validateRequired(code)) {
@@ -8191,7 +8389,7 @@ require("source-map-support").install();
 	    /**
 	       * Perform email validation
 	       */
-	    JWLFlowService.prototype.doEmailValidation = function (userData) {
+	    JwlFlowService.prototype.doEmailValidation = function (userData) {
 	        var _this = this;
 	        //Reset form errors
 	        this.modalService.resetFormErrors();
@@ -8220,27 +8418,27 @@ require("source-map-support").install();
 	            });
 	        }
 	    };
-	    JWLFlowService.prototype.setupEmailValidation = function (userData) {
+	    JwlFlowService.prototype.setupEmailValidation = function (userData) {
 	        var _this = this;
 	        console.log(userData);
-	        this.modalService.showModal(__webpack_require__(328), __webpack_require__(328));
+	        this.modalService.showModal(__webpack_require__(331), __webpack_require__(331));
 	        var validateEmailBtn = this.modalService.findElementById('sl-btn-validate');
 	        validateEmailBtn.onclick = function () { return _this.doEmailValidation(userData); };
 	        var userSpan = this.modalService.findElementById('sl-span-firstname');
 	        userSpan.innerHTML = userData.firstName;
 	    };
-	    JWLFlowService.prototype.setupSignup = function () {
+	    JwlFlowService.prototype.setupSignup = function () {
 	        var _this = this;
-	        this.modalService.showModal(__webpack_require__(328), __webpack_require__(328));
+	        this.modalService.showModal(__webpack_require__(331), __webpack_require__(331));
 	        var signupBtn = this.modalService.findElementById('sl-btn-signup');
 	        signupBtn.onclick = function () { return _this.doSignup(); };
 	    };
 	    /**
 	     *  Setup login
 	     */
-	    JWLFlowService.prototype.setupLogin = function () {
+	    JwlFlowService.prototype.setupLogin = function () {
 	        var _this = this;
-	        this.modalService.showModal(__webpack_require__(328), __webpack_require__(328));
+	        this.modalService.showModal(__webpack_require__(331), __webpack_require__(331));
 	        var loginBtn = this.modalService.findElementById('sl-btn-login');
 	        loginBtn.onclick = function () { return _this.doLogin(); };
 	        var navToSignup = this.modalService.findElementById('sl-nav-signup');
@@ -8250,56 +8448,58 @@ require("source-map-support").install();
 	     * Show WL info
 	     *
 	     */
-	    JWLFlowService.prototype.showWaitingListInfo = function () {
-	        var dummywl = {
-	            closed: false,
-	            name: 'My Wish List',
-	            likelihood: 13.33,
-	            rank: 3,
-	            fg: "mygroup"
-	        };
-	        var waitingListName = this.modalService.findElementById('sl-wl-name');
-	        waitingListName.innerHTML = dummywl.name;
-	        var displaySection;
-	        if (!dummywl.closed) {
-	            displaySection = this.modalService.findElementById('sl-wl-open');
-	            displaySection.style.display = 'block';
-	            //set wl group info
-	            var waitingListLikelihood = this.modalService.findElementById('sl-wl-likelihood');
-	            waitingListLikelihood.innerHTML = dummywl.likelihood + " %";
-	            var waitingListRank = this.modalService.findElementById('sl-wl-rank');
-	            waitingListRank.innerHTML = "# " + dummywl.rank;
-	        }
-	        else {
-	            displaySection = this.modalService.findElementById('sl-wl-closed');
-	            displaySection.style.display = 'block';
-	            //set fan group slug
-	            var fanGroupSlug = this.modalService.findElementById('sl-fg-slug');
-	            fanGroupSlug.href = "http://www.seaters.com/" + dummywl.fg;
-	        }
+	    JwlFlowService.prototype.showWaitingListInfo = function () {
+	        var _this = this;
+	        this.waitingListService.getExtendedWaitingList(this.wlId)
+	            .then(function (wl) {
+	            console.log(wl);
+	            //TODO: - handle no position situation -> auto join wl
+	            var waitingListName = _this.modalService.findElementById('sl-wl-name');
+	            waitingListName.innerHTML = wl.displayName;
+	            var displaySection;
+	            if (wl.waitingListStatus === 'OPEN' && wl.position) {
+	                displaySection = _this.modalService.findElementById('sl-wl-open');
+	                displaySection.style.display = 'block';
+	                //set wl group info
+	                var waitingListLikelihood = _this.modalService.findElementById('sl-wl-likelihood');
+	                waitingListLikelihood.innerHTML = wl.position.likelihood + " %";
+	                var waitingListRank = _this.modalService.findElementById('sl-wl-rank');
+	                waitingListRank.innerHTML = "# " + wl.position.rank;
+	            }
+	            else if (wl.waitingListStatus === 'CLOSED') {
+	                displaySection = _this.modalService.findElementById('sl-wl-closed');
+	                displaySection.style.display = 'block';
+	                //set fan group slug
+	                var fanGroupSlug = _this.modalService.findElementById('sl-fg-slug');
+	                fanGroupSlug.innerHTML = wl.groupName.en;
+	                fanGroupSlug.href = "http://www.seaters.com/" + wl.groupSlug;
+	            }
+	        }, function (err) {
+	            //TODO
+	        });
 	    };
 	    /**
 	     *  Show WL information
 	     */
-	    JWLFlowService.prototype.setupWaitingListInfo = function () {
+	    JwlFlowService.prototype.setupWaitingListInfo = function () {
 	        var _this = this;
-	        this.modalService.showModal(__webpack_require__(328), __webpack_require__(328));
+	        this.modalService.showModal(__webpack_require__(331), __webpack_require__(331));
 	        var closeBtn = this.modalService.findElementById('sl-btn-close');
 	        closeBtn.onclick = function () { _this.modalService.closeModal(); };
 	        this.showWaitingListInfo();
 	    };
-	    JWLFlowService.prototype.startFlow = function (wlId) {
-	        //TODO: other parts of flow
-	        //Signup flow starts here
+	    JwlFlowService.prototype.startFlow = function (wlId) {
+	        this.wlId = wlId;
+	        //For now, always start with signin flow
 	        this.setupLogin();
 	    };
-	    return JWLFlowService;
+	    return JwlFlowService;
 	}());
-	exports.JWLFlowService = JWLFlowService;
+	exports.JwlFlowService = JwlFlowService;
 
 
 /***/ },
-/* 328 */
+/* 331 */
 /***/ function(module, exports) {
 
 	(function(exports) {
@@ -8308,7 +8508,7 @@ require("source-map-support").install();
 
 
 /***/ },
-/* 329 */
+/* 332 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";

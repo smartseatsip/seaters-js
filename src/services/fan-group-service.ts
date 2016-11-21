@@ -1,6 +1,8 @@
 import { SeatersApi } from '../seaters-api';
 import { Promise } from 'es6-promise';
 import { FanGroup } from '../seaters-api/fan/fan-group';
+import { retryUntil } from './util';
+import { Object as coreObject } from 'core-js/library';
 
 export enum FAN_GROUP_ACTION_STATUS {
     CAN_JOIN, CAN_LEAVE, CAN_UNLOCK, CAN_REQUEST, WAITING_FOR_APPROVAL
@@ -25,7 +27,7 @@ export class FanGroupService {
         return this.api.fan.fanGroup(fanGroupId);
     }
 
-    getFanGroupStatus (fanGroup: FanGroup): FAN_GROUP_ACTION_STATUS {
+    getFanGroupActionStatus (fanGroup: FanGroup): FAN_GROUP_ACTION_STATUS {
         var membership = fanGroup.membership;
 
         if (membership.member) {
@@ -52,9 +54,34 @@ export class FanGroupService {
 
     getExtendedFanGroup (fanGroupId: string): Promise<ExtendedFanGroup> {
         return this.getFanGroup(fanGroupId)
-        .then(fg => core.Object.assign(fg, {
-            actionStatus: this.getFanGroupStatus(fg)
+        .then(fg => coreObject.assign(fg, {
+            actionStatus: this.getFanGroupActionStatus(fg)
         }));
+    }
+
+    joinFanGroup (fanGroupId: string): Promise<ExtendedFanGroup> {
+        return this.api.fan.joinFanGroup(fanGroupId)
+        .then(() => {
+            return retryUntil(
+                () => this.getExtendedFanGroup(fanGroupId),
+                (fg) => fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_LEAVE,
+                10,
+                1000
+            );
+        });
+    }
+
+    joinFanGroupIfNeeded (fanGroupId: string): Promise<ExtendedFanGroup> {
+        return this.getExtendedFanGroup(fanGroupId)
+        .then((fg) => {
+            if (fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_LEAVE) { 
+                return Promise.resolve(fg);
+            } else if (fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_JOIN) {
+                return this.joinFanGroup(fanGroupId);
+            } else {
+                return Promise.reject('Unsupported FG action status: ' + fg.actionStatus);
+            }
+        });
     }
     
 }

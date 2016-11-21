@@ -175,6 +175,7 @@ export class ApiContext {
       endpointParams?: Map<string, string>,
       queryParams?: Map<string, string>
     ): Promise<T> {
+        console.log('endpointParams', endpointParams);
       return this.doRequest({
           method: 'POST',
           abstractEndpoint: abstractEndpoint,
