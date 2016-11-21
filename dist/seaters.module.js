@@ -7776,21 +7776,25 @@ require("source-map-support").install();
 
 /***/ },
 /* 324 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
+	var core = __webpack_require__(2);
 	var WlService = (function () {
 	    function WlService(api) {
 	        this.api = api;
 	    }
 	    WlService.prototype.getExtendedWl = function (wlId) {
 	        var _this = this;
-	        this.api.fan.waitingList(wlId).then(function (wl) { return _this.extendWl(wl); });
+	        return this.api.fan.waitingList(wlId).then(function (wl) { return core.Object.assign(wl, _this.computeWLActionStatus(wl)); });
 	    };
-	    WlService.prototype.extendWl = function (wl) {
-	        console.log('wl', wl);
-	        return wl;
-	        //TODO - compute 'wl status' - see fanwebapp
+	    WlService.prototype.computeWLActionStatus = function (wl) {
+	        var actionStatus = 'JOIN';
+	        var processing = false;
+	        return {
+	            actionStatus: actionStatus,
+	            processing: processing
+	        };
 	    };
 	    return WlService;
 	}());
