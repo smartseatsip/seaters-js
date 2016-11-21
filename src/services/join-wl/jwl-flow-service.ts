@@ -262,7 +262,7 @@ export class JWLFlowService {
       navToSignup.onclick= (evt) => { evt.preventDefault(); this.setupSignup()};
     }
 
-    startFlow() {
+    startFlow (wlId: string) {
 
       //TODO: other parts of flow
 
