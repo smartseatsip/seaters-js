@@ -1,3 +1,5 @@
+var webpackHelpers = require('./webpack-helpers');
+
 module.exports = {
   entry: './src/index.ts',
   output: {
@@ -20,22 +22,8 @@ module.exports = {
       }
     ],
     loaders: [
-      {
-        test: /index\.ts$/,
-        loader: 'string-replace',
-        query: {
-          search: '${package.version}',
-          replace: require('../package.json').version
-        }
-      },
-      {
-        test: /seaters-client\.ts$/,
-        loader: 'string-replace',
-        query: {
-          search: '${api.location}',
-          replace: process.env['strs.api.location'] || '/api'
-        }
-      },
+      webpackHelpers.replacePackageVersionLoader,
+      webpackHelpers.replaceApiLocationLoader(true),
       {
         test: /\.html$/,
         loader: 'html-loader'

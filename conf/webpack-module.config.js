@@ -1,5 +1,6 @@
 var fs = require('fs');
 var webpack = require('webpack');
+var webpackHelpers = require('./webpack-helpers');
 
 var nodeModules = {};
 fs.readdirSync('node_modules')
@@ -31,14 +32,8 @@ module.exports = {
   ],
   module: {
     loaders: [
-      {
-        test: /index\.ts$/,
-        loader: 'string-replace',
-        query: {
-          search: '${package.version}',
-          replace: require('../package.json').version
-        }
-      },
+      webpackHelpers.replacePackageVersionLoader,
+      webpackHelpers.replaceApiLocationLoader(false),
       {
         test: /\.html$/,
         loader: 'html-loader'

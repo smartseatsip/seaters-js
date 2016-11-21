@@ -13,19 +13,6 @@ var proxy = require('http-proxy-middleware');
 var connect  = require('connect');
 var serveStatic = require('serve-static');
 
-var app = connect()
-  .use(serveStatic('./e2e-browser/fixtures'))
-  .use(serveStatic('./dist'))
-  .use('/components', serveStatic('./components'))
-  .use('/examples', serveStatic('./examples'))
-  .use('/api', proxy({
-    target: 'https://api.dev-seaters.com',
-    changeOrigin: true,
-    xfwd: false,
-    port: 443,
-    https: true
-  }));//TODO - remove as soon as cors is properly working
-
 var server = undefined;
 
 gulp.task('clean', function() {
@@ -54,21 +41,20 @@ function replaceVersion(src) {
     .pipe(replace('${package.version}', packageVersion));
 }
 
-gulp.task('build:lib', ['clean'], function() {
-  return replaceVersion([
-    'src/**/*.ts',
-    '!src/**/*.spec.ts',
-    'typings/index.d.ts'
-  ])
-    .pipe(typescript({
-      target: 'es5',
-      moduleResolution: 'node',
-      declaration: true
-    }))
-    .pipe(gulp.dest('./lib'));
-});
-
 gulp.task('http', function(done) {
+  var app = connect()
+    .use(serveStatic('./e2e-browser/fixtures'))
+    .use(serveStatic('./dist'))
+    .use('/components', serveStatic('./components'))
+    .use('/examples', serveStatic('./examples'))
+    .use('/api', proxy({
+      target: 'https://api.dev-seaters.com',
+      changeOrigin: true,
+      xfwd: false,
+      port: 443,
+      https: true
+    }));//TODO - remove as soon as cors is properly working
+
    server = http.createServer(app).listen(3000, done);
 });
 
@@ -80,12 +66,12 @@ gulp.task('test:e2e-browser', ['build:bundle', 'http'], function() {
     });
 });
 
-gulp.task('test:e2e-node', ['build:lib'], function() {
+gulp.task('test:e2e-node', ['build:module'], function() {
   return gulp.src('./e2e-node/**/*.spec.js')
     .pipe(jasmine());
 });
 
-gulp.task('build', ['build:bundle', 'build:lib', 'build:module']);
+gulp.task('build', ['build:bundle', 'build:module']);
 
 gulp.task('test:e2e', ['test:e2e-browser', 'test:e2e-node']);
 

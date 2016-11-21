@@ -75,7 +75,7 @@ require("source-map-support").install();
 	        this.jwlFlowService = new jwl_flow_service_1.JWLFlowService(this.modalService, this.sessionService);
 	    }
 	    SeatersClient.DEFAULT_OPTIONS = {
-	        apiPrefix: '${api.location}'
+	        apiPrefix: 'https://api.dev-seaters.com/api'
 	    };
 	    return SeatersClient;
 	}());

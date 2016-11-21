@@ -7,7 +7,7 @@ function apiFail(msg) {
 
 function shouldNotCatch(done) {
     return (err) => {
-        // console.error(err);
+        console.error(err);
         fail('Potential Bad Test : should not catch');
         done();
     }
