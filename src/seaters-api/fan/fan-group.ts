@@ -1,8 +1,6 @@
-export type ACCESS_MODE =
-    'PUBLIC' | 'PRIVATE' | 'CODE_PROTECTED';
+export type ACCESS_MODE = 'PUBLIC' | 'PRIVATE' | 'CODE_PROTECTED';
 
-export type VISIBILITY =
-    'VISIBLE' | 'INVISIBLE';
+export type VISIBILITY = 'VISIBLE' | 'INVISIBLE';
 
 export interface Statistics {
     /**

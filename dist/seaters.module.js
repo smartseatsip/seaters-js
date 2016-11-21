@@ -50,7 +50,7 @@ require("source-map-support").install();
 	var seaters_client_1 = __webpack_require__(1);
 	exports.SeatersClient = seaters_client_1.SeatersClient;
 	exports.SeatersClientOptions = seaters_client_1.SeatersClientOptions;
-	var join_wl_1 = __webpack_require__(328);
+	var join_wl_1 = __webpack_require__(329);
 	exports.joinWl = join_wl_1.joinWl;
 
 
@@ -63,14 +63,16 @@ require("source-map-support").install();
 	var seaters_api_1 = __webpack_require__(306);
 	var session_service_1 = __webpack_require__(322);
 	var wl_service_1 = __webpack_require__(324);
-	var modal_service_1 = __webpack_require__(325);
-	var jwl_flow_service_1 = __webpack_require__(326);
+	var fan_group_service_1 = __webpack_require__(325);
+	var modal_service_1 = __webpack_require__(326);
+	var jwl_flow_service_1 = __webpack_require__(327);
 	var SeatersClient = (function () {
 	    function SeatersClient(options) {
 	        options = core.Object.assign({}, SeatersClient.DEFAULT_OPTIONS, options);
 	        this.api = new seaters_api_1.SeatersApi(options.apiPrefix);
 	        this.sessionService = new session_service_1.SessionService(this.api);
 	        this.wlService = new wl_service_1.WlService(this.api);
+	        this.fanGroupService = new fan_group_service_1.FanGroupService(this.api);
 	        this.modalService = new modal_service_1.ModalService();
 	        this.jwlFlowService = new jwl_flow_service_1.JWLFlowService(this.modalService, this.sessionService);
 	    }
@@ -7828,6 +7830,58 @@ require("source-map-support").install();
 /* 325 */
 /***/ function(module, exports) {
 
+	"use strict";
+	(function (FAN_GROUP_ACTION_STATUS) {
+	    FAN_GROUP_ACTION_STATUS[FAN_GROUP_ACTION_STATUS["CAN_JOIN"] = 0] = "CAN_JOIN";
+	    FAN_GROUP_ACTION_STATUS[FAN_GROUP_ACTION_STATUS["CAN_LEAVE"] = 1] = "CAN_LEAVE";
+	    FAN_GROUP_ACTION_STATUS[FAN_GROUP_ACTION_STATUS["CAN_UNLOCK"] = 2] = "CAN_UNLOCK";
+	    FAN_GROUP_ACTION_STATUS[FAN_GROUP_ACTION_STATUS["CAN_REQUEST"] = 3] = "CAN_REQUEST";
+	    FAN_GROUP_ACTION_STATUS[FAN_GROUP_ACTION_STATUS["WAITING_FOR_APPROVAL"] = 4] = "WAITING_FOR_APPROVAL";
+	})(exports.FAN_GROUP_ACTION_STATUS || (exports.FAN_GROUP_ACTION_STATUS = {}));
+	var FAN_GROUP_ACTION_STATUS = exports.FAN_GROUP_ACTION_STATUS;
+	var FanGroupService = (function () {
+	    function FanGroupService(api) {
+	        this.api = api;
+	    }
+	    FanGroupService.prototype.getFanGroup = function (fanGroupId) {
+	        return this.api.fan.fanGroup(fanGroupId);
+	    };
+	    FanGroupService.prototype.getFanGroupStatus = function (fanGroup) {
+	        var membership = fanGroup.membership;
+	        if (membership.member) {
+	            return FAN_GROUP_ACTION_STATUS.CAN_LEAVE;
+	        }
+	        else if (fanGroup.accessMode === 'PUBLIC' ||
+	            (membership.request && membership.request.status === 'ACCEPTED')) {
+	            return FAN_GROUP_ACTION_STATUS.CAN_JOIN;
+	        }
+	        else if (membership.request &&
+	            membership.request.status === 'PENDING') {
+	            return FAN_GROUP_ACTION_STATUS.WAITING_FOR_APPROVAL;
+	        }
+	        else if (fanGroup.accessMode === 'CODE_PROTECTED' ||
+	            fanGroup.accessMode === 'PRIVATE') {
+	            return FAN_GROUP_ACTION_STATUS.CAN_UNLOCK;
+	        }
+	        // state that was not implemented
+	        console.error('GroupService - unhandled group status', JSON.stringify(fanGroup));
+	    };
+	    FanGroupService.prototype.getExtendedFanGroup = function (fanGroupId) {
+	        var _this = this;
+	        return this.getFanGroup(fanGroupId)
+	            .then(function (fg) { return core.Object.assign(fg, {
+	            actionStatus: _this.getFanGroupStatus(fg)
+	        }); });
+	    };
+	    return FanGroupService;
+	}());
+	exports.FanGroupService = FanGroupService;
+
+
+/***/ },
+/* 326 */
+/***/ function(module, exports) {
+
 	/// <reference path="../../node_modules/typescript/lib/lib.d.ts" />
 	"use strict";
 	var ModalService = (function () {
@@ -7959,7 +8013,7 @@ require("source-map-support").install();
 
 
 /***/ },
-/* 326 */
+/* 327 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -8154,7 +8208,7 @@ require("source-map-support").install();
 	    JWLFlowService.prototype.setupEmailValidation = function (userData) {
 	        var _this = this;
 	        console.log(userData);
-	        this.modalService.showModal(__webpack_require__(327), __webpack_require__(327));
+	        this.modalService.showModal(__webpack_require__(328), __webpack_require__(328));
 	        var validateEmailBtn = this.modalService.findElementById('sl-btn-validate');
 	        validateEmailBtn.onclick = function () { return _this.doEmailValidation(userData); };
 	        var userSpan = this.modalService.findElementById('sl-span-firstname');
@@ -8162,7 +8216,7 @@ require("source-map-support").install();
 	    };
 	    JWLFlowService.prototype.setupSignup = function () {
 	        var _this = this;
-	        this.modalService.showModal(__webpack_require__(327), __webpack_require__(327));
+	        this.modalService.showModal(__webpack_require__(328), __webpack_require__(328));
 	        var signupBtn = this.modalService.findElementById('sl-btn-signup');
 	        signupBtn.onclick = function () { return _this.doSignup(); };
 	    };
@@ -8171,7 +8225,7 @@ require("source-map-support").install();
 	     */
 	    JWLFlowService.prototype.setupLogin = function () {
 	        var _this = this;
-	        this.modalService.showModal(__webpack_require__(327), __webpack_require__(327));
+	        this.modalService.showModal(__webpack_require__(328), __webpack_require__(328));
 	        var loginBtn = this.modalService.findElementById('sl-btn-login');
 	        loginBtn.onclick = function () { return _this.doLogin(); };
 	        var navToSignup = this.modalService.findElementById('sl-nav-signup');
@@ -8214,7 +8268,7 @@ require("source-map-support").install();
 	     */
 	    JWLFlowService.prototype.setupWaitingListInfo = function () {
 	        var _this = this;
-	        this.modalService.showModal(__webpack_require__(327), __webpack_require__(327));
+	        this.modalService.showModal(__webpack_require__(328), __webpack_require__(328));
 	        var closeBtn = this.modalService.findElementById('sl-btn-close');
 	        closeBtn.onclick = function () { _this.modalService.closeModal(); };
 	        this.showWaitingListInfo();
@@ -8230,7 +8284,7 @@ require("source-map-support").install();
 
 
 /***/ },
-/* 327 */
+/* 328 */
 /***/ function(module, exports) {
 
 	(function(exports) {
@@ -8239,7 +8293,7 @@ require("source-map-support").install();
 
 
 /***/ },
-/* 328 */
+/* 329 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";

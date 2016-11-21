@@ -50,7 +50,7 @@ var SeatersSDK =
 	var seaters_client_1 = __webpack_require__(1);
 	exports.SeatersClient = seaters_client_1.SeatersClient;
 	exports.SeatersClientOptions = seaters_client_1.SeatersClientOptions;
-	var join_wl_1 = __webpack_require__(811);
+	var join_wl_1 = __webpack_require__(812);
 	exports.joinWl = join_wl_1.joinWl;
 
 
@@ -63,14 +63,16 @@ var SeatersSDK =
 	var seaters_api_1 = __webpack_require__(306);
 	var session_service_1 = __webpack_require__(691);
 	var wl_service_1 = __webpack_require__(802);
-	var modal_service_1 = __webpack_require__(803);
-	var jwl_flow_service_1 = __webpack_require__(804);
+	var fan_group_service_1 = __webpack_require__(803);
+	var modal_service_1 = __webpack_require__(804);
+	var jwl_flow_service_1 = __webpack_require__(805);
 	var SeatersClient = (function () {
 	    function SeatersClient(options) {
 	        options = core.Object.assign({}, SeatersClient.DEFAULT_OPTIONS, options);
 	        this.api = new seaters_api_1.SeatersApi(options.apiPrefix);
 	        this.sessionService = new session_service_1.SessionService(this.api);
 	        this.wlService = new wl_service_1.WlService(this.api);
+	        this.fanGroupService = new fan_group_service_1.FanGroupService(this.api);
 	        this.modalService = new modal_service_1.ModalService();
 	        this.jwlFlowService = new jwl_flow_service_1.JWLFlowService(this.modalService, this.sessionService);
 	    }
@@ -42460,6 +42462,58 @@ var SeatersSDK =
 /* 803 */
 /***/ function(module, exports) {
 
+	"use strict";
+	(function (FAN_GROUP_ACTION_STATUS) {
+	    FAN_GROUP_ACTION_STATUS[FAN_GROUP_ACTION_STATUS["CAN_JOIN"] = 0] = "CAN_JOIN";
+	    FAN_GROUP_ACTION_STATUS[FAN_GROUP_ACTION_STATUS["CAN_LEAVE"] = 1] = "CAN_LEAVE";
+	    FAN_GROUP_ACTION_STATUS[FAN_GROUP_ACTION_STATUS["CAN_UNLOCK"] = 2] = "CAN_UNLOCK";
+	    FAN_GROUP_ACTION_STATUS[FAN_GROUP_ACTION_STATUS["CAN_REQUEST"] = 3] = "CAN_REQUEST";
+	    FAN_GROUP_ACTION_STATUS[FAN_GROUP_ACTION_STATUS["WAITING_FOR_APPROVAL"] = 4] = "WAITING_FOR_APPROVAL";
+	})(exports.FAN_GROUP_ACTION_STATUS || (exports.FAN_GROUP_ACTION_STATUS = {}));
+	var FAN_GROUP_ACTION_STATUS = exports.FAN_GROUP_ACTION_STATUS;
+	var FanGroupService = (function () {
+	    function FanGroupService(api) {
+	        this.api = api;
+	    }
+	    FanGroupService.prototype.getFanGroup = function (fanGroupId) {
+	        return this.api.fan.fanGroup(fanGroupId);
+	    };
+	    FanGroupService.prototype.getFanGroupStatus = function (fanGroup) {
+	        var membership = fanGroup.membership;
+	        if (membership.member) {
+	            return FAN_GROUP_ACTION_STATUS.CAN_LEAVE;
+	        }
+	        else if (fanGroup.accessMode === 'PUBLIC' ||
+	            (membership.request && membership.request.status === 'ACCEPTED')) {
+	            return FAN_GROUP_ACTION_STATUS.CAN_JOIN;
+	        }
+	        else if (membership.request &&
+	            membership.request.status === 'PENDING') {
+	            return FAN_GROUP_ACTION_STATUS.WAITING_FOR_APPROVAL;
+	        }
+	        else if (fanGroup.accessMode === 'CODE_PROTECTED' ||
+	            fanGroup.accessMode === 'PRIVATE') {
+	            return FAN_GROUP_ACTION_STATUS.CAN_UNLOCK;
+	        }
+	        // state that was not implemented
+	        console.error('GroupService - unhandled group status', JSON.stringify(fanGroup));
+	    };
+	    FanGroupService.prototype.getExtendedFanGroup = function (fanGroupId) {
+	        var _this = this;
+	        return this.getFanGroup(fanGroupId)
+	            .then(function (fg) { return core.Object.assign(fg, {
+	            actionStatus: _this.getFanGroupStatus(fg)
+	        }); });
+	    };
+	    return FanGroupService;
+	}());
+	exports.FanGroupService = FanGroupService;
+
+
+/***/ },
+/* 804 */
+/***/ function(module, exports) {
+
 	/// <reference path="../../node_modules/typescript/lib/lib.d.ts" />
 	"use strict";
 	var ModalService = (function () {
@@ -42591,7 +42645,7 @@ var SeatersSDK =
 
 
 /***/ },
-/* 804 */
+/* 805 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -42786,7 +42840,7 @@ var SeatersSDK =
 	    JWLFlowService.prototype.setupEmailValidation = function (userData) {
 	        var _this = this;
 	        console.log(userData);
-	        this.modalService.showModal(__webpack_require__(805), __webpack_require__(806));
+	        this.modalService.showModal(__webpack_require__(806), __webpack_require__(807));
 	        var validateEmailBtn = this.modalService.findElementById('sl-btn-validate');
 	        validateEmailBtn.onclick = function () { return _this.doEmailValidation(userData); };
 	        var userSpan = this.modalService.findElementById('sl-span-firstname');
@@ -42794,7 +42848,7 @@ var SeatersSDK =
 	    };
 	    JWLFlowService.prototype.setupSignup = function () {
 	        var _this = this;
-	        this.modalService.showModal(__webpack_require__(808), __webpack_require__(806));
+	        this.modalService.showModal(__webpack_require__(809), __webpack_require__(807));
 	        var signupBtn = this.modalService.findElementById('sl-btn-signup');
 	        signupBtn.onclick = function () { return _this.doSignup(); };
 	    };
@@ -42803,7 +42857,7 @@ var SeatersSDK =
 	     */
 	    JWLFlowService.prototype.setupLogin = function () {
 	        var _this = this;
-	        this.modalService.showModal(__webpack_require__(809), __webpack_require__(806));
+	        this.modalService.showModal(__webpack_require__(810), __webpack_require__(807));
 	        var loginBtn = this.modalService.findElementById('sl-btn-login');
 	        loginBtn.onclick = function () { return _this.doLogin(); };
 	        var navToSignup = this.modalService.findElementById('sl-nav-signup');
@@ -42846,7 +42900,7 @@ var SeatersSDK =
 	     */
 	    JWLFlowService.prototype.setupWaitingListInfo = function () {
 	        var _this = this;
-	        this.modalService.showModal(__webpack_require__(810), __webpack_require__(806));
+	        this.modalService.showModal(__webpack_require__(811), __webpack_require__(807));
 	        var closeBtn = this.modalService.findElementById('sl-btn-close');
 	        closeBtn.onclick = function () { _this.modalService.closeModal(); };
 	        this.showWaitingListInfo();
@@ -42862,16 +42916,16 @@ var SeatersSDK =
 
 
 /***/ },
-/* 805 */
+/* 806 */
 /***/ function(module, exports) {
 
 	module.exports = "\n    <div class=\"sl-content sl-flex sl-flex-column sl-flex-center-h\">\n      <div class=\"sl-pb-10\">\n        <h3>\n          <span>Welcome. It's nice to meet you,</span>\n          <span id=\"sl-span-firstname\"></span>\n        </h3>\n      </div>\n      <div class=\"sl-pb-10\">\n        <span>We just sent you a confirmation email. In order to confirm your registration, please enter the code mentioned in the email below.</span>\n      </div>\n      <div class=\"row sl-collapse\">\n        <form name=\"validateForm\" class=\"sl-flex sl-flex-column sl-flex-center-h small-12\" novalidate autocomplete=\"off\">\n          <div class=\"columns small-12\">\n            <div id=\"sl-confirmation-code-error\" class=\"sl-input-error\"></div>\n            <input id=\"sl-confirmation-code\" type=\"text\" name=\"confirmationCode\" placeholder=\"Your personal code\" required>\n          </div>\n          <div>\n            <button id=\"sl-btn-validate\" class=\"button sl-button success\" type=\"button\">Confirm email</button>\n          </div>\n        </form>\n      </div>\n    </div>\n";
 
 /***/ },
-/* 806 */
+/* 807 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(807)();
+	exports = module.exports = __webpack_require__(808)();
 	// imports
 	
 	
@@ -42882,7 +42936,7 @@ var SeatersSDK =
 
 
 /***/ },
-/* 807 */
+/* 808 */
 /***/ function(module, exports) {
 
 	/*
@@ -42938,25 +42992,25 @@ var SeatersSDK =
 
 
 /***/ },
-/* 808 */
+/* 809 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"sl-content sl-input-form\">\n  <div class=\"row sl-pb-10\">\n    <h3>\n      <span>Sign up</span>\n    </h3>\n  </div>\n  <div class=\"row\">\n    <form name=\"signupForm\" novalidate autocomplete=\"off\">\n      <!-- novalidate prevents HTML5 validation since we will be validating ourselves -->\n      <div class=\"row sl-collapse\">\n        <!-- FIRST NAME -->\n        <div class=\"columns large-6 l-rpadding\">\n          <div id=\"sl-firstname-error\" class=\"sl-input-error\"></div>\n          <input id=\"sl-firstname\" placeholder=\"First Name\" type=\"text\" required>\n        </div>\n\n        <!-- LAST NAME -->\n        <div class=\"columns large-6\">\n          <div id=\"sl-lastname-error\" class=\"sl-input-error\"></div>\n          <input id=\"sl-lastname\" placeholder=\"Last Name\" type=\"text\" required>\n        </div>\n      </div>\n\n      <!-- EMAIL -->\n      <div class=\"row sl-collapse\">\n        <div class=\"columns large-12\">\n          <div id=\"sl-email-error\" class=\"sl-input-error\"></div>\n          <input id=\"sl-email\" placeholder=\"Email\" type=\"text\" required>\n        </div>\n      </div>\n\n      <!-- PASSWORD -->\n      <div class=\"row sl-collapse\">\n        <div class=\"columns large-12\">\n          <div id=\"sl-password-error\" class=\"sl-input-error\"></div>\n          <input id=\"sl-password\" placeholder=\"Password\" type=\"password\" required>\n        </div>\n      </div>\n\n      <!-- T&C -->\n      <div class=\"row sl-hint sl-collapse\">\n        <span><p>By signing up, you agree to Seaters' <a href=\"http://getseaters.com/user-agreement/\" class=\"sl-link\">Terms &amp; Conditions</a>\n        and <a href=\"http://getseaters.com/privacy/\" class=\"sl-link\">Privacy Policy</a></p>\n        </span>\n      </div>\n\n      <!-- SUBMIT BUTTON  -->\n      <div class=\"row sl-collapse\">\n        <div class=\"columns large-12\">\n          <button id=\"sl-btn-signup\" class=\"sl-button success expand\" type=\"button\">\n            <span>Sign up</span>\n          </button>\n        </div>\n      </div>\n    </form>\n  </div>\n</div>\n\n\n\n";
 
 /***/ },
-/* 809 */
+/* 810 */
 /***/ function(module, exports) {
 
 	module.exports = "\n  <div class=\"sl-content\">\n    <div class=\"row sl-pb-10\">\n      <h3>\n        <span>Login</span>\n      </h3>\n    </div>\n\n    <div class=\"row\">\n      <form name=\"sl-login-form\" novalidate autocomplete=\"off\">\n        <!-- EMAIL -->\n        <div class=\"row sl-collapse\">\n          <div class=\"columns large-12\">\n            <div id=\"sl-email-error\" class=\"sl-input-error\"></div>\n            <input id=\"sl-email\" placeholder=\"Email\" type=\"text\" required>\n          </div>\n        </div>\n        <!-- PASSWORD -->\n        <div class=\"row sl-collapse\">\n          <div class=\"columns large-12\">\n            <div id=\"sl-password-error\" class=\"sl-input-error\"></div>\n            <input id=\"sl-password\" placeholder=\"Password\" type=\"password\" required>\n          </div>\n        </div>\n\n        <!-- Button -->\n        <div class=\"row sl-collapse\">\n          <div class=\"columns large-12\">\n            <button id=\"sl-btn-login\" type=\"button\" class=\"sl-button success expand\">\n              <span>Login</span>\n            </button>\n          </div>\n        </div>\n\n        <!-- signup link -->\n        <div class=\"row sl-hint sl-collapse sl-flex sl-flex-row sl-flex-center-h\">\n          <span><p>No account yet ? <a id=\"sl-nav-signup\" href=\"#\" class=\"sl-link\">Signup here !</a></p></span>\n        </div>\n\n      </form>\n    </div>\n  </div>\n";
 
 /***/ },
-/* 810 */
+/* 811 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"sl-content sl-input-form\">\n\n  <div class=\"row sl-pb-10\">\n    <h3 id=\"sl-wl-name\">My Wish List</h3>\n    <div id=\"sl-wl-closed\">\n      <h4 class=\"sl-wl-closed sl-pb-10\">Closed</h4>\n      <span>\n        <p class=\"sl-mb-none\">This wish list has been closed.</p>\n        <p>Visit fan group <a id=\"sl-fg-slug\" href=\"http://www.seaters.com/myfangroup\" class=\"sl-link\">My Fan group</a></p>\n      </span>\n    </div>\n  </div>\n\n  <div id=\"sl-wl-open\">\n    <div class=\"row\">\n      <div class=\"columns small-6 sl-flex sl-flex-column sl-flex-center-h sl-wl-data-title\">Likelihood</div>\n      <div class=\"columns small-6 sl-flex sl-flex-column sl-flex-center-h sl-wl-data-title\">Rank</div>\n    </div>\n    <div class=\"row sl-pb-10\">\n      <div id=\"sl-wl-likelihood\" class=\"columns small-6 sl-flex sl-flex-column sl-flex-center-h sl-wl-data-value\">25.00 %</div>\n      <div id=\"sl-wl-rank\" class=\"columns small-6 sl-flex sl-flex-column sl-flex-center-h sl-wl-data-value\"># 1</div>\n    </div>\n  </div>\n\n  <div class=\"row sl-collapse\">\n    <div class=\"columns large-12\">\n      <button id=\"sl-btn-close\" class=\"sl-button success expand\" type=\"button\">\n        <span>Close</span>\n      </button>\n    </div>\n  </div>\n\n\n</div>\n";
 
 /***/ },
-/* 811 */
+/* 812 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
