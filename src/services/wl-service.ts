@@ -3,8 +3,9 @@ import { Promise } from 'es6-promise';
 import { WaitingList } from '../seaters-api/fan/waiting-list';
 import * as core from 'core-js/library'; 
 
-export type ACTION_STATUS =
-    'JOIN_FG' | 'JOIN' | 'UNLOCK' | 'TODO...';
+export enum ACTION_STATUS {
+    BECOME_FAN, UNLOCK, SOON, BOOK, WAIT, CONFIRM, GO_LIVE, ERROR
+}
 
 export interface ExtendedWaitingList extends WaitingList {
     /**
@@ -33,7 +34,7 @@ export class WlService {
     }
 
     private computeWLActionStatus(wl: WaitingList) {
-        var actionStatus: ACTION_STATUS = 'JOIN';
+        var actionStatus = ACTION_STATUS.BECOME_FAN;
         var processing: boolean = false;
         return {
             actionStatus: actionStatus,
