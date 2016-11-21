@@ -7638,11 +7638,10 @@ require("source-map-support").install();
 	    function FanApi(apiContext) {
 	        this.apiContext = apiContext;
 	    }
-	    //TODO: apiContext endpoint params should be implemented first
-	    FanApi.prototype.waitinglist = function (waitingListId) {
+	    FanApi.prototype.waitingList = function (waitingListId) {
 	        var endpointParams = new core.Map();
-	        endpointParams.set('listId', waitingListId);
-	        return this.apiContext.get('/fan/waiting-lists', endpointParams, null);
+	        endpointParams.set('wlId', waitingListId);
+	        return this.apiContext.get('/fan/waiting-lists/:wlId', endpointParams);
 	    };
 	    return FanApi;
 	}());
@@ -7778,6 +7777,14 @@ require("source-map-support").install();
 	    function WlService(api) {
 	        this.api = api;
 	    }
+	    WlService.prototype.getExtendedWl = function (wlId) {
+	        var _this = this;
+	        this.api.fan.waitingList(wlId).then(function (wl) { return _this.extendWl(wl); });
+	    };
+	    WlService.prototype.extendWl = function (wl) {
+	        return wl;
+	        //TODO - compute 'wl status' - see fanwebapp
+	    };
 	    return WlService;
 	}());
 	exports.WlService = WlService;

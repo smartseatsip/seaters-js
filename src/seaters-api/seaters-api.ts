@@ -7,7 +7,6 @@ export class SeatersApi extends api.ApiContext {
 
     public app: AppApi;
     public fan: FanApi;
-
     public authentication: AuthenticationApi;
 
     constructor (private prefix: string) {
