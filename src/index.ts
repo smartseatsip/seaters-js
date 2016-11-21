@@ -1,2 +1,6 @@
 export const version = "${package.version}";
-export { SeatersClient } from './seaters-client';
+import { SeatersClient, SeatersClientOptions } from './seaters-client';
+
+export function join (wlId: string) {
+    new SeatersClient 
+}
