@@ -38,7 +38,7 @@ export class SeatersClient {
     this.waitingListService = new WaitingListService(this.api);
     this.fanGroupService = new FanGroupService(this.api);
     this.modalService = new ModalService();
-    this.jwlFlowService = new JwlFlowService(this.modalService, this.sessionService, this.waitingListService);
+    this.jwlFlowService = new JwlFlowService(this.modalService, this.sessionService, this.waitingListService, this.fanGroupService);
   }
 
 }

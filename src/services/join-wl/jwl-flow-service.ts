@@ -1,18 +1,22 @@
 import { SessionService } from '../session-service';
 import { Promise } from 'es6-promise';
 import { ModalService } from '../modal-service';
-import { WaitingListService } from '../waiting-list-service';
+import { WaitingListService, ExtendedWaitingList, WAITING_LIST_ACTION_STATUS } from '../waiting-list-service';
+import { FanGroupService, ExtendedFanGroup, FAN_GROUP_ACTION_STATUS } from '../fan-group-service';
 
 declare var require: any;
 
 export class JwlFlowService {
 
-    private wlId:string = "";
+    private wlId: string = "";
+    private wl: ExtendedWaitingList;
+    private fg: ExtendedFanGroup;
 
     constructor (
         private modalService: ModalService,
         private sessionService: SessionService,
-        private waitingListService : WaitingListService
+        private waitingListService: WaitingListService,
+        private fanGroupService: FanGroupService
     ) {
     }
 
@@ -83,15 +87,14 @@ export class JwlFlowService {
         this.sessionService.doEmailPasswordLogin(email, password)
           .then(function(res) {
             _this.enableButton('sl-btn-login',true);
-
-            //Navigate to WL info form
-            _this.setupWaitingListInfo();
-
+            _this.checkJoinStatus();
           }, function(err) {
             _this.enableButton('sl-btn-login',true);
             if(err instanceof Error) {
+              console.log('session.doEmailPasswordLogin error', err.stack);//DEBUG
               //$scope.error = err.stack;
             } else {
+              console.log('session.doEmailPasswordLogin error', err);//DEBUG
               //$scope.error = err;
             }
             _this.showFormErrorsApiLogin(err);
@@ -266,7 +269,44 @@ export class JwlFlowService {
       var loginBtn = this.modalService.findElementById('sl-btn-login');
       loginBtn.onclick = () => this.doLogin();
       var navToSignup = this.modalService.findElementById('sl-nav-signup');
-      navToSignup.onclick= (evt) => { evt.preventDefault(); this.setupSignup()};
+      navToSignup.onclick = (evt) => { evt.preventDefault(); this.setupSignup()};
+    }
+
+    private checkFanGroupEligability (fg: ExtendedFanGroup) {
+      return fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_LEAVE ||
+        fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_JOIN;
+    }
+
+    private setupLinkToSeatersIfNotEligable () {
+      this.modalService.showModal(
+        'To join this wish list, visit https://seaters.com/'+this.fg.slug+'/'+this.wlId,//TODO: make template
+        ''
+      )
+    }
+
+    private checkJoinStatus () {
+      this.modalService.showModal(
+        'loading ...',//TODO: make template
+        ''
+      );
+      
+      return this.waitingListService.getExtendedWaitingList(this.wlId)
+      .then(wl => this.wl = wl)
+      .then(() => this.fanGroupService.getExtendedFanGroup(this.wl.groupId))
+      .then(fg => this.fg = fg)
+      .then(() => {
+        var fg = this.fg, wl = this.wl;
+        
+        if (!this.checkFanGroupEligability(fg)) {
+          return this.setupLinkToSeatersIfNotEligable();
+        } else {
+          return this.joinFanGroupIfNeeded(fg)
+          .then(fg => this.fg = fg)
+          .then(() => this.joinWaitingListIfNeeded(wl))
+          .then(wl => this.wl = wl)
+          .then(() => this.setupWaitingListInfo());
+        }
+      });
     }
 
 
@@ -332,8 +372,38 @@ export class JwlFlowService {
     startFlow (wlId: string) {
       this.wlId = wlId;
 
-      //For now, always start with signin flow
-      this.setupLogin();
+      if (this.sessionService.whoami()) {
+        this.checkJoinStatus();  
+      } else {
+        this.setupLogin();
+      }
+    }
+
+    private hasRank (wl: ExtendedWaitingList) {
+      return wl.actionStatus === WAITING_LIST_ACTION_STATUS.CONFIRM ||
+        wl.actionStatus === WAITING_LIST_ACTION_STATUS.WAIT ||
+        wl.actionStatus === WAITING_LIST_ACTION_STATUS.GO_LIVE;
+    }
+
+    private joinWaitingListIfNeeded (wl: ExtendedWaitingList): Promise<ExtendedWaitingList> {
+      var numberOfSeats = 1;//TODO: ask user how many seats
+        if (this.hasRank(wl)) {
+            return Promise.resolve(wl);
+        } else if (wl.actionStatus === WAITING_LIST_ACTION_STATUS.BOOK) {
+            return this.waitingListService.joinWaitingList(wl.waitingListId, numberOfSeats);
+        } else {
+            return Promise.reject('Unsupported WL action status: ' + wl.actionStatus);
+        }
+    }
+    
+    private joinFanGroupIfNeeded (fg: ExtendedFanGroup): Promise<ExtendedFanGroup> {
+        if (fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_LEAVE) { 
+            return Promise.resolve(fg);
+        } else if (fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_JOIN) {
+            return this.fanGroupService.joinFanGroup(fg.id);
+        } else {
+            return Promise.reject('Unsupported FG action status: ' + fg.actionStatus);
+        }
     }
 
 }

@@ -70,18 +70,5 @@ export class FanGroupService {
             );
         });
     }
-
-    joinFanGroupIfNeeded (fanGroupId: string): Promise<ExtendedFanGroup> {
-        return this.getExtendedFanGroup(fanGroupId)
-        .then((fg) => {
-            if (fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_LEAVE) { 
-                return Promise.resolve(fg);
-            } else if (fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_JOIN) {
-                return this.joinFanGroup(fanGroupId);
-            } else {
-                return Promise.reject('Unsupported FG action status: ' + fg.actionStatus);
-            }
-        });
-    }
     
 }

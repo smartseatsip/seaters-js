@@ -134,8 +134,8 @@ export class WaitingListService {
         }));
     }
 
-    joinWaitingList (waitingListId: string): Promise<ExtendedWaitingList> {
-        return this.api.fan.joinWaitingList(waitingListId)
+    joinWaitingList (waitingListId: string, numberOfSeats: number): Promise<ExtendedWaitingList> {
+        return this.api.fan.joinWaitingList(waitingListId, numberOfSeats)
         .then(() => {
             return retryUntil(
                 () => this.getExtendedWaitingList(waitingListId),
@@ -145,20 +145,5 @@ export class WaitingListService {
             );
         });
     }
-
-    joinWaitingListIfNeeded (wl: ExtendedWaitingList): Promise<ExtendedWaitingList> {
-        if (
-            wl.actionStatus === WAITING_LIST_ACTION_STATUS.CONFIRM ||
-            wl.actionStatus === WAITING_LIST_ACTION_STATUS.WAIT ||
-            wl.actionStatus === WAITING_LIST_ACTION_STATUS.GO_LIVE
-        ) {
-            return Promise.resolve(wl);
-        } else if (wl.actionStatus === WAITING_LIST_ACTION_STATUS.BOOK) {
-            return this.joinWaitingList(wl.waitingListId);
-        } else {
-            return Promise.reject('Unsupported WL action status: ' + wl.actionStatus);
-        }
-    }
-    
 
 }

@@ -26,7 +26,7 @@ export class FanApi {
 
     private wlEndpoint = '/fan/waiting-lists/:waitingListId';
 
-    private wlEndpointParams (waitingListId) {
+    private wlEndpointParams (waitingListId): Map<string, string> {
         return ApiContext.buildEndpointParams({waitingListId: waitingListId});
     }
 
@@ -34,8 +34,14 @@ export class FanApi {
         return this.apiContext.get<WaitingList>(this.wlEndpoint, this.wlEndpointParams(waitingListId));
     }
 
-    joinWaitingList (waitingListId: string): Promise<WaitingList> {
-        return this.apiContext.post<WaitingList>(this.wlEndpoint, this.wlEndpointParams(waitingListId));
+    joinWaitingList (waitingListId: string, numberOfSeats: number): Promise<WaitingList> {
+        return this.apiContext.post<WaitingList>(
+            this.wlEndpoint+'/position',
+            {
+                numberOfSeats: numberOfSeats
+            },
+            this.wlEndpointParams(waitingListId)
+        );
     }
 
 }
