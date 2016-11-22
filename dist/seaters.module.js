@@ -8442,6 +8442,9 @@ require("source-map-support").install();
 	            if (!_this.checkFanGroupEligability(fg)) {
 	                return _this.setupLinkToSeatersIfNotEligable();
 	            }
+	            else if (_this.hasRank(wl)) {
+	                return _this.setupWaitingListInfo();
+	            }
 	            else {
 	                return _this.joinFanGroupIfNeeded(fg)
 	                    .then(function (fg) { return _this.fg = fg; })

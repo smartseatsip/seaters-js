@@ -16,7 +16,7 @@ var serveStatic = require('serve-static');
 var server = undefined;
 
 gulp.task('clean', function() {
-  return gulp.src(['dist', 'errorShots', 'lib'], {read:false})
+  return gulp.src(['dist', 'errorShots', 'tmp'], {read:false})
     .pipe(clean());
 });
 
