@@ -299,6 +299,8 @@ export class JwlFlowService {
         
         if (!this.checkFanGroupEligability(fg)) {
           return this.setupLinkToSeatersIfNotEligable();
+        } else if (this.hasRank(wl)) {
+          return this.setupWaitingListInfo();
         } else {
           return this.joinFanGroupIfNeeded(fg)
           .then(fg => this.fg = fg)
