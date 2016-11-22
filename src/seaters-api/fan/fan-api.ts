@@ -3,6 +3,7 @@ import { PagedResult } from '../paged-result';
 import { PagingOptions } from '../paging-options';
 import { WaitingList } from './waiting-list';
 import { FanGroup } from './fan-group';
+import {Fan} from "./fan-group";
 
 export class FanApi {
 
@@ -44,4 +45,9 @@ export class FanApi {
         );
     }
 
+    private fanEndpoint = '/fan';
+
+    fan (): Promise<Fan> {
+      return this.apiContext.get<Fan>(this.fanEndpoint);
+    }
 }

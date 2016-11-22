@@ -1,6 +1,6 @@
 import { SeatersApi } from '../seaters-api';
 import { Promise } from 'es6-promise';
-import { FanGroup } from '../seaters-api/fan/fan-group';
+import { FanGroup, Fan } from '../seaters-api/fan/fan-group';
 import { retryUntil } from './util';
 import { Object as coreObject } from 'core-js/library';
 
@@ -19,8 +19,12 @@ export class FanGroupService {
 
     constructor (
         private api: SeatersApi
-    ) { 
+    ) {
 
+    }
+
+    getFan (): Promise<Fan> {
+      return this.api.fan.fan();
     }
 
     getFanGroup (fanGroupId: string): Promise<FanGroup> {
@@ -70,5 +74,5 @@ export class FanGroupService {
             );
         });
     }
-    
+
 }

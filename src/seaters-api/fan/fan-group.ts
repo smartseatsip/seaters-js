@@ -7,12 +7,12 @@ export interface Statistics {
      * The number of Seats of Fan in FanGroup
      */
     numberOfSeats: number,
-    
+
     /**
      * The number of FanGroup's members
      */
     numberOfMembers: number,
-    
+
     /**
      * The number of Waiting Lists in FanGroup
      */
@@ -21,7 +21,7 @@ export interface Statistics {
     /**
      * The number of Waiting Lists joined by Fan in FanGroup
      */
-    numberOfJoinedWaitingLists: number, 
+    numberOfJoinedWaitingLists: number,
 }
 
 export type INVITATION_STATUS =
@@ -45,7 +45,7 @@ export interface Request {
     rejectionReason: string,
 
     /**
-     * Request's status 
+     * Request's status
      */
     status: REQUEST_STATUS
 }
@@ -60,7 +60,7 @@ export interface Membership {
      * The request to join if available, null otherwise
      */
     request: Request,
-    
+
     /**
      * True if Fan is member of the Fan Group
      */
@@ -72,7 +72,7 @@ export interface FanGroupCategory {
      * Category name, translated in the fan's locale
      */
     translatedName: string,
-    
+
     /**
      * Category's name: {string=>string}
      * @deprecated use translatedName
@@ -117,7 +117,7 @@ export interface FanGroup {
      * True if authenticated fan is member of the FanGroup
      */
     fanMember: boolean,
-    
+
     /**
      * FanGroup statistics
      */
@@ -135,7 +135,7 @@ export interface FanGroup {
     color1: string,
 
     /**
-     * FanGroup's cover image 
+     * FanGroup's cover image
      */
     coverImageUrl: string,
 
@@ -143,7 +143,7 @@ export interface FanGroup {
      * FanGroup's profile image
      */
     backgroundImageUrl: string,
-    
+
     /**
      * FanGroup's color 2
      */
@@ -158,14 +158,14 @@ export interface FanGroup {
      * Fan Group's short name, translated in fan locale
      */
     translatedShortName: string,
-    
+
     /**
      * Fan Group's welcome text, translated in fan locale
      */
     translatedWelcomeText: string,
 
     /**
-     * Fan Group categories 
+     * Fan Group categories
      */
     groupCategories: FanGroupCategory[],
 
@@ -173,7 +173,7 @@ export interface FanGroup {
      * Fan Group's name, translated in fan locale
      */
     translatedName: string,
-    
+
     /**
      * FanGroup's profile image
      */
@@ -184,10 +184,52 @@ export interface FanGroup {
      * @deprecated use translatedName
      */
     name: any,
-    
+
     /**
      * FanGroup's ID
      * @format UUID
      */
     id: string,
+}
+
+
+/**
+ * Limited fan info
+ */
+export interface Fan {
+
+  /**
+   * Fan first name
+   */
+  firstName: string,
+
+  /**
+   * Fan last name
+   */
+  lastName: string,
+
+  /**
+   * Fan full name
+   */
+  name,
+
+  /**
+   * Fan email
+   */
+  email: string,
+
+  /**
+   * Fan email validated
+   */
+  validatedEmail: boolean,
+
+  /**
+   * Fan roles
+   */
+  roles: string[],
+
+  /**
+   * Fan language
+   */
+  language: string,
 }
