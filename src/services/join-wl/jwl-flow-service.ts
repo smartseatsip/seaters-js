@@ -82,24 +82,24 @@ export class JwlFlowService {
       if (validationErrors.length > 0)
         this.modalService.showFormErrors(validationErrors);
       else {
+
         //Login
         this.enableButton('sl-btn-login',false);
         this.sessionService.doEmailPasswordLogin(email, password)
-          .then(function(res) {
-            _this.enableButton('sl-btn-login',true);
-            _this.checkJoinStatus();
-          }, function(err) {
-            _this.enableButton('sl-btn-login',true);
-            if(err instanceof Error) {
-              console.log('session.doEmailPasswordLogin error', err.stack);//DEBUG
-              //$scope.error = err.stack;
-            } else {
-              console.log('session.doEmailPasswordLogin error', err);//DEBUG
-              //$scope.error = err;
-            }
-            _this.showFormErrorsApiLogin(err);
-          });
-
+          .then(
+            (user) => {
+              _this.enableButton('sl-btn-login',true);
+              _this.checkJoinStatus();
+            },
+            (err) => {
+              _this.enableButton('sl-btn-login',true);
+              if(err instanceof Error) {
+                console.log('session.doEmailPasswordLogin error', err.stack);//DEBUG
+              } else {
+                console.log('session.doEmailPasswordLogin error', err);//DEBUG
+              }
+              _this.showFormErrorsApiLogin(err);
+            });
       }
     }
 
@@ -289,14 +289,14 @@ export class JwlFlowService {
         'loading ...',//TODO: make template
         ''
       );
-      
+
       return this.waitingListService.getExtendedWaitingList(this.wlId)
       .then(wl => this.wl = wl)
       .then(() => this.fanGroupService.getExtendedFanGroup(this.wl.groupId))
       .then(fg => this.fg = fg)
       .then(() => {
         var fg = this.fg, wl = this.wl;
-        
+
         if (!this.checkFanGroupEligability(fg)) {
           return this.setupLinkToSeatersIfNotEligable();
         } else if (this.hasRank(wl)) {
@@ -375,7 +375,7 @@ export class JwlFlowService {
       this.wlId = wlId;
 
       if (this.sessionService.whoami()) {
-        this.checkJoinStatus();  
+        this.checkJoinStatus();
       } else {
         this.setupLogin();
       }
@@ -397,9 +397,9 @@ export class JwlFlowService {
             return Promise.reject('Unsupported WL action status: ' + wl.actionStatus);
         }
     }
-    
+
     private joinFanGroupIfNeeded (fg: ExtendedFanGroup): Promise<ExtendedFanGroup> {
-        if (fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_LEAVE) { 
+        if (fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_LEAVE) {
             return Promise.resolve(fg);
         } else if (fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_JOIN) {
             return this.fanGroupService.joinFanGroup(fg.id);
