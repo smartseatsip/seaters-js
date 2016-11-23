@@ -89,6 +89,7 @@ export class JwlFlowService {
           .then(
             (user) => {
               _this.enableButton('strs-btn-login',true);
+              //TODO: TEST for validated email; if not yet, nav to validation form otherwise continue to WL
               _this.checkJoinStatus();
             },
             (err) => {
@@ -164,20 +165,21 @@ export class JwlFlowService {
         //Login
         this.enableButton('strs-btn-signup',false);
         this.sessionService.doEmailPasswordSignUp(email, password, firstname, lastname)
-          .then(function(res) {
-           //Continue with email validation
-            _this.enableButton('strs-btn-signup',true);
-            _this.setupEmailValidation(res);
-          }, function(err) {
-            _this.enableButton('strs-btn-signup',true);
-            if(err instanceof Error) {
-              //$scope.error = err.stack;
-            } else {
-              //$scope.error = err;
-            }
-
-            _this.modalService.showFieldError('strs-email-error',err.message);
-          });
+          .then(
+            (userAfterSignup) => {
+            //Now signin - after signin, continue with email validation
+            _this.sessionService.doEmailPasswordLogin(email, password).then(userAfterLogin => _this.setupEmailValidation(userAfterLogin));
+            },
+            (err) => {
+              _this.enableButton('strs-btn-signup',true);
+              if(err instanceof Error) {
+                console.log('session.doEmailPasswordSignUp error', err.stack);//DEBUG
+              }
+              else {
+                console.log('session.doEmailPasswordSignUp error', err);//DEBUG
+              }
+              _this.modalService.showFieldError('strs-email-error',err.message);
+            });
       }
     }
 
@@ -218,15 +220,14 @@ export class JwlFlowService {
         //Validate
         this.enableButton('strs-btn-validate',false);
         this.sessionService.doValidation(email, confirmationCode)
-          .then(function(res) {
-            _this.enableButton('strs-btn-validate',true);
-            alert("You have confirmed your email");
-          }, function(err) {
+          .then(
+            res =>_this.checkJoinStatus()
+          , (err) => {
             _this.enableButton('strs-btn-validate',true);
             if(err instanceof Error) {
-              //$scope.error = err.stack;
+              console.log('session.doValidation error', err.stack);//DEBUG
             } else {
-              //$scope.error = err;
+              console.log('session.doValidation error', err.stack);//DEBUG
             }
 
             //For now, add general always show this error, as error info is in different format coming back
@@ -237,8 +238,6 @@ export class JwlFlowService {
     }
 
     setupEmailValidation (userData) {
-      console.log(userData);
-
       this.modalService.showModal(
         require('./validate.html'),
         require('./app.css')
@@ -246,7 +245,7 @@ export class JwlFlowService {
       var validateEmailBtn = this.modalService.findElementById('strs-btn-validate');
       validateEmailBtn.onclick = () => this.doEmailValidation(userData);
       var userSpan = this.modalService.findElementById('strs-span-firstname');
-      userSpan.innerHTML = userData.firstName;
+      userSpan.innerHTML = userData.name.firstName;
     }
 
     setupSignup () {
@@ -375,6 +374,7 @@ export class JwlFlowService {
       this.wlId = wlId;
 
       if (this.sessionService.whoami()) {
+        //TODO: TEST for validated email; if not yet, nav to validation form otherwise continue to WL
         this.checkJoinStatus();
       } else {
         this.setupLogin();

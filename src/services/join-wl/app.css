@@ -1172,14 +1172,13 @@ html {
   background-color: #e7e7e7; }
 
 .strs-button.disabled.success, .strs-button[disabled].success {
-  background-color: #43AC6A;
-  border-color: #368a55;
+  background-color: #62ccc6;;
   color: #FFFFFF;
   box-shadow: none;
   cursor: default;
   opacity: 0.7; }
 .strs-button.disabled.success:hover, .strs-button.disabled.success:focus, .strs-button[disabled].success:hover, .strs-button[disabled].success:focus {
-  background-color: #10CCC2; }
+  background-color: #62ccc6; }
 .strs-button.disabled.success:hover, .strs-button.disabled.success:focus, .strs-button[disabled].success:hover, .strs-button[disabled].success:focus {
   color: #FFFFFF; }
 
