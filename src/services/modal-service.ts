@@ -99,7 +99,7 @@ export class ModalService {
      */
     resetFormErrors() {
       //Reset all errors
-      var errorFields = this.modal.getElementsByClassName('sl-input-error');
+      var errorFields = this.modal.getElementsByClassName('strs-input-error');
       for (var i=0;i<errorFields.length;i++){
         (<HTMLElement>errorFields[i]).style.display = 'none';
       }

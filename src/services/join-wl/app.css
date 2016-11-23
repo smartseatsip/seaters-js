@@ -1,1076 +1,1048 @@
-/*
- * Foundation mini
- */
-html, body {
-  height: 100%; }
+html {
+  font-size: 16px;
+}
 
-*,
-*:before,
-*:after {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box; }
-
-html,
-body {
-  font-size: 100%; }
-
-body {
-  background: #fff;
-  color: #222;
-  cursor: auto;
-  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
-  font-style: normal;
-  font-weight: normal;
-  line-height: 1.5;
-  margin: 0;
-  padding: 0;
-  position: relative; }
-
-a:hover {
-  cursor: pointer; }
-
-
-.left {
+.strs-left {
   float: left !important; }
 
-.right {
+.strs-right {
   float: right !important; }
 
-.clearfix:before, .clearfix:after {
+.strs-clearfix:before, .strs-clearfix:after {
   content: " ";
   display: table; }
-.clearfix:after {
-  clear: both; }
+.strs-clearfix:after {
+  clear: both;
+}
 
 /* Row and columns */
-.row {
+.strs-row {
   margin: 0 auto;
   max-width: 62.5rem;
   width: 100%; }
-.row:before, .row:after {
+.strs-row:before, .strs-row:after {
   content: " ";
   display: table; }
-.row:after {
+.strs-row:after {
   clear: both; }
-.row.collapse > .column,
-.row.collapse > .columns {
+.strs-row.collapse > .strs-column,
+.strs-row.collapse > .strs-columns {
   padding-left: 0;
   padding-right: 0; }
-.row.collapse .row {
+.strs-row.collapse .strs-row {
   margin-left: 0;
   margin-right: 0; }
-.row .row {
+.strs-row .strs-row {
   margin: 0 -0.9375rem;
   max-width: none;
   width: auto; }
-.row .row:before, .row .row:after {
+.strs-row .strs-row:before, .strs-row .strs-row:after {
   content: " ";
   display: table; }
-.row .row:after {
+.strs-row .strs-row:after {
   clear: both; }
-.row .row.collapse {
+.strs-row .strs-row.collapse {
   margin: 0;
   max-width: none;
   width: auto; }
-.row .row.collapse:before, .row .row.collapse:after {
+.strs-row .strs-row.collapse:before, .strs-row .strs-row.collapse:after {
   content: " ";
   display: table; }
-.row .row.collapse:after {
+.strs-row .strs-row.collapse:after {
   clear: both; }
 
-.column,
-.columns {
+.strs-column,
+.strs-columns {
   padding-left: 0.9375rem;
   padding-right: 0.9375rem;
   width: 100%;
   float: left; }
-.column + .column:last-child,
-.columns + .column:last-child, .column +
-.columns:last-child,
-.columns +
-.columns:last-child {
+.strs-column + .strs-column:last-child,
+.strs-columns + .strs-column:last-child, .strs-column +
+.strs-columns:last-child,
+.strs-columns +
+.strs-columns:last-child {
   float: right; }
-.column + .column.end,
-.columns + .column.end, .column +
-.columns.end,
-.columns +
-.columns.end {
+.strs-column + .strs-column.end,
+.strs-columns + .strs-column.end, .strs-column +
+.strs-columns.end,
+.strs-columns +
+.strs-columns.end {
   float: left; }
 
 /* column sizes */
 @media only screen {
-  .small-push-0 {
+  .strs-small-push-0 {
     position: relative;
     left: 0;
     right: auto; }
 
-  .small-pull-0 {
+  .strs-small-pull-0 {
     position: relative;
     right: 0;
     left: auto; }
 
-  .small-push-1 {
+  .strs-small-push-1 {
     position: relative;
     left: 8.33333%;
     right: auto; }
 
-  .small-pull-1 {
+  .strs-small-pull-1 {
     position: relative;
     right: 8.33333%;
     left: auto; }
 
-  .small-push-2 {
+  .strs-small-push-2 {
     position: relative;
     left: 16.66667%;
     right: auto; }
 
-  .small-pull-2 {
+  .strs-small-pull-2 {
     position: relative;
     right: 16.66667%;
     left: auto; }
 
-  .small-push-3 {
+  .strs-small-push-3 {
     position: relative;
     left: 25%;
     right: auto; }
 
-  .small-pull-3 {
+  .strs-small-pull-3 {
     position: relative;
     right: 25%;
     left: auto; }
 
-  .small-push-4 {
+  .strs-small-push-4 {
     position: relative;
     left: 33.33333%;
     right: auto; }
 
-  .small-pull-4 {
+  .strs-small-pull-4 {
     position: relative;
     right: 33.33333%;
     left: auto; }
 
-  .small-push-5 {
+  .strs-small-push-5 {
     position: relative;
     left: 41.66667%;
     right: auto; }
 
-  .small-pull-5 {
+  .strs-small-pull-5 {
     position: relative;
     right: 41.66667%;
     left: auto; }
 
-  .small-push-6 {
+  .strs-small-push-6 {
     position: relative;
     left: 50%;
     right: auto; }
 
-  .small-pull-6 {
+  .strs-small-pull-6 {
     position: relative;
     right: 50%;
     left: auto; }
 
-  .small-push-7 {
+  .strs-small-push-7 {
     position: relative;
     left: 58.33333%;
     right: auto; }
 
-  .small-pull-7 {
+  .strs-small-pull-7 {
     position: relative;
     right: 58.33333%;
     left: auto; }
 
-  .small-push-8 {
+  .strs-small-push-8 {
     position: relative;
     left: 66.66667%;
     right: auto; }
 
-  .small-pull-8 {
+  .strs-small-pull-8 {
     position: relative;
     right: 66.66667%;
     left: auto; }
 
-  .small-push-9 {
+  .strs-small-push-9 {
     position: relative;
     left: 75%;
     right: auto; }
 
-  .small-pull-9 {
+  .strs-small-pull-9 {
     position: relative;
     right: 75%;
     left: auto; }
 
-  .small-push-10 {
+  .strs-small-push-10 {
     position: relative;
     left: 83.33333%;
     right: auto; }
 
-  .small-pull-10 {
+  .strs-small-pull-10 {
     position: relative;
     right: 83.33333%;
     left: auto; }
 
-  .small-push-11 {
+  .strs-small-push-11 {
     position: relative;
     left: 91.66667%;
     right: auto; }
 
-  .small-pull-11 {
+  .strs-small-pull-11 {
     position: relative;
     right: 91.66667%;
     left: auto; }
 
-  .column,
-  .columns {
+  .strs-column,
+  .strs-columns {
     position: relative;
     padding-left: 0.9375rem;
     padding-right: 0.9375rem;
     float: left; }
 
-  .small-1 {
+  .strs-small-1 {
     width: 8.33333%; }
 
-  .small-2 {
+  .strs-small-2 {
     width: 16.66667%; }
 
-  .small-3 {
+  .strs-small-3 {
     width: 25%; }
 
-  .small-4 {
+  .strs-small-4 {
     width: 33.33333%; }
 
-  .small-5 {
+  .strs-small-5 {
     width: 41.66667%; }
 
-  .small-6 {
+  .strs-small-6 {
     width: 50%; }
 
-  .small-7 {
+  .strs-small-7 {
     width: 58.33333%; }
 
-  .small-8 {
+  .strs-small-8 {
     width: 66.66667%; }
 
-  .small-9 {
+  .strs-small-9 {
     width: 75%; }
 
-  .small-10 {
+  .strs-small-10 {
     width: 83.33333%; }
 
-  .small-11 {
+  .strs-small-11 {
     width: 91.66667%; }
 
-  .small-12 {
+  .strs-small-12 {
     width: 100%; }
 
-  .small-offset-0 {
+  .strs-small-offset-0 {
     margin-left: 0 !important; }
 
-  .small-offset-1 {
+  .strs-small-offset-1 {
     margin-left: 8.33333% !important; }
 
-  .small-offset-2 {
+  .strs-small-offset-2 {
     margin-left: 16.66667% !important; }
 
-  .small-offset-3 {
+  .strs-small-offset-3 {
     margin-left: 25% !important; }
 
-  .small-offset-4 {
+  .strs-small-offset-4 {
     margin-left: 33.33333% !important; }
 
-  .small-offset-5 {
+  .strs-small-offset-5 {
     margin-left: 41.66667% !important; }
 
-  .small-offset-6 {
+  .strs-small-offset-6 {
     margin-left: 50% !important; }
 
-  .small-offset-7 {
+  .strs-small-offset-7 {
     margin-left: 58.33333% !important; }
 
-  .small-offset-8 {
+  .strs-small-offset-8 {
     margin-left: 66.66667% !important; }
 
-  .small-offset-9 {
+  .strs-small-offset-9 {
     margin-left: 75% !important; }
 
-  .small-offset-10 {
+  .strs-small-offset-10 {
     margin-left: 83.33333% !important; }
 
-  .small-offset-11 {
+  .strs-small-offset-11 {
     margin-left: 91.66667% !important; }
 
-  .small-reset-order {
+  .strs-small-reset-order {
     float: left;
     left: auto;
     margin-left: 0;
     margin-right: 0;
     right: auto; }
 
-  .column.small-centered,
-  .columns.small-centered {
+  .strs-column.strs-small-centered,
+  .strs-columns.strs-small-centered {
     margin-left: auto;
     margin-right: auto;
     float: none; }
 
-  .column.small-uncentered,
-  .columns.small-uncentered {
+  .strs-column.strs-small-uncentered,
+  .strs-columns.strs-small-uncentered {
     float: left;
     margin-left: 0;
     margin-right: 0; }
 
-  .column.small-centered:last-child,
-  .columns.small-centered:last-child {
+  .strs-column.strs-small-centered:last-child,
+  .strs-columns.strs-small-centered:last-child {
     float: none; }
 
-  .column.small-uncentered:last-child,
-  .columns.small-uncentered:last-child {
+  .strs-column.strs-small-uncentered:last-child,
+  .strs-columns.strs-small-uncentered:last-child {
     float: left; }
 
-  .column.small-uncentered.opposite,
-  .columns.small-uncentered.opposite {
+  .strs-column.strs-small-uncentered.opposite,
+  .strs-columns.strs-small-uncentered.opposite {
     float: right; }
 
-  .row.small-collapse > .column,
-  .row.small-collapse > .columns {
+  .strs-row.strs-small-collapse > .strs-column,
+  .strs-row.strs-small-collapse > .strs-columns {
     padding-left: 0;
     padding-right: 0; }
-  .row.small-collapse .row {
+  .strs-row.strs-small-collapse .strs-row {
     margin-left: 0;
     margin-right: 0; }
-  .row.small-uncollapse > .column,
-  .row.small-uncollapse > .columns {
+  .strs-row.strs-small-uncollapse > .strs-column,
+  .strs-row.strs-small-uncollapse > .strs-columns {
     padding-left: 0.9375rem;
     padding-right: 0.9375rem;
     float: left; } }
 @media only screen and (min-width: 40.0625em) {
-  .medium-push-0 {
+  .strs-medium-push-0 {
     position: relative;
     left: 0;
     right: auto; }
 
-  .medium-pull-0 {
+  .strs-medium-pull-0 {
     position: relative;
     right: 0;
     left: auto; }
 
-  .medium-push-1 {
+  .strs-medium-push-1 {
     position: relative;
     left: 8.33333%;
     right: auto; }
 
-  .medium-pull-1 {
+  .strs-medium-pull-1 {
     position: relative;
     right: 8.33333%;
     left: auto; }
 
-  .medium-push-2 {
+  .strs-medium-push-2 {
     position: relative;
     left: 16.66667%;
     right: auto; }
 
-  .medium-pull-2 {
+  .strs-medium-pull-2 {
     position: relative;
     right: 16.66667%;
     left: auto; }
 
-  .medium-push-3 {
+  .strs-medium-push-3 {
     position: relative;
     left: 25%;
     right: auto; }
 
-  .medium-pull-3 {
+  .strs-medium-pull-3 {
     position: relative;
     right: 25%;
     left: auto; }
 
-  .medium-push-4 {
+  .strs-medium-push-4 {
     position: relative;
     left: 33.33333%;
     right: auto; }
 
-  .medium-pull-4 {
+  .strs-medium-pull-4 {
     position: relative;
     right: 33.33333%;
     left: auto; }
 
-  .medium-push-5 {
+  .strs-medium-push-5 {
     position: relative;
     left: 41.66667%;
     right: auto; }
 
-  .medium-pull-5 {
+  .strs-medium-pull-5 {
     position: relative;
     right: 41.66667%;
     left: auto; }
 
-  .medium-push-6 {
+  .strs-medium-push-6 {
     position: relative;
     left: 50%;
     right: auto; }
 
-  .medium-pull-6 {
+  .strs-medium-pull-6 {
     position: relative;
     right: 50%;
     left: auto; }
 
-  .medium-push-7 {
+  .strs-medium-push-7 {
     position: relative;
     left: 58.33333%;
     right: auto; }
 
-  .medium-pull-7 {
+  .strs-medium-pull-7 {
     position: relative;
     right: 58.33333%;
     left: auto; }
 
-  .medium-push-8 {
+  .strs-medium-push-8 {
     position: relative;
     left: 66.66667%;
     right: auto; }
 
-  .medium-pull-8 {
+  .strs-medium-pull-8 {
     position: relative;
     right: 66.66667%;
     left: auto; }
 
-  .medium-push-9 {
+  .strs-medium-push-9 {
     position: relative;
     left: 75%;
     right: auto; }
 
-  .medium-pull-9 {
+  .strs-medium-pull-9 {
     position: relative;
     right: 75%;
     left: auto; }
 
-  .medium-push-10 {
+  .strs-medium-push-10 {
     position: relative;
     left: 83.33333%;
     right: auto; }
 
-  .medium-pull-10 {
+  .strs-medium-pull-10 {
     position: relative;
     right: 83.33333%;
     left: auto; }
 
-  .medium-push-11 {
+  .strs-medium-push-11 {
     position: relative;
     left: 91.66667%;
     right: auto; }
 
-  .medium-pull-11 {
+  .strs-medium-pull-11 {
     position: relative;
     right: 91.66667%;
     left: auto; }
 
-  .column,
-  .columns {
+  .strs-column,
+  .strs-columns {
     position: relative;
     padding-left: 0.9375rem;
     padding-right: 0.9375rem;
     float: left; }
 
-  .medium-1 {
+  .strs-medium-1 {
     width: 8.33333%; }
 
-  .medium-2 {
+  .strs-medium-2 {
     width: 16.66667%; }
 
-  .medium-3 {
+  .strs-medium-3 {
     width: 25%; }
 
-  .medium-4 {
+  .strs-medium-4 {
     width: 33.33333%; }
 
-  .medium-5 {
+  .strs-medium-5 {
     width: 41.66667%; }
 
-  .medium-6 {
+  .strs-medium-6 {
     width: 50%; }
 
-  .medium-7 {
+  .strs-medium-7 {
     width: 58.33333%; }
 
-  .medium-8 {
+  .strs-medium-8 {
     width: 66.66667%; }
 
-  .medium-9 {
+  .strs-medium-9 {
     width: 75%; }
 
-  .medium-10 {
+  .strs-medium-10 {
     width: 83.33333%; }
 
-  .medium-11 {
+  .strs-medium-11 {
     width: 91.66667%; }
 
-  .medium-12 {
+  .strs-medium-12 {
     width: 100%; }
 
-  .medium-offset-0 {
+  .strs-medium-offset-0 {
     margin-left: 0 !important; }
 
-  .medium-offset-1 {
+  .strs-medium-offset-1 {
     margin-left: 8.33333% !important; }
 
-  .medium-offset-2 {
+  .strs-medium-offset-2 {
     margin-left: 16.66667% !important; }
 
-  .medium-offset-3 {
+  .strs-medium-offset-3 {
     margin-left: 25% !important; }
 
-  .medium-offset-4 {
+  .strs-medium-offset-4 {
     margin-left: 33.33333% !important; }
 
-  .medium-offset-5 {
+  .strs-medium-offset-5 {
     margin-left: 41.66667% !important; }
 
-  .medium-offset-6 {
+  .strs-medium-offset-6 {
     margin-left: 50% !important; }
 
-  .medium-offset-7 {
+  .strs-medium-offset-7 {
     margin-left: 58.33333% !important; }
 
-  .medium-offset-8 {
+  .strs-medium-offset-8 {
     margin-left: 66.66667% !important; }
 
-  .medium-offset-9 {
+  .strs-medium-offset-9 {
     margin-left: 75% !important; }
 
-  .medium-offset-10 {
+  .strs-medium-offset-10 {
     margin-left: 83.33333% !important; }
 
-  .medium-offset-11 {
+  .strs-medium-offset-11 {
     margin-left: 91.66667% !important; }
 
-  .medium-reset-order {
+  .strs-medium-reset-order {
     float: left;
     left: auto;
     margin-left: 0;
     margin-right: 0;
     right: auto; }
 
-  .column.medium-centered,
-  .columns.medium-centered {
+  .strs-column.strs-medium-centered,
+  .strs-columns.strs-medium-centered {
     margin-left: auto;
     margin-right: auto;
     float: none; }
 
-  .column.medium-uncentered,
-  .columns.medium-uncentered {
+  .strs-column.strs-medium-uncentered,
+  .strs-columns.strs-medium-uncentered {
     float: left;
     margin-left: 0;
     margin-right: 0; }
 
-  .column.medium-centered:last-child,
-  .columns.medium-centered:last-child {
+  .strs-column.strs-medium-centered:last-child,
+  .strs-columns.strs-medium-centered:last-child {
     float: none; }
 
-  .column.medium-uncentered:last-child,
-  .columns.medium-uncentered:last-child {
+  .strs-column.strs-medium-uncentered:last-child,
+  .strs-columns.strs-medium-uncentered:last-child {
     float: left; }
 
-  .column.medium-uncentered.opposite,
-  .columns.medium-uncentered.opposite {
+  .strs-column.strs-medium-uncentered.opposite,
+  .strs-columns.strs-medium-uncentered.opposite {
     float: right; }
 
-  .row.medium-collapse > .column,
-  .row.medium-collapse > .columns {
+  .strs-row.strs-medium-collapse > .strs-column,
+  .strs-row.strs-medium-collapse > .strs-columns {
     padding-left: 0;
     padding-right: 0; }
-  .row.medium-collapse .row {
+  .strs-row.strs-medium-collapse .strs-row {
     margin-left: 0;
     margin-right: 0; }
-  .row.medium-uncollapse > .column,
-  .row.medium-uncollapse > .columns {
+  .strs-row.strs-medium-uncollapse > .strs-column,
+  .strs-row.strs-medium-uncollapse > .strs-columns {
     padding-left: 0.9375rem;
     padding-right: 0.9375rem;
     float: left; }
 
-  .push-0 {
+  .strs-push-0 {
     position: relative;
     left: 0;
     right: auto; }
 
-  .pull-0 {
+  .strs-pull-0 {
     position: relative;
     right: 0;
     left: auto; }
 
-  .push-1 {
+  .strs-push-1 {
     position: relative;
     left: 8.33333%;
     right: auto; }
 
-  .pull-1 {
+  .strs-pull-1 {
     position: relative;
     right: 8.33333%;
     left: auto; }
 
-  .push-2 {
+  .strs-push-2 {
     position: relative;
     left: 16.66667%;
     right: auto; }
 
-  .pull-2 {
+  .strs-pull-2 {
     position: relative;
     right: 16.66667%;
     left: auto; }
 
-  .push-3 {
+  .strs-push-3 {
     position: relative;
     left: 25%;
     right: auto; }
 
-  .pull-3 {
+  .strs-pull-3 {
     position: relative;
     right: 25%;
     left: auto; }
 
-  .push-4 {
+  .strs-push-4 {
     position: relative;
     left: 33.33333%;
     right: auto; }
 
-  .pull-4 {
+  .strs-pull-4 {
     position: relative;
     right: 33.33333%;
     left: auto; }
 
-  .push-5 {
+  .strs-push-5 {
     position: relative;
     left: 41.66667%;
     right: auto; }
 
-  .pull-5 {
+  .strs-pull-5 {
     position: relative;
     right: 41.66667%;
     left: auto; }
 
-  .push-6 {
+  .strs-push-6 {
     position: relative;
     left: 50%;
     right: auto; }
 
-  .pull-6 {
+  .strs-pull-6 {
     position: relative;
     right: 50%;
     left: auto; }
 
-  .push-7 {
+  .strs-push-7 {
     position: relative;
     left: 58.33333%;
     right: auto; }
 
-  .pull-7 {
+  .strs-pull-7 {
     position: relative;
     right: 58.33333%;
     left: auto; }
 
-  .push-8 {
+  .strs-push-8 {
     position: relative;
     left: 66.66667%;
     right: auto; }
 
-  .pull-8 {
+  .strs-pull-8 {
     position: relative;
     right: 66.66667%;
     left: auto; }
 
-  .push-9 {
+  .strs-push-9 {
     position: relative;
     left: 75%;
     right: auto; }
 
-  .pull-9 {
+  .strs-pull-9 {
     position: relative;
     right: 75%;
     left: auto; }
 
-  .push-10 {
+  .strs-push-10 {
     position: relative;
     left: 83.33333%;
     right: auto; }
 
-  .pull-10 {
+  .strs-pull-10 {
     position: relative;
     right: 83.33333%;
     left: auto; }
 
-  .push-11 {
+  .strs-push-11 {
     position: relative;
     left: 91.66667%;
     right: auto; }
 
-  .pull-11 {
+  .strs-pull-11 {
     position: relative;
     right: 91.66667%;
     left: auto; } }
 @media only screen and (min-width: 64.0625em) {
-  .large-push-0 {
+  .strs-large-push-0 {
     position: relative;
     left: 0;
     right: auto; }
 
-  .large-pull-0 {
+  .strs-large-pull-0 {
     position: relative;
     right: 0;
     left: auto; }
 
-  .large-push-1 {
+  .strs-large-push-1 {
     position: relative;
     left: 8.33333%;
     right: auto; }
 
-  .large-pull-1 {
+  .strs-large-pull-1 {
     position: relative;
     right: 8.33333%;
     left: auto; }
 
-  .large-push-2 {
+  .strs-large-push-2 {
     position: relative;
     left: 16.66667%;
     right: auto; }
 
-  .large-pull-2 {
+  .strs-large-pull-2 {
     position: relative;
     right: 16.66667%;
     left: auto; }
 
-  .large-push-3 {
+  .strs-large-push-3 {
     position: relative;
     left: 25%;
     right: auto; }
 
-  .large-pull-3 {
+  .strs-large-pull-3 {
     position: relative;
     right: 25%;
     left: auto; }
 
-  .large-push-4 {
+  .strs-large-push-4 {
     position: relative;
     left: 33.33333%;
     right: auto; }
 
-  .large-pull-4 {
+  .strs-large-pull-4 {
     position: relative;
     right: 33.33333%;
     left: auto; }
 
-  .large-push-5 {
+  .strs-large-push-5 {
     position: relative;
     left: 41.66667%;
     right: auto; }
 
-  .large-pull-5 {
+  .strs-large-pull-5 {
     position: relative;
     right: 41.66667%;
     left: auto; }
 
-  .large-push-6 {
+  .strs-large-push-6 {
     position: relative;
     left: 50%;
     right: auto; }
 
-  .large-pull-6 {
+  .strs-large-pull-6 {
     position: relative;
     right: 50%;
     left: auto; }
 
-  .large-push-7 {
+  .strs-large-push-7 {
     position: relative;
     left: 58.33333%;
     right: auto; }
 
-  .large-pull-7 {
+  .strs-large-pull-7 {
     position: relative;
     right: 58.33333%;
     left: auto; }
 
-  .large-push-8 {
+  .strs-large-push-8 {
     position: relative;
     left: 66.66667%;
     right: auto; }
 
-  .large-pull-8 {
+  .strs-large-pull-8 {
     position: relative;
     right: 66.66667%;
     left: auto; }
 
-  .large-push-9 {
+  .strs-large-push-9 {
     position: relative;
     left: 75%;
     right: auto; }
 
-  .large-pull-9 {
+  .strs-large-pull-9 {
     position: relative;
     right: 75%;
     left: auto; }
 
-  .large-push-10 {
+  .strs-large-push-10 {
     position: relative;
     left: 83.33333%;
     right: auto; }
 
-  .large-pull-10 {
+  .strs-large-pull-10 {
     position: relative;
     right: 83.33333%;
     left: auto; }
 
-  .large-push-11 {
+  .strs-large-push-11 {
     position: relative;
     left: 91.66667%;
     right: auto; }
 
-  .large-pull-11 {
+  .strs-large-pull-11 {
     position: relative;
     right: 91.66667%;
     left: auto; }
 
-  .column,
-  .columns {
+  .strs-column,
+  .strs-columns {
     position: relative;
     padding-left: 0.9375rem;
     padding-right: 0.9375rem;
     float: left; }
 
-  .large-1 {
+  .strs-large-1 {
     width: 8.33333%; }
 
-  .large-2 {
+  .strs-large-2 {
     width: 16.66667%; }
 
-  .large-3 {
+  .strs-large-3 {
     width: 25%; }
 
-  .large-4 {
+  .strs-large-4 {
     width: 33.33333%; }
 
-  .large-5 {
+  .strs-large-5 {
     width: 41.66667%; }
 
-  .large-6 {
+  .strs-large-6 {
     width: 50%; }
 
-  .large-7 {
+  .strs-large-7 {
     width: 58.33333%; }
 
-  .large-8 {
+  .strs-large-8 {
     width: 66.66667%; }
 
-  .large-9 {
+  .strs-large-9 {
     width: 75%; }
 
-  .large-10 {
+  .strs-large-10 {
     width: 83.33333%; }
 
-  .large-11 {
+  .strs-large-11 {
     width: 91.66667%; }
 
-  .large-12 {
+  .strs-large-12 {
     width: 100%; }
 
-  .large-offset-0 {
+  .strs-large-offset-0 {
     margin-left: 0 !important; }
 
-  .large-offset-1 {
+  .strs-large-offset-1 {
     margin-left: 8.33333% !important; }
 
-  .large-offset-2 {
+  .strs-large-offset-2 {
     margin-left: 16.66667% !important; }
 
-  .large-offset-3 {
+  .strs-large-offset-3 {
     margin-left: 25% !important; }
 
-  .large-offset-4 {
+  .strs-large-offset-4 {
     margin-left: 33.33333% !important; }
 
-  .large-offset-5 {
+  .strs-large-offset-5 {
     margin-left: 41.66667% !important; }
 
-  .large-offset-6 {
+  .strs-large-offset-6 {
     margin-left: 50% !important; }
 
-  .large-offset-7 {
+  .strs-large-offset-7 {
     margin-left: 58.33333% !important; }
 
-  .large-offset-8 {
+  .strs-large-offset-8 {
     margin-left: 66.66667% !important; }
 
-  .large-offset-9 {
+  .strs-large-offset-9 {
     margin-left: 75% !important; }
 
-  .large-offset-10 {
+  .strs-large-offset-10 {
     margin-left: 83.33333% !important; }
 
-  .large-offset-11 {
+  .strs-large-offset-11 {
     margin-left: 91.66667% !important; }
 
-  .large-reset-order {
+  .strs-large-reset-order {
     float: left;
     left: auto;
     margin-left: 0;
     margin-right: 0;
     right: auto; }
 
-  .column.large-centered,
-  .columns.large-centered {
+  .strs-column.strs-large-centered,
+  .strs-columns.strs-large-centered {
     margin-left: auto;
     margin-right: auto;
     float: none; }
 
-  .column.large-uncentered,
-  .columns.large-uncentered {
+  .strs-column.strs-large-uncentered,
+  .strs-columns.strs-large-uncentered {
     float: left;
     margin-left: 0;
     margin-right: 0; }
 
-  .column.large-centered:last-child,
-  .columns.large-centered:last-child {
+  .strs-column.strs-large-centered:last-child,
+  .strs-columns.strs-large-centered:last-child {
     float: none; }
 
-  .column.large-uncentered:last-child,
-  .columns.large-uncentered:last-child {
+  .strs-column.strs-large-uncentered:last-child,
+  .strs-columns.strs-large-uncentered:last-child {
     float: left; }
 
-  .column.large-uncentered.opposite,
-  .columns.large-uncentered.opposite {
+  .strs-column.strs-large-uncentered.opposite,
+  .strs-columns.strs-large-uncentered.opposite {
     float: right; }
 
-  .row.large-collapse > .column,
-  .row.large-collapse > .columns {
+  .strs-row.strs-large-collapse > .strs-column,
+  .strs-row.strs-large-collapse > .strs-columns {
     padding-left: 0;
     padding-right: 0; }
-  .row.large-collapse .row {
+  .strs-row.strs-large-collapse .strs-row {
     margin-left: 0;
     margin-right: 0; }
-  .row.large-uncollapse > .column,
-  .row.large-uncollapse > .columns {
+  .strs-row.strs-large-uncollapse > .strs-column,
+  .strs-row.strs-large-uncollapse > .strs-columns {
     padding-left: 0.9375rem;
     padding-right: 0.9375rem;
     float: left; }
 
-  .push-0 {
+  .strs-push-0 {
     position: relative;
     left: 0;
     right: auto; }
 
-  .pull-0 {
+  .strs-pull-0 {
     position: relative;
     right: 0;
     left: auto; }
 
-  .push-1 {
+  .strs-push-1 {
     position: relative;
     left: 8.33333%;
     right: auto; }
 
-  .pull-1 {
+  .strs-pull-1 {
     position: relative;
     right: 8.33333%;
     left: auto; }
 
-  .push-2 {
+  .strs-push-2 {
     position: relative;
     left: 16.66667%;
     right: auto; }
 
-  .pull-2 {
+  .strs-pull-2 {
     position: relative;
     right: 16.66667%;
     left: auto; }
 
-  .push-3 {
+  .strs-push-3 {
     position: relative;
     left: 25%;
     right: auto; }
 
-  .pull-3 {
+  .strs-pull-3 {
     position: relative;
     right: 25%;
     left: auto; }
 
-  .push-4 {
+  .strs-push-4 {
     position: relative;
     left: 33.33333%;
     right: auto; }
 
-  .pull-4 {
+  .strs-pull-4 {
     position: relative;
     right: 33.33333%;
     left: auto; }
 
-  .push-5 {
+  .strs-push-5 {
     position: relative;
     left: 41.66667%;
     right: auto; }
 
-  .pull-5 {
+  .strs-pull-5 {
     position: relative;
     right: 41.66667%;
     left: auto; }
 
-  .push-6 {
+  .strs-push-6 {
     position: relative;
     left: 50%;
     right: auto; }
 
-  .pull-6 {
+  .strs-pull-6 {
     position: relative;
     right: 50%;
     left: auto; }
 
-  .push-7 {
+  .strs-push-7 {
     position: relative;
     left: 58.33333%;
     right: auto; }
 
-  .pull-7 {
+  .strs-pull-7 {
     position: relative;
     right: 58.33333%;
     left: auto; }
 
-  .push-8 {
+  .strs-push-8 {
     position: relative;
     left: 66.66667%;
     right: auto; }
 
-  .pull-8 {
+  .strs-pull-8 {
     position: relative;
     right: 66.66667%;
     left: auto; }
 
-  .push-9 {
+  .strs-push-9 {
     position: relative;
     left: 75%;
     right: auto; }
 
-  .pull-9 {
+  .strs-pull-9 {
     position: relative;
     right: 75%;
     left: auto; }
 
-  .push-10 {
+  .strs-push-10 {
     position: relative;
     left: 83.33333%;
     right: auto; }
 
-  .pull-10 {
+  .strs-pull-10 {
     position: relative;
     right: 83.33333%;
     left: auto; }
 
-  .push-11 {
+  .strs-push-11 {
     position: relative;
     left: 91.66667%;
     right: auto; }
 
-  .pull-11 {
+  .strs-pull-11 {
     position: relative;
     right: 91.66667%;
     left: auto; } }
 
 /* Buttons */
-button, .button {
+.strs-button {
   -webkit-appearance: none;
   -moz-appearance: none;
   border-radius: 0;
@@ -1091,60 +1063,67 @@ button, .button {
   border-color: #007095;
   color: #FFFFFF;
   transition: background-color 300ms ease-out; }
-button:hover, button:focus, .button:hover, .button:focus {
+
+.strs-button:hover, .strs-button:focus {
   background-color: #007095; }
-button:hover, button:focus, .button:hover, .button:focus {
+.strs-button:hover, .strs-button:focus {
   color: #FFFFFF; }
-button.secondary, .button.secondary {
+
+.strs-button.secondary {
   background-color: #e7e7e7;
   border-color: #b9b9b9;
   color: #333333; }
-button.secondary:hover, button.secondary:focus, .button.secondary:hover, .button.secondary:focus {
+.strs-button.secondary:hover, .strs-button.secondary:focus {
   background-color: #b9b9b9; }
-button.secondary:hover, button.secondary:focus, .button.secondary:hover, .button.secondary:focus {
+.strs-button.secondary:hover, .strs-button.secondary:focus {
   color: #333333; }
-button.success, .button.success {
+
+.strs-button.success {
   background-color: #43AC6A;
   border-color: #368a55;
   color: #FFFFFF; }
-button.success:hover, button.success:focus, .button.success:hover, .button.success:focus {
-  background-color: #368a55; }
-button.success:hover, button.success:focus, .button.success:hover, .button.success:focus {
+.strs-button.success:hover, .strs-button.success:focus {
+  background-color: #10CCC2; }
+.strs-button.success:hover, .strs-button.success:focus {
   color: #FFFFFF; }
-button.alert, .button.alert {
+
+.strs-button.alert {
   background-color: #f04124;
   border-color: #cf2a0e;
   color: #FFFFFF; }
-button.alert:hover, button.alert:focus, .button.alert:hover, .button.alert:focus {
+.strs-button.alert:hover, .strs-button.alert:focus {
   background-color: #cf2a0e; }
-button.alert:hover, button.alert:focus, .button.alert:hover, .button.alert:focus {
+.strs-button.alert:hover, .strs-button.alert:focus {
   color: #FFFFFF; }
-button.warning, .button.warning {
+
+.strs-button.warning {
   background-color: #f08a24;
   border-color: #cf6e0e;
   color: #FFFFFF; }
-button.warning:hover, button.warning:focus, .button.warning:hover, .button.warning:focus {
+.strs-button.warning:hover, .strs-button.warning:focus {
   background-color: #cf6e0e; }
-button.warning:hover, button.warning:focus, .button.warning:hover, .button.warning:focus {
+.strs-button.warning:hover, .strs-button.warning:focus {
   color: #FFFFFF; }
-button.info, .button.info {
+
+.strs-button.info {
   background-color: #a0d3e8;
   border-color: #61b6d9;
   color: #333333; }
-button.info:hover, button.info:focus, .button.info:hover, .button.info:focus {
+.strs-button.info:hover, .strs-button.info:focus {
   background-color: #61b6d9; }
-button.info:hover, button.info:focus, .button.info:hover, .button.info:focus {
+.strs-button.info:hover, .strs-button.info:focus {
   color: #FFFFFF; }
-button.large, .button.large {
+
+.strs-button.large {
   padding: 1.125rem 2.25rem 1.1875rem 2.25rem;
   font-size: 1.25rem; }
-button.small, .button.small {
+.strs-button.small {
   padding: 0.875rem 1.75rem 0.9375rem 1.75rem;
   font-size: 0.8125rem; }
-button.tiny, .button.tiny {
+.strs-button.tiny {
   padding: 0.625rem 1.25rem 0.6875rem 1.25rem;
   font-size: 0.6875rem; }
-button.expand, .button.expand {
+.strs-button.expand {
   padding: 1rem 2rem 1.0625rem 2rem;
   font-size: 1rem;
   padding-bottom: 1.0625rem;
@@ -1152,155 +1131,139 @@ button.expand, .button.expand {
   padding-left: 1rem;
   padding-right: 1rem;
   width: 100%; }
-button.left-align, .button.left-align {
+.strs-button.left-align {
   text-align: left;
   text-indent: 0.75rem; }
-button.right-align, .button.right-align {
+.strs-button.right-align {
   text-align: right;
   padding-right: 0.75rem; }
-button.radius, .button.radius {
+.strs-button.radius {
   border-radius: 3px; }
-button.round, .button.round {
+.strs-button.round {
   border-radius: 1000px; }
-button.disabled, button[disabled], .button.disabled, .button[disabled] {
+.strs-button.disabled, .strs-button[disabled] {
   background-color: #008CBA;
   border-color: #007095;
   color: #FFFFFF;
   box-shadow: none;
   cursor: default;
   opacity: 0.7; }
-button.disabled:hover, button.disabled:focus, button[disabled]:hover, button[disabled]:focus, .button.disabled:hover, .button.disabled:focus, .button[disabled]:hover, .button[disabled]:focus {
-  background-color: #007095; }
-button.disabled:hover, button.disabled:focus, button[disabled]:hover, button[disabled]:focus, .button.disabled:hover, .button.disabled:focus, .button[disabled]:hover, .button[disabled]:focus {
+
+.strs-button.disabled:hover, .strs-button.disabled:focus, .strs-button[disabled]:hover, .strs-button[disabled]:focus {
+  background-color: #10CCC2; }
+.strs-button.disabled:hover, .strs-button.disabled:focus, .strs-button[disabled]:hover, .strs-button[disabled]:focus {
   color: #FFFFFF; }
-button.disabled:hover, button.disabled:focus, button[disabled]:hover, button[disabled]:focus, .button.disabled:hover, .button.disabled:focus, .button[disabled]:hover, .button[disabled]:focus {
+.strs-button.disabled:hover, .strs-button.disabled:focus, .strs-button[disabled]:hover, .strs-button[disabled]:focus {
   background-color: #008CBA; }
-button.disabled.secondary, button[disabled].secondary, .button.disabled.secondary, .button[disabled].secondary {
+
+.strs-button.disabled.secondary, .strs-button[disabled].secondary {
   background-color: #e7e7e7;
   border-color: #b9b9b9;
   color: #333333;
   box-shadow: none;
   cursor: default;
   opacity: 0.7; }
-button.disabled.secondary:hover, button.disabled.secondary:focus, button[disabled].secondary:hover, button[disabled].secondary:focus, .button.disabled.secondary:hover, .button.disabled.secondary:focus, .button[disabled].secondary:hover, .button[disabled].secondary:focus {
+.strs-button.disabled.secondary:hover, .strs-button.disabled.secondary:focus, .strs-button[disabled].secondary:hover, .strs-button[disabled].secondary:focus {
   background-color: #b9b9b9; }
-button.disabled.secondary:hover, button.disabled.secondary:focus, button[disabled].secondary:hover, button[disabled].secondary:focus, .button.disabled.secondary:hover, .button.disabled.secondary:focus, .button[disabled].secondary:hover, .button[disabled].secondary:focus {
+.strs-button.disabled.secondary:hover, .strs-button.disabled.secondary:focus, .strs-button[disabled].secondary:hover, .strs-button[disabled].secondary:focus {
   color: #333333; }
-button.disabled.secondary:hover, button.disabled.secondary:focus, button[disabled].secondary:hover, button[disabled].secondary:focus, .button.disabled.secondary:hover, .button.disabled.secondary:focus, .button[disabled].secondary:hover, .button[disabled].secondary:focus {
+.strs-button.disabled.secondary:hover, .strs-button.disabled.secondary:focus, .strs-button[disabled].secondary:hover, .strs-button[disabled].secondary:focus {
   background-color: #e7e7e7; }
-button.disabled.success, button[disabled].success, .button.disabled.success, .button[disabled].success {
+
+.strs-button.disabled.success, .strs-button[disabled].success {
   background-color: #43AC6A;
   border-color: #368a55;
   color: #FFFFFF;
   box-shadow: none;
   cursor: default;
   opacity: 0.7; }
-
-button.disabled.success:hover, button.disabled.success:focus, button[disabled].success:hover, button[disabled].success:focus, .button.disabled.success:hover, .button.disabled.success:focus, .button[disabled].success:hover, .button[disabled].success:focus {
-  background-color: #368a55; }
-button.disabled.success:hover, button.disabled.success:focus, button[disabled].success:hover, button[disabled].success:focus, .button.disabled.success:hover, .button.disabled.success:focus, .button[disabled].success:hover, .button[disabled].success:focus {
+.strs-button.disabled.success:hover, .strs-button.disabled.success:focus, .strs-button[disabled].success:hover, .strs-button[disabled].success:focus {
+  background-color: #10CCC2; }
+.strs-button.disabled.success:hover, .strs-button.disabled.success:focus, .strs-button[disabled].success:hover, .strs-button[disabled].success:focus {
   color: #FFFFFF; }
-button.disabled.success:hover, button.disabled.success:focus, button[disabled].success:hover, button[disabled].success:focus, .button.disabled.success:hover, .button.disabled.success:focus, .button[disabled].success:hover, .button[disabled].success:focus {
-  background-color: #43AC6A; }
 
-button.disabled.alert, button[disabled].alert, .button.disabled.alert, .button[disabled].alert {
+
+.strs-button.disabled.alert, .strs-button[disabled].alert {
   background-color: #f04124;
   border-color: #cf2a0e;
   color: #FFFFFF;
   box-shadow: none;
   cursor: default;
   opacity: 0.7; }
-button.disabled.alert:hover, button.disabled.alert:focus, button[disabled].alert:hover, button[disabled].alert:focus, .button.disabled.alert:hover, .button.disabled.alert:focus, .button[disabled].alert:hover, .button[disabled].alert:focus {
+.strs-button.disabled.alert:hover, .strs-button.disabled.alert:focus, .strs-button[disabled].alert:hover, .strs-button[disabled].alert:focus {
   background-color: #cf2a0e; }
-button.disabled.alert:hover, button.disabled.alert:focus, button[disabled].alert:hover, button[disabled].alert:focus, .button.disabled.alert:hover, .button.disabled.alert:focus, .button[disabled].alert:hover, .button[disabled].alert:focus {
+.strs-button.disabled.alert:hover, .strs-button.disabled.alert:focus, .strs-button[disabled].alert:hover, .strs-button[disabled].alert:focus {
   color: #FFFFFF; }
-button.disabled.alert:hover, button.disabled.alert:focus, button[disabled].alert:hover, button[disabled].alert:focus, .button.disabled.alert:hover, .button.disabled.alert:focus, .button[disabled].alert:hover, .button[disabled].alert:focus {
+.strs-button.disabled.alert:hover, .strs-button.disabled.alert:focus, .strs-button[disabled].alert:hover, .strs-button[disabled].alert:focus {
   background-color: #f04124; }
-button.disabled.warning, button[disabled].warning, .button.disabled.warning, .button[disabled].warning {
+
+.strs-button.disabled.warning, .strs-button[disabled].warning {
   background-color: #f08a24;
   border-color: #cf6e0e;
   color: #FFFFFF;
   box-shadow: none;
   cursor: default;
   opacity: 0.7; }
-button.disabled.warning:hover, button.disabled.warning:focus, button[disabled].warning:hover, button[disabled].warning:focus, .button.disabled.warning:hover, .button.disabled.warning:focus, .button[disabled].warning:hover, .button[disabled].warning:focus {
+.strs-button.disabled.warning:hover, .strs-button.disabled.warning:focus, .strs-button[disabled].warning:hover, .strs-button[disabled].warning:focus {
   background-color: #cf6e0e; }
-button.disabled.warning:hover, button.disabled.warning:focus, button[disabled].warning:hover, button[disabled].warning:focus, .button.disabled.warning:hover, .button.disabled.warning:focus, .button[disabled].warning:hover, .button[disabled].warning:focus {
+.strs-button.disabled.warning:hover, .strs-button.disabled.warning:focus, .strs-button[disabled].warning:hover, .strs-button[disabled].warning:focus {
   color: #FFFFFF; }
-button.disabled.warning:hover, button.disabled.warning:focus, button[disabled].warning:hover, button[disabled].warning:focus, .button.disabled.warning:hover, .button.disabled.warning:focus, .button[disabled].warning:hover, .button[disabled].warning:focus {
+.strs-button.disabled.warning:hover, .strs-button.disabled.warning:focus, .strs-button[disabled].warning:hover, .strs-button[disabled].warning:focus {
   background-color: #f08a24; }
-button.disabled.info, button[disabled].info, .button.disabled.info, .button[disabled].info {
+
+.strs-button.disabled.info, .strs-button[disabled].info {
   background-color: #a0d3e8;
   border-color: #61b6d9;
   color: #333333;
   box-shadow: none;
   cursor: default;
   opacity: 0.7; }
-button.disabled.info:hover, button.disabled.info:focus, button[disabled].info:hover, button[disabled].info:focus, .button.disabled.info:hover, .button.disabled.info:focus, .button[disabled].info:hover, .button[disabled].info:focus {
+.strs-button.disabled.info:hover, .strs-button.disabled.info:focus, .strs-button[disabled].info:hover, .strs-button[disabled].info:focus {
   background-color: #61b6d9; }
-button.disabled.info:hover, button.disabled.info:focus, button[disabled].info:hover, button[disabled].info:focus, .button.disabled.info:hover, .button.disabled.info:focus, .button[disabled].info:hover, .button[disabled].info:focus {
+.strs-button.disabled.info:hover, .strs-button.disabled.info:focus, .strs-button[disabled].info:hover, .strs-button[disabled].info:focus {
   color: #FFFFFF; }
-button.disabled.info:hover, button.disabled.info:focus, button[disabled].info:hover, button[disabled].info:focus, .button.disabled.info:hover, .button.disabled.info:focus, .button[disabled].info:hover, .button[disabled].info:focus {
+.strs-button.disabled.info:hover, .strs-button.disabled.info:focus, .strs-button[disabled].info:hover, .strs-button[disabled].info:focus {
   background-color: #a0d3e8; }
 
-button::-moz-focus-inner {
+.strs-button::-moz-focus-inner {
   border: 0;
-  padding: 0; }
+  padding: 0;
+}
 
 
 /* Standard Forms */
 form {
-  margin: 0 0 1rem; }
+  margin: 0 0 1rem;
+}
 
 /* Using forms within rows, we need to set some defaults */
-form .row .row {
+form .strs-row .strs-row {
   margin: 0 -0.5rem; }
-form .row .row .column,
-form .row .row .columns {
+form .strs-row .strs-row .strs-column,
+form .strs-row .strs-row .strs-columns {
   padding: 0 0.5rem; }
-form .row .row.collapse {
+form .strs-row .strs-row.collapse {
   margin: 0; }
-form .row .row.collapse .column,
-form .row .row.collapse .columns {
+form .strs-row .strs-row.collapse .strs-column,
+form .strs-row .strs-row.collapse .strs-columns {
   padding: 0; }
-form .row .row.collapse input {
+form .strs-row .strs-row.collapse input {
   -webkit-border-bottom-right-radius: 0;
   -webkit-border-top-right-radius: 0;
   border-bottom-right-radius: 0;
   border-top-right-radius: 0; }
-form .row input.column,
-form .row input.columns,
-form .row textarea.column,
-form .row textarea.columns {
+form .strs-row input.strs-column,
+form .strs-row input.strs-columns,
+form .strs-row textarea.strs-column,
+form .strs-row textarea.strs-columns {
   padding-left: 0.5rem; }
-
-/* Label Styles */
-label {
-  color: #4d4d4d;
-  cursor: pointer;
-  display: block;
-  font-size: 0.875rem;
-  font-weight: normal;
-  line-height: 1.5;
-  margin-bottom: 0;
-  /* Styles for required inputs */ }
-label.right {
-  float: none !important;
-  text-align: right; }
-label.inline {
-  margin: 0 0 1rem 0;
-  padding: 0.5625rem 0; }
-label small {
-  text-transform: capitalize;
-  color: #676767; }
-
-
-
-
 
 
 /* Basic input fields */
-input:not([type]), input[type="text"], input[type="password"], input[type="date"], input[type="datetime"], input[type="datetime-local"], input[type="month"], input[type="week"], input[type="email"], input[type="number"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], input[type="color"], textarea {
+input.strs-input:not([type]),
+input.strs-input[type="text"],
+input.strs-input[type="password"],
+input.strs-input[type="number"] {
   -webkit-appearance: none;
   -moz-appearance: none;
   border-radius: 0;
@@ -1311,8 +1274,11 @@ input:not([type]), input[type="text"], input[type="password"], input[type="date"
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
   color: rgba(0, 0, 0, 0.75);
   display: block;
-  font-family: inherit;
-  font-size: 0.875rem;
+  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1.3;
   height: 2.3125rem;
   margin: 0 0 1rem 0;
   padding: 0.5rem;
@@ -1325,248 +1291,171 @@ input:not([type]), input[type="text"], input[type="password"], input[type="date"
   -ms-transition: border-color 0.15s linear, background 0.15s linear;
   -o-transition: border-color 0.15s linear, background 0.15s linear;
   transition: border-color 0.15s linear, background 0.15s linear; }
-input:not([type]):focus, input[type="text"]:focus, input[type="password"]:focus, input[type="date"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="month"]:focus, input[type="week"]:focus, input[type="email"]:focus, input[type="number"]:focus, input[type="search"]:focus, input[type="tel"]:focus, input[type="time"]:focus, input[type="url"]:focus, input[type="color"]:focus, textarea:focus {
+
+input.strs-input:not([type]):focus,
+input.strs-input[type="text"]:focus,
+input.strs-input[type="password"]:focus,
+input.strs-input[type="number"]:focus {
   background: #fafafa;
   border-color: #999999;
   outline: none; }
-input:not([type]):disabled, input[type="text"]:disabled, input[type="password"]:disabled, input[type="date"]:disabled, input[type="datetime"]:disabled, input[type="datetime-local"]:disabled, input[type="month"]:disabled, input[type="week"]:disabled, input[type="email"]:disabled, input[type="number"]:disabled, input[type="search"]:disabled, input[type="tel"]:disabled, input[type="time"]:disabled, input[type="url"]:disabled, input[type="color"]:disabled, textarea:disabled {
+
+input.strs-input:not([type]):disabled,
+input.strs-input[type="text"]:disabled,
+input.strs-input[type="password"]:disabled,
+input.strs-input[type="number"]:disabled {
   background-color: #DDDDDD;
   cursor: default; }
-input:not([type])[disabled], input:not([type])[readonly], fieldset[disabled] input:not([type]), input[type="text"][disabled], input[type="text"][readonly], fieldset[disabled] input[type="text"], input[type="password"][disabled], input[type="password"][readonly], fieldset[disabled] input[type="password"], input[type="date"][disabled], input[type="date"][readonly], fieldset[disabled] input[type="date"], input[type="datetime"][disabled], input[type="datetime"][readonly], fieldset[disabled] input[type="datetime"], input[type="datetime-local"][disabled], input[type="datetime-local"][readonly], fieldset[disabled] input[type="datetime-local"], input[type="month"][disabled], input[type="month"][readonly], fieldset[disabled] input[type="month"], input[type="week"][disabled], input[type="week"][readonly], fieldset[disabled] input[type="week"], input[type="email"][disabled], input[type="email"][readonly], fieldset[disabled] input[type="email"], input[type="number"][disabled], input[type="number"][readonly], fieldset[disabled] input[type="number"], input[type="search"][disabled], input[type="search"][readonly], fieldset[disabled] input[type="search"], input[type="tel"][disabled], input[type="tel"][readonly], fieldset[disabled] input[type="tel"], input[type="time"][disabled], input[type="time"][readonly], fieldset[disabled] input[type="time"], input[type="url"][disabled], input[type="url"][readonly], fieldset[disabled] input[type="url"], input[type="color"][disabled], input[type="color"][readonly], fieldset[disabled] input[type="color"], textarea[disabled], textarea[readonly], fieldset[disabled] textarea {
+
+input.strs-input:not([type])[disabled],
+input.strs-input:not([type])[readonly],
+fieldset[disabled] input.strs-input:not([type]),
+input.strs-input[type="text"][disabled],
+input.strs-input[type="text"][readonly],
+fieldset[disabled] input.strs-input[type="text"],
+input.strs-input[type="password"][disabled],
+input.strs-input[type="password"][readonly],
+fieldset[disabled] input.strs-input[type="password"],
+input.strs-input[type="number"][disabled],
+input.strs-input[type="number"][readonly],
+fieldset[disabled] input.strs-input[type="number"] {
   background-color: #DDDDDD;
   cursor: default; }
-input:not([type]).radius, input[type="text"].radius, input[type="password"].radius, input[type="date"].radius, input[type="datetime"].radius, input[type="datetime-local"].radius, input[type="month"].radius, input[type="week"].radius, input[type="email"].radius, input[type="number"].radius, input[type="search"].radius, input[type="tel"].radius, input[type="time"].radius, input[type="url"].radius, input[type="color"].radius, textarea.radius {
+
+input.strs-input:not([type]).radius,
+input.strs-input[type="text"].radius,
+input.strs-input[type="password"].radius,
+input.strs-input[type="number"].radius {
   border-radius: 3px; }
 
-input[type="submit"] {
+input.strs-input[type="submit"] {
   -webkit-appearance: none;
   -moz-appearance: none;
   border-radius: 0; }
 
 
-
-/* HTML5 Number spinners settings */
-/* We add basic fieldset styling */
-fieldset {
-  border: 1px solid #DDDDDD;
-  margin: 1.125rem 0;
-  padding: 1.25rem; }
-fieldset legend {
-  font-weight: bold;
-  margin: 0;
-  margin-left: -0.1875rem;
-  padding: 0 0.1875rem; }
-
-/* Error Handling */
-[data-abide] .error small.error, [data-abide] .error span.error, [data-abide] span.error, [data-abide] small.error {
-  display: block;
-  font-size: 0.75rem;
-  font-style: italic;
-  font-weight: normal;
-  margin-bottom: 1rem;
-  margin-top: -1px;
-  padding: 0.375rem 0.5625rem 0.5625rem;
-  background: #f04124;
-  color: #FFFFFF; }
-[data-abide] span.error, [data-abide] small.error {
-  display: none; }
-
-span.error, small.error {
-  display: block;
-  font-size: 0.75rem;
-  font-style: italic;
-  font-weight: normal;
-  margin-bottom: 1rem;
-  margin-top: -1px;
-  padding: 0.375rem 0.5625rem 0.5625rem;
-  background: #f04124;
-  color: #FFFFFF; }
-
-.error input,
-.error textarea,
-.error select {
-  margin-bottom: 0; }
-.error input[type="checkbox"],
-.error input[type="radio"] {
-  margin-bottom: 1rem; }
-.error label,
-.error label.error {
-  color: #f04124; }
-.error small.error {
-  display: block;
-  font-size: 0.75rem;
-  font-style: italic;
-  font-weight: normal;
-  margin-bottom: 1rem;
-  margin-top: -1px;
-  padding: 0.375rem 0.5625rem 0.5625rem;
-  background: #f04124;
-  color: #FFFFFF; }
-.error > label > small {
-  background: transparent;
-  color: #676767;
-  display: inline;
-  font-size: 60%;
-  font-style: normal;
-  margin: 0;
-  padding: 0;
-  text-transform: capitalize; }
-.error span.error-message {
-  display: block; }
-
-input.error,
-textarea.error,
-select.error {
-  margin-bottom: 0; }
-
-label.error {
-  color: #f04124; }
-
-
 /* Typography resets */
-div,
-dl,
-dt,
-dd,
-ul,
-ol,
-li,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-pre,
-form,
-p,
-blockquote,
-th,
-td {
+.strs-content div,
+.strs-content dl,
+.strs-content dt,
+.strs-content dd,
+.strs-content ul,
+.strs-content ol,
+.strs-content li,
+.strs-content h1,
+.strs-content h2,
+.strs-content h3,
+.strs-content h4,
+.strs-content h5,
+.strs-content h6,
+.strs-content pre,
+.strs-content form,
+.strs-content p,
+.strs-content blockquote,
+.strs-content th,
+.strs-content td,
+.strs-content button,
+.strs-content input {
   margin: 0;
   padding: 0; }
 
-/* Default Link Styles */
-a {
-  color: #008CBA;
-  line-height: inherit;
-  text-decoration: none; }
-a:hover, a:focus {
-  color: #0078a0; }
-a img {
-  border: none; }
-
-/* Default paragraph styles */
-p {
-  font-family: inherit;
-  font-size: 1rem;
+.strs-content h3 {
+  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  font-style: normal;
   font-weight: normal;
-  line-height: 1.6;
-  margin-bottom: 1.25rem;
-  text-rendering: optimizeLegibility; }
-p.lead {
-  font-size: 1.21875rem;
-  line-height: 1.6; }
-p aside {
-  font-size: 0.875rem;
-  font-style: italic;
-  line-height: 1.35; }
-
-
+  line-height: 1.5;
+  font-size: 24px;
+}
 
 /*
  * Application/button css
  */
-*:focus {
+
+.strs-button:focus, .strs-link:focus {
   outline: 0 !important;
 }
 
-.sl-flex {
+.strs-flex {
   display: flex;
 }
-.sl-flex-row {
+.strs-flex-row {
   flex-direction: row;
 }
-.sl-flex-column {
+.strs-flex-column {
   flex-direction: column;
 }
-.sl-flex-column.sl-flex-center-h, .sl-flex-row.sl-flex-center-v{
+.strs-flex-column.strs-flex-center-h, .strs-flex-row.strs-flex-center-v{
   align-items: center;
 }
-.sl-flex-column.sl-flex-center-v, .sl-flex-row.sl-flex-center-h{
+.strs-flex-column.strs-flex-center-v, .strs-flex-row.strs-flex-center-h{
   justify-content: center;
 }
 
-.sl-mb-none {
-  margin-bottom: 0;
+.strs-mb-none {
+  margin-bottom: 0 !important;
 }
-.sl-pb-10 {
-  padding-bottom: .8rem;
+.strs-pb-10 {
+  padding-bottom: .8rem !important;
 }
 
 @media only screen and (min-width: 64.0625em) {
-  .l-rpadding {
+  .strs-l-rpadding {
     padding-right: .9375rem!important;
   }
 }
 
-.sl-content {
-  padding: 1.875rem 0;
+.strs-content {
+  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #000;
   background-color: #F2F2F2;
   height: 100%;
   margin: 0;
   text-shadow: none;
-  color: #000;
-  padding: 1rem 2rem!important;
+
+  padding: 1rem 1rem!important;
 }
 
-.sl-input-error {
-  color: #D16F6F;
-  font-size: .75rem;
+.strs-input-error {
+  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
   font-style: italic;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #D16F6F;
   display: none;
 }
 
-.sl-general-error {
-  color: #D16F6F;
-  font-size: 1rem;
-}
-
-.sl-hint {
+.strs-hint {
+  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1.5;
   color: grey;
 }
-a.sl-link, a.sl-link:active, a.sl-link:visited  {
+
+a.strs-link {
+  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  font-style: normal;
+  line-height: 1.5;
+  color:#10CCC2 !important;
+  text-decoration: none;
+}
+a.strs-link:hover {
+  cursor: pointer;
+}
+a.strs-link:active, a.strs-link:visited  {
   color:#10CCC2 !important;
   font-weight: bold;
 }
 
-
-button.disabled, button[disabled], .button.disabled, .button[disabled],
-button.disabled:hover,
-button.disabled:focus,
-button[disabled]:hover,
-button[disabled]:focus,
-.button.disabled:hover,
-.button.disabled:focus,
-.button[disabled]:hover,
-.button[disabled]:focus {
-  background-color: #10CCC2;
-}
-
-button.success:hover, button.success:focus, .button.success:hover, .button.success:focus,
-button.disabled.success, button[disabled].success, .button.disabled.success, .button[disabled].success,
-button.disabled.success:hover,
-button.disabled.success:focus,
-button[disabled].success:hover,
-button[disabled].success:focus,
-.button.disabled.success:hover,
-.button.disabled.success:focus,
-.button[disabled].success:hover,
-.button[disabled].success:focus {
-  background-color: #10CCC2;
-}
-
-.sl-button.success {
+.strs-button.success {
   display: inline-block;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -1585,29 +1474,26 @@ button[disabled].success:focus,
   border-radius: 1000px;
 }
 
-.sl-button.success.expand {
+.strs-button.success.expand {
   padding-left: .6875rem;
   padding-right: .6875rem;
   width: 100%;
 }
 
-.sl-wl-closed {
+.strs-wl-closed {
   color: #888;
 }
 
-.sl-wl-data-title {
+.strs-wl-data-title {
   font-size:16px;
   color: #A6A6A6;
 }
-.sl-wl-data-value {
+.strs-wl-data-value {
   color: #10ccc2;
   font-size:22px;
   font-weight: bold;
 }
 
-#sl-wl-open, #sl-wl-closed {
+#strs-wl-open, #strs-wl-closed {
   display: none;
 }
-
-
-

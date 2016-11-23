@@ -37,13 +37,13 @@ export class JwlFlowService {
       //Test email
       if(!this.modalService.validateRequired(email)) {
         //validationErrors.push({field:'sl-email', error:'sl_input_err_required'});
-        validationErrors.push({field:'sl-email', error:'Mandatory'});
+        validationErrors.push({field:'strs-email', error:'Mandatory'});
       }
 
       //Test password
       if(!this.modalService.validateRequired(password)) {
         //validationErrors.push({field:'sl-password', error:'sl_input_err_required'});
-        validationErrors.push({field:'sl-password', error:'Mandatory'});
+        validationErrors.push({field:'strs-password', error:'Mandatory'});
       }
       return validationErrors;
     }
@@ -56,12 +56,12 @@ export class JwlFlowService {
       //Test for detailed errors
       if (error.details.length > 0) {
         if (error.details[0].field === 'emailPasswordCredentials.email'){
-          this.modalService.showFieldError('sl-email-error', error.details[0].error.defaultMessage);
+          this.modalService.showFieldError('strs-email-error', error.details[0].error.defaultMessage);
         }
       }
       //Test for general error
       else {
-        this.modalService.showFieldError('sl-email-error',error.error.defaultMessage);
+        this.modalService.showFieldError('strs-email-error',error.error.defaultMessage);
       }
     }
 
@@ -74,8 +74,8 @@ export class JwlFlowService {
       this.modalService.resetFormErrors();
 
       //Get fields
-      var email = (<HTMLInputElement>this.modalService.findElementById("sl-email")).value;
-      var password = (<HTMLInputElement>this.modalService.findElementById("sl-password")).value;
+      var email = (<HTMLInputElement>this.modalService.findElementById("strs-email")).value;
+      var password = (<HTMLInputElement>this.modalService.findElementById("strs-password")).value;
 
       //..and do client validation first
       var validationErrors = this.validateLoginForm(email, password);
@@ -84,15 +84,15 @@ export class JwlFlowService {
       else {
 
         //Login
-        this.enableButton('sl-btn-login',false);
+        this.enableButton('strs-btn-login',false);
         this.sessionService.doEmailPasswordLogin(email, password)
           .then(
             (user) => {
-              _this.enableButton('sl-btn-login',true);
+              _this.enableButton('strs-btn-login',true);
               _this.checkJoinStatus();
             },
             (err) => {
-              _this.enableButton('sl-btn-login',true);
+              _this.enableButton('strs-btn-login',true);
               if(err instanceof Error) {
                 console.log('session.doEmailPasswordLogin error', err.stack);//DEBUG
               } else {
@@ -266,9 +266,9 @@ export class JwlFlowService {
         require('./login.html'),
         require('./app.css')
       );
-      var loginBtn = this.modalService.findElementById('sl-btn-login');
+      var loginBtn = this.modalService.findElementById('strs-btn-login');
       loginBtn.onclick = () => this.doLogin();
-      var navToSignup = this.modalService.findElementById('sl-nav-signup');
+      var navToSignup = this.modalService.findElementById('strs-nav-signup');
       navToSignup.onclick = (evt) => { evt.preventDefault(); this.setupSignup()};
     }
 
@@ -326,24 +326,24 @@ export class JwlFlowService {
 
           //TODO: - handle no position situation -> auto join wl
 
-          var waitingListName = <HTMLElement>_this.modalService.findElementById('sl-wl-name');
+          var waitingListName = <HTMLElement>_this.modalService.findElementById('strs-wl-name');
           waitingListName.innerHTML = wl.displayName;
           var displaySection;
 
           if (wl.waitingListStatus === 'OPEN' && wl.position) {
-            displaySection = _this.modalService.findElementById('sl-wl-open');
+            displaySection = _this.modalService.findElementById('strs-wl-open');
             displaySection.style.display = 'block';
             //set wl group info
-            var waitingListLikelihood = <HTMLElement>_this.modalService.findElementById('sl-wl-likelihood');
+            var waitingListLikelihood = <HTMLElement>_this.modalService.findElementById('strs-wl-likelihood');
             waitingListLikelihood.innerHTML = wl.position.likelihood+" %";
-            var waitingListRank = <HTMLElement>_this.modalService.findElementById('sl-wl-rank');
+            var waitingListRank = <HTMLElement>_this.modalService.findElementById('strs-wl-rank');
             waitingListRank.innerHTML = "# "+wl.position.rank;
           }
           else if (wl.waitingListStatus === 'CLOSED') {
-            displaySection = _this.modalService.findElementById('sl-wl-closed');
+            displaySection = _this.modalService.findElementById('strs-wl-closed');
             displaySection.style.display = 'block';
             //set fan group slug
-            var fanGroupSlug = <HTMLAnchorElement>_this.modalService.findElementById('sl-fg-slug');
+            var fanGroupSlug = <HTMLAnchorElement>_this.modalService.findElementById('strs-fg-slug');
             fanGroupSlug.innerHTML = wl.groupName.en;
             fanGroupSlug.href = "http://www.seaters.com/"+wl.groupSlug;
           }
@@ -365,7 +365,7 @@ export class JwlFlowService {
         require('./wl.html'),
         require('./app.css')
       );
-      var closeBtn = this.modalService.findElementById('sl-btn-close');
+      var closeBtn = this.modalService.findElementById('strs-btn-close');
       closeBtn.onclick = () => { this.modalService.closeModal()};
 
       this.showWaitingListInfo();
