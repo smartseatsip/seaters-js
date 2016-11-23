@@ -1,5 +1,6 @@
 import { SeatersApi } from '../seaters-api';
-import { AuthenticationTokenOutput, UserData, SessionToken } from '../seaters-api/authentication/token';
+import { Fan } from '../seaters-api/fan/fan'
+import { SessionToken } from '../seaters-api/authentication/token';
 import { Promise } from 'es6-promise';
 import * as moment from 'moment';
 import {fail} from "assert";
@@ -13,35 +14,45 @@ export enum SESSION_STRATEGY {
 
 export class SessionService {
 
-    private currentUser: UserData;
+    private currentFan: Fan;
+
+    private sessionStrategy: SESSION_STRATEGY;
 
     constructor (
         private api: SeatersApi,
-        private sessionStrategy?: SESSION_STRATEGY
+        sessionStrategy?: SESSION_STRATEGY
     ) {
-            if (!sessionStrategy) {
-                this.sessionStrategy = SESSION_STRATEGY.EXPIRE;
-            }
+        this.sessionStrategy = sessionStrategy || SESSION_STRATEGY.EXPIRE;
     }
 
-    private applyExpireSessionStrategy (token: SessionToken) {
-        var expiration = moment.utc(token.expirationDate);
+    private applyExpireSessionStrategy (session: SessionToken): void {
+        var expiration = moment.utc(session.expirationDate);
         var now = moment();
-        console.log('session expires on %s (in %s minutes)',
-            token.expirationDate, expiration.diff(now, 'minutes'));
+        console.log(
+            'session expires on %s (in %s minutes)',
+            session.expirationDate,
+            expiration.diff(now, 'minutes')
+        );
+        setTimeout(
+            () => this.doLogout(),
+            expiration.diff(now, 'milliseconds')
+        );
     }
 
-    private finishLogin (tokenOutput: AuthenticationTokenOutput) {
-        this.api.setHeader(AUTH_HEADER, AUTH_BEARER + ' ' + tokenOutput.token.value);
-        this.currentUser = tokenOutput.userData;
-        var token = tokenOutput.token;
+    private finishLogin (session: SessionToken): Promise<Fan> {
+        this.api.setHeader(AUTH_HEADER, AUTH_BEARER + ' ' + session.token);
         switch (this.sessionStrategy) {
-            default: this.applyExpireSessionStrategy(token);
+            default: this.applyExpireSessionStrategy(session);
         }
-        return tokenOutput.userData;
+        return this.setCurrentFan();
     }
 
-    doEmailPasswordLogin (email: string, password: string, mfaToken?: string): Promise<UserData> {
+    private setCurrentFan (): Promise<Fan> {
+        return this.api.fan.fan()
+        .then(fan => this.currentFan = fan);
+    }
+
+    doEmailPasswordLogin (email: string, password: string, mfaToken?: string): Promise<Fan> {
         return this.api.authentication.token({
             emailPasswordCredentials: {
                 email: email,
@@ -51,34 +62,33 @@ export class SessionService {
         }).then((r) => this.finishLogin(r));
     }
 
-    doLogout () {
-        this.api.unsetHeader(AUTH_HEADER);
-        this.currentUser = undefined;
-    }
-
-
-    //TODO: user is not logged in yet after signup; need separate verify call first ?
     //TODO: handle error case
-    doEmailPasswordSignUp (email:string, password: string, firstname: string, lastname: string, language?: string) : Promise<UserData> {
+    doEmailPasswordSignUp (email:string, password: string, firstname: string, lastname: string, language?: string) : Promise<Fan> {
         return this.api.authentication.signup({
-            email:email,
-            password:password,
+            email: email,
+            password: password,
             firstName: firstname,
             lastName: lastname,
             language: language || 'en' //TODO: refer to config setting for default language
         })
+        .then(() => this.doEmailPasswordLogin(email, password));
     }
 
-    //TODO: proper return of data and/or error case ?
-    doValidation (email: string, code: string): Promise<UserData> {
+    doEmailValidation (email: string, code: string): Promise<Fan> {
         return this.api.authentication.validate({
             email: email,
             code: code
-        })
+        }).then(() => this.setCurrentFan());
+    }
+
+    doLogout () {
+        console.log('[SessionService] doLogout');//DEBUG
+        this.api.unsetHeader(AUTH_HEADER);
+        this.currentFan = undefined;
     }
 
     whoami () {
-        return this.currentUser;
+        return this.currentFan;
     }
 
 }

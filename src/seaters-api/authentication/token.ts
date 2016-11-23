@@ -69,13 +69,6 @@ export interface StoredTokenCredentials {
 
 }
 
-export interface AuthenticationTokenOutput {
-
-    userData: UserData,
-    token: SessionToken
-
-}
-
 /**
  * 30-minute lasting session token that can be used in the Seaters authentication header
  */
@@ -89,7 +82,7 @@ export interface SessionToken {
     /**
      * session token value to be used in Seaters authentication header
      */
-    value: string
+    token: string
 
 }
 

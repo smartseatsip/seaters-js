@@ -8,7 +8,8 @@ exports.replacePackageVersionLoader = {
 };
 
 exports.replaceApiLocationLoader = function(useProxy) {
-    var defaultApiPrefix = useProxy ? '/api' : 'https://api.dev-seaters.com/api';
+    // var defaultApiPrefix = useProxy ? '/api' : 'https://api.dev-seaters.com/api';
+    var defaultApiPrefix = 'https://api.dev-seaters.com/api';
     return {
         test: /seaters-client\.ts$/,
         loader: 'string-replace',

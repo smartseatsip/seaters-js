@@ -77,7 +77,7 @@ var SeatersSDK =
 	        this.jwlFlowService = new jwl_flow_service_1.JwlFlowService(this.modalService, this.sessionService, this.waitingListService, this.fanGroupService);
 	    }
 	    SeatersClient.DEFAULT_OPTIONS = {
-	        apiPrefix: '/api'
+	        apiPrefix: 'https://api.dev-seaters.com/api'
 	    };
 	    return SeatersClient;
 	}());
@@ -7353,7 +7353,6 @@ var SeatersSDK =
 	        return {
 	            url: endpoint.absoluteEndpoint,
 	            method: requestDefinition.method || 'GET',
-	            query: requestDefinition.queryParams,
 	            headers: headers,
 	            body: requestDefinition.body
 	        };
@@ -27453,26 +27452,30 @@ var SeatersSDK =
 	var FanApi = (function () {
 	    function FanApi(apiContext) {
 	        this.apiContext = apiContext;
-	        this.fgEndpoint = '/fan/groups/:fanGroupId';
-	        this.wlEndpoint = '/fan/waiting-lists/:waitingListId';
+	        this.rootEp = '/fan';
+	        this.fgEp = this.rootEp + '/groups/:fanGroupId';
+	        this.wlEp = this.rootEp + '/waiting-lists/:waitingListId';
 	    }
+	    FanApi.prototype.fan = function () {
+	        return this.apiContext.get(this.rootEp);
+	    };
 	    FanApi.prototype.fgEndpointParams = function (fanGroupId) {
 	        return api_1.ApiContext.buildEndpointParams({ fanGroupId: fanGroupId });
 	    };
 	    FanApi.prototype.fanGroup = function (fanGroupId) {
-	        return this.apiContext.get(this.fgEndpoint, this.fgEndpointParams(fanGroupId));
+	        return this.apiContext.get(this.fgEp, this.fgEndpointParams(fanGroupId));
 	    };
 	    FanApi.prototype.joinFanGroup = function (fanGroupId) {
-	        return this.apiContext.post(this.fgEndpoint, null, this.fgEndpointParams(fanGroupId));
+	        return this.apiContext.post(this.fgEp, null, this.fgEndpointParams(fanGroupId));
 	    };
 	    FanApi.prototype.wlEndpointParams = function (waitingListId) {
 	        return api_1.ApiContext.buildEndpointParams({ waitingListId: waitingListId });
 	    };
 	    FanApi.prototype.waitingList = function (waitingListId) {
-	        return this.apiContext.get(this.wlEndpoint, this.wlEndpointParams(waitingListId));
+	        return this.apiContext.get(this.wlEp, this.wlEndpointParams(waitingListId));
 	    };
 	    FanApi.prototype.joinWaitingList = function (waitingListId, numberOfSeats) {
-	        return this.apiContext.post(this.wlEndpoint + '/position', {
+	        return this.apiContext.post(this.wlEp + '/position', {
 	            numberOfSeats: numberOfSeats
 	        }, this.wlEndpointParams(waitingListId));
 	    };
@@ -27491,7 +27494,13 @@ var SeatersSDK =
 	        this.apiContext = apiContext;
 	    }
 	    AuthenticationApi.prototype.token = function (input) {
-	        return this.apiContext.put('/v2/authentication/token', input);
+	        return this.apiContext.put('/v2/authentication/token', input)
+	            .then(function (data) {
+	            return {
+	                expirationDate: data.token.expirationDate,
+	                token: data.token.value
+	            }; //TODO: remove this code when API is adapted
+	        });
 	    };
 	    /**
 	     * Signs up a new user
@@ -27536,24 +27545,26 @@ var SeatersSDK =
 	var SessionService = (function () {
 	    function SessionService(api, sessionStrategy) {
 	        this.api = api;
-	        this.sessionStrategy = sessionStrategy;
-	        if (!sessionStrategy) {
-	            this.sessionStrategy = SESSION_STRATEGY.EXPIRE;
-	        }
+	        this.sessionStrategy = sessionStrategy || SESSION_STRATEGY.EXPIRE;
 	    }
-	    SessionService.prototype.applyExpireSessionStrategy = function (token) {
-	        var expiration = moment.utc(token.expirationDate);
+	    SessionService.prototype.applyExpireSessionStrategy = function (session) {
+	        var _this = this;
+	        var expiration = moment.utc(session.expirationDate);
 	        var now = moment();
-	        console.log('session expires on %s (in %s minutes)', token.expirationDate, expiration.diff(now, 'minutes'));
+	        console.log('session expires on %s (in %s minutes)', session.expirationDate, expiration.diff(now, 'minutes'));
+	        setTimeout(function () { return _this.doLogout(); }, expiration.diff(now, 'milliseconds'));
 	    };
-	    SessionService.prototype.finishLogin = function (tokenOutput) {
-	        this.api.setHeader(AUTH_HEADER, AUTH_BEARER + ' ' + tokenOutput.token.value);
-	        this.currentUser = tokenOutput.userData;
-	        var token = tokenOutput.token;
+	    SessionService.prototype.finishLogin = function (session) {
+	        this.api.setHeader(AUTH_HEADER, AUTH_BEARER + ' ' + session.token);
 	        switch (this.sessionStrategy) {
-	            default: this.applyExpireSessionStrategy(token);
+	            default: this.applyExpireSessionStrategy(session);
 	        }
-	        return tokenOutput.userData;
+	        return this.setCurrentFan();
+	    };
+	    SessionService.prototype.setCurrentFan = function () {
+	        var _this = this;
+	        return this.api.fan.fan()
+	            .then(function (fanData) { return _this.currentFan = fanData; });
 	    };
 	    SessionService.prototype.doEmailPasswordLogin = function (email, password, mfaToken) {
 	        var _this = this;
@@ -27565,30 +27576,32 @@ var SeatersSDK =
 	            }
 	        }).then(function (r) { return _this.finishLogin(r); });
 	    };
-	    SessionService.prototype.doLogout = function () {
-	        this.api.unsetHeader(AUTH_HEADER);
-	        this.currentUser = undefined;
-	    };
-	    //TODO: user is not logged in yet after signup; need separate verify call first ?
 	    //TODO: handle error case
 	    SessionService.prototype.doEmailPasswordSignUp = function (email, password, firstname, lastname, language) {
+	        var _this = this;
 	        return this.api.authentication.signup({
 	            email: email,
 	            password: password,
 	            firstName: firstname,
 	            lastName: lastname,
 	            language: language || 'en' //TODO: refer to config setting for default language
-	        });
+	        })
+	            .then(function () { return _this.doEmailPasswordLogin(email, password); });
 	    };
-	    //TODO: proper return of data and/or error case ?
-	    SessionService.prototype.doValidation = function (email, code) {
+	    SessionService.prototype.doEmailValidation = function (email, code) {
+	        var _this = this;
 	        return this.api.authentication.validate({
 	            email: email,
 	            code: code
-	        });
+	        }).then(function () { return _this.setCurrentFan(); });
+	    };
+	    SessionService.prototype.doLogout = function () {
+	        console.log('[SessionService] doLogout'); //DEBUG
+	        this.api.unsetHeader(AUTH_HEADER);
+	        this.currentFan = undefined;
 	    };
 	    SessionService.prototype.whoami = function () {
-	        return this.currentUser;
+	        return this.currentFan;
 	    };
 	    return SessionService;
 	}());
@@ -43949,11 +43962,11 @@ var SeatersSDK =
 	        return removeEscapeListener;
 	    };
 	    ModalService.prototype.showOverlay = function () {
-	        console.log('showing seaters overlay');
+	        console.log('[ModalService] showing seaters overlay');
 	        this.overlay.style.display = 'block';
 	    };
 	    ModalService.prototype.hideOverlay = function () {
-	        console.log('hiding seaters overlay');
+	        console.log('[ModalService] hiding seaters overlay');
 	        this.overlay.style.display = 'none';
 	    };
 	    ModalService.prototype.setupOverlay = function () {
@@ -44068,17 +44081,192 @@ var SeatersSDK =
 	var es6_promise_1 = __webpack_require__(806);
 	var waiting_list_service_1 = __webpack_require__(803);
 	var fan_group_service_1 = __webpack_require__(808);
+	(function (JWL_EXIT_STATUS) {
+	    JWL_EXIT_STATUS[JWL_EXIT_STATUS["JOINED"] = 0] = "JOINED";
+	    JWL_EXIT_STATUS[JWL_EXIT_STATUS["CANCELLED"] = 1] = "CANCELLED";
+	    JWL_EXIT_STATUS[JWL_EXIT_STATUS["ERROR"] = 2] = "ERROR";
+	})(exports.JWL_EXIT_STATUS || (exports.JWL_EXIT_STATUS = {}));
+	var JWL_EXIT_STATUS = exports.JWL_EXIT_STATUS;
 	var JwlFlowService = (function () {
 	    function JwlFlowService(modalService, sessionService, waitingListService, fanGroupService) {
 	        this.modalService = modalService;
 	        this.sessionService = sessionService;
 	        this.waitingListService = waitingListService;
 	        this.fanGroupService = fanGroupService;
-	        this.wlId = "";
 	    }
-	    //Sets a button to either enabled or disabled
+	    /**
+	     * Extract the message from an error and log this message with it's details
+	     */
+	    JwlFlowService.prototype.extractMsgAndLogError = function (pre, err) {
+	        var message = err instanceof Error ? err.message : JSON.stringify(err);
+	        var details = err.stack || '';
+	        console.error('[JwlFlowService] ' + pre + ': ' + message, details);
+	        return message;
+	    };
+	    /**
+	     * Sets a button to either enabled or disabled
+	     */
 	    JwlFlowService.prototype.enableButton = function (btnId, enabled) {
 	        this.modalService.findElementById(btnId).disabled = !enabled;
+	    };
+	    /**
+	     * Show server side login form errors
+	     * @param error
+	     */
+	    JwlFlowService.prototype.showFormErrorsApiLogin = function (error) {
+	        if (error instanceof String) {
+	            this.modalService.showFieldError('sl-email-error', 'Oops! Something went wrong. Please contact customer service.');
+	        }
+	        else if (error.details.length > 0) {
+	            if (error.details[0].field === 'emailPasswordCredentials.email') {
+	                this.modalService.showFieldError('sl-email-error', error.details[0].error.defaultMessage);
+	            }
+	        }
+	        else {
+	            this.modalService.showFieldError('sl-email-error', error.error.defaultMessage);
+	        }
+	    };
+	    /**
+	     * Returns a promise that never resolves
+	     */
+	    JwlFlowService.prototype.endoftheline = function () {
+	        return new es6_promise_1.Promise(function () { return null; });
+	    };
+	    JwlFlowService.prototype.defer = function () {
+	        var r = {};
+	        r.promise = new es6_promise_1.Promise(function (resolve, reject) {
+	            r.resolve = resolve;
+	            r.reject = reject;
+	        });
+	        return r;
+	    };
+	    /**
+	     * Entry point for the 'Join WL Flow'
+	     */
+	    JwlFlowService.prototype.startFlow = function (wlId) {
+	        var _this = this;
+	        return this.ensureFanIsLoggedInWithValidEmail()
+	            .then(function () { return _this.ensureFanHasJoinedFgAndWl(wlId); })
+	            .then(function (wl) { return _this.showRankAndLikelihood(wl); });
+	    };
+	    JwlFlowService.prototype.ensureFanIsLoggedInWithValidEmail = function () {
+	        var _this = this;
+	        console.log('[JwlFlowService] ensuring fan is logged in with valid email');
+	        var fan = this.sessionService.whoami();
+	        if (fan) {
+	            return this.ensureFanHasValidEmail(fan);
+	        }
+	        else {
+	            return this.showLogin()
+	                .then(function (fan) { return _this.ensureFanHasValidEmail(fan); });
+	        }
+	    };
+	    JwlFlowService.prototype.ensureFanHasJoinedFgAndWl = function (wlId) {
+	        var _this = this;
+	        console.log('[JwlFlowService] ensuring fan has joined FG and WL');
+	        this.modalService.showModal('Loading ...', //TODO: make template
+	        '');
+	        return this.waitingListService.getExtendedWaitingList(wlId)
+	            .then(function (wl) {
+	            return _this.fanGroupService.getExtendedFanGroup(wl.groupId)
+	                .then(function (fg) { return { fg: fg, wl: wl }; });
+	        })
+	            .then(function (wlAndFg) {
+	            var wl = wlAndFg.wl, fg = wlAndFg.fg;
+	            return _this.ensureFGAndWLAreEligable(fg, wl)
+	                .then(function () { return _this.joinFanGroupIfNeeded(fg); })
+	                .then(function () { return _this.joinWaitingListIfNeeded(wl); });
+	        });
+	    };
+	    JwlFlowService.prototype.checkFanGroupEligability = function (fg) {
+	        return fg.actionStatus === fan_group_service_1.FAN_GROUP_ACTION_STATUS.CAN_LEAVE ||
+	            fg.actionStatus === fan_group_service_1.FAN_GROUP_ACTION_STATUS.CAN_JOIN;
+	    };
+	    JwlFlowService.prototype.checkWaitingListEligability = function (wl) {
+	        return wl.actionStatus === waiting_list_service_1.WAITING_LIST_ACTION_STATUS.BOOK || this.hasRank(wl);
+	    };
+	    JwlFlowService.prototype.ensureFGAndWLAreEligable = function (fg, wl) {
+	        console.log('[JwlFlowService] ensuring FG and WL are eligable for JWL');
+	        if (!(this.checkFanGroupEligability(fg) && this.checkWaitingListEligability(wl))) {
+	            this.modalService.showModal('To join this wish list, visit https://seaters.com/' + fg.slug + '/' + wl.waitingListId, //TODO: make template
+	            '');
+	            return this.endoftheline();
+	        }
+	        else {
+	            return es6_promise_1.Promise.resolve();
+	        }
+	    };
+	    JwlFlowService.prototype.showRankAndLikelihood = function (wl) {
+	        var _this = this;
+	        console.log('[JwlFlowService] showing rank and likelihood');
+	        this.modalService.showModal(__webpack_require__(811), __webpack_require__(812));
+	        return new es6_promise_1.Promise(function (resolve, reject) {
+	            var closeBtn = _this.modalService.findElementById('sl-btn-close');
+	            closeBtn.onclick = function () {
+	                _this.modalService.closeModal();
+	                resolve(JWL_EXIT_STATUS.JOINED);
+	            };
+	            var waitingListName = _this.modalService.findElementById('sl-wl-name');
+	            waitingListName.innerHTML = wl.displayName;
+	            var displaySection;
+	            //TODO: split up different scenario's in different modal contents
+	            if (wl.waitingListStatus === 'OPEN' && _this.hasRank(wl)) {
+	                displaySection = _this.modalService.findElementById('sl-wl-open');
+	                displaySection.style.display = 'block';
+	                //set wl group info
+	                var waitingListLikelihood = _this.modalService.findElementById('sl-wl-likelihood');
+	                waitingListLikelihood.innerHTML = wl.position.likelihood + " %";
+	                var waitingListRank = _this.modalService.findElementById('sl-wl-rank');
+	                waitingListRank.innerHTML = "# " + wl.position.rank;
+	            }
+	            else if (wl.waitingListStatus === 'CLOSED') {
+	                displaySection = _this.modalService.findElementById('sl-wl-closed');
+	                displaySection.style.display = 'block';
+	                //set fan group slug
+	                var fanGroupSlug = _this.modalService.findElementById('sl-fg-slug');
+	                fanGroupSlug.innerHTML = wl.groupName.en;
+	                fanGroupSlug.href = "http://www.seaters.com/" + wl.groupSlug;
+	            }
+	            //TODO: link to seaters for further actions (soon/pay/preauth/accept/print...)
+	        });
+	    };
+	    JwlFlowService.prototype.showLogin = function () {
+	        var _this = this;
+	        // show the log in screen
+	        this.modalService.showModal(__webpack_require__(814), __webpack_require__(812));
+	        // resolve whenever doLogin or showSignup is completed
+	        return new es6_promise_1.Promise(function (resolve, reject) {
+	            var loginBtn = _this.modalService.findElementById('sl-btn-login');
+	            loginBtn.onclick = function () { return _this.doLogin().then(resolve, reject); };
+	            var navToSignup = _this.modalService.findElementById('sl-nav-signup');
+	            navToSignup.onclick = function (evt) {
+	                evt.preventDefault(); //TODO: preventDefault at modal level should be enough
+	                _this.showSignup().then(resolve, reject);
+	            };
+	        });
+	    };
+	    JwlFlowService.prototype.doLogin = function () {
+	        var _this = this;
+	        //Reset form errors
+	        this.modalService.resetFormErrors();
+	        // Get fields
+	        var email = this.modalService.findElementById("sl-email").value;
+	        var password = this.modalService.findElementById("sl-password").value;
+	        // Client-side validation first
+	        var validationErrors = this.validateLoginForm(email, password);
+	        if (validationErrors.length > 0) {
+	            this.modalService.showFormErrors(validationErrors);
+	            return this.endoftheline(); // will come back via another call to doLogin
+	        }
+	        //TODO: show/hide loader
+	        this.enableButton('sl-btn-login', false);
+	        return this.sessionService.doEmailPasswordLogin(email, password)
+	            .then(function (fan) { return fan; }, function (err) {
+	            _this.enableButton('sl-btn-login', true);
+	            var message = _this.extractMsgAndLogError('doLogin', err);
+	            _this.showFormErrorsApiLogin(err);
+	            return _this.endoftheline(); // will come back via another call to doLogin
+	        });
 	    };
 	    /**
 	     * Show client side login form errors
@@ -44100,53 +44288,89 @@ var SeatersSDK =
 	        }
 	        return validationErrors;
 	    };
-	    /**
-	     * Show server side login form errors
-	     * @param error
-	     */
-	    JwlFlowService.prototype.showFormErrorsApiLogin = function (error) {
-	        //Test for detailed errors
-	        if (error.details.length > 0) {
-	            if (error.details[0].field === 'emailPasswordCredentials.email') {
-	                this.modalService.showFieldError('sl-email-error', error.details[0].error.defaultMessage);
-	            }
-	        }
-	        else {
-	            this.modalService.showFieldError('sl-email-error', error.error.defaultMessage);
-	        }
-	    };
-	    /**
-	     * Perform login
-	     */
-	    JwlFlowService.prototype.doLogin = function () {
+	    JwlFlowService.prototype.showSignup = function () {
 	        var _this = this;
-	        //Reset form errors
+	        // show the signup screen
+	        this.modalService.showModal(__webpack_require__(815), __webpack_require__(812));
+	        return new es6_promise_1.Promise(function (resolve, reject) {
+	            var signupBtn = _this.modalService.findElementById('sl-btn-signup');
+	            signupBtn.onclick = function () { return _this.doSignup().then(resolve, reject); };
+	        });
+	    };
+	    JwlFlowService.prototype.doSignup = function () {
+	        var _this = this;
+	        // Reset form errors
 	        this.modalService.resetFormErrors();
-	        //Get fields
+	        // Get fields
 	        var email = this.modalService.findElementById("sl-email").value;
 	        var password = this.modalService.findElementById("sl-password").value;
-	        //..and do client validation first
-	        var validationErrors = this.validateLoginForm(email, password);
-	        if (validationErrors.length > 0)
+	        var firstname = this.modalService.findElementById("sl-firstname").value;
+	        var lastname = this.modalService.findElementById("sl-lastname").value;
+	        // Client-side validations
+	        var validationErrors = this.validateSignupForm(email, password, firstname, lastname);
+	        if (validationErrors.length > 0) {
 	            this.modalService.showFormErrors(validationErrors);
-	        else {
-	            //Login
-	            this.enableButton('sl-btn-login', false);
-	            this.sessionService.doEmailPasswordLogin(email, password)
-	                .then(function (res) {
-	                _this.enableButton('sl-btn-login', true);
-	                _this.checkJoinStatus();
-	            }, function (err) {
-	                _this.enableButton('sl-btn-login', true);
-	                if (err instanceof Error) {
-	                    console.log('session.doEmailPasswordLogin error', err.stack); //DEBUG
-	                }
-	                else {
-	                    console.log('session.doEmailPasswordLogin error', err); //DEBUG
-	                }
-	                _this.showFormErrorsApiLogin(err);
-	            });
+	            return this.endoftheline(); // will come back via another call to doSignup 
 	        }
+	        this.enableButton('sl-btn-signup', false);
+	        this.sessionService.doEmailPasswordSignUp(email, password, firstname, lastname)
+	            .then(function (fan) { return fan; }, function (err) {
+	            _this.enableButton('sl-btn-signup', true);
+	            var message = _this.extractMsgAndLogError('doSignup', err);
+	            _this.modalService.showFieldError('sl-email-error', message);
+	            return _this.endoftheline();
+	        });
+	    };
+	    JwlFlowService.prototype.ensureFanHasValidEmail = function (fan) {
+	        if (fan.validatedEmail) {
+	            return es6_promise_1.Promise.resolve();
+	        }
+	        else {
+	            return this.showValidateEmail(fan);
+	        }
+	    };
+	    JwlFlowService.prototype.showValidateEmail = function (fan) {
+	        var _this = this;
+	        this.modalService.showModal(__webpack_require__(816), __webpack_require__(812));
+	        var deferred = this.defer();
+	        var userSpan = this.modalService.findElementById('sl-span-firstname');
+	        userSpan.innerHTML = fan.firstName;
+	        var validateEmailBtn = this.modalService.findElementById('sl-btn-validate');
+	        validateEmailBtn.onclick = function () { return _this.doEmailValidation(fan).then(deferred.resolve, deferred.reject); };
+	        return deferred.promise;
+	    };
+	    JwlFlowService.prototype.doEmailValidation = function (fan) {
+	        var _this = this;
+	        // Reset form errors
+	        this.modalService.resetFormErrors();
+	        // Get fields
+	        var confirmationCode = this.modalService.findElementById("sl-confirmation-code").value;
+	        var email = fan.email;
+	        // Client-side validations
+	        var validationErrors = this.validateEmailValidationForm(confirmationCode);
+	        if (validationErrors.length > 0) {
+	            this.modalService.showFormErrors(validationErrors);
+	            return this.endoftheline();
+	        }
+	        //Validate
+	        this.enableButton('sl-btn-validate', false);
+	        return this.sessionService.doEmailValidation(email, confirmationCode)
+	            .then(function (fan) { return fan; }, function (err) {
+	            _this.enableButton('sl-btn-validate', true);
+	            var message = _this.extractMsgAndLogError('doEmailValidation', err);
+	            //For now, add general always show this error, as error info is in different format coming back
+	            _this.modalService.showFieldError('sl-confirmation-code-error', "Wrong validation code");
+	            return _this.endoftheline();
+	        });
+	    };
+	    ////---------------
+	    JwlFlowService.prototype.setupLogin = function () {
+	        var _this = this;
+	        this.modalService.showModal(__webpack_require__(814), __webpack_require__(812));
+	        var loginBtn = this.modalService.findElementById('sl-btn-login');
+	        loginBtn.onclick = function () { return _this.doLogin(); };
+	        var navToSignup = this.modalService.findElementById('sl-nav-signup');
+	        navToSignup.onclick = function (evt) { evt.preventDefault(); _this.setupSignup(); };
 	    };
 	    /**
 	     * Show client side signup form errors
@@ -44181,40 +44405,6 @@ var SeatersSDK =
 	        return validationErrors;
 	    };
 	    /**
-	     * Perform signup
-	     */
-	    JwlFlowService.prototype.doSignup = function () {
-	        var _this = this;
-	        //Reset form errors
-	        this.modalService.resetFormErrors();
-	        //Get fields
-	        var email = this.modalService.findElementById("sl-email").value;
-	        var password = this.modalService.findElementById("sl-password").value;
-	        var firstname = this.modalService.findElementById("sl-firstname").value;
-	        var lastname = this.modalService.findElementById("sl-lastname").value;
-	        //..and do client validation first
-	        var validationErrors = this.validateSignupForm(email, password, firstname, lastname);
-	        if (validationErrors.length > 0)
-	            this.modalService.showFormErrors(validationErrors);
-	        else {
-	            //Login
-	            this.enableButton('sl-btn-signup', false);
-	            this.sessionService.doEmailPasswordSignUp(email, password, firstname, lastname)
-	                .then(function (res) {
-	                //Continue with email validation
-	                _this.enableButton('sl-btn-signup', true);
-	                _this.setupEmailValidation(res);
-	            }, function (err) {
-	                _this.enableButton('sl-btn-signup', true);
-	                if (err instanceof Error) {
-	                }
-	                else {
-	                }
-	                _this.modalService.showFieldError('sl-email-error', err.message);
-	            });
-	        }
-	    };
-	    /**
 	     * Show client side validate form errors
 	     * @param code
 	     * @returns {Array}
@@ -44228,149 +44418,11 @@ var SeatersSDK =
 	        }
 	        return validationErrors;
 	    };
-	    /**
-	       * Perform email validation
-	       */
-	    JwlFlowService.prototype.doEmailValidation = function (userData) {
-	        var _this = this;
-	        //Reset form errors
-	        this.modalService.resetFormErrors();
-	        //Get fields
-	        var confirmationCode = this.modalService.findElementById("sl-confirmation-code").value;
-	        var email = userData.email;
-	        //..and do client validation first
-	        var validationErrors = this.validateEmailValidationForm(confirmationCode);
-	        if (validationErrors.length > 0)
-	            this.modalService.showFormErrors(validationErrors);
-	        else {
-	            //Validate
-	            this.enableButton('sl-btn-validate', false);
-	            this.sessionService.doValidation(email, confirmationCode)
-	                .then(function (res) {
-	                _this.enableButton('sl-btn-validate', true);
-	                alert("You have confirmed your email");
-	            }, function (err) {
-	                _this.enableButton('sl-btn-validate', true);
-	                if (err instanceof Error) {
-	                }
-	                else {
-	                }
-	                //For now, add general always show this error, as error info is in different format coming back
-	                _this.modalService.showFieldError('sl-confirmation-code-error', "Wrong validation code");
-	            });
-	        }
-	    };
-	    JwlFlowService.prototype.setupEmailValidation = function (userData) {
-	        var _this = this;
-	        console.log(userData);
-	        this.modalService.showModal(__webpack_require__(811), __webpack_require__(812));
-	        var validateEmailBtn = this.modalService.findElementById('sl-btn-validate');
-	        validateEmailBtn.onclick = function () { return _this.doEmailValidation(userData); };
-	        var userSpan = this.modalService.findElementById('sl-span-firstname');
-	        userSpan.innerHTML = userData.firstName;
-	    };
 	    JwlFlowService.prototype.setupSignup = function () {
 	        var _this = this;
-	        this.modalService.showModal(__webpack_require__(814), __webpack_require__(812));
+	        this.modalService.showModal(__webpack_require__(815), __webpack_require__(812));
 	        var signupBtn = this.modalService.findElementById('sl-btn-signup');
 	        signupBtn.onclick = function () { return _this.doSignup(); };
-	    };
-	    /**
-	     *  Setup login
-	     */
-	    JwlFlowService.prototype.setupLogin = function () {
-	        var _this = this;
-	        this.modalService.showModal(__webpack_require__(815), __webpack_require__(812));
-	        var loginBtn = this.modalService.findElementById('sl-btn-login');
-	        loginBtn.onclick = function () { return _this.doLogin(); };
-	        var navToSignup = this.modalService.findElementById('sl-nav-signup');
-	        navToSignup.onclick = function (evt) { evt.preventDefault(); _this.setupSignup(); };
-	    };
-	    JwlFlowService.prototype.checkFanGroupEligability = function (fg) {
-	        return fg.actionStatus === fan_group_service_1.FAN_GROUP_ACTION_STATUS.CAN_LEAVE ||
-	            fg.actionStatus === fan_group_service_1.FAN_GROUP_ACTION_STATUS.CAN_JOIN;
-	    };
-	    JwlFlowService.prototype.setupLinkToSeatersIfNotEligable = function () {
-	        this.modalService.showModal('To join this wish list, visit https://seaters.com/' + this.fg.slug + '/' + this.wlId, //TODO: make template
-	        '');
-	    };
-	    JwlFlowService.prototype.checkJoinStatus = function () {
-	        var _this = this;
-	        this.modalService.showModal('loading ...', //TODO: make template
-	        '');
-	        return this.waitingListService.getExtendedWaitingList(this.wlId)
-	            .then(function (wl) { return _this.wl = wl; })
-	            .then(function () { return _this.fanGroupService.getExtendedFanGroup(_this.wl.groupId); })
-	            .then(function (fg) { return _this.fg = fg; })
-	            .then(function () {
-	            var fg = _this.fg, wl = _this.wl;
-	            if (!_this.checkFanGroupEligability(fg)) {
-	                return _this.setupLinkToSeatersIfNotEligable();
-	            }
-	            else if (_this.hasRank(wl)) {
-	                return _this.setupWaitingListInfo();
-	            }
-	            else {
-	                return _this.joinFanGroupIfNeeded(fg)
-	                    .then(function (fg) { return _this.fg = fg; })
-	                    .then(function () { return _this.joinWaitingListIfNeeded(wl); })
-	                    .then(function (wl) { return _this.wl = wl; })
-	                    .then(function () { return _this.setupWaitingListInfo(); });
-	            }
-	        });
-	    };
-	    /**
-	     * Show WL info
-	     *
-	     */
-	    JwlFlowService.prototype.showWaitingListInfo = function () {
-	        var _this = this;
-	        this.waitingListService.getExtendedWaitingList(this.wlId)
-	            .then(function (wl) {
-	            console.log(wl);
-	            //TODO: - handle no position situation -> auto join wl
-	            var waitingListName = _this.modalService.findElementById('sl-wl-name');
-	            waitingListName.innerHTML = wl.displayName;
-	            var displaySection;
-	            if (wl.waitingListStatus === 'OPEN' && wl.position) {
-	                displaySection = _this.modalService.findElementById('sl-wl-open');
-	                displaySection.style.display = 'block';
-	                //set wl group info
-	                var waitingListLikelihood = _this.modalService.findElementById('sl-wl-likelihood');
-	                waitingListLikelihood.innerHTML = wl.position.likelihood + " %";
-	                var waitingListRank = _this.modalService.findElementById('sl-wl-rank');
-	                waitingListRank.innerHTML = "# " + wl.position.rank;
-	            }
-	            else if (wl.waitingListStatus === 'CLOSED') {
-	                displaySection = _this.modalService.findElementById('sl-wl-closed');
-	                displaySection.style.display = 'block';
-	                //set fan group slug
-	                var fanGroupSlug = _this.modalService.findElementById('sl-fg-slug');
-	                fanGroupSlug.innerHTML = wl.groupName.en;
-	                fanGroupSlug.href = "http://www.seaters.com/" + wl.groupSlug;
-	            }
-	        }, function (err) {
-	            //TODO
-	        });
-	    };
-	    /**
-	     *  Show WL information
-	     */
-	    JwlFlowService.prototype.setupWaitingListInfo = function () {
-	        var _this = this;
-	        this.modalService.showModal(__webpack_require__(816), __webpack_require__(812));
-	        var closeBtn = this.modalService.findElementById('sl-btn-close');
-	        closeBtn.onclick = function () { _this.modalService.closeModal(); };
-	        this.showWaitingListInfo();
-	    };
-	    JwlFlowService.prototype.startFlow = function (wlId) {
-	        this.wlId = wlId;
-	        if (this.sessionService.whoami()) {
-	            this.checkJoinStatus();
-	        }
-	        else {
-	            this.setupLogin();
-	        }
 	    };
 	    JwlFlowService.prototype.hasRank = function (wl) {
 	        return wl.actionStatus === waiting_list_service_1.WAITING_LIST_ACTION_STATUS.CONFIRM ||
@@ -44409,7 +44461,7 @@ var SeatersSDK =
 /* 811 */
 /***/ function(module, exports) {
 
-	module.exports = "\n    <div class=\"sl-content sl-flex sl-flex-column sl-flex-center-h\">\n      <div class=\"sl-pb-10\">\n        <h3>\n          <span>Welcome. It's nice to meet you,</span>\n          <span id=\"sl-span-firstname\"></span>\n        </h3>\n      </div>\n      <div class=\"sl-pb-10\">\n        <span>We just sent you a confirmation email. In order to confirm your registration, please enter the code mentioned in the email below.</span>\n      </div>\n      <div class=\"row sl-collapse\">\n        <form name=\"validateForm\" class=\"sl-flex sl-flex-column sl-flex-center-h small-12\" novalidate autocomplete=\"off\">\n          <div class=\"columns small-12\">\n            <div id=\"sl-confirmation-code-error\" class=\"sl-input-error\"></div>\n            <input id=\"sl-confirmation-code\" type=\"text\" name=\"confirmationCode\" placeholder=\"Your personal code\" required>\n          </div>\n          <div>\n            <button id=\"sl-btn-validate\" class=\"button sl-button success\" type=\"button\">Confirm email</button>\n          </div>\n        </form>\n      </div>\n    </div>\n";
+	module.exports = "<div class=\"sl-content sl-input-form\">\n\n  <div class=\"row sl-pb-10\">\n    <h3 id=\"sl-wl-name\">My Wish List</h3>\n    <div id=\"sl-wl-closed\">\n      <h4 class=\"sl-wl-closed sl-pb-10\">Closed</h4>\n      <span>\n        <p class=\"sl-mb-none\">This wish list has been closed.</p>\n        <p>Visit fan group <a id=\"sl-fg-slug\" href=\"http://www.seaters.com/myfangroup\" class=\"sl-link\">My Fan group</a></p>\n      </span>\n    </div>\n  </div>\n\n  <div id=\"sl-wl-open\">\n    <div class=\"row\">\n      <div class=\"columns small-6 sl-flex sl-flex-column sl-flex-center-h sl-wl-data-title\">Likelihood</div>\n      <div class=\"columns small-6 sl-flex sl-flex-column sl-flex-center-h sl-wl-data-title\">Rank</div>\n    </div>\n    <div class=\"row sl-pb-10\">\n      <div id=\"sl-wl-likelihood\" class=\"columns small-6 sl-flex sl-flex-column sl-flex-center-h sl-wl-data-value\">25.00 %</div>\n      <div id=\"sl-wl-rank\" class=\"columns small-6 sl-flex sl-flex-column sl-flex-center-h sl-wl-data-value\"># 1</div>\n    </div>\n  </div>\n\n  <div class=\"row sl-collapse\">\n    <div class=\"columns large-12\">\n      <button id=\"sl-btn-close\" class=\"sl-button success expand\" type=\"button\">\n        <span>Close</span>\n      </button>\n    </div>\n  </div>\n\n\n</div>\n";
 
 /***/ },
 /* 812 */
@@ -44485,19 +44537,19 @@ var SeatersSDK =
 /* 814 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"sl-content sl-input-form\">\n  <div class=\"row sl-pb-10\">\n    <h3>\n      <span>Sign up</span>\n    </h3>\n  </div>\n  <div class=\"row\">\n    <form name=\"signupForm\" novalidate autocomplete=\"off\">\n      <!-- novalidate prevents HTML5 validation since we will be validating ourselves -->\n      <div class=\"row sl-collapse\">\n        <!-- FIRST NAME -->\n        <div class=\"columns large-6 l-rpadding\">\n          <div id=\"sl-firstname-error\" class=\"sl-input-error\"></div>\n          <input id=\"sl-firstname\" placeholder=\"First Name\" type=\"text\" required>\n        </div>\n\n        <!-- LAST NAME -->\n        <div class=\"columns large-6\">\n          <div id=\"sl-lastname-error\" class=\"sl-input-error\"></div>\n          <input id=\"sl-lastname\" placeholder=\"Last Name\" type=\"text\" required>\n        </div>\n      </div>\n\n      <!-- EMAIL -->\n      <div class=\"row sl-collapse\">\n        <div class=\"columns large-12\">\n          <div id=\"sl-email-error\" class=\"sl-input-error\"></div>\n          <input id=\"sl-email\" placeholder=\"Email\" type=\"text\" required>\n        </div>\n      </div>\n\n      <!-- PASSWORD -->\n      <div class=\"row sl-collapse\">\n        <div class=\"columns large-12\">\n          <div id=\"sl-password-error\" class=\"sl-input-error\"></div>\n          <input id=\"sl-password\" placeholder=\"Password\" type=\"password\" required>\n        </div>\n      </div>\n\n      <!-- T&C -->\n      <div class=\"row sl-hint sl-collapse\">\n        <span><p>By signing up, you agree to Seaters' <a href=\"http://getseaters.com/user-agreement/\" class=\"sl-link\">Terms &amp; Conditions</a>\n        and <a href=\"http://getseaters.com/privacy/\" class=\"sl-link\">Privacy Policy</a></p>\n        </span>\n      </div>\n\n      <!-- SUBMIT BUTTON  -->\n      <div class=\"row sl-collapse\">\n        <div class=\"columns large-12\">\n          <button id=\"sl-btn-signup\" class=\"sl-button success expand\" type=\"button\">\n            <span>Sign up</span>\n          </button>\n        </div>\n      </div>\n    </form>\n  </div>\n</div>\n\n\n\n";
+	module.exports = "\n  <div class=\"sl-content\">\n    <div class=\"row sl-pb-10\">\n      <h3>\n        <span>Login</span>\n      </h3>\n    </div>\n\n    <div class=\"row\">\n      <form name=\"sl-login-form\" novalidate autocomplete=\"off\">\n        <!-- EMAIL -->\n        <div class=\"row sl-collapse\">\n          <div class=\"columns large-12\">\n            <div id=\"sl-email-error\" class=\"sl-input-error\"></div>\n            <input id=\"sl-email\" placeholder=\"Email\" type=\"text\" required>\n          </div>\n        </div>\n        <!-- PASSWORD -->\n        <div class=\"row sl-collapse\">\n          <div class=\"columns large-12\">\n            <div id=\"sl-password-error\" class=\"sl-input-error\"></div>\n            <input id=\"sl-password\" placeholder=\"Password\" type=\"password\" required>\n          </div>\n        </div>\n\n        <!-- Button -->\n        <div class=\"row sl-collapse\">\n          <div class=\"columns large-12\">\n            <button id=\"sl-btn-login\" type=\"button\" class=\"sl-button success expand\">\n              <span>Login</span>\n            </button>\n          </div>\n        </div>\n\n        <!-- signup link -->\n        <div class=\"row sl-hint sl-collapse sl-flex sl-flex-row sl-flex-center-h\">\n          <span><p>No account yet ? <a id=\"sl-nav-signup\" href=\"#\" class=\"sl-link\">Signup here !</a></p></span>\n        </div>\n\n      </form>\n    </div>\n  </div>\n";
 
 /***/ },
 /* 815 */
 /***/ function(module, exports) {
 
-	module.exports = "\n  <div class=\"sl-content\">\n    <div class=\"row sl-pb-10\">\n      <h3>\n        <span>Login</span>\n      </h3>\n    </div>\n\n    <div class=\"row\">\n      <form name=\"sl-login-form\" novalidate autocomplete=\"off\">\n        <!-- EMAIL -->\n        <div class=\"row sl-collapse\">\n          <div class=\"columns large-12\">\n            <div id=\"sl-email-error\" class=\"sl-input-error\"></div>\n            <input id=\"sl-email\" placeholder=\"Email\" type=\"text\" required>\n          </div>\n        </div>\n        <!-- PASSWORD -->\n        <div class=\"row sl-collapse\">\n          <div class=\"columns large-12\">\n            <div id=\"sl-password-error\" class=\"sl-input-error\"></div>\n            <input id=\"sl-password\" placeholder=\"Password\" type=\"password\" required>\n          </div>\n        </div>\n\n        <!-- Button -->\n        <div class=\"row sl-collapse\">\n          <div class=\"columns large-12\">\n            <button id=\"sl-btn-login\" type=\"button\" class=\"sl-button success expand\">\n              <span>Login</span>\n            </button>\n          </div>\n        </div>\n\n        <!-- signup link -->\n        <div class=\"row sl-hint sl-collapse sl-flex sl-flex-row sl-flex-center-h\">\n          <span><p>No account yet ? <a id=\"sl-nav-signup\" href=\"#\" class=\"sl-link\">Signup here !</a></p></span>\n        </div>\n\n      </form>\n    </div>\n  </div>\n";
+	module.exports = "<div class=\"sl-content sl-input-form\">\n  <div class=\"row sl-pb-10\">\n    <h3>\n      <span>Sign up</span>\n    </h3>\n  </div>\n  <div class=\"row\">\n    <form name=\"signupForm\" novalidate autocomplete=\"off\">\n      <!-- novalidate prevents HTML5 validation since we will be validating ourselves -->\n      <div class=\"row sl-collapse\">\n        <!-- FIRST NAME -->\n        <div class=\"columns large-6 l-rpadding\">\n          <div id=\"sl-firstname-error\" class=\"sl-input-error\"></div>\n          <input id=\"sl-firstname\" placeholder=\"First Name\" type=\"text\" required>\n        </div>\n\n        <!-- LAST NAME -->\n        <div class=\"columns large-6\">\n          <div id=\"sl-lastname-error\" class=\"sl-input-error\"></div>\n          <input id=\"sl-lastname\" placeholder=\"Last Name\" type=\"text\" required>\n        </div>\n      </div>\n\n      <!-- EMAIL -->\n      <div class=\"row sl-collapse\">\n        <div class=\"columns large-12\">\n          <div id=\"sl-email-error\" class=\"sl-input-error\"></div>\n          <input id=\"sl-email\" placeholder=\"Email\" type=\"text\" required>\n        </div>\n      </div>\n\n      <!-- PASSWORD -->\n      <div class=\"row sl-collapse\">\n        <div class=\"columns large-12\">\n          <div id=\"sl-password-error\" class=\"sl-input-error\"></div>\n          <input id=\"sl-password\" placeholder=\"Password\" type=\"password\" required>\n        </div>\n      </div>\n\n      <!-- T&C -->\n      <div class=\"row sl-hint sl-collapse\">\n        <span><p>By signing up, you agree to Seaters' <a href=\"http://getseaters.com/user-agreement/\" class=\"sl-link\">Terms &amp; Conditions</a>\n        and <a href=\"http://getseaters.com/privacy/\" class=\"sl-link\">Privacy Policy</a></p>\n        </span>\n      </div>\n\n      <!-- SUBMIT BUTTON  -->\n      <div class=\"row sl-collapse\">\n        <div class=\"columns large-12\">\n          <button id=\"sl-btn-signup\" class=\"sl-button success expand\" type=\"button\">\n            <span>Sign up</span>\n          </button>\n        </div>\n      </div>\n    </form>\n  </div>\n</div>\n\n\n\n";
 
 /***/ },
 /* 816 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"sl-content sl-input-form\">\n\n  <div class=\"row sl-pb-10\">\n    <h3 id=\"sl-wl-name\">My Wish List</h3>\n    <div id=\"sl-wl-closed\">\n      <h4 class=\"sl-wl-closed sl-pb-10\">Closed</h4>\n      <span>\n        <p class=\"sl-mb-none\">This wish list has been closed.</p>\n        <p>Visit fan group <a id=\"sl-fg-slug\" href=\"http://www.seaters.com/myfangroup\" class=\"sl-link\">My Fan group</a></p>\n      </span>\n    </div>\n  </div>\n\n  <div id=\"sl-wl-open\">\n    <div class=\"row\">\n      <div class=\"columns small-6 sl-flex sl-flex-column sl-flex-center-h sl-wl-data-title\">Likelihood</div>\n      <div class=\"columns small-6 sl-flex sl-flex-column sl-flex-center-h sl-wl-data-title\">Rank</div>\n    </div>\n    <div class=\"row sl-pb-10\">\n      <div id=\"sl-wl-likelihood\" class=\"columns small-6 sl-flex sl-flex-column sl-flex-center-h sl-wl-data-value\">25.00 %</div>\n      <div id=\"sl-wl-rank\" class=\"columns small-6 sl-flex sl-flex-column sl-flex-center-h sl-wl-data-value\"># 1</div>\n    </div>\n  </div>\n\n  <div class=\"row sl-collapse\">\n    <div class=\"columns large-12\">\n      <button id=\"sl-btn-close\" class=\"sl-button success expand\" type=\"button\">\n        <span>Close</span>\n      </button>\n    </div>\n  </div>\n\n\n</div>\n";
+	module.exports = "\n    <div class=\"sl-content sl-flex sl-flex-column sl-flex-center-h\">\n      <div class=\"sl-pb-10\">\n        <h3>\n          <span>Welcome. It's nice to meet you,</span>\n          <span id=\"sl-span-firstname\"></span>\n        </h3>\n      </div>\n      <div class=\"sl-pb-10\">\n        <span>We just sent you a confirmation email. In order to confirm your registration, please enter the code mentioned in the email below.</span>\n      </div>\n      <div class=\"row sl-collapse\">\n        <form name=\"validateForm\" class=\"sl-flex sl-flex-column sl-flex-center-h small-12\" novalidate autocomplete=\"off\">\n          <div class=\"columns small-12\">\n            <div id=\"sl-confirmation-code-error\" class=\"sl-input-error\"></div>\n            <input id=\"sl-confirmation-code\" type=\"text\" name=\"confirmationCode\" placeholder=\"Your personal code\" required>\n          </div>\n          <div>\n            <button id=\"sl-btn-validate\" class=\"button sl-button success\" type=\"button\">Confirm email</button>\n          </div>\n        </form>\n      </div>\n    </div>\n";
 
 /***/ },
 /* 817 */

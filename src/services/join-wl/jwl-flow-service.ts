@@ -3,14 +3,15 @@ import { Promise } from 'es6-promise';
 import { ModalService } from '../modal-service';
 import { WaitingListService, ExtendedWaitingList, WAITING_LIST_ACTION_STATUS } from '../waiting-list-service';
 import { FanGroupService, ExtendedFanGroup, FAN_GROUP_ACTION_STATUS } from '../fan-group-service';
+import { Fan } from '../../seaters-api/fan/fan';
 
 declare var require: any;
 
-export class JwlFlowService {
+export enum JWL_EXIT_STATUS {
+  JOINED, CANCELLED, ERROR 
+}
 
-    private wlId: string = "";
-    private wl: ExtendedWaitingList;
-    private fg: ExtendedFanGroup;
+export class JwlFlowService {
 
     constructor (
         private modalService: ModalService,
@@ -20,9 +21,202 @@ export class JwlFlowService {
     ) {
     }
 
-    //Sets a button to either enabled or disabled
+    /**
+     * Extract the message from an error and log this message with it's details
+     */
+    private extractMsgAndLogError (pre, err): string {
+      var message = err instanceof Error ? err.message : JSON.stringify(err);
+      var details = err.stack || '';
+      console.error('[JwlFlowService] ' + pre + ': ' + message, details);
+      return message;
+    }
+
+    /**
+     * Sets a button to either enabled or disabled
+     */
     private enableButton(btnId: string, enabled:boolean) {
       (<HTMLButtonElement>this.modalService.findElementById(btnId)).disabled = !enabled;
+    }
+
+    /**
+     * Show server side login form errors
+     * @param error
+     */
+    private showFormErrorsApiLogin(error) {
+      if (error instanceof String) {
+        this.modalService.showFieldError('sl-email-error', 'Oops! Something went wrong. Please contact customer service.');
+      } else if (error.details.length > 0) {//Test for detailed errors
+        if (error.details[0].field === 'emailPasswordCredentials.email'){
+          this.modalService.showFieldError('strs-email-error', error.details[0].error.defaultMessage);
+        }
+      } else { //Test for general error
+        this.modalService.showFieldError('sl-email-error',error.error.defaultMessage);
+      }
+    }
+
+    /**
+     * Returns a promise that never resolves
+     */
+    private endoftheline<T> () {
+      return new Promise<T>(() => null);
+    }
+
+    private defer<T> (): { promise: Promise<T>, resolve: (T) => void, reject: (any) => void } {
+      var r: any = {};
+      r.promise = new Promise<T>((resolve, reject) => {
+        r.resolve = resolve;
+        r.reject = reject
+      });
+      return r;
+    }
+
+    /**
+     * Entry point for the 'Join WL Flow'
+     */
+    startFlow (wlId: string): Promise<JWL_EXIT_STATUS> {
+      return this.ensureFanIsLoggedInWithValidEmail()
+      .then(() => this.ensureFanHasJoinedFgAndWl(wlId))
+      .then(wl => this.showRankAndLikelihood(wl));
+    }
+
+    private ensureFanIsLoggedInWithValidEmail (): Promise<void> {
+      console.log('[JwlFlowService] ensuring fan is logged in with valid email');
+      var fan = this.sessionService.whoami();
+      if (fan) {
+        return this.ensureFanHasValidEmail(fan);
+      } else {
+        return this.showLogin()
+        .then((fan) => this.ensureFanHasValidEmail(fan));
+      }
+    }
+
+    private ensureFanHasJoinedFgAndWl (wlId: string): Promise<ExtendedWaitingList> {
+      console.log('[JwlFlowService] ensuring fan has joined FG and WL');
+      this.modalService.showModal(
+        'Loading ...',//TODO: make template
+        ''
+      );
+
+      return this.waitingListService.getExtendedWaitingList(wlId)
+      .then(wl => {
+        return this.fanGroupService.getExtendedFanGroup(wl.groupId)
+        .then( fg => { return { fg: fg, wl: wl } });
+      })
+      .then(wlAndFg => {
+        var wl = wlAndFg.wl, fg = wlAndFg.fg;
+        return this.ensureFGAndWLAreEligable(fg, wl)
+        .then(() => this.joinFanGroupIfNeeded(fg))
+        .then(() => this.joinWaitingListIfNeeded(wl, 1));//TODO ask for nr of seats
+      });
+    }
+
+    private checkFanGroupEligability (fg: ExtendedFanGroup) {
+      return fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_LEAVE ||
+        fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_JOIN;
+    }
+
+    private checkWaitingListEligability (wl: ExtendedWaitingList) {
+      return wl.actionStatus === WAITING_LIST_ACTION_STATUS.BOOK || this.hasRank(wl);
+    }
+
+    private ensureFGAndWLAreEligable (fg: ExtendedFanGroup, wl: ExtendedWaitingList): Promise<void> {
+      console.log('[JwlFlowService] ensuring FG and WL are eligable for JWL');
+      if (!(this.checkFanGroupEligability(fg) && this.checkWaitingListEligability(wl))) {
+        this.modalService.showModal(
+          'To join this wish list, visit https://seaters.com/'+fg.slug+'/'+wl.waitingListId,//TODO: make template
+          ''
+        )
+        return this.endoftheline<void>();
+      } else {
+        return Promise.resolve();
+      }
+    }
+
+    private showRankAndLikelihood(wl: ExtendedWaitingList): Promise<JWL_EXIT_STATUS> {
+      console.log('[JwlFlowService] showing rank and likelihood');
+      this.modalService.showModal(
+        require('./wl.html'),
+        require('./app.css')
+      );
+      
+      return new Promise<JWL_EXIT_STATUS>((resolve, reject) => {
+        var closeBtn = this.modalService.findElementById('sl-btn-close');
+        closeBtn.onclick = () => {
+          this.modalService.closeModal();
+          resolve(JWL_EXIT_STATUS.JOINED);
+        };
+
+        var waitingListName = <HTMLElement> this.modalService.findElementById('sl-wl-name');
+        waitingListName.innerHTML = wl.displayName;
+        var displaySection;
+
+        //TODO: split up different scenario's in different modal contents
+        
+        if (wl.waitingListStatus === 'OPEN' && this.hasRank(wl)) {
+          displaySection = this.modalService.findElementById('sl-wl-open');
+          displaySection.style.display = 'block';
+          //set wl group info
+          var waitingListLikelihood = <HTMLElement>this.modalService.findElementById('sl-wl-likelihood');
+          waitingListLikelihood.innerHTML = wl.position.likelihood+" %";
+          var waitingListRank = <HTMLElement>this.modalService.findElementById('sl-wl-rank');
+          waitingListRank.innerHTML = "# "+wl.position.rank;
+        }
+        else if (wl.waitingListStatus === 'CLOSED') {
+          displaySection = this.modalService.findElementById('sl-wl-closed');
+          displaySection.style.display = 'block';
+          //set fan group slug
+          var fanGroupSlug = <HTMLAnchorElement>this.modalService.findElementById('sl-fg-slug');
+          fanGroupSlug.innerHTML = wl.groupName.en;
+          fanGroupSlug.href = "http://www.seaters.com/"+wl.groupSlug;
+        }
+        //TODO: link to seaters for further actions (soon/pay/preauth/accept/print...)
+        
+      });
+    }
+
+    private showLogin (): Promise<Fan> {
+      // show the log in screen
+      this.modalService.showModal(
+        require('./login.html'),
+        require('./app.css')
+      );
+      // resolve whenever doLogin or showSignup is completed
+      return new Promise((resolve, reject) => {
+        var loginBtn = this.modalService.findElementById('sl-btn-login');
+        loginBtn.onclick = () => this.doLogin().then(resolve, reject);
+        
+        var navToSignup = this.modalService.findElementById('sl-nav-signup');
+        navToSignup.onclick = (evt) => {
+          evt.preventDefault();//TODO: preventDefault at modal level should be enough
+          this.showSignup().then(resolve, reject);
+        };
+      });
+    }
+
+    private doLogin(): Promise<Fan> {
+      //Reset form errors
+      this.modalService.resetFormErrors();
+
+      // Get fields
+      var email = (<HTMLInputElement>this.modalService.findElementById("sl-email")).value;
+      var password = (<HTMLInputElement>this.modalService.findElementById("sl-password")).value;
+
+      // Client-side validation first
+      var validationErrors = this.validateLoginForm(email, password);
+      if (validationErrors.length > 0) {
+        this.modalService.showFormErrors(validationErrors);
+        return this.endoftheline();// will come back via another call to doLogin
+      }
+      
+      //TODO: show/hide loader
+      this.enableButton('sl-btn-login',false);
+      return this.sessionService.doEmailPasswordLogin(email, password)
+      .then(fan => fan, err => {
+        this.enableButton('sl-btn-login', true);
+        var message = this.extractMsgAndLogError('doLogin', err);
+        this.showFormErrorsApiLogin(err);
+        return this.endoftheline();// will come back via another call to doLogin
+      });
     }
 
     /**
@@ -48,206 +242,69 @@ export class JwlFlowService {
       return validationErrors;
     }
 
-    /**
-     * Show server side login form errors
-     * @param error
-     */
-    private showFormErrorsApiLogin(error) {
-      //Test for detailed errors
-      if (error.details.length > 0) {
-        if (error.details[0].field === 'emailPasswordCredentials.email'){
-          this.modalService.showFieldError('strs-email-error', error.details[0].error.defaultMessage);
-        }
-      }
-      //Test for general error
-      else {
-        this.modalService.showFieldError('strs-email-error',error.error.defaultMessage);
-      }
+    private showSignup (): Promise<Fan> {
+      // show the signup screen
+      this.modalService.showModal(
+        require('./signup.html'),
+        require('./app.css')
+      );
+      return new Promise<Fan>((resolve, reject) => {
+        var signupBtn = this.modalService.findElementById('sl-btn-signup');
+        signupBtn.onclick = () => this.doSignup().then(resolve, reject);
+      });
     }
 
-    /**
-     * Perform login
-     */
-    private doLogin() {
-      var _this = this;
-      //Reset form errors
+    private doSignup (): Promise<Fan> {
+      // Reset form errors
       this.modalService.resetFormErrors();
 
-      //Get fields
-      var email = (<HTMLInputElement>this.modalService.findElementById("strs-email")).value;
-      var password = (<HTMLInputElement>this.modalService.findElementById("strs-password")).value;
+      // Get fields
+      var email = (<HTMLInputElement>this.modalService.findElementById("sl-email")).value;
+      var password = (<HTMLInputElement>this.modalService.findElementById("sl-password")).value;
+      var firstname = (<HTMLInputElement>this.modalService.findElementById("sl-firstname")).value;
+      var lastname = (<HTMLInputElement>this.modalService.findElementById("sl-lastname")).value;
 
-      //..and do client validation first
-      var validationErrors = this.validateLoginForm(email, password);
-      if (validationErrors.length > 0)
-        this.modalService.showFormErrors(validationErrors);
-      else {
-
-        //Login
-        this.enableButton('strs-btn-login',false);
-        this.sessionService.doEmailPasswordLogin(email, password)
-          .then(
-            (user) => {
-              _this.enableButton('strs-btn-login',true);
-              //TODO: TEST for validated email; if not yet, nav to validation form otherwise continue to WL
-              _this.checkJoinStatus();
-            },
-            (err) => {
-              _this.enableButton('strs-btn-login',true);
-              if(err instanceof Error) {
-                console.log('session.doEmailPasswordLogin error', err.stack);//DEBUG
-              } else {
-                console.log('session.doEmailPasswordLogin error', err);//DEBUG
-              }
-              _this.showFormErrorsApiLogin(err);
-            });
-      }
-    }
-
-
-    /**
-     * Show client side signup form errors
-     * @param email
-     * @param password
-     * @param firstname
-     * @param lastname
-     * @returns {Array}
-     */
-    private validateSignupForm(email: string, password:string, firstname:string, lastname:string) {
-      var validationErrors = [];
-
-      //Test email
-      if(!this.modalService.validateRequired(email)) {
-        //validationErrors.push({field:'sl-email', error:'sl_input_err_required'});
-        validationErrors.push({field:'strs-email', error:'Mandatory'});
-      }
-
-      //Test password
-      if(!this.modalService.validateRequired(password)) {
-        //validationErrors.push({field:'sl-password', error:'sl_input_err_required'});
-        validationErrors.push({field:'strs-password', error:'Mandatory'});
-      }
-
-      //Test firstname
-      if(!this.modalService.validateRequired(firstname)) {
-        //validationErrors.push({field:'sl-firstname', error:'sl_input_err_required'});
-        validationErrors.push({field:'strs-firstname', error:'Mandatory'});
-      }
-
-      //Test lastname
-      if(!this.modalService.validateRequired(lastname)) {
-        //validationErrors.push({field:'sl-lastname', error:'sl_input_err_required'});
-        validationErrors.push({field:'strs-lastname', error:'Mandatory'});
-      }
-      return validationErrors;
-    }
-
-    /**
-     * Perform signup
-     */
-    private doSignup() {
-      var _this = this;
-
-      //Reset form errors
-      this.modalService.resetFormErrors();
-
-      //Get fields
-      var email = (<HTMLInputElement>this.modalService.findElementById("strs-email")).value;
-      var password = (<HTMLInputElement>this.modalService.findElementById("strs-password")).value;
-      var firstname = (<HTMLInputElement>this.modalService.findElementById("strs-firstname")).value;
-      var lastname = (<HTMLInputElement>this.modalService.findElementById("strs-lastname")).value;
-
-      //..and do client validation first
+      // Client-side validations
       var validationErrors = this.validateSignupForm(email, password, firstname, lastname);
-      if (validationErrors.length > 0)
+      if (validationErrors.length > 0) {
         this.modalService.showFormErrors(validationErrors);
-      else {
-        //Login
-        this.enableButton('strs-btn-signup',false);
-        this.sessionService.doEmailPasswordSignUp(email, password, firstname, lastname)
-          .then(
-            (userAfterSignup) => {
-            //Now signin - after signin, continue with email validation
-            _this.sessionService.doEmailPasswordLogin(email, password).then(userAfterLogin => _this.setupEmailValidation(userAfterLogin));
-            },
-            (err) => {
-              _this.enableButton('strs-btn-signup',true);
-              if(err instanceof Error) {
-                console.log('session.doEmailPasswordSignUp error', err.stack);//DEBUG
-              }
-              else {
-                console.log('session.doEmailPasswordSignUp error', err);//DEBUG
-              }
-              _this.modalService.showFieldError('strs-email-error',err.message);
-            });
+        return this.endoftheline(); // will come back via another call to doSignup 
+      }
+
+      this.enableButton('sl-btn-signup',false);
+      this.sessionService.doEmailPasswordSignUp(email, password, firstname, lastname)
+      .then(fan => fan, err => {
+          this.enableButton('sl-btn-signup', true);
+          var message = this.extractMsgAndLogError('doSignup', err);
+          this.modalService.showFieldError('sl-email-error', message);
+          return this.endoftheline();
+      });
+    }
+
+    private ensureFanHasValidEmail(fan: Fan): Promise<void> {
+      if (fan.validatedEmail) {
+        return Promise.resolve();
+      } else {
+        return this.showValidateEmail(fan);
       }
     }
 
-    /**
-     * Show client side validate form errors
-     * @param code
-     * @returns {Array}
-     */
-    private validateEmailValidationForm(code:string) {
-      var validationErrors = [];
-
-      //Test email
-      if(!this.modalService.validateRequired(code)) {
-        //validationErrors.push({field:'sl-confirmation-code', error:'sl_input_err_required'});
-        validationErrors.push({field:'strs-confirmation-code', error:'Mandatory'});
-      }
-      return validationErrors;
-    }
-
-  /**
-     * Perform email validation
-     */
-    private doEmailValidation(userData) {
-      var _this = this;
-
-      //Reset form errors
-      this.modalService.resetFormErrors();
-
-      //Get fields
-      var confirmationCode = (<HTMLInputElement>this.modalService.findElementById("strs-confirmation-code")).value;
-      var email = userData.email;
-
-      //..and do client validation first
-      var validationErrors = this.validateEmailValidationForm(confirmationCode);
-      if (validationErrors.length > 0)
-        this.modalService.showFormErrors(validationErrors);
-      else {
-        //Validate
-        this.enableButton('strs-btn-validate',false);
-        this.sessionService.doValidation(email, confirmationCode)
-          .then(
-            res =>_this.checkJoinStatus()
-          , (err) => {
-            _this.enableButton('strs-btn-validate',true);
-            if(err instanceof Error) {
-              console.log('session.doValidation error', err.stack);//DEBUG
-            } else {
-              console.log('session.doValidation error', err.stack);//DEBUG
-            }
-
-            //For now, add general always show this error, as error info is in different format coming back
-            _this.modalService.showFieldError('strs-confirmation-code-error',"Wrong validation code");
-          });
-
-      }
-    }
-
-    setupEmailValidation (userData) {
+    private showValidateEmail (fan: Fan): Promise<void> {
       this.modalService.showModal(
         require('./validate.html'),
         require('./app.css')
       );
-      var validateEmailBtn = this.modalService.findElementById('strs-btn-validate');
-      validateEmailBtn.onclick = () => this.doEmailValidation(userData);
-      var userSpan = this.modalService.findElementById('strs-span-firstname');
-      userSpan.innerHTML = userData.name.firstName;
-    }
 
+      var deferred = this.defer<void>();
+
+      var userSpan = this.modalService.findElementById('sl-span-firstname');
+      userSpan.innerHTML = fan.firstName;
+      
+      var validateEmailBtn = this.modalService.findElementById('sl-btn-validate');
+      validateEmailBtn.onclick = () => this.doEmailValidation(fan).then(deferred.resolve, deferred.reject);
+      
+      return deferred.promise;
+    }
 
     /**
      * Provides and returns a promise for seat selection and start showing the seat selection form
@@ -301,128 +358,75 @@ export class JwlFlowService {
       signupBtn.onclick = () => this.doSignup();
     }
 
-    /**
-     *  Setup login
-     */
-    setupLogin () {
-      this.modalService.showModal(
-        require('./login.html'),
-        require('./app.css')
-      );
-      var loginBtn = this.modalService.findElementById('strs-btn-login');
-      loginBtn.onclick = () => this.doLogin();
-      var navToSignup = this.modalService.findElementById('strs-nav-signup');
-      navToSignup.onclick = (evt) => { evt.preventDefault(); this.setupSignup()};
-    }
+    private doEmailValidation(fan): Promise<Fan> {
+      // Reset form errors
+      this.modalService.resetFormErrors();
 
-    private checkFanGroupEligability (fg: ExtendedFanGroup) {
-      return fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_LEAVE ||
-        fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_JOIN;
-    }
+      // Get fields
+      var confirmationCode = (<HTMLInputElement>this.modalService.findElementById("sl-confirmation-code")).value;
+      var email = fan.email;
 
-    private setupLinkToSeatersIfNotEligable () {
-      this.modalService.showModal(
-        'To join this wish list, visit https://seaters.com/'+this.fg.slug+'/'+this.wlId,//TODO: make template
-        ''
-      )
-    }
+      // Client-side validations
+      var validationErrors = this.validateEmailValidationForm(confirmationCode);
+      if (validationErrors.length > 0) {
+        this.modalService.showFormErrors(validationErrors);
+        return this.endoftheline();
+      }
 
-    private checkJoinStatus () {
-      this.modalService.showModal(
-        'loading ...',//TODO: make template
-        ''
-      );
-
-      return this.waitingListService.getExtendedWaitingList(this.wlId)
-      .then(wl => this.wl = wl)
-      .then(() => this.fanGroupService.getExtendedFanGroup(this.wl.groupId))
-      .then(fg => this.fg = fg)
-      .then(() => {
-        var fg = this.fg, wl = this.wl;
-
-        if (!this.checkFanGroupEligability(fg)) {
-          return this.setupLinkToSeatersIfNotEligable();
-        } else if (this.hasRank(wl)) {
-          return this.setupWaitingListInfo();
-        } else {
-          return this.joinFanGroupIfNeeded(fg)
-          .then(fg => this.fg = fg)
-          .then( () => this.chooseSeats(wl) )
-          .then((numberOfSeats) => this.joinWaitingListIfNeeded(wl, numberOfSeats))
-          .then(wl => this.wl = wl)
-          .then(() => this.setupWaitingListInfo());
-        }
+      //Validate
+      this.enableButton('sl-btn-validate',false);
+      return this.sessionService.doEmailValidation(email, confirmationCode)
+      .then(fan => fan, err => {
+        this.enableButton('sl-btn-validate',true);
+        var message = this.extractMsgAndLogError('doEmailValidation', err);
+        //For now, add general always show this error, as error info is in different format coming back
+        this.modalService.showFieldError('sl-confirmation-code-error',"Wrong validation code");
+        return this.endoftheline();
       });
     }
 
+    ////---------------
 
-    /**
-     * Show WL info
-     *
-     */
-    private showWaitingListInfo() {
-      var _this = this;
+    private validateSignupForm(email: string, password:string, firstname:string, lastname:string) {
+      var validationErrors = [];
 
-      this.waitingListService.getExtendedWaitingList(this.wlId)
-      .then(function(wl) {
-
-          //TODO: - handle no position situation -> auto join wl
-
-          var waitingListName = <HTMLElement>_this.modalService.findElementById('strs-wl-name');
-          waitingListName.innerHTML = wl.displayName;
-          var displaySection;
-
-          if (wl.waitingListStatus === 'OPEN' && wl.position) {
-            displaySection = _this.modalService.findElementById('strs-wl-open');
-            displaySection.style.display = 'block';
-            //set wl group info
-            var waitingListLikelihood = <HTMLElement>_this.modalService.findElementById('strs-wl-likelihood');
-            waitingListLikelihood.innerHTML = wl.position.likelihood+" %";
-            var waitingListRank = <HTMLElement>_this.modalService.findElementById('strs-wl-rank');
-            waitingListRank.innerHTML = "# "+wl.position.rank;
-          }
-          else if (wl.waitingListStatus === 'CLOSED') {
-            displaySection = _this.modalService.findElementById('strs-wl-closed');
-            displaySection.style.display = 'block';
-            //set fan group slug
-            var fanGroupSlug = <HTMLAnchorElement>_this.modalService.findElementById('strs-fg-slug');
-            fanGroupSlug.innerHTML = wl.groupName.en;
-            fanGroupSlug.href = "http://www.seaters.com/"+wl.groupSlug;
-          }
-        },
-        function(err) {
-          //TODO
-        }
-      );
-
-
-
-    }
-
-    /**
-     *  Show WL information
-     */
-    setupWaitingListInfo () {
-      this.modalService.showModal(
-        require('./wl.html'),
-        require('./app.css')
-      );
-      var closeBtn = this.modalService.findElementById('strs-btn-close');
-      closeBtn.onclick = () => { this.modalService.closeModal()};
-
-      this.showWaitingListInfo();
-    }
-
-    startFlow (wlId: string) {
-      this.wlId = wlId;
-
-      if (this.sessionService.whoami()) {
-        //TODO: TEST for validated email; if not yet, nav to validation form otherwise continue to WL
-        this.checkJoinStatus();
-      } else {
-        this.setupLogin();
+      //Test email
+      if(!this.modalService.validateRequired(email)) {
+        //validationErrors.push({field:'sl-email', error:'sl_input_err_required'});
+        validationErrors.push({field:'sl-email', error:'Mandatory'});
       }
+
+      //Test password
+      if(!this.modalService.validateRequired(password)) {
+        //validationErrors.push({field:'sl-password', error:'sl_input_err_required'});
+        validationErrors.push({field:'sl-password', error:'Mandatory'});
+      }
+
+      //Test firstname
+      if(!this.modalService.validateRequired(firstname)) {
+        //validationErrors.push({field:'sl-firstname', error:'sl_input_err_required'});
+        validationErrors.push({field:'sl-firstname', error:'Mandatory'});
+      }
+
+      //Test lastname
+      if(!this.modalService.validateRequired(lastname)) {
+        //validationErrors.push({field:'sl-lastname', error:'sl_input_err_required'});
+        validationErrors.push({field:'sl-lastname', error:'Mandatory'});
+      }
+      return validationErrors;
     }
+
+    private validateEmailValidationForm(code:string) {
+      var validationErrors = [];
+
+      //Test email
+      if(!this.modalService.validateRequired(code)) {
+        //validationErrors.push({field:'sl-confirmation-code', error:'sl_input_err_required'});
+        validationErrors.push({field:'sl-confirmation-code', error:'Mandatory'});
+      }
+      return validationErrors;
+    }
+
 
     private hasRank (wl: ExtendedWaitingList) {
       return wl.actionStatus === WAITING_LIST_ACTION_STATUS.CONFIRM ||

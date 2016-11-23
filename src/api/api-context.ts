@@ -45,7 +45,6 @@ export class ApiContext {
         return {
             url: endpoint.absoluteEndpoint,
             method: requestDefinition.method || 'GET',
-            query: requestDefinition.queryParams,
             headers: headers,
             body: requestDefinition.body
         };

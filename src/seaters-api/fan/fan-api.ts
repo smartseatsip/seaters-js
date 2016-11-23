@@ -3,7 +3,7 @@ import { PagedResult } from '../paged-result';
 import { PagingOptions } from '../paging-options';
 import { WaitingList } from './waiting-list';
 import { FanGroup } from './fan-group';
-import {Fan} from "./fan-group";
+import { Fan } from "./fan";
 
 export class FanApi {
 
@@ -11,33 +11,39 @@ export class FanApi {
 
     }
 
-    private fgEndpoint = '/fan/groups/:fanGroupId';
+    private rootEp = '/fan';
+
+    fan (): Promise<Fan> {
+      return this.apiContext.get<Fan>(this.rootEp);
+    }
+
+    private fgEp = this.rootEp + '/groups/:fanGroupId';
 
     private fgEndpointParams (fanGroupId) {
         return ApiContext.buildEndpointParams({fanGroupId: fanGroupId});
     }
 
     fanGroup (fanGroupId: string): Promise<FanGroup> {
-        return this.apiContext.get<FanGroup>(this.fgEndpoint, this.fgEndpointParams(fanGroupId));
+        return this.apiContext.get<FanGroup>(this.fgEp, this.fgEndpointParams(fanGroupId));
     }
 
     joinFanGroup (fanGroupId: string): Promise<FanGroup> {
-        return this.apiContext.post<FanGroup>(this.fgEndpoint, null, this.fgEndpointParams(fanGroupId));
+        return this.apiContext.post<FanGroup>(this.fgEp, null, this.fgEndpointParams(fanGroupId));
     }
 
-    private wlEndpoint = '/fan/waiting-lists/:waitingListId';
+    private wlEp = this.rootEp + '/waiting-lists/:waitingListId';
 
     private wlEndpointParams (waitingListId): Map<string, string> {
         return ApiContext.buildEndpointParams({waitingListId: waitingListId});
     }
 
     waitingList (waitingListId: string): Promise<WaitingList> {
-        return this.apiContext.get<WaitingList>(this.wlEndpoint, this.wlEndpointParams(waitingListId));
+        return this.apiContext.get<WaitingList>(this.wlEp, this.wlEndpointParams(waitingListId));
     }
 
     joinWaitingList (waitingListId: string, numberOfSeats: number): Promise<WaitingList> {
         return this.apiContext.post<WaitingList>(
-            this.wlEndpoint+'/position',
+            this.wlEp+'/position',
             {
                 numberOfSeats: numberOfSeats
             },
@@ -45,9 +51,4 @@ export class FanApi {
         );
     }
 
-    private fanEndpoint = '/fan';
-
-    fan (): Promise<Fan> {
-      return this.apiContext.get<Fan>(this.fanEndpoint);
-    }
 }
