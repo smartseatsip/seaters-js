@@ -248,6 +248,50 @@ export class JwlFlowService {
       userSpan.innerHTML = userData.name.firstName;
     }
 
+
+    /**
+     * Provides and returns a promise for seat selection and start showing the seat selection form
+     * @param wl
+     * @returns {Promise}
+       */
+    private chooseSeats (wl: ExtendedWaitingList) : Promise<number> {
+      var seatSelectionResolver, promise = new Promise(function (resolve, reject) {
+        seatSelectionResolver = resolve;
+      });
+      //Show the seat selection form first
+      this.setupSeatsSelection(wl.maxNumberOfSeatsPerPosition, seatSelectionResolver);
+      return promise;
+    }
+
+    /**
+     * Setup the seat selection form
+     * @param maxSeats
+     * @param seatSelectionResolver
+       */
+    setupSeatsSelection (maxSeats: number, seatSelectionResolver)  {
+      var _this = this;
+      this.modalService.showModal(
+        require('./tickets.html'),
+        require('./app.css')
+      );
+
+      //Setup select values
+      var seat = this.modalService.findElementById('strs-btn-bookseats');
+      var seatSelect = <HTMLSelectElement> _this.modalService.findElementById('strs-seats');
+      for (var i=0;i < maxSeats; i++) {
+        var opt = document.createElement('option');
+        opt.value = String(i+1);
+        opt.innerHTML = String(i+1);
+        seatSelect.appendChild(opt);
+      }
+
+      var bookSeatsBtn = this.modalService.findElementById('strs-btn-bookseats');
+      bookSeatsBtn.onclick = () => {
+        var seats = seatSelect.options[seatSelect.selectedIndex].value;
+        seatSelectionResolver(Promise.resolve(seats))
+      };
+    }
+
     setupSignup () {
       this.modalService.showModal(
         require('./signup.html'),
@@ -303,7 +347,8 @@ export class JwlFlowService {
         } else {
           return this.joinFanGroupIfNeeded(fg)
           .then(fg => this.fg = fg)
-          .then(() => this.joinWaitingListIfNeeded(wl))
+          .then( () => this.chooseSeats(wl) )
+          .then((numberOfSeats) => this.joinWaitingListIfNeeded(wl, numberOfSeats))
           .then(wl => this.wl = wl)
           .then(() => this.setupWaitingListInfo());
         }
@@ -320,8 +365,6 @@ export class JwlFlowService {
 
       this.waitingListService.getExtendedWaitingList(this.wlId)
       .then(function(wl) {
-
-          console.log(wl);
 
           //TODO: - handle no position situation -> auto join wl
 
@@ -387,8 +430,9 @@ export class JwlFlowService {
         wl.actionStatus === WAITING_LIST_ACTION_STATUS.GO_LIVE;
     }
 
-    private joinWaitingListIfNeeded (wl: ExtendedWaitingList): Promise<ExtendedWaitingList> {
-      var numberOfSeats = 1;//TODO: ask user how many seats
+    private joinWaitingListIfNeeded (wl: ExtendedWaitingList, numberOfSeats:number): Promise<ExtendedWaitingList> {
+
+
         if (this.hasRank(wl)) {
             return Promise.resolve(wl);
         } else if (wl.actionStatus === WAITING_LIST_ACTION_STATUS.BOOK) {
