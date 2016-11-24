@@ -8299,18 +8299,24 @@ require("source-map-support").install();
 	    JwlFlowService.prototype.ensureFanHasJoinedFgAndWl = function (wlId) {
 	        var _this = this;
 	        console.log('[JwlFlowService] ensuring fan has joined FG and WL');
-	        this.modalService.showModal('Loading ...', //TODO: make template
-	        '');
+	        this.modalService.showModal(__webpack_require__(331), __webpack_require__(331));
 	        return this.waitingListService.getExtendedWaitingList(wlId)
 	            .then(function (wl) {
 	            return _this.fanGroupService.getExtendedFanGroup(wl.groupId)
-	                .then(function (fg) { return { fg: fg, wl: wl }; });
+	                .then(function (fg) { return { fg: fg, wl: wl }; })
+	                .then(function (data) { return _this.chooseSeats(wl).then(function (numberOfSeats) {
+	                return {
+	                    fg: data.fg,
+	                    wl: data.wl,
+	                    numberOfSeats: numberOfSeats
+	                };
+	            }); });
 	        })
-	            .then(function (wlAndFg) {
-	            var wl = wlAndFg.wl, fg = wlAndFg.fg;
+	            .then(function (data) {
+	            var wl = data.wl, fg = data.fg;
 	            return _this.ensureFGAndWLAreEligable(fg, wl)
 	                .then(function () { return _this.joinFanGroupIfNeeded(fg); })
-	                .then(function () { return _this.joinWaitingListIfNeeded(wl); });
+	                .then(function () { return _this.joinWaitingListIfNeeded(wl, data.numberOfSeats); });
 	        });
 	    };
 	    JwlFlowService.prototype.checkFanGroupEligability = function (fg) {
@@ -8474,6 +8480,35 @@ require("source-map-support").install();
 	        validateEmailBtn.onclick = function () { return _this.doEmailValidation(fan).then(deferred.resolve, deferred.reject); };
 	        return deferred.promise;
 	    };
+	    /**
+	     * Provides and returns a promise for seat selection and start showing the seat selection form
+	     * @param wl
+	     * @returns {Promise}
+	       */
+	    JwlFlowService.prototype.chooseSeats = function (wl) {
+	        // return immediately if the fan already has a rank
+	        if (this.hasRank(wl)) {
+	            return es6_promise_1.Promise.resolve(wl.position.numberOfSeats);
+	        }
+	        // otherwise ask how many he wants
+	        this.modalService.showModal(__webpack_require__(331), __webpack_require__(331));
+	        //Setup select values
+	        var seat = this.modalService.findElementById('strs-btn-bookseats');
+	        var seatSelect = this.modalService.findElementById('strs-seats');
+	        for (var i = 0; i < wl.maxNumberOfSeatsPerPosition; i++) {
+	            var opt = document.createElement('option');
+	            opt.value = String(i + 1);
+	            opt.innerHTML = String(i + 1);
+	            seatSelect.appendChild(opt);
+	        }
+	        var deferred = this.defer();
+	        var bookSeatsBtn = this.modalService.findElementById('strs-btn-bookseats');
+	        bookSeatsBtn.onclick = function () {
+	            var seats = seatSelect.options[seatSelect.selectedIndex].value;
+	            deferred.resolve(seats);
+	        };
+	        return deferred.promise;
+	    };
 	    JwlFlowService.prototype.doEmailValidation = function (fan) {
 	        var _this = this;
 	        // Reset form errors
@@ -8537,8 +8572,7 @@ require("source-map-support").install();
 	            wl.actionStatus === waiting_list_service_1.WAITING_LIST_ACTION_STATUS.WAIT ||
 	            wl.actionStatus === waiting_list_service_1.WAITING_LIST_ACTION_STATUS.GO_LIVE;
 	    };
-	    JwlFlowService.prototype.joinWaitingListIfNeeded = function (wl) {
-	        var numberOfSeats = 1; //TODO: ask user how many seats
+	    JwlFlowService.prototype.joinWaitingListIfNeeded = function (wl, numberOfSeats) {
 	        if (this.hasRank(wl)) {
 	            return es6_promise_1.Promise.resolve(wl);
 	        }

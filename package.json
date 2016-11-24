@@ -38,6 +38,8 @@
     "jasmine": "^2.5.2",
     "jasmine-expect": "^3.0.1",
     "jasmine-ts": "0.0.3",
+    "node-sass": "^3.13.0",
+    "sass-loader": "^4.0.2",
     "serve-static": "^1.11.1",
     "source-map-support": "^0.4.6",
     "string-replace-loader": "^1.0.5",

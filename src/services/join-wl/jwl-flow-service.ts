@@ -93,20 +93,27 @@ export class JwlFlowService {
     private ensureFanHasJoinedFgAndWl (wlId: string): Promise<ExtendedWaitingList> {
       console.log('[JwlFlowService] ensuring fan has joined FG and WL');
       this.modalService.showModal(
-        'Loading ...',//TODO: make template
-        ''
+        require('./loading.html'),
+        require('./loading.scss'),
       );
 
       return this.waitingListService.getExtendedWaitingList(wlId)
       .then(wl => {
         return this.fanGroupService.getExtendedFanGroup(wl.groupId)
-        .then( fg => { return { fg: fg, wl: wl } });
+        .then( fg => { return { fg: fg, wl: wl } })
+        .then( data => this.chooseSeats(wl).then(numberOfSeats => {
+          return {
+            fg: data.fg,
+            wl: data.wl,
+            numberOfSeats: numberOfSeats
+          };
+        }));
       })
-      .then(wlAndFg => {
-        var wl = wlAndFg.wl, fg = wlAndFg.fg;
+      .then(data => {
+        var wl = data.wl, fg = data.fg;
         return this.ensureFGAndWLAreEligable(fg, wl)
         .then(() => this.joinFanGroupIfNeeded(fg))
-        .then(() => this.joinWaitingListIfNeeded(wl, 1));//TODO ask for nr of seats
+        .then(() => this.joinWaitingListIfNeeded(wl, data.numberOfSeats));
       });
     }
 
@@ -314,21 +321,12 @@ export class JwlFlowService {
      * @returns {Promise}
        */
     private chooseSeats (wl: ExtendedWaitingList) : Promise<number> {
-      var seatSelectionResolver, promise = new Promise(function (resolve, reject) {
-        seatSelectionResolver = resolve;
-      });
-      //Show the seat selection form first
-      this.setupSeatsSelection(wl.maxNumberOfSeatsPerPosition, seatSelectionResolver);
-      return promise;
-    }
+      // return immediately if the fan already has a rank
+      if (this.hasRank(wl)) {
+        return Promise.resolve(wl.position.numberOfSeats);
+      }
 
-    /**
-     * Setup the seat selection form
-     * @param maxSeats
-     * @param seatSelectionResolver
-       */
-    setupSeatsSelection (maxSeats: number, seatSelectionResolver)  {
-      var _this = this;
+      // otherwise ask how many he wants
       this.modalService.showModal(
         require('./tickets.html'),
         require('./app.css')
@@ -336,28 +334,22 @@ export class JwlFlowService {
 
       //Setup select values
       var seat = this.modalService.findElementById('strs-btn-bookseats');
-      var seatSelect = <HTMLSelectElement> _this.modalService.findElementById('strs-seats');
-      for (var i=0;i < maxSeats; i++) {
+      var seatSelect = <HTMLSelectElement> this.modalService.findElementById('strs-seats');
+      for (var i = 0; i < wl.maxNumberOfSeatsPerPosition; i++) {
         var opt = document.createElement('option');
         opt.value = String(i+1);
         opt.innerHTML = String(i+1);
         seatSelect.appendChild(opt);
       }
 
+      var deferred = this.defer<number>();
       var bookSeatsBtn = this.modalService.findElementById('strs-btn-bookseats');
       bookSeatsBtn.onclick = () => {
         var seats = seatSelect.options[seatSelect.selectedIndex].value;
-        seatSelectionResolver(Promise.resolve(seats))
+        deferred.resolve(seats);
       };
-    }
-
-    setupSignup () {
-      this.modalService.showModal(
-        require('./signup.html'),
-        require('./app.css')
-      );
-      var signupBtn = this.modalService.findElementById('strs-btn-signup');
-      signupBtn.onclick = () => this.doSignup();
+      
+      return deferred.promise;
     }
 
     private doEmailValidation(fan): Promise<Fan> {
