@@ -8,7 +8,7 @@ import { Fan } from '../../seaters-api/fan/fan';
 declare var require: any;
 
 export enum JWL_EXIT_STATUS {
-  JOINED, CANCELLED, ERROR 
+  JOINED, CANCELLED, ERROR
 }
 
 export class JwlFlowService {
@@ -145,7 +145,7 @@ export class JwlFlowService {
         require('./wl.html'),
         require('./app.css')
       );
-      
+
       return new Promise<JWL_EXIT_STATUS>((resolve, reject) => {
         var closeBtn = this.modalService.findElementById('strs-btn-close');
         closeBtn.onclick = () => {
@@ -158,7 +158,7 @@ export class JwlFlowService {
         var displaySection;
 
         //TODO: split up different scenario's in different modal contents
-        
+
         if (wl.waitingListStatus === 'OPEN' && this.hasRank(wl)) {
           displaySection = this.modalService.findElementById('strs-wl-open');
           displaySection.style.display = 'block';
@@ -177,7 +177,7 @@ export class JwlFlowService {
           fanGroupSlug.href = "http://www.seaters.com/"+wl.groupSlug;
         }
         //TODO: link to seaters for further actions (soon/pay/preauth/accept/print...)
-        
+
       });
     }
 
@@ -187,13 +187,13 @@ export class JwlFlowService {
         require('./login.html'),
         require('./app.css')
       );
-      
+
       var deferred = this.defer<Fan>();
-      
+
       // resolve whenever doLogin or showSignup is completed
       var loginBtn = this.modalService.findElementById('strs-btn-login');
       loginBtn.onclick = () => this.doLogin().then(deferred.resolve, deferred.reject);
-        
+
       var navToSignup = this.modalService.findElementById('strs-nav-signup');
       navToSignup.onclick = (evt) => {
         evt.preventDefault();//TODO: preventDefault at modal level should be enough
@@ -216,7 +216,7 @@ export class JwlFlowService {
         this.modalService.showFormErrors(validationErrors);
         return this.endoftheline();// will come back via another call to doLogin
       }
-      
+
       //TODO: show/hide loader
       this.enableButton('strs-btn-login',false);
       return this.sessionService.doEmailPasswordLogin(email, password)
@@ -277,7 +277,7 @@ export class JwlFlowService {
       var validationErrors = this.validateSignupForm(email, password, firstname, lastname);
       if (validationErrors.length > 0) {
         this.modalService.showFormErrors(validationErrors);
-        return this.endoftheline(); // will come back via another call to doSignup 
+        return this.endoftheline(); // will come back via another call to doSignup
       }
 
       this.enableButton('strs-btn-signup',false);
@@ -308,10 +308,10 @@ export class JwlFlowService {
 
       var userSpan = this.modalService.findElementById('strs-span-firstname');
       userSpan.innerHTML = fan.firstName;
-      
+
       var validateEmailBtn = this.modalService.findElementById('strs-btn-validate');
       validateEmailBtn.onclick = () => this.doEmailValidation(fan).then(deferred.resolve, deferred.reject);
-      
+
       return deferred.promise;
     }
 
@@ -321,6 +321,9 @@ export class JwlFlowService {
      * @returns {Promise}
        */
     private chooseSeats (wl: ExtendedWaitingList) : Promise<number> {
+      // return immediately for closed WL
+      if (wl.waitingListStatus === 'CLOSED')
+        return Promise.resolve(0);
       // return immediately if the fan already has a rank
       if (this.hasRank(wl)) {
         return Promise.resolve(wl.position.numberOfSeats);
@@ -348,7 +351,7 @@ export class JwlFlowService {
         var seats = seatSelect.options[seatSelect.selectedIndex].value;
         deferred.resolve(seats);
       };
-      
+
       return deferred.promise;
     }
 
@@ -430,10 +433,12 @@ export class JwlFlowService {
 
     private joinWaitingListIfNeeded (wl: ExtendedWaitingList, numberOfSeats:number): Promise<ExtendedWaitingList> {
 
-
-        if (this.hasRank(wl)) {
+        //if user has already a position or this is a closed WL, then just continue
+        if (this.hasRank(wl) || wl.waitingListStatus === 'CLOSED') {
             return Promise.resolve(wl);
-        } else if (wl.actionStatus === WAITING_LIST_ACTION_STATUS.BOOK) {
+        }
+        //otherwise book the WL
+        else if (wl.actionStatus === WAITING_LIST_ACTION_STATUS.BOOK) {
             return this.waitingListService.joinWaitingList(wl.waitingListId, numberOfSeats);
         } else {
             return Promise.reject('Unsupported WL action status: ' + wl.actionStatus);
