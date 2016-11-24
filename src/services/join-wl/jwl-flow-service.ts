@@ -44,13 +44,13 @@ export class JwlFlowService {
      */
     private showFormErrorsApiLogin(error) {
       if (error instanceof String) {
-        this.modalService.showFieldError('sl-email-error', 'Oops! Something went wrong. Please contact customer service.');
+        this.modalService.showFieldError('strs-email-error', 'Oops! Something went wrong. Please contact customer service.');
       } else if (error.details.length > 0) {//Test for detailed errors
         if (error.details[0].field === 'emailPasswordCredentials.email'){
           this.modalService.showFieldError('strs-email-error', error.details[0].error.defaultMessage);
         }
       } else { //Test for general error
-        this.modalService.showFieldError('sl-email-error',error.error.defaultMessage);
+        this.modalService.showFieldError('strs-email-error',error.error.defaultMessage);
       }
     }
 
@@ -140,32 +140,32 @@ export class JwlFlowService {
       );
       
       return new Promise<JWL_EXIT_STATUS>((resolve, reject) => {
-        var closeBtn = this.modalService.findElementById('sl-btn-close');
+        var closeBtn = this.modalService.findElementById('strs-btn-close');
         closeBtn.onclick = () => {
           this.modalService.closeModal();
           resolve(JWL_EXIT_STATUS.JOINED);
         };
 
-        var waitingListName = <HTMLElement> this.modalService.findElementById('sl-wl-name');
+        var waitingListName = <HTMLElement> this.modalService.findElementById('strs-wl-name');
         waitingListName.innerHTML = wl.displayName;
         var displaySection;
 
         //TODO: split up different scenario's in different modal contents
         
         if (wl.waitingListStatus === 'OPEN' && this.hasRank(wl)) {
-          displaySection = this.modalService.findElementById('sl-wl-open');
+          displaySection = this.modalService.findElementById('strs-wl-open');
           displaySection.style.display = 'block';
           //set wl group info
-          var waitingListLikelihood = <HTMLElement>this.modalService.findElementById('sl-wl-likelihood');
+          var waitingListLikelihood = <HTMLElement>this.modalService.findElementById('strs-wl-likelihood');
           waitingListLikelihood.innerHTML = wl.position.likelihood+" %";
-          var waitingListRank = <HTMLElement>this.modalService.findElementById('sl-wl-rank');
+          var waitingListRank = <HTMLElement>this.modalService.findElementById('strs-wl-rank');
           waitingListRank.innerHTML = "# "+wl.position.rank;
         }
         else if (wl.waitingListStatus === 'CLOSED') {
-          displaySection = this.modalService.findElementById('sl-wl-closed');
+          displaySection = this.modalService.findElementById('strs-wl-closed');
           displaySection.style.display = 'block';
           //set fan group slug
-          var fanGroupSlug = <HTMLAnchorElement>this.modalService.findElementById('sl-fg-slug');
+          var fanGroupSlug = <HTMLAnchorElement>this.modalService.findElementById('strs-fg-slug');
           fanGroupSlug.innerHTML = wl.groupName.en;
           fanGroupSlug.href = "http://www.seaters.com/"+wl.groupSlug;
         }
@@ -180,17 +180,19 @@ export class JwlFlowService {
         require('./login.html'),
         require('./app.css')
       );
+      
+      var deferred = this.defer<Fan>();
+      
       // resolve whenever doLogin or showSignup is completed
-      return new Promise((resolve, reject) => {
-        var loginBtn = this.modalService.findElementById('sl-btn-login');
-        loginBtn.onclick = () => this.doLogin().then(resolve, reject);
+      var loginBtn = this.modalService.findElementById('strs-btn-login');
+      loginBtn.onclick = () => this.doLogin().then(deferred.resolve, deferred.reject);
         
-        var navToSignup = this.modalService.findElementById('sl-nav-signup');
-        navToSignup.onclick = (evt) => {
-          evt.preventDefault();//TODO: preventDefault at modal level should be enough
-          this.showSignup().then(resolve, reject);
-        };
-      });
+      var navToSignup = this.modalService.findElementById('strs-nav-signup');
+      navToSignup.onclick = (evt) => {
+        evt.preventDefault();//TODO: preventDefault at modal level should be enough
+        this.showSignup().then(deferred.resolve, deferred.reject);
+      };
+      return deferred.promise;
     }
 
     private doLogin(): Promise<Fan> {
@@ -198,8 +200,8 @@ export class JwlFlowService {
       this.modalService.resetFormErrors();
 
       // Get fields
-      var email = (<HTMLInputElement>this.modalService.findElementById("sl-email")).value;
-      var password = (<HTMLInputElement>this.modalService.findElementById("sl-password")).value;
+      var email = (<HTMLInputElement>this.modalService.findElementById("strs-email")).value;
+      var password = (<HTMLInputElement>this.modalService.findElementById("strs-password")).value;
 
       // Client-side validation first
       var validationErrors = this.validateLoginForm(email, password);
@@ -209,10 +211,10 @@ export class JwlFlowService {
       }
       
       //TODO: show/hide loader
-      this.enableButton('sl-btn-login',false);
+      this.enableButton('strs-btn-login',false);
       return this.sessionService.doEmailPasswordLogin(email, password)
       .then(fan => fan, err => {
-        this.enableButton('sl-btn-login', true);
+        this.enableButton('strs-btn-login', true);
         var message = this.extractMsgAndLogError('doLogin', err);
         this.showFormErrorsApiLogin(err);
         return this.endoftheline();// will come back via another call to doLogin
@@ -230,13 +232,13 @@ export class JwlFlowService {
 
       //Test email
       if(!this.modalService.validateRequired(email)) {
-        //validationErrors.push({field:'sl-email', error:'sl_input_err_required'});
+        //validationErrors.push({field:'strs-email', error:'sl_input_err_required'});
         validationErrors.push({field:'strs-email', error:'Mandatory'});
       }
 
       //Test password
       if(!this.modalService.validateRequired(password)) {
-        //validationErrors.push({field:'sl-password', error:'sl_input_err_required'});
+        //validationErrors.push({field:'strs-password', error:'sl_input_err_required'});
         validationErrors.push({field:'strs-password', error:'Mandatory'});
       }
       return validationErrors;
@@ -249,7 +251,7 @@ export class JwlFlowService {
         require('./app.css')
       );
       return new Promise<Fan>((resolve, reject) => {
-        var signupBtn = this.modalService.findElementById('sl-btn-signup');
+        var signupBtn = this.modalService.findElementById('strs-btn-signup');
         signupBtn.onclick = () => this.doSignup().then(resolve, reject);
       });
     }
@@ -259,10 +261,10 @@ export class JwlFlowService {
       this.modalService.resetFormErrors();
 
       // Get fields
-      var email = (<HTMLInputElement>this.modalService.findElementById("sl-email")).value;
-      var password = (<HTMLInputElement>this.modalService.findElementById("sl-password")).value;
-      var firstname = (<HTMLInputElement>this.modalService.findElementById("sl-firstname")).value;
-      var lastname = (<HTMLInputElement>this.modalService.findElementById("sl-lastname")).value;
+      var email = (<HTMLInputElement>this.modalService.findElementById("strs-email")).value;
+      var password = (<HTMLInputElement>this.modalService.findElementById("strs-password")).value;
+      var firstname = (<HTMLInputElement>this.modalService.findElementById("strs-firstname")).value;
+      var lastname = (<HTMLInputElement>this.modalService.findElementById("strs-lastname")).value;
 
       // Client-side validations
       var validationErrors = this.validateSignupForm(email, password, firstname, lastname);
@@ -271,12 +273,12 @@ export class JwlFlowService {
         return this.endoftheline(); // will come back via another call to doSignup 
       }
 
-      this.enableButton('sl-btn-signup',false);
+      this.enableButton('strs-btn-signup',false);
       this.sessionService.doEmailPasswordSignUp(email, password, firstname, lastname)
       .then(fan => fan, err => {
-          this.enableButton('sl-btn-signup', true);
+          this.enableButton('strs-btn-signup', true);
           var message = this.extractMsgAndLogError('doSignup', err);
-          this.modalService.showFieldError('sl-email-error', message);
+          this.modalService.showFieldError('strs-email-error', message);
           return this.endoftheline();
       });
     }
@@ -297,10 +299,10 @@ export class JwlFlowService {
 
       var deferred = this.defer<void>();
 
-      var userSpan = this.modalService.findElementById('sl-span-firstname');
+      var userSpan = this.modalService.findElementById('strs-span-firstname');
       userSpan.innerHTML = fan.firstName;
       
-      var validateEmailBtn = this.modalService.findElementById('sl-btn-validate');
+      var validateEmailBtn = this.modalService.findElementById('strs-btn-validate');
       validateEmailBtn.onclick = () => this.doEmailValidation(fan).then(deferred.resolve, deferred.reject);
       
       return deferred.promise;
@@ -363,7 +365,7 @@ export class JwlFlowService {
       this.modalService.resetFormErrors();
 
       // Get fields
-      var confirmationCode = (<HTMLInputElement>this.modalService.findElementById("sl-confirmation-code")).value;
+      var confirmationCode = (<HTMLInputElement>this.modalService.findElementById("strs-confirmation-code")).value;
       var email = fan.email;
 
       // Client-side validations
@@ -374,13 +376,13 @@ export class JwlFlowService {
       }
 
       //Validate
-      this.enableButton('sl-btn-validate',false);
+      this.enableButton('strs-btn-validate',false);
       return this.sessionService.doEmailValidation(email, confirmationCode)
       .then(fan => fan, err => {
-        this.enableButton('sl-btn-validate',true);
+        this.enableButton('strs-btn-validate',true);
         var message = this.extractMsgAndLogError('doEmailValidation', err);
         //For now, add general always show this error, as error info is in different format coming back
-        this.modalService.showFieldError('sl-confirmation-code-error',"Wrong validation code");
+        this.modalService.showFieldError('strs-confirmation-code-error',"Wrong validation code");
         return this.endoftheline();
       });
     }
@@ -392,26 +394,26 @@ export class JwlFlowService {
 
       //Test email
       if(!this.modalService.validateRequired(email)) {
-        //validationErrors.push({field:'sl-email', error:'sl_input_err_required'});
-        validationErrors.push({field:'sl-email', error:'Mandatory'});
+        //validationErrors.push({field:'strs-email', error:'sl_input_err_required'});
+        validationErrors.push({field:'strs-email', error:'Mandatory'});
       }
 
       //Test password
       if(!this.modalService.validateRequired(password)) {
-        //validationErrors.push({field:'sl-password', error:'sl_input_err_required'});
-        validationErrors.push({field:'sl-password', error:'Mandatory'});
+        //validationErrors.push({field:'strs-password', error:'sl_input_err_required'});
+        validationErrors.push({field:'strs-password', error:'Mandatory'});
       }
 
       //Test firstname
       if(!this.modalService.validateRequired(firstname)) {
-        //validationErrors.push({field:'sl-firstname', error:'sl_input_err_required'});
-        validationErrors.push({field:'sl-firstname', error:'Mandatory'});
+        //validationErrors.push({field:'strs-firstname', error:'sl_input_err_required'});
+        validationErrors.push({field:'strs-firstname', error:'Mandatory'});
       }
 
       //Test lastname
       if(!this.modalService.validateRequired(lastname)) {
-        //validationErrors.push({field:'sl-lastname', error:'sl_input_err_required'});
-        validationErrors.push({field:'sl-lastname', error:'Mandatory'});
+        //validationErrors.push({field:'strs-lastname', error:'sl_input_err_required'});
+        validationErrors.push({field:'strs-lastname', error:'Mandatory'});
       }
       return validationErrors;
     }
@@ -421,8 +423,8 @@ export class JwlFlowService {
 
       //Test email
       if(!this.modalService.validateRequired(code)) {
-        //validationErrors.push({field:'sl-confirmation-code', error:'sl_input_err_required'});
-        validationErrors.push({field:'sl-confirmation-code', error:'Mandatory'});
+        //validationErrors.push({field:'strs-confirmation-code', error:'sl_input_err_required'});
+        validationErrors.push({field:'strs-confirmation-code', error:'Mandatory'});
       }
       return validationErrors;
     }

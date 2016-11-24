@@ -7762,7 +7762,7 @@ require("source-map-support").install();
 	    SessionService.prototype.setCurrentFan = function () {
 	        var _this = this;
 	        return this.api.fan.fan()
-	            .then(function (fanData) { return _this.currentFan = fanData; });
+	            .then(function (fan) { return _this.currentFan = fan; });
 	    };
 	    SessionService.prototype.doEmailPasswordLogin = function (email, password, mfaToken) {
 	        var _this = this;
@@ -8154,7 +8154,7 @@ require("source-map-support").install();
 	     */
 	    ModalService.prototype.resetFormErrors = function () {
 	        //Reset all errors
-	        var errorFields = this.modal.getElementsByClassName('sl-input-error');
+	        var errorFields = this.modal.getElementsByClassName('strs-input-error');
 	        for (var i = 0; i < errorFields.length; i++) {
 	            errorFields[i].style.display = 'none';
 	        }
@@ -8250,15 +8250,15 @@ require("source-map-support").install();
 	     */
 	    JwlFlowService.prototype.showFormErrorsApiLogin = function (error) {
 	        if (error instanceof String) {
-	            this.modalService.showFieldError('sl-email-error', 'Oops! Something went wrong. Please contact customer service.');
+	            this.modalService.showFieldError('strs-email-error', 'Oops! Something went wrong. Please contact customer service.');
 	        }
 	        else if (error.details.length > 0) {
 	            if (error.details[0].field === 'emailPasswordCredentials.email') {
-	                this.modalService.showFieldError('sl-email-error', error.details[0].error.defaultMessage);
+	                this.modalService.showFieldError('strs-email-error', error.details[0].error.defaultMessage);
 	            }
 	        }
 	        else {
-	            this.modalService.showFieldError('sl-email-error', error.error.defaultMessage);
+	            this.modalService.showFieldError('strs-email-error', error.error.defaultMessage);
 	        }
 	    };
 	    /**
@@ -8336,29 +8336,29 @@ require("source-map-support").install();
 	        console.log('[JwlFlowService] showing rank and likelihood');
 	        this.modalService.showModal(__webpack_require__(331), __webpack_require__(331));
 	        return new es6_promise_1.Promise(function (resolve, reject) {
-	            var closeBtn = _this.modalService.findElementById('sl-btn-close');
+	            var closeBtn = _this.modalService.findElementById('strs-btn-close');
 	            closeBtn.onclick = function () {
 	                _this.modalService.closeModal();
 	                resolve(JWL_EXIT_STATUS.JOINED);
 	            };
-	            var waitingListName = _this.modalService.findElementById('sl-wl-name');
+	            var waitingListName = _this.modalService.findElementById('strs-wl-name');
 	            waitingListName.innerHTML = wl.displayName;
 	            var displaySection;
 	            //TODO: split up different scenario's in different modal contents
 	            if (wl.waitingListStatus === 'OPEN' && _this.hasRank(wl)) {
-	                displaySection = _this.modalService.findElementById('sl-wl-open');
+	                displaySection = _this.modalService.findElementById('strs-wl-open');
 	                displaySection.style.display = 'block';
 	                //set wl group info
-	                var waitingListLikelihood = _this.modalService.findElementById('sl-wl-likelihood');
+	                var waitingListLikelihood = _this.modalService.findElementById('strs-wl-likelihood');
 	                waitingListLikelihood.innerHTML = wl.position.likelihood + " %";
-	                var waitingListRank = _this.modalService.findElementById('sl-wl-rank');
+	                var waitingListRank = _this.modalService.findElementById('strs-wl-rank');
 	                waitingListRank.innerHTML = "# " + wl.position.rank;
 	            }
 	            else if (wl.waitingListStatus === 'CLOSED') {
-	                displaySection = _this.modalService.findElementById('sl-wl-closed');
+	                displaySection = _this.modalService.findElementById('strs-wl-closed');
 	                displaySection.style.display = 'block';
 	                //set fan group slug
-	                var fanGroupSlug = _this.modalService.findElementById('sl-fg-slug');
+	                var fanGroupSlug = _this.modalService.findElementById('strs-fg-slug');
 	                fanGroupSlug.innerHTML = wl.groupName.en;
 	                fanGroupSlug.href = "http://www.seaters.com/" + wl.groupSlug;
 	            }
@@ -8369,24 +8369,24 @@ require("source-map-support").install();
 	        var _this = this;
 	        // show the log in screen
 	        this.modalService.showModal(__webpack_require__(331), __webpack_require__(331));
+	        var deferred = this.defer();
 	        // resolve whenever doLogin or showSignup is completed
-	        return new es6_promise_1.Promise(function (resolve, reject) {
-	            var loginBtn = _this.modalService.findElementById('sl-btn-login');
-	            loginBtn.onclick = function () { return _this.doLogin().then(resolve, reject); };
-	            var navToSignup = _this.modalService.findElementById('sl-nav-signup');
-	            navToSignup.onclick = function (evt) {
-	                evt.preventDefault(); //TODO: preventDefault at modal level should be enough
-	                _this.showSignup().then(resolve, reject);
-	            };
-	        });
+	        var loginBtn = this.modalService.findElementById('strs-btn-login');
+	        loginBtn.onclick = function () { return _this.doLogin().then(deferred.resolve, deferred.reject); };
+	        var navToSignup = this.modalService.findElementById('strs-nav-signup');
+	        navToSignup.onclick = function (evt) {
+	            evt.preventDefault(); //TODO: preventDefault at modal level should be enough
+	            _this.showSignup().then(deferred.resolve, deferred.reject);
+	        };
+	        return deferred.promise;
 	    };
 	    JwlFlowService.prototype.doLogin = function () {
 	        var _this = this;
 	        //Reset form errors
 	        this.modalService.resetFormErrors();
 	        // Get fields
-	        var email = this.modalService.findElementById("sl-email").value;
-	        var password = this.modalService.findElementById("sl-password").value;
+	        var email = this.modalService.findElementById("strs-email").value;
+	        var password = this.modalService.findElementById("strs-password").value;
 	        // Client-side validation first
 	        var validationErrors = this.validateLoginForm(email, password);
 	        if (validationErrors.length > 0) {
@@ -8394,10 +8394,10 @@ require("source-map-support").install();
 	            return this.endoftheline(); // will come back via another call to doLogin
 	        }
 	        //TODO: show/hide loader
-	        this.enableButton('sl-btn-login', false);
+	        this.enableButton('strs-btn-login', false);
 	        return this.sessionService.doEmailPasswordLogin(email, password)
 	            .then(function (fan) { return fan; }, function (err) {
-	            _this.enableButton('sl-btn-login', true);
+	            _this.enableButton('strs-btn-login', true);
 	            var message = _this.extractMsgAndLogError('doLogin', err);
 	            _this.showFormErrorsApiLogin(err);
 	            return _this.endoftheline(); // will come back via another call to doLogin
@@ -8413,13 +8413,13 @@ require("source-map-support").install();
 	        var validationErrors = [];
 	        //Test email
 	        if (!this.modalService.validateRequired(email)) {
-	            //validationErrors.push({field:'sl-email', error:'sl_input_err_required'});
-	            validationErrors.push({ field: 'sl-email', error: 'Mandatory' });
+	            //validationErrors.push({field:'strs-email', error:'sl_input_err_required'});
+	            validationErrors.push({ field: 'strs-email', error: 'Mandatory' });
 	        }
 	        //Test password
 	        if (!this.modalService.validateRequired(password)) {
-	            //validationErrors.push({field:'sl-password', error:'sl_input_err_required'});
-	            validationErrors.push({ field: 'sl-password', error: 'Mandatory' });
+	            //validationErrors.push({field:'strs-password', error:'sl_input_err_required'});
+	            validationErrors.push({ field: 'strs-password', error: 'Mandatory' });
 	        }
 	        return validationErrors;
 	    };
@@ -8428,7 +8428,7 @@ require("source-map-support").install();
 	        // show the signup screen
 	        this.modalService.showModal(__webpack_require__(331), __webpack_require__(331));
 	        return new es6_promise_1.Promise(function (resolve, reject) {
-	            var signupBtn = _this.modalService.findElementById('sl-btn-signup');
+	            var signupBtn = _this.modalService.findElementById('strs-btn-signup');
 	            signupBtn.onclick = function () { return _this.doSignup().then(resolve, reject); };
 	        });
 	    };
@@ -8437,22 +8437,22 @@ require("source-map-support").install();
 	        // Reset form errors
 	        this.modalService.resetFormErrors();
 	        // Get fields
-	        var email = this.modalService.findElementById("sl-email").value;
-	        var password = this.modalService.findElementById("sl-password").value;
-	        var firstname = this.modalService.findElementById("sl-firstname").value;
-	        var lastname = this.modalService.findElementById("sl-lastname").value;
+	        var email = this.modalService.findElementById("strs-email").value;
+	        var password = this.modalService.findElementById("strs-password").value;
+	        var firstname = this.modalService.findElementById("strs-firstname").value;
+	        var lastname = this.modalService.findElementById("strs-lastname").value;
 	        // Client-side validations
 	        var validationErrors = this.validateSignupForm(email, password, firstname, lastname);
 	        if (validationErrors.length > 0) {
 	            this.modalService.showFormErrors(validationErrors);
 	            return this.endoftheline(); // will come back via another call to doSignup 
 	        }
-	        this.enableButton('sl-btn-signup', false);
+	        this.enableButton('strs-btn-signup', false);
 	        this.sessionService.doEmailPasswordSignUp(email, password, firstname, lastname)
 	            .then(function (fan) { return fan; }, function (err) {
-	            _this.enableButton('sl-btn-signup', true);
+	            _this.enableButton('strs-btn-signup', true);
 	            var message = _this.extractMsgAndLogError('doSignup', err);
-	            _this.modalService.showFieldError('sl-email-error', message);
+	            _this.modalService.showFieldError('strs-email-error', message);
 	            return _this.endoftheline();
 	        });
 	    };
@@ -8468,9 +8468,9 @@ require("source-map-support").install();
 	        var _this = this;
 	        this.modalService.showModal(__webpack_require__(331), __webpack_require__(331));
 	        var deferred = this.defer();
-	        var userSpan = this.modalService.findElementById('sl-span-firstname');
+	        var userSpan = this.modalService.findElementById('strs-span-firstname');
 	        userSpan.innerHTML = fan.firstName;
-	        var validateEmailBtn = this.modalService.findElementById('sl-btn-validate');
+	        var validateEmailBtn = this.modalService.findElementById('strs-btn-validate');
 	        validateEmailBtn.onclick = function () { return _this.doEmailValidation(fan).then(deferred.resolve, deferred.reject); };
 	        return deferred.promise;
 	    };
@@ -8479,7 +8479,7 @@ require("source-map-support").install();
 	        // Reset form errors
 	        this.modalService.resetFormErrors();
 	        // Get fields
-	        var confirmationCode = this.modalService.findElementById("sl-confirmation-code").value;
+	        var confirmationCode = this.modalService.findElementById("strs-confirmation-code").value;
 	        var email = fan.email;
 	        // Client-side validations
 	        var validationErrors = this.validateEmailValidationForm(confirmationCode);
@@ -8488,76 +8488,49 @@ require("source-map-support").install();
 	            return this.endoftheline();
 	        }
 	        //Validate
-	        this.enableButton('sl-btn-validate', false);
+	        this.enableButton('strs-btn-validate', false);
 	        return this.sessionService.doEmailValidation(email, confirmationCode)
 	            .then(function (fan) { return fan; }, function (err) {
-	            _this.enableButton('sl-btn-validate', true);
+	            _this.enableButton('strs-btn-validate', true);
 	            var message = _this.extractMsgAndLogError('doEmailValidation', err);
 	            //For now, add general always show this error, as error info is in different format coming back
-	            _this.modalService.showFieldError('sl-confirmation-code-error', "Wrong validation code");
+	            _this.modalService.showFieldError('strs-confirmation-code-error', "Wrong validation code");
 	            return _this.endoftheline();
 	        });
 	    };
 	    ////---------------
-	    JwlFlowService.prototype.setupLogin = function () {
-	        var _this = this;
-	        this.modalService.showModal(__webpack_require__(331), __webpack_require__(331));
-	        var loginBtn = this.modalService.findElementById('sl-btn-login');
-	        loginBtn.onclick = function () { return _this.doLogin(); };
-	        var navToSignup = this.modalService.findElementById('sl-nav-signup');
-	        navToSignup.onclick = function (evt) { evt.preventDefault(); _this.setupSignup(); };
-	    };
-	    /**
-	     * Show client side signup form errors
-	     * @param email
-	     * @param password
-	     * @param firstname
-	     * @param lastname
-	     * @returns {Array}
-	     */
 	    JwlFlowService.prototype.validateSignupForm = function (email, password, firstname, lastname) {
 	        var validationErrors = [];
 	        //Test email
 	        if (!this.modalService.validateRequired(email)) {
-	            //validationErrors.push({field:'sl-email', error:'sl_input_err_required'});
-	            validationErrors.push({ field: 'sl-email', error: 'Mandatory' });
+	            //validationErrors.push({field:'strs-email', error:'sl_input_err_required'});
+	            validationErrors.push({ field: 'strs-email', error: 'Mandatory' });
 	        }
 	        //Test password
 	        if (!this.modalService.validateRequired(password)) {
-	            //validationErrors.push({field:'sl-password', error:'sl_input_err_required'});
-	            validationErrors.push({ field: 'sl-password', error: 'Mandatory' });
+	            //validationErrors.push({field:'strs-password', error:'sl_input_err_required'});
+	            validationErrors.push({ field: 'strs-password', error: 'Mandatory' });
 	        }
 	        //Test firstname
 	        if (!this.modalService.validateRequired(firstname)) {
-	            //validationErrors.push({field:'sl-firstname', error:'sl_input_err_required'});
-	            validationErrors.push({ field: 'sl-firstname', error: 'Mandatory' });
+	            //validationErrors.push({field:'strs-firstname', error:'sl_input_err_required'});
+	            validationErrors.push({ field: 'strs-firstname', error: 'Mandatory' });
 	        }
 	        //Test lastname
 	        if (!this.modalService.validateRequired(lastname)) {
-	            //validationErrors.push({field:'sl-lastname', error:'sl_input_err_required'});
-	            validationErrors.push({ field: 'sl-lastname', error: 'Mandatory' });
+	            //validationErrors.push({field:'strs-lastname', error:'sl_input_err_required'});
+	            validationErrors.push({ field: 'strs-lastname', error: 'Mandatory' });
 	        }
 	        return validationErrors;
 	    };
-	    /**
-	     * Show client side validate form errors
-	     * @param code
-	     * @returns {Array}
-	     */
 	    JwlFlowService.prototype.validateEmailValidationForm = function (code) {
 	        var validationErrors = [];
 	        //Test email
 	        if (!this.modalService.validateRequired(code)) {
-	            //validationErrors.push({field:'sl-confirmation-code', error:'sl_input_err_required'});
-	            validationErrors.push({ field: 'sl-confirmation-code', error: 'Mandatory' });
+	            //validationErrors.push({field:'strs-confirmation-code', error:'sl_input_err_required'});
+	            validationErrors.push({ field: 'strs-confirmation-code', error: 'Mandatory' });
 	        }
 	        return validationErrors;
-	    };
-	    JwlFlowService.prototype.setupSignup = function () {
-	        var _this = this;
-	        this.modalService.showModal(__webpack_require__(331), __webpack_require__(331));
-	        var signupBtn = this.modalService.findElementById('sl-btn-signup');
-	        signupBtn.onclick = function () { return _this.doSignup(); };
 	    };
 	    JwlFlowService.prototype.hasRank = function (wl) {
 	        return wl.actionStatus === waiting_list_service_1.WAITING_LIST_ACTION_STATUS.CONFIRM ||
