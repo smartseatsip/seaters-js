@@ -18,6 +18,8 @@ export class FanApi {
     }
 
     private fgEp = this.rootEp + '/groups/:fanGroupId';
+    private fgProtectedWithoutRequest = this.fgEp + '/request-with-data';
+    private fgProcectedWithRequest    = this.fgEp + '/request';
 
     private fgEndpointParams (fanGroupId) {
         return ApiContext.buildEndpointParams({fanGroupId: fanGroupId});
@@ -29,6 +31,16 @@ export class FanApi {
 
     joinFanGroup (fanGroupId: string): Promise<FanGroup> {
         return this.apiContext.post<FanGroup>(this.fgEp, null, this.fgEndpointParams(fanGroupId));
+    }
+
+    joinProtectedFanGroup (fg: FanGroup, code: string): Promise<Request> {
+      var data = {
+        code: code
+      };
+      if (!fg.membership.request)
+        return this.apiContext.post<Request>(this.fgProtectedWithoutRequest, data, this.fgEndpointParams(fg.id));
+      else
+        return this.apiContext.put<Request>(this.fgProcectedWithRequest, data, this.fgEndpointParams(fg.id));
     }
 
     private wlEp = this.rootEp + '/waiting-lists/:waitingListId';
