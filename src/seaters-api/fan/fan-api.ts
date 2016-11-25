@@ -2,7 +2,7 @@ import { ApiContext } from '../../api';
 import { PagedResult } from '../paged-result';
 import { PagingOptions } from '../paging-options';
 import { WaitingList } from './waiting-list';
-import { FanGroup } from './fan-group';
+import { FanGroup, Request } from './fan-group';
 import { Fan } from "./fan";
 
 export class FanApi {

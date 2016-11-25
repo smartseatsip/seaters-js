@@ -72,15 +72,17 @@ export class FanGroupService {
     }
 
     joinProtectedFanGroup (fg:FanGroup, code: string): Promise<ExtendedFanGroup> {
-        return this.api.fan.joinProtectedFanGroup(fg, code)
-          .then(() => {
-            return retryUntil(
-              () => this.getExtendedFanGroup(fg.id),
-              (fg) => fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_LEAVE,
-              10,
-              1000
-            );
-          });
+      return this.api.fan.joinProtectedFanGroup(fg, code)
+        .then(() => {
+          return retryUntil(
+            () => this.getExtendedFanGroup(fg.id),
+            (fg) => (fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_LEAVE) ,
+            10,
+            1000
+          );
+        });
     }
+
+
 
 }
