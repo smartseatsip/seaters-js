@@ -46,6 +46,7 @@ gulp.task('http', function(done) {
     .use(serveStatic('./e2e-browser/fixtures'))
     .use(serveStatic('./dist'))
     .use('/components', serveStatic('./components'))
+    .use('/assets', serveStatic('./assets'))
     .use('/examples', serveStatic('./examples'))
     .use('/api', proxy({
       target: 'https://api.dev-seaters.com',

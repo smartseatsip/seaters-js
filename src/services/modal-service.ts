@@ -10,6 +10,10 @@ export class ModalService {
 
     private modal: HTMLElement;
 
+    private modalContent: HTMLElement;
+
+    private onClose: () => void;
+
     constructor () {
     }
 
@@ -55,7 +59,12 @@ export class ModalService {
         this.overlay.style.backgroundColor = 'rgba(30, 30, 30, 0.3)';
         this.overlay.style.display = 'none';
 
-        this.onEscape(() => this.hideOverlay());
+        this.onEscape(() => {
+            this.hideOverlay();
+            if (this.onClose) {
+                this.onClose();
+            }
+        });
 
         document.getElementsByTagName('body')[0].appendChild(this.overlay);
         return this.overlay;
@@ -129,14 +138,26 @@ export class ModalService {
       }
     }
 
-    showModal (template: string, style: string) {
+    showModal (style: string, onClose: () => void) {
         this.setupOverlay();
         this.setupModal();
-        this.modal.innerHTML = template;
+        this.onClose = onClose;
+        this.modalContent = <HTMLDivElement>document.createElement('div');
         var styleElement = <HTMLStyleElement>document.createElement('style');
         styleElement.innerHTML = style;
+        this.modal.innerHTML = '';
         this.modal.appendChild(styleElement);
+        this.modal.appendChild(this.modalContent);
         this.showOverlay();
+    }
+
+    setModalContent (html: string, style?: string) {
+        this.modalContent.innerHTML = html;
+        if (style) {
+            var styleElement = <HTMLStyleElement>document.createElement('style');
+            styleElement.innerHTML = style;
+            this.modalContent.appendChild(styleElement);         
+        }
     }
 
     closeModal () {

@@ -7,6 +7,16 @@ import { Fan } from '../../seaters-api/fan/fan';
 
 declare var require: any;
 
+// static assets
+const appCss: string = require('./app.css');
+const loadingCss: string = require('./loading.scss');
+const loadingHtml: string = require('./loading.html');
+const loginHtml: string = require('./login.html');
+const signupHtml: string = require('./signup.html');
+const ticketsHtml: string = require('./tickets.html');
+const validateHtml: string = require('./validate.html');
+const wlHtml: string = require('./wl.html');
+
 export enum JWL_EXIT_STATUS {
   JOINED, CANCELLED, ERROR
 }
@@ -74,16 +84,23 @@ export class JwlFlowService {
      * Entry point for the 'Join WL Flow'
      */
     startFlow (wlId: string): Promise<JWL_EXIT_STATUS> {
-      return this.ensureFanIsLoggedInWithValidEmail()
+      var deferred = this.defer<JWL_EXIT_STATUS>();
+      this.modalService.showModal(appCss, () => deferred.reject(JWL_EXIT_STATUS.CANCELLED));
+
+      this.ensureFanIsLoggedIn()
+      .then(fan => this.ensureFanHasValidEmail(fan))
       .then(() => this.ensureFanHasJoinedFgAndWl(wlId))
-      .then(wl => this.showRankAndLikelihood(wl));
+      .then(wl => this.showRankAndLikelihood(wl))
+      .then(() => deferred.resolve(JWL_EXIT_STATUS.JOINED));
+      
+      return deferred.promise;
     }
 
-    private ensureFanIsLoggedInWithValidEmail (): Promise<void> {
+    private ensureFanIsLoggedIn (): Promise<Fan> {
       console.log('[JwlFlowService] ensuring fan is logged in with valid email');
       var fan = this.sessionService.whoami();
       if (fan) {
-        return this.ensureFanHasValidEmail(fan);
+        return Promise.resolve(fan);
       } else {
         return this.showLogin()
         .then((fan) => this.ensureFanHasValidEmail(fan));
@@ -92,10 +109,7 @@ export class JwlFlowService {
 
     private ensureFanHasJoinedFgAndWl (wlId: string): Promise<ExtendedWaitingList> {
       console.log('[JwlFlowService] ensuring fan has joined FG and WL');
-      this.modalService.showModal(
-        require('./loading.html'),
-        require('./loading.scss'),
-      );
+      this.modalService.setModalContent(loadingHtml, loadingCss);
 
       return this.waitingListService.getExtendedWaitingList(wlId)
       .then(wl => {
@@ -129,64 +143,59 @@ export class JwlFlowService {
     private ensureFGAndWLAreEligable (fg: ExtendedFanGroup, wl: ExtendedWaitingList): Promise<void> {
       console.log('[JwlFlowService] ensuring FG and WL are eligable for JWL');
       if (!(this.checkFanGroupEligability(fg) && this.checkWaitingListEligability(wl))) {
-        this.modalService.showModal(
-          'To join this wish list, visit https://seaters.com/'+fg.slug+'/'+wl.waitingListId,//TODO: make template
-          ''
-        )
+        this.modalService.setModalContent(
+          'To join this wish list, visit https://seaters.com/'+fg.slug+'/'+wl.waitingListId,
+          //TODO: make template
+        );
         return this.endoftheline<void>();
       } else {
         return Promise.resolve();
       }
     }
 
-    private showRankAndLikelihood(wl: ExtendedWaitingList): Promise<JWL_EXIT_STATUS> {
+    private showRankAndLikelihood(wl: ExtendedWaitingList): Promise<void> {
       console.log('[JwlFlowService] showing rank and likelihood');
-      this.modalService.showModal(
-        require('./wl.html'),
-        require('./app.css')
-      );
+      this.modalService.setModalContent(wlHtml);
 
-      return new Promise<JWL_EXIT_STATUS>((resolve, reject) => {
-        var closeBtn = this.modalService.findElementById('strs-btn-close');
-        closeBtn.onclick = () => {
-          this.modalService.closeModal();
-          resolve(JWL_EXIT_STATUS.JOINED);
-        };
+      var deferred = this.defer<void>();
 
-        var waitingListName = <HTMLElement> this.modalService.findElementById('strs-wl-name');
-        waitingListName.innerHTML = wl.displayName;
-        var displaySection;
+      var closeBtn = this.modalService.findElementById('strs-btn-close');
+      closeBtn.onclick = () => {
+        this.modalService.closeModal();
+        deferred.resolve(JWL_EXIT_STATUS.JOINED);
+      };
 
-        //TODO: split up different scenario's in different modal contents
+      var waitingListName = <HTMLElement> this.modalService.findElementById('strs-wl-name');
+      waitingListName.innerHTML = wl.displayName;
+      var displaySection;
 
-        if (wl.waitingListStatus === 'OPEN' && this.hasRank(wl)) {
-          displaySection = this.modalService.findElementById('strs-wl-open');
-          displaySection.style.display = 'block';
-          //set wl group info
-          var waitingListLikelihood = <HTMLElement>this.modalService.findElementById('strs-wl-likelihood');
-          waitingListLikelihood.innerHTML = wl.position.likelihood+" %";
-          var waitingListRank = <HTMLElement>this.modalService.findElementById('strs-wl-rank');
-          waitingListRank.innerHTML = "# "+wl.position.rank;
-        }
-        else if (wl.waitingListStatus === 'CLOSED') {
-          displaySection = this.modalService.findElementById('strs-wl-closed');
-          displaySection.style.display = 'block';
-          //set fan group slug
-          var fanGroupSlug = <HTMLAnchorElement>this.modalService.findElementById('strs-fg-slug');
-          fanGroupSlug.innerHTML = wl.groupName.en;
-          fanGroupSlug.href = "http://www.seaters.com/"+wl.groupSlug;
-        }
-        //TODO: link to seaters for further actions (soon/pay/preauth/accept/print...)
+      //TODO: split up different scenario's in different modal contents
 
-      });
+      if (wl.waitingListStatus === 'OPEN' && this.hasRank(wl)) {
+        displaySection = this.modalService.findElementById('strs-wl-open');
+        displaySection.style.display = 'block';
+        //set wl group info
+        var waitingListLikelihood = <HTMLElement>this.modalService.findElementById('strs-wl-likelihood');
+        waitingListLikelihood.innerHTML = wl.position.likelihood+" %";
+        var waitingListRank = <HTMLElement>this.modalService.findElementById('strs-wl-rank');
+        waitingListRank.innerHTML = "# "+wl.position.rank;
+      }
+      else if (wl.waitingListStatus === 'CLOSED') {
+        displaySection = this.modalService.findElementById('strs-wl-closed');
+        displaySection.style.display = 'block';
+        //set fan group slug
+        var fanGroupSlug = <HTMLAnchorElement>this.modalService.findElementById('strs-fg-slug');
+        fanGroupSlug.innerHTML = wl.groupName.en;
+        fanGroupSlug.href = "http://www.seaters.com/"+wl.groupSlug;
+      }
+      //TODO: link to seaters for further actions (soon/pay/preauth/accept/print...)
+
+      return deferred.promise;
     }
 
     private showLogin (): Promise<Fan> {
       // show the log in screen
-      this.modalService.showModal(
-        require('./login.html'),
-        require('./app.css')
-      );
+      this.modalService.setModalContent(loginHtml);
 
       var deferred = this.defer<Fan>();
 
@@ -253,14 +262,11 @@ export class JwlFlowService {
 
     private showSignup (): Promise<Fan> {
       // show the signup screen
-      this.modalService.showModal(
-        require('./signup.html'),
-        require('./app.css')
-      );
-      return new Promise<Fan>((resolve, reject) => {
-        var signupBtn = this.modalService.findElementById('strs-btn-signup');
-        signupBtn.onclick = () => this.doSignup().then(resolve, reject);
-      });
+      this.modalService.setModalContent(signupHtml);
+      var deferred = this.defer<Fan>();
+      var signupBtn = this.modalService.findElementById('strs-btn-signup');
+      signupBtn.onclick = () => this.doSignup().then(deferred.resolve, deferred.reject);
+      return deferred.promise;
     }
 
     private doSignup (): Promise<Fan> {
@@ -281,7 +287,7 @@ export class JwlFlowService {
       }
 
       this.enableButton('strs-btn-signup',false);
-      this.sessionService.doEmailPasswordSignUp(email, password, firstname, lastname)
+      return this.sessionService.doEmailPasswordSignUp(email, password, firstname, lastname)
       .then(fan => fan, err => {
           this.enableButton('strs-btn-signup', true);
           var message = this.extractMsgAndLogError('doSignup', err);
@@ -290,21 +296,18 @@ export class JwlFlowService {
       });
     }
 
-    private ensureFanHasValidEmail(fan: Fan): Promise<void> {
+    private ensureFanHasValidEmail(fan: Fan): Promise<Fan> {
       if (fan.validatedEmail) {
-        return Promise.resolve();
+        return Promise.resolve(fan);
       } else {
-        return this.showValidateEmail(fan);
+        return this.askToValidateEmail(fan);
       }
     }
 
-    private showValidateEmail (fan: Fan): Promise<void> {
-      this.modalService.showModal(
-        require('./validate.html'),
-        require('./app.css')
-      );
-
-      var deferred = this.defer<void>();
+    private askToValidateEmail (fan: Fan): Promise<Fan> {
+      this.modalService.setModalContent(validateHtml);
+      
+      var deferred = this.defer<Fan>();
 
       var userSpan = this.modalService.findElementById('strs-span-firstname');
       userSpan.innerHTML = fan.firstName;
@@ -330,11 +333,8 @@ export class JwlFlowService {
       }
 
       // otherwise ask how many he wants
-      this.modalService.showModal(
-        require('./tickets.html'),
-        require('./app.css')
-      );
-
+      this.modalService.setModalContent(ticketsHtml);
+      
       //Setup select values
       var seat = this.modalService.findElementById('strs-btn-bookseats');
       var seatSelect = <HTMLSelectElement> this.modalService.findElementById('strs-seats');
@@ -381,8 +381,6 @@ export class JwlFlowService {
         return this.endoftheline();
       });
     }
-
-    ////---------------
 
     private validateSignupForm(email: string, password:string, firstname:string, lastname:string) {
       var validationErrors = [];
@@ -441,7 +439,8 @@ export class JwlFlowService {
         else if (wl.actionStatus === WAITING_LIST_ACTION_STATUS.BOOK) {
             return this.waitingListService.joinWaitingList(wl.waitingListId, numberOfSeats);
         } else {
-            return Promise.reject('Unsupported WL action status: ' + wl.actionStatus);
+            console.error('[JwlFlowService] Unsupported WL action status: %s', wl.actionStatus);
+            return Promise.reject(JWL_EXIT_STATUS.ERROR);
         }
     }
 
@@ -451,7 +450,8 @@ export class JwlFlowService {
         } else if (fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_JOIN) {
             return this.fanGroupService.joinFanGroup(fg.id);
         } else {
-            return Promise.reject('Unsupported FG action status: ' + fg.actionStatus);
+            console.error('[JwlFlowService] Unsupported FG action status: %s', fg.actionStatus);
+            return Promise.reject(JWL_EXIT_STATUS.ERROR);
         }
     }
 
