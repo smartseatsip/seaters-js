@@ -1515,6 +1515,7 @@ a.strs-link:active, a.strs-link:visited  {
 
 .strs-wl-closed {
   color: #888;
+  text-align: center;
 }
 
 .strs-wl-data-title {

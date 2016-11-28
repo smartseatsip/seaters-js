@@ -170,8 +170,8 @@ export class JwlFlowService {
         deferred.resolve(JWL_EXIT_STATUS.JOINED);
       };
 
-      var waitingListName = <HTMLElement> this.modalService.findElementById('strs-wl-name');
-      waitingListName.innerHTML = wl.displayName;
+      var eventName = <HTMLElement> this.modalService.findElementById('strs-wl-eventname');
+      eventName.innerHTML = wl.eventName.en;
       var displaySection;
 
       //TODO: split up different scenario's in different modal contents

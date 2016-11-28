@@ -179,6 +179,63 @@
         "translation": "Confirm email"
       }
     ]
+  },
+
+
+
+  {
+    "key": "strs.wl.likelihood",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Likelihood"
+      }
+    ]
+  },
+  {
+    "key": "strs.wl.rank",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Rank"
+      }
+    ]
+  },
+  {
+    "key": "strs.wl.closebutton",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Close"
+      }
+    ]
+  },
+  {
+    "key": "strs.wl.closedwllabel",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Closed"
+      }
+    ]
+  },
+  {
+    "key": "strs.wl.closedwlinfolabel",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "This wish list has been closed."
+      }
+    ]
+  },
+  {
+    "key": "strs.wl.visitfglabel",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Visit fan group"
+      }
+    ]
   }
 
 
