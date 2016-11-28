@@ -79,7 +79,7 @@ var SeatersSDK =
 	        this.jwlFlowService = new jwl_flow_service_1.JwlFlowService(this.modalService, this.sessionService, this.waitingListService, this.fanGroupService);
 	    }
 	    SeatersClient.DEFAULT_OPTIONS = {
-	        apiPrefix: 'https://api.dev-seaters.com/api'
+	        apiPrefix: 'https://api.qa-seaters.com/api'
 	    };
 	    return SeatersClient;
 	}());
@@ -44126,6 +44126,7 @@ var SeatersSDK =
 	var ticketsHtml = __webpack_require__(817);
 	var validateHtml = __webpack_require__(818);
 	var wlHtml = __webpack_require__(819);
+	var fgCodeHtml = __webpack_require__(820);
 	(function (JWL_EXIT_STATUS) {
 	    JWL_EXIT_STATUS[JWL_EXIT_STATUS["JOINED"] = 0] = "JOINED";
 	    JWL_EXIT_STATUS[JWL_EXIT_STATUS["CANCELLED"] = 1] = "CANCELLED";
@@ -44424,7 +44425,7 @@ var SeatersSDK =
 	    };
 	    JwlFlowService.prototype.ensureProtectedFanGroupValidated = function (fanGroup) {
 	        var _this = this;
-	        this.modalService.showModal(__webpack_require__(820), __webpack_require__(811));
+	        this.modalService.setModalContent(fgCodeHtml);
 	        var deferred = this.defer();
 	        var fgName = this.modalService.findElementById('strs-span-fangroup-name');
 	        fgName.innerHTML = fanGroup.translatedName;

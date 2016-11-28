@@ -15,7 +15,7 @@ exports.replaceApiLocationLoader = function(useProxy) {
         loader: 'string-replace',
         query: {
             search: '${api.location}',
-            replace: process.env['strs.api.location'] || defaultApiPrefix
+            replace: process.env['STRS_API_LOCATION'] || defaultApiPrefix
         }
     };
 }
