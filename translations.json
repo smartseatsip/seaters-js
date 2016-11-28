@@ -4,8 +4,183 @@
     "translations": [
       {
         "locale": "en",
-        "translation": "Sign in to seaters.com"
+        "translation": "Sign in"
+      }
+    ]
+  },
+  {
+    "key": "strs.login.emailplaceholder",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Email"
+      }
+    ]
+  },
+  {
+    "key": "strs.login.passwordplaceholder",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Password"
+      }
+    ]
+  },
+  {
+    "key": "strs.login.noaccountlabel",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "No account yet ?"
+      }
+    ]
+  },
+  {
+    "key": "strs.login.signuplink",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Signup here !"
+      }
+    ]
+  },
+  {
+    "key": "strs.login.btnlogin",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Login"
+      }
+    ]
+  },
+
+  {
+    "key": "strs.signup.title",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Sign up"
+      }
+    ]
+  },
+  {
+    "key": "strs.signup.firstnameplaceholder",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "First Name"
+      }
+    ]
+  },
+  {
+    "key": "strs.signup.lastnameplaceholder",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Last Name"
+      }
+    ]
+  },
+  {
+    "key": "strs.signup.emailplaceholder",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Email"
+      }
+    ]
+  },
+  {
+    "key": "strs.signup.passwordplaceholder",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Password"
+      }
+    ]
+  },
+  {
+    "key": "strs.signup.infotext1label",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "By signing up, you agree to Seaters'"
+      }
+    ]
+  },
+  {
+    "key": "strs.signup.infotext2label",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": " and "
+      }
+    ]
+  },
+  {
+    "key": "strs.signup.termsandconditionslink",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Terms & Conditions"
+      }
+    ]
+  },
+  {
+    "key": "strs.signup.privacypolicylink",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Privacy Policy"
+      }
+    ]
+  },
+  {
+    "key": "strs.signup.signupbutton",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Sign up"
+      }
+    ]
+  },
+  {
+    "key": "strs.validateemail.title",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Welcome. It's nice to meet you,"
+      }
+    ]
+  },
+  {
+    "key": "strs.validateemail.welcomemessage",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "We just sent you a confirmation email. In order to confirm your registration, please enter the code mentioned in the email below."
+      }
+    ]
+  },
+  {
+    "key": "strs.validateemail.emailcodeplaceholder",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Your personal code"
+      }
+    ]
+  },
+  {
+    "key": "strs.validateemail.confirmbutton",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Confirm email"
       }
     ]
   }
+
+
+
 ]
