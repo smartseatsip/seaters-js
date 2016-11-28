@@ -8,6 +8,7 @@ import { WaitingListService } from './services/waiting-list-service';
 import { FanGroupService } from './services/fan-group-service';
 import { ModalService } from './services/modal-service';
 import { JwlFlowService } from './services/join-wl/jwl-flow-service';
+import { TranslationService } from './services/translation-service';
 
 export interface SeatersClientOptions {
   apiPrefix: string
@@ -31,14 +32,25 @@ export class SeatersClient {
 
   public jwlFlowService: JwlFlowService;
 
+  public translationService: TranslationService;
+
   constructor (options?: SeatersClientOptions) {
     options = core.Object.assign({}, SeatersClient.DEFAULT_OPTIONS, options);
+    
     this.api = new SeatersApi(options.apiPrefix);
+    this.translationService = new TranslationService();
+    this.modalService = new ModalService();
+    
     this.sessionService = new SessionService(this.api);
     this.waitingListService = new WaitingListService(this.api);
     this.fanGroupService = new FanGroupService(this.api);
-    this.modalService = new ModalService();
-    this.jwlFlowService = new JwlFlowService(this.modalService, this.sessionService, this.waitingListService, this.fanGroupService);
+    
+    this.jwlFlowService = new JwlFlowService(
+      this.modalService,
+      this.sessionService,
+      this.waitingListService,
+      this.fanGroupService
+    );
   }
 
 }

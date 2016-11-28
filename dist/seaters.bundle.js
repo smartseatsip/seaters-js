@@ -50,7 +50,7 @@ var SeatersSDK =
 	var seaters_client_1 = __webpack_require__(1);
 	exports.SeatersClient = seaters_client_1.SeatersClient;
 	exports.SeatersClientOptions = seaters_client_1.SeatersClientOptions;
-	var join_wl_1 = __webpack_require__(820);
+	var join_wl_1 = __webpack_require__(821);
 	exports.joinWl = join_wl_1.joinWl;
 
 
@@ -66,14 +66,16 @@ var SeatersSDK =
 	var fan_group_service_1 = __webpack_require__(808);
 	var modal_service_1 = __webpack_require__(809);
 	var jwl_flow_service_1 = __webpack_require__(810);
+	var translation_service_1 = __webpack_require__(820);
 	var SeatersClient = (function () {
 	    function SeatersClient(options) {
 	        options = core.Object.assign({}, SeatersClient.DEFAULT_OPTIONS, options);
 	        this.api = new seaters_api_1.SeatersApi(options.apiPrefix);
+	        this.translationService = new translation_service_1.TranslationService();
+	        this.modalService = new modal_service_1.ModalService();
 	        this.sessionService = new session_service_1.SessionService(this.api);
 	        this.waitingListService = new waiting_list_service_1.WaitingListService(this.api);
 	        this.fanGroupService = new fan_group_service_1.FanGroupService(this.api);
-	        this.modalService = new modal_service_1.ModalService();
 	        this.jwlFlowService = new jwl_flow_service_1.JwlFlowService(this.modalService, this.sessionService, this.waitingListService, this.fanGroupService);
 	    }
 	    SeatersClient.DEFAULT_OPTIONS = {
@@ -44620,6 +44622,66 @@ var SeatersSDK =
 
 /***/ },
 /* 820 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var library_1 = __webpack_require__(2);
+	var TranslationStore = (function (_super) {
+	    __extends(TranslationStore, _super);
+	    function TranslationStore(translationGroups) {
+	        var _this = this;
+	        _super.call(this);
+	        translationGroups.forEach(function (tg) {
+	            var obj = {};
+	            tg.translations.forEach(function (trl) { return obj[trl.locale] = trl.translation; });
+	            _this.set(tg.key, obj);
+	        });
+	    }
+	    return TranslationStore;
+	}(library_1.Map));
+	exports.TranslationStore = TranslationStore;
+	var TranslationService = (function () {
+	    function TranslationService() {
+	    }
+	    TranslationService.prototype.translateFromObject = function (obj, locale) {
+	        var translation = undefined;
+	        if (obj.hasOwnProperty(locale)) {
+	            translation = obj[locale];
+	        }
+	        else {
+	            translation = obj[TranslationService.DEFAULT_LOCALE];
+	            console.warn('[TranslationService] Missing %s translation for %s', locale, translation);
+	        }
+	        if (!translation) {
+	            console.error('[TranslationService] Missing default translation for %s', JSON.stringify(obj));
+	            translation = '[@missing_translation@]';
+	        }
+	        return translation;
+	    };
+	    TranslationService.prototype.translateFromStore = function (store, key, locale) {
+	        if (store.has(key)) {
+	            var obj = store.get(key);
+	        }
+	        else {
+	            console.error('[TranslationService] Missing local translation for key %s', key);
+	            obj = {};
+	            obj[TranslationService.DEFAULT_LOCALE] = '[@missing_translation@:' + key + ']';
+	        }
+	        return this.translateFromObject(obj, locale);
+	    };
+	    TranslationService.DEFAULT_LOCALE = 'en';
+	    return TranslationService;
+	}());
+	exports.TranslationService = TranslationService;
+
+
+/***/ },
+/* 821 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
