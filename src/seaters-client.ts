@@ -36,20 +36,21 @@ export class SeatersClient {
 
   constructor (options?: SeatersClientOptions) {
     options = core.Object.assign({}, SeatersClient.DEFAULT_OPTIONS, options);
-    
+
     this.api = new SeatersApi(options.apiPrefix);
     this.translationService = new TranslationService();
     this.modalService = new ModalService(this.translationService);
-    
+
     this.sessionService = new SessionService(this.api);
     this.waitingListService = new WaitingListService(this.api);
     this.fanGroupService = new FanGroupService(this.api);
-    
+
     this.jwlFlowService = new JwlFlowService(
       this.modalService,
       this.sessionService,
       this.waitingListService,
-      this.fanGroupService
+      this.fanGroupService,
+      this.translationService
     );
   }
 

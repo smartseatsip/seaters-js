@@ -5,7 +5,7 @@ import { WaitingListService, ExtendedWaitingList, WAITING_LIST_ACTION_STATUS } f
 import { FanGroupService, ExtendedFanGroup, FAN_GROUP_ACTION_STATUS } from '../fan-group-service';
 import { Fan } from '../../seaters-api/fan/fan';
 import { FanGroup } from '../../seaters-api/fan/fan-group';
-import { TranslationStore } from '../translation-service';
+import { TranslationStore, TranslationService, Locale } from '../translation-service';
 
 declare var require: any;
 
@@ -27,12 +27,17 @@ export enum JWL_EXIT_STATUS {
 
 export class JwlFlowService {
 
+    private locale: Locale = 'en';//TODO: via config
+    private mandatoryFieldError : string = 'strs.forms.mandatory';
+
     constructor (
         private modalService: ModalService,
         private sessionService: SessionService,
         private waitingListService: WaitingListService,
-        private fanGroupService: FanGroupService
+        private fanGroupService: FanGroupService,
+        private translationService: TranslationService
     ) {
+      this.mandatoryFieldError = translationService.translateFromStore(translationStore, this.mandatoryFieldError, this.locale);
     }
 
     /**
@@ -254,13 +259,13 @@ export class JwlFlowService {
       //Test email
       if(!this.modalService.validateRequired(email)) {
         //validationErrors.push({field:'strs-email', error:'sl_input_err_required'});
-        validationErrors.push({field:'strs-email', error:'Mandatory'});
+        validationErrors.push({field:'strs-email', error:this.mandatoryFieldError});
       }
 
       //Test password
       if(!this.modalService.validateRequired(password)) {
         //validationErrors.push({field:'strs-password', error:'sl_input_err_required'});
-        validationErrors.push({field:'strs-password', error:'Mandatory'});
+        validationErrors.push({field:'strs-password', error: this.mandatoryFieldError});
       }
       return validationErrors;
     }
@@ -442,25 +447,25 @@ export class JwlFlowService {
       //Test email
       if(!this.modalService.validateRequired(email)) {
         //validationErrors.push({field:'strs-email', error:'sl_input_err_required'});
-        validationErrors.push({field:'strs-email', error:'Mandatory'});
+        validationErrors.push({field:'strs-email', error:this.mandatoryFieldError});
       }
 
       //Test password
       if(!this.modalService.validateRequired(password)) {
         //validationErrors.push({field:'strs-password', error:'sl_input_err_required'});
-        validationErrors.push({field:'strs-password', error:'Mandatory'});
+        validationErrors.push({field:'strs-password', error:this.mandatoryFieldError});
       }
 
       //Test firstname
       if(!this.modalService.validateRequired(firstname)) {
         //validationErrors.push({field:'strs-firstname', error:'sl_input_err_required'});
-        validationErrors.push({field:'strs-firstname', error:'Mandatory'});
+        validationErrors.push({field:'strs-firstname', error:this.mandatoryFieldError});
       }
 
       //Test lastname
       if(!this.modalService.validateRequired(lastname)) {
         //validationErrors.push({field:'strs-lastname', error:'sl_input_err_required'});
-        validationErrors.push({field:'strs-lastname', error:'Mandatory'});
+        validationErrors.push({field:'strs-lastname', error:this.mandatoryFieldError});
       }
       return validationErrors;
     }
@@ -471,7 +476,7 @@ export class JwlFlowService {
       //Test email
       if(!this.modalService.validateRequired(code)) {
         //validationErrors.push({field:'strs-confirmation-code', error:'sl_input_err_required'});
-        validationErrors.push({field:'strs-confirmation-code', error:'Mandatory'});
+        validationErrors.push({field:'strs-confirmation-code', error:this.mandatoryFieldError});
       }
       return validationErrors;
     }
@@ -480,7 +485,7 @@ export class JwlFlowService {
       var validationErrors = [];
 
       if(!this.modalService.validateRequired(code)) {
-        validationErrors.push({field:'strs-fangroup-code', error:'Mandatory'});
+        validationErrors.push({field:'strs-fangroup-code', error:this.mandatoryFieldError});
       }
       return validationErrors;
     }

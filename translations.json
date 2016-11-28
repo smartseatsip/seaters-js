@@ -1,5 +1,14 @@
 [
   {
+    "key": "strs.forms.mandatory",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Mandatory"
+      }
+    ]
+  },
+  {
     "key": "strs.login.title",
     "translations": [
       {
