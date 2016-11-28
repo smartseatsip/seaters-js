@@ -1,7 +1,7 @@
 /// <reference path="../../node_modules/typescript/lib/lib.d.ts" />
 
 import { Promise } from 'es6-promise';
-import { TranslationStore, TranslationService } from './translation-service';
+import { TranslationStore, TranslationService, Locale } from './translation-service';
 import { Array } from 'core-js/library';
 
 declare var require: any;
@@ -15,6 +15,8 @@ export class ModalService {
     private modalContent: HTMLElement;
 
     private translationStore: TranslationStore;
+
+    private locale: Locale = 'en';//TODO: via config
 
     private onClose: () => void;
 
@@ -159,13 +161,23 @@ export class ModalService {
     }
 
     private replaceTranslations () {
-        this.findElementsByAttributeName(this.modalContent, 'data-strs-trl').forEach(element => {
+        var trlAttributeName = 'data-strs-trl';
+        this.findElementsByAttributeName(this.modalContent, trlAttributeName).forEach(element => {
             element.innerHTML = this.translationService.translateFromStore(
                 this.translationStore,
-                element.getAttribute('data-strs-trl'),
-                'en'
+                element.getAttribute(trlAttributeName),
+                this.locale
             );
         });
+        var placeholderAttributeName = 'data-strs-placeholder';
+        this.findElementsByAttributeName(this.modalContent, placeholderAttributeName).forEach(element => {
+            (<HTMLInputElement> element).placeholder = this.translationService.translateFromStore(
+                this.translationStore,
+                element.getAttribute(placeholderAttributeName),
+                this.locale
+            )
+
+        })
     }
 
     setModalContent (html: string, style?: string) {
