@@ -310,7 +310,9 @@ export class JwlFlowService {
       if (fan.validatedEmail) {
         return Promise.resolve(fan);
       } else {
-        return this.askToValidateEmail(fan);
+        //TODO - for now, resend email each time this might be needed -> decide if an additional screen needs to be added to request this instead
+        return this.sessionService.doEmailReset(fan.email)
+            .then(() => this.askToValidateEmail(fan) );
       }
     }
 

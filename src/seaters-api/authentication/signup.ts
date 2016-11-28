@@ -11,3 +11,8 @@ export interface ValidationData {
   code:string,
   email:string
 }
+
+export interface ResetEmailData {
+  email:string,
+  token:string
+}

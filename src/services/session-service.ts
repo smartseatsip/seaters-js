@@ -17,6 +17,7 @@ export class SessionService {
     private currentFan: Fan;
 
     private sessionStrategy: SESSION_STRATEGY;
+    private sessionToken : string = "";
 
     constructor (
         private api: SeatersApi,
@@ -41,6 +42,7 @@ export class SessionService {
 
     private finishLogin (session: SessionToken): Promise<Fan> {
         this.api.setHeader(AUTH_HEADER, AUTH_BEARER + ' ' + session.token);
+        this.sessionToken = session.token;
         switch (this.sessionStrategy) {
             default: this.applyExpireSessionStrategy(session);
         }
@@ -81,10 +83,18 @@ export class SessionService {
         }).then(() => this.setCurrentFan());
     }
 
+    doEmailReset (email: string): Promise<void> {
+      return this.api.authentication.resetEmail({
+        email: email,
+        token: this.sessionToken
+      });
+    }
+
     doLogout () {
         console.log('[SessionService] doLogout');//DEBUG
         this.api.unsetHeader(AUTH_HEADER);
         this.currentFan = undefined;
+        this.sessionToken = undefined;
     }
 
     whoami () {

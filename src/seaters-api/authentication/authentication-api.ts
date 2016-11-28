@@ -1,6 +1,6 @@
 import { ApiContext } from '../../api';
 import { AuthenticationTokenInput, UserData, SessionToken } from './token';
-import { SignupData, ValidationData } from './signup';
+import { SignupData, ValidationData, ResetEmailData } from './signup';
 
 export class AuthenticationApi {
 
@@ -13,7 +13,7 @@ export class AuthenticationApi {
         .then(data => {
           return {
             expirationDate: data.token.expirationDate,
-            token: data.token.value 
+            token: data.token.value
           };//TODO: remove this code when API is adapted
         });
     }
@@ -34,6 +34,15 @@ export class AuthenticationApi {
      */
     validate(input: ValidationData) : Promise<void> {
       return this.apiContext.put<void>('/auth/validate', input);
+    }
+
+    /**
+     *
+     * @param input
+     * @returns {any}
+     */
+    resetEmail(input: ResetEmailData) : Promise <void> {
+      return this.apiContext.post<void>('/auth/signup/reset-email', input);
     }
 
 }
