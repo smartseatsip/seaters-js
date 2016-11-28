@@ -96,7 +96,7 @@ export class JwlFlowService {
       .then(() => this.ensureFanHasJoinedFgAndWl(wlId))
       .then(wl => this.showRankAndLikelihood(wl))
       .then(() => deferred.resolve(JWL_EXIT_STATUS.JOINED));
-      
+
       return deferred.promise;
     }
 
@@ -293,7 +293,7 @@ export class JwlFlowService {
 
       this.enableButton('strs-btn-signup',false);
       return this.sessionService.doEmailPasswordSignUp(email, password, firstname, lastname)
-      .then(fan => fan, err => {
+      .then(fan => { return this.askToValidateEmail(fan); }, err => {
           this.enableButton('strs-btn-signup', true);
           var message = this.extractMsgAndLogError('doSignup', err);
           this.modalService.showFieldError('strs-email-error', message);
@@ -311,7 +311,7 @@ export class JwlFlowService {
 
     private askToValidateEmail (fan: Fan): Promise<Fan> {
       this.modalService.setModalContent(validateHtml);
-      
+
       var deferred = this.defer<Fan>();
 
       var userSpan = this.modalService.findElementById('strs-span-firstname');
@@ -388,7 +388,7 @@ export class JwlFlowService {
 
       // otherwise ask how many he wants
       this.modalService.setModalContent(ticketsHtml);
-      
+
       //Setup select values
       var seat = this.modalService.findElementById('strs-btn-bookseats');
       var seatSelect = <HTMLSelectElement> this.modalService.findElementById('strs-seats');
