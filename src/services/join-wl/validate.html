@@ -2,21 +2,21 @@
     <div class="strs-content strs-flex strs-flex-column strs-flex-center-h">
       <div class="strs-pb-10">
         <h3>
-          <span>Welcome. It's nice to meet you,</span>
+          <span data-strs-trl="strs.validateemail.title">Welcome. It's nice to meet you,</span>
           <span id="strs-span-firstname"></span>
         </h3>
       </div>
       <div class="strs-pb-10">
-        <span>We just sent you a confirmation email. In order to confirm your registration, please enter the code mentioned in the email below.</span>
+        <span data-strs-trl="strs.validateemail.welcomemessage">We just sent you a confirmation email. In order to confirm your registration, please enter the code mentioned in the email below.</span>
       </div>
       <div class="strs-row strs-collapse">
         <form name="validateForm" class="strs-flex strs-flex-column strs-flex-center-h strs-small-12" novalidate autocomplete="off">
           <div class="strs-columns strs-small-12">
             <div id="strs-confirmation-code-error" class="strs-input-error"></div>
-            <input id="strs-confirmation-code" class="strs-input" type="text" name="confirmationCode" placeholder="Your personal code" required>
+            <input id="strs-confirmation-code" class="strs-input" type="text" name="confirmationCode" placeholder="Your personal code" data-strs-placeholder="strs.validateemail.emailcodeplaceholder" required>
           </div>
           <div>
-            <button id="strs-btn-validate" class="strs-button success" type="button">Confirm email</button>
+            <button id="strs-btn-validate" class="strs-button success" type="button" data-strs-trl="strs.validateemail.confirmbutton">Confirm email</button>
           </div>
         </form>
       </div>
