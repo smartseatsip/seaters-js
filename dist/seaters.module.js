@@ -7654,6 +7654,8 @@ require("source-map-support").install();
 	        this.apiContext = apiContext;
 	        this.rootEp = '/fan';
 	        this.fgEp = this.rootEp + '/groups/:fanGroupId';
+	        this.fgProtectedWithoutRequest = this.fgEp + '/request-with-data';
+	        this.fgProcectedWithRequest = this.fgEp + '/request';
 	        this.wlEp = this.rootEp + '/waiting-lists/:waitingListId';
 	    }
 	    FanApi.prototype.fan = function () {
@@ -7667,6 +7669,15 @@ require("source-map-support").install();
 	    };
 	    FanApi.prototype.joinFanGroup = function (fanGroupId) {
 	        return this.apiContext.post(this.fgEp, null, this.fgEndpointParams(fanGroupId));
+	    };
+	    FanApi.prototype.joinProtectedFanGroup = function (fg, code) {
+	        var data = {
+	            code: code
+	        };
+	        if (!fg.membership.request)
+	            return this.apiContext.post(this.fgProtectedWithoutRequest, data, this.fgEndpointParams(fg.id));
+	        else
+	            return this.apiContext.put(this.fgProcectedWithRequest, data, this.fgEndpointParams(fg.id));
 	    };
 	    FanApi.prototype.wlEndpointParams = function (waitingListId) {
 	        return api_1.ApiContext.buildEndpointParams({ waitingListId: waitingListId });
@@ -8071,6 +8082,13 @@ require("source-map-support").install();
 	            return util_1.retryUntil(function () { return _this.getExtendedFanGroup(fanGroupId); }, function (fg) { return fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_LEAVE; }, 10, 1000);
 	        });
 	    };
+	    FanGroupService.prototype.joinProtectedFanGroup = function (fg, code) {
+	        var _this = this;
+	        return this.api.fan.joinProtectedFanGroup(fg, code)
+	            .then(function () {
+	            return util_1.retryUntil(function () { return _this.getExtendedFanGroup(fg.id); }, function (fg) { return (fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_LEAVE); }, 10, 1000);
+	        });
+	    };
 	    return FanGroupService;
 	}());
 	exports.FanGroupService = FanGroupService;
@@ -8353,7 +8371,8 @@ require("source-map-support").install();
 	    };
 	    JwlFlowService.prototype.checkFanGroupEligability = function (fg) {
 	        return fg.actionStatus === fan_group_service_1.FAN_GROUP_ACTION_STATUS.CAN_LEAVE ||
-	            fg.actionStatus === fan_group_service_1.FAN_GROUP_ACTION_STATUS.CAN_JOIN;
+	            fg.actionStatus === fan_group_service_1.FAN_GROUP_ACTION_STATUS.CAN_JOIN ||
+	            fg.actionStatus === fan_group_service_1.FAN_GROUP_ACTION_STATUS.CAN_UNLOCK;
 	    };
 	    JwlFlowService.prototype.checkWaitingListEligability = function (wl) {
 	        return wl.actionStatus === waiting_list_service_1.WAITING_LIST_ACTION_STATUS.BOOK || this.hasRank(wl);
@@ -8511,6 +8530,43 @@ require("source-map-support").install();
 	        validateEmailBtn.onclick = function () { return _this.doEmailValidation(fan).then(deferred.resolve, deferred.reject); };
 	        return deferred.promise;
 	    };
+	    JwlFlowService.prototype.doProtectedFanGroupValidation = function (fanGroup) {
+	        var _this = this;
+	        // Reset form errors
+	        this.modalService.resetFormErrors();
+	        // Get fields
+	        var fanGroupCode = this.modalService.findElementById("strs-fangroup-code").value;
+	        // Client-side validations
+	        var validationErrors = this.validateProtectedFanGroupValidationForm(fanGroupCode);
+	        if (validationErrors.length > 0) {
+	            this.modalService.showFormErrors(validationErrors);
+	            return this.endoftheline();
+	        }
+	        //Verify protection code
+	        this.enableButton('strs-btn-joinfg', false);
+	        return this.fanGroupService.joinProtectedFanGroup(fanGroup, fanGroupCode)
+	            .then(function (fg) {
+	            console.log("membership");
+	            console.log(fg);
+	            return es6_promise_1.Promise.resolve(fg);
+	        }, function (err) {
+	            _this.enableButton('strs-btn-joinfg', true);
+	            var message = _this.extractMsgAndLogError('doProtectedFanGroupValidation', err);
+	            //TODO better error handling:
+	            _this.modalService.showFieldError('strs-fangroup-code-error', "Invalid code");
+	            return _this.endoftheline();
+	        });
+	    };
+	    JwlFlowService.prototype.ensureProtectedFanGroupValidated = function (fanGroup) {
+	        var _this = this;
+	        this.modalService.showModal(__webpack_require__(331), __webpack_require__(331));
+	        var deferred = this.defer();
+	        var fgName = this.modalService.findElementById('strs-span-fangroup-name');
+	        fgName.innerHTML = fanGroup.translatedName;
+	        var joinFgBtn = this.modalService.findElementById('strs-btn-joinfg');
+	        joinFgBtn.onclick = function () { return _this.doProtectedFanGroupValidation(fanGroup).then(deferred.resolve, deferred.reject); };
+	        return deferred.promise;
+	    };
 	    /**
 	     * Provides and returns a promise for seat selection and start showing the seat selection form
 	     * @param wl
@@ -8600,6 +8656,13 @@ require("source-map-support").install();
 	        }
 	        return validationErrors;
 	    };
+	    JwlFlowService.prototype.validateProtectedFanGroupValidationForm = function (code) {
+	        var validationErrors = [];
+	        if (!this.modalService.validateRequired(code)) {
+	            validationErrors.push({ field: 'strs-fangroup-code', error: 'Mandatory' });
+	        }
+	        return validationErrors;
+	    };
 	    JwlFlowService.prototype.hasRank = function (wl) {
 	        return wl.actionStatus === waiting_list_service_1.WAITING_LIST_ACTION_STATUS.CONFIRM ||
 	            wl.actionStatus === waiting_list_service_1.WAITING_LIST_ACTION_STATUS.WAIT ||
@@ -8625,9 +8688,11 @@ require("source-map-support").install();
 	        else if (fg.actionStatus === fan_group_service_1.FAN_GROUP_ACTION_STATUS.CAN_JOIN) {
 	            return this.fanGroupService.joinFanGroup(fg.id);
 	        }
+	        else if (fg.actionStatus == fan_group_service_1.FAN_GROUP_ACTION_STATUS.CAN_UNLOCK && fg.accessMode === 'CODE_PROTECTED') {
+	            return this.ensureProtectedFanGroupValidated(fg);
+	        }
 	        else {
-	            console.error('[JwlFlowService] Unsupported FG action status: %s', fg.actionStatus);
-	            return es6_promise_1.Promise.reject(JWL_EXIT_STATUS.ERROR);
+	            return es6_promise_1.Promise.reject('Unsupported FG action status: ' + fg.actionStatus);
 	        }
 	    };
 	    return JwlFlowService;

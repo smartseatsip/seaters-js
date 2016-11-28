@@ -50,7 +50,7 @@ var SeatersSDK =
 	var seaters_client_1 = __webpack_require__(1);
 	exports.SeatersClient = seaters_client_1.SeatersClient;
 	exports.SeatersClientOptions = seaters_client_1.SeatersClientOptions;
-	var join_wl_1 = __webpack_require__(821);
+	var join_wl_1 = __webpack_require__(822);
 	exports.joinWl = join_wl_1.joinWl;
 
 
@@ -66,7 +66,7 @@ var SeatersSDK =
 	var fan_group_service_1 = __webpack_require__(808);
 	var modal_service_1 = __webpack_require__(809);
 	var jwl_flow_service_1 = __webpack_require__(810);
-	var translation_service_1 = __webpack_require__(820);
+	var translation_service_1 = __webpack_require__(821);
 	var SeatersClient = (function () {
 	    function SeatersClient(options) {
 	        options = core.Object.assign({}, SeatersClient.DEFAULT_OPTIONS, options);
@@ -27456,6 +27456,8 @@ var SeatersSDK =
 	        this.apiContext = apiContext;
 	        this.rootEp = '/fan';
 	        this.fgEp = this.rootEp + '/groups/:fanGroupId';
+	        this.fgProtectedWithoutRequest = this.fgEp + '/request-with-data';
+	        this.fgProcectedWithRequest = this.fgEp + '/request';
 	        this.wlEp = this.rootEp + '/waiting-lists/:waitingListId';
 	    }
 	    FanApi.prototype.fan = function () {
@@ -27469,6 +27471,15 @@ var SeatersSDK =
 	    };
 	    FanApi.prototype.joinFanGroup = function (fanGroupId) {
 	        return this.apiContext.post(this.fgEp, null, this.fgEndpointParams(fanGroupId));
+	    };
+	    FanApi.prototype.joinProtectedFanGroup = function (fg, code) {
+	        var data = {
+	            code: code
+	        };
+	        if (!fg.membership.request)
+	            return this.apiContext.post(this.fgProtectedWithoutRequest, data, this.fgEndpointParams(fg.id));
+	        else
+	            return this.apiContext.put(this.fgProcectedWithRequest, data, this.fgEndpointParams(fg.id));
 	    };
 	    FanApi.prototype.wlEndpointParams = function (waitingListId) {
 	        return api_1.ApiContext.buildEndpointParams({ waitingListId: waitingListId });
@@ -43936,6 +43947,13 @@ var SeatersSDK =
 	            return util_1.retryUntil(function () { return _this.getExtendedFanGroup(fanGroupId); }, function (fg) { return fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_LEAVE; }, 10, 1000);
 	        });
 	    };
+	    FanGroupService.prototype.joinProtectedFanGroup = function (fg, code) {
+	        var _this = this;
+	        return this.api.fan.joinProtectedFanGroup(fg, code)
+	            .then(function () {
+	            return util_1.retryUntil(function () { return _this.getExtendedFanGroup(fg.id); }, function (fg) { return (fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_LEAVE); }, 10, 1000);
+	        });
+	    };
 	    return FanGroupService;
 	}());
 	exports.FanGroupService = FanGroupService;
@@ -44218,7 +44236,8 @@ var SeatersSDK =
 	    };
 	    JwlFlowService.prototype.checkFanGroupEligability = function (fg) {
 	        return fg.actionStatus === fan_group_service_1.FAN_GROUP_ACTION_STATUS.CAN_LEAVE ||
-	            fg.actionStatus === fan_group_service_1.FAN_GROUP_ACTION_STATUS.CAN_JOIN;
+	            fg.actionStatus === fan_group_service_1.FAN_GROUP_ACTION_STATUS.CAN_JOIN ||
+	            fg.actionStatus === fan_group_service_1.FAN_GROUP_ACTION_STATUS.CAN_UNLOCK;
 	    };
 	    JwlFlowService.prototype.checkWaitingListEligability = function (wl) {
 	        return wl.actionStatus === waiting_list_service_1.WAITING_LIST_ACTION_STATUS.BOOK || this.hasRank(wl);
@@ -44376,6 +44395,43 @@ var SeatersSDK =
 	        validateEmailBtn.onclick = function () { return _this.doEmailValidation(fan).then(deferred.resolve, deferred.reject); };
 	        return deferred.promise;
 	    };
+	    JwlFlowService.prototype.doProtectedFanGroupValidation = function (fanGroup) {
+	        var _this = this;
+	        // Reset form errors
+	        this.modalService.resetFormErrors();
+	        // Get fields
+	        var fanGroupCode = this.modalService.findElementById("strs-fangroup-code").value;
+	        // Client-side validations
+	        var validationErrors = this.validateProtectedFanGroupValidationForm(fanGroupCode);
+	        if (validationErrors.length > 0) {
+	            this.modalService.showFormErrors(validationErrors);
+	            return this.endoftheline();
+	        }
+	        //Verify protection code
+	        this.enableButton('strs-btn-joinfg', false);
+	        return this.fanGroupService.joinProtectedFanGroup(fanGroup, fanGroupCode)
+	            .then(function (fg) {
+	            console.log("membership");
+	            console.log(fg);
+	            return es6_promise_1.Promise.resolve(fg);
+	        }, function (err) {
+	            _this.enableButton('strs-btn-joinfg', true);
+	            var message = _this.extractMsgAndLogError('doProtectedFanGroupValidation', err);
+	            //TODO better error handling:
+	            _this.modalService.showFieldError('strs-fangroup-code-error', "Invalid code");
+	            return _this.endoftheline();
+	        });
+	    };
+	    JwlFlowService.prototype.ensureProtectedFanGroupValidated = function (fanGroup) {
+	        var _this = this;
+	        this.modalService.showModal(__webpack_require__(820), __webpack_require__(811));
+	        var deferred = this.defer();
+	        var fgName = this.modalService.findElementById('strs-span-fangroup-name');
+	        fgName.innerHTML = fanGroup.translatedName;
+	        var joinFgBtn = this.modalService.findElementById('strs-btn-joinfg');
+	        joinFgBtn.onclick = function () { return _this.doProtectedFanGroupValidation(fanGroup).then(deferred.resolve, deferred.reject); };
+	        return deferred.promise;
+	    };
 	    /**
 	     * Provides and returns a promise for seat selection and start showing the seat selection form
 	     * @param wl
@@ -44465,6 +44521,13 @@ var SeatersSDK =
 	        }
 	        return validationErrors;
 	    };
+	    JwlFlowService.prototype.validateProtectedFanGroupValidationForm = function (code) {
+	        var validationErrors = [];
+	        if (!this.modalService.validateRequired(code)) {
+	            validationErrors.push({ field: 'strs-fangroup-code', error: 'Mandatory' });
+	        }
+	        return validationErrors;
+	    };
 	    JwlFlowService.prototype.hasRank = function (wl) {
 	        return wl.actionStatus === waiting_list_service_1.WAITING_LIST_ACTION_STATUS.CONFIRM ||
 	            wl.actionStatus === waiting_list_service_1.WAITING_LIST_ACTION_STATUS.WAIT ||
@@ -44490,9 +44553,11 @@ var SeatersSDK =
 	        else if (fg.actionStatus === fan_group_service_1.FAN_GROUP_ACTION_STATUS.CAN_JOIN) {
 	            return this.fanGroupService.joinFanGroup(fg.id);
 	        }
+	        else if (fg.actionStatus == fan_group_service_1.FAN_GROUP_ACTION_STATUS.CAN_UNLOCK && fg.accessMode === 'CODE_PROTECTED') {
+	            return this.ensureProtectedFanGroupValidated(fg);
+	        }
 	        else {
-	            console.error('[JwlFlowService] Unsupported FG action status: %s', fg.actionStatus);
-	            return es6_promise_1.Promise.reject(JWL_EXIT_STATUS.ERROR);
+	            return es6_promise_1.Promise.reject('Unsupported FG action status: ' + fg.actionStatus);
 	        }
 	    };
 	    return JwlFlowService;
@@ -44622,6 +44687,12 @@ var SeatersSDK =
 
 /***/ },
 /* 820 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"strs-content strs-flex strs-flex-column strs-flex-center-h\">\n  <div class=\"strs-pb-10\">\n    <h3>\n      <span>Please enter the code to join the fan group</span>\n      <span id=\"strs-span-fangroup-name\">My Fan group</span>\n    </h3>\n  </div>\n  <div class=\"strs-row strs-collapse\">\n    <form class=\"strs-flex strs-flex-column strs-flex-center-h strs-small-12\" novalidate autocomplete=\"off\">\n      <div class=\"strs-columns strs-small-12\">\n        <div id=\"strs-fangroup-code-error\" class=\"strs-input-error\"></div>\n        <input id=\"strs-fangroup-code\" class=\"strs-input\" type=\"text\" name=\"fangroupCode\" required>\n      </div>\n      <div>\n        <button id=\"strs-btn-joinfg\" class=\"strs-button success\" type=\"button\">Join this fan group</button>\n      </div>\n    </form>\n  </div>\n</div>\n";
+
+/***/ },
+/* 821 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -44681,7 +44752,7 @@ var SeatersSDK =
 
 
 /***/ },
-/* 821 */
+/* 822 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";

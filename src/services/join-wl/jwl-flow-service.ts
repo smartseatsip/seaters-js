@@ -17,6 +17,7 @@ const signupHtml: string = require('./signup.html');
 const ticketsHtml: string = require('./tickets.html');
 const validateHtml: string = require('./validate.html');
 const wlHtml: string = require('./wl.html');
+const fgCodeHtml: string = require('./fgcode.html');
 
 export enum JWL_EXIT_STATUS {
   JOINED, CANCELLED, ERROR
@@ -356,10 +357,7 @@ export class JwlFlowService {
 
 
     private ensureProtectedFanGroupValidated(fanGroup: ExtendedFanGroup): Promise<ExtendedFanGroup> {
-      this.modalService.showModal(
-        require('./fgcode.html'),
-        require('./app.css')
-      );
+      this.modalService.setModalContent(fgCodeHtml);
 
       var deferred = this.defer<ExtendedFanGroup>();
 
