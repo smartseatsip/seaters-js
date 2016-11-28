@@ -1,0 +1,11 @@
+[
+  {
+    "key": "strs.login.title",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Sign in to seaters.com"
+      }
+    ]
+  }
+]

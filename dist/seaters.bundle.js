@@ -50,7 +50,7 @@ var SeatersSDK =
 	var seaters_client_1 = __webpack_require__(1);
 	exports.SeatersClient = seaters_client_1.SeatersClient;
 	exports.SeatersClientOptions = seaters_client_1.SeatersClientOptions;
-	var join_wl_1 = __webpack_require__(822);
+	var join_wl_1 = __webpack_require__(823);
 	exports.joinWl = join_wl_1.joinWl;
 
 
@@ -44160,17 +44160,7 @@ var SeatersSDK =
 	var validateHtml = __webpack_require__(819);
 	var wlHtml = __webpack_require__(820);
 	var fgCodeHtml = __webpack_require__(821);
-	var translationStore = new translation_service_1.TranslationStore([
-	    {
-	        key: 'foo',
-	        translations: [
-	            {
-	                locale: 'en',
-	                translation: 'bar'
-	            }
-	        ]
-	    }
-	]);
+	var translationStore = new translation_service_1.TranslationStore(__webpack_require__(822));
 	(function (JWL_EXIT_STATUS) {
 	    JWL_EXIT_STATUS[JWL_EXIT_STATUS["JOINED"] = 0] = "JOINED";
 	    JWL_EXIT_STATUS[JWL_EXIT_STATUS["CANCELLED"] = 1] = "CANCELLED";
@@ -44776,28 +44766,44 @@ var SeatersSDK =
 /* 818 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"strs-content\">\n  <div class=\"strs-pb-10\">\n    <h3>\n      <span>Book seats</span>\n    </h3>\n  </div>\n\n  <div class=\"strs-flex strs-flex-column strs-flex-center-h\">\n    <div class=\"strs-pb-10\">\n      <span>Please specify the number of seats you would like to book</span>\n    </div>\n    <div class=\"strs-row strs-collapse\">\n      <form class=\"strs-flex strs-flex-column strs-flex-center-h strs-small-12\" novalidate autocomplete=\"off\">\n        <div class=\"strs-columns strs-small-6\">\n          <div id=\"strs-seats-error\" class=\"strs-input-error\"></div>\n          <select id=\"strs-seats\" class=\"strs-select\">\n          </select>\n        </div>\n        <div>\n          <button id=\"strs-btn-bookseats\" class=\"strs-button success\" type=\"button\">Book now</button>\n        </div>\n      </form>\n    </div>\n\n  </div>\n\n</div>\n";
+	module.exports = "<div class=\"strs-content\">\n  <div class=\"strs-pb-10\">\n    <h3>\n      <span data-strs-trl=\"strs.tickets.title\">Select number of seats</span>\n    </h3>\n  </div>\n\n  <div class=\"strs-flex strs-flex-column strs-flex-center-h\">\n    <div class=\"strs-row strs-collapse\">\n      <form class=\"strs-flex strs-flex-column strs-flex-center-h strs-small-12\" novalidate autocomplete=\"off\">\n        <div class=\"strs-columns strs-small-6\">\n          <div id=\"strs-seats-error\" class=\"strs-input-error\"></div>\n          <select id=\"strs-seats\" class=\"strs-select\">\n          </select>\n        </div>\n        <div>\n          <button id=\"strs-btn-bookseats\" class=\"strs-button success\" type=\"button\" data-strs-trl=\"strs.tickets.bookbutton\">Book my seats</button>\n        </div>\n      </form>\n    </div>\n\n  </div>\n\n</div>\n";
 
 /***/ },
 /* 819 */
 /***/ function(module, exports) {
 
-	module.exports = "\n    <div class=\"strs-content strs-flex strs-flex-column strs-flex-center-h\">\n      <div class=\"strs-pb-10\">\n        <h3>\n          <span>Welcome. It's nice to meet you,</span>\n          <span id=\"strs-span-firstname\"></span>\n        </h3>\n      </div>\n      <div class=\"strs-pb-10\">\n        <span>We just sent you a confirmation email. In order to confirm your registration, please enter the code mentioned in the email below.</span>\n      </div>\n      <div class=\"strs-row strs-collapse\">\n        <form name=\"validateForm\" class=\"strs-flex strs-flex-column strs-flex-center-h strs-small-12\" novalidate autocomplete=\"off\">\n          <div class=\"strs-columns strs-small-12\">\n            <div id=\"strs-confirmation-code-error\" class=\"strs-input-error\"></div>\n            <input id=\"strs-confirmation-code\" class=\"strs-input\" type=\"text\" name=\"confirmationCode\" placeholder=\"Your personal code\" required>\n          </div>\n          <div>\n            <button id=\"strs-btn-validate\" class=\"strs-button success\" type=\"button\">Confirm email</button>\n          </div>\n        </form>\n      </div>\n    </div>\n";
+	module.exports = "\n    <div class=\"strs-content strs-flex strs-flex-column strs-flex-center-h\">\n      <div class=\"strs-pb-10\">\n        <h3>\n          <span data-strs-trl=\"strs.validateemail.title\">Welcome. It's nice to meet you,</span>\n          <span id=\"strs-span-firstname\"></span>\n        </h3>\n      </div>\n      <div class=\"strs-pb-10\">\n        <span data-strs-trl=\"strs.validateemail.welcomemessage\">We just sent you a confirmation email. In order to confirm your registration, please enter the code mentioned in the email below.</span>\n      </div>\n      <div class=\"strs-row strs-collapse\">\n        <form name=\"validateForm\" class=\"strs-flex strs-flex-column strs-flex-center-h strs-small-12\" novalidate autocomplete=\"off\">\n          <div class=\"strs-columns strs-small-12\">\n            <div id=\"strs-confirmation-code-error\" class=\"strs-input-error\"></div>\n            <input id=\"strs-confirmation-code\" class=\"strs-input\" type=\"text\" name=\"confirmationCode\" placeholder=\"Your personal code\" data-strs-placeholder=\"strs.validateemail.emailcodeplaceholder\" required>\n          </div>\n          <div>\n            <button id=\"strs-btn-validate\" class=\"strs-button success\" type=\"button\" data-strs-trl=\"strs.validateemail.confirmbutton\">Confirm email</button>\n          </div>\n        </form>\n      </div>\n    </div>\n";
 
 /***/ },
 /* 820 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"strs-content\">\n\n  <div class=\"strs-row strs-pb-10\">\n    <h3 id=\"strs-wl-name\"></h3>\n    <div id=\"strs-wl-closed\">\n      <h4 class=\"strs-wl-closed strs-pb-10\">Closed</h4>\n      <span>\n        <p class=\"strs-mb-none\">This wish list has been closed.</p>\n        <p>Visit fan group <a id=\"strs-fg-slug\" href=\"http://www.seaters.com/myfangroup\" class=\"strs-link\"></a></p>\n      </span>\n    </div>\n  </div>\n\n  <div id=\"strs-wl-open\">\n    <div class=\"strs-row\">\n      <div class=\"strs-columns strs-small-6 strs-flex strs-flex-column strs-flex-center-h strs-wl-data-title\">Likelihood</div>\n      <div class=\"strs-columns strs-small-6 strs-flex strs-flex-column strs-flex-center-h strs-wl-data-title\">Rank</div>\n    </div>\n    <div class=\"strs-row strs-pb-10\">\n      <div id=\"strs-wl-likelihood\" class=\"strs-columns strs-small-6 strs-flex strs-flex-column strs-flex-center-h strs-wl-data-value\">25.00 %</div>\n      <div id=\"strs-wl-rank\" class=\"strs-columns strs-small-6 strs-flex strs-flex-column strs-flex-center-h strs-wl-data-value\"># 1</div>\n    </div>\n  </div>\n\n  <div class=\"strs-row strs-collapse\">\n    <div class=\"strs-columns strs-large-12\">\n      <button id=\"strs-btn-close\" class=\"strs-button success expand\" type=\"button\">\n        <span>Close</span>\n      </button>\n    </div>\n  </div>\n\n\n</div>\n";
+	module.exports = "<div class=\"strs-content\">\n\n  <div class=\"strs-row strs-pb-10\">\n    <h3 id=\"strs-wl-name\"></h3>\n    <div id=\"strs-wl-closed\">\n      <h4 class=\"strs-wl-closed strs-pb-10\" data-strs-trl=\"strs.wl.closedwllabel\">Closed</h4>\n      <span>\n        <p class=\"strs-mb-none\" data-strs-trl=\"strs.wl.closedwlinfolabel\">This wish list has been closed.</p>\n        <p>\n          <span data-strs-trl=\"strs.wl.visitfglabel\">Visit fan group</span>\n          <a id=\"strs-fg-slug\" href=\"http://www.seaters.com/myfangroup\" class=\"strs-link\"></a>\n        </p>\n      </span>\n    </div>\n  </div>\n\n  <div id=\"strs-wl-open\">\n    <div class=\"strs-row\">\n      <div class=\"strs-columns strs-small-6 strs-flex strs-flex-column strs-flex-center-h strs-wl-data-title\" data-strs-trl=\"strs.wl.likelihood\">Likelihood</div>\n      <div class=\"strs-columns strs-small-6 strs-flex strs-flex-column strs-flex-center-h strs-wl-data-title\" data-strs-trl=\"strs.wl.rank\">Rank</div>\n    </div>\n    <div class=\"strs-row strs-pb-10\">\n      <div id=\"strs-wl-likelihood\" class=\"strs-columns strs-small-6 strs-flex strs-flex-column strs-flex-center-h strs-wl-data-value\">25.00 %</div>\n      <div id=\"strs-wl-rank\" class=\"strs-columns strs-small-6 strs-flex strs-flex-column strs-flex-center-h strs-wl-data-value\"># 1</div>\n    </div>\n  </div>\n\n  <div class=\"strs-row strs-collapse\">\n    <div class=\"strs-columns strs-large-12\">\n      <button id=\"strs-btn-close\" class=\"strs-button success expand\" type=\"button\" data-strs-trl=\"strs.wl.closebutton\">Close</button>\n    </div>\n  </div>\n\n\n</div>\n";
 
 /***/ },
 /* 821 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"strs-content strs-flex strs-flex-column strs-flex-center-h\">\n  <div class=\"strs-pb-10\">\n    <h3>\n      <span>Please enter the code to join the fan group</span>\n      <span id=\"strs-span-fangroup-name\">My Fan group</span>\n    </h3>\n  </div>\n  <div class=\"strs-row strs-collapse\">\n    <form class=\"strs-flex strs-flex-column strs-flex-center-h strs-small-12\" novalidate autocomplete=\"off\">\n      <div class=\"strs-columns strs-small-12\">\n        <div id=\"strs-fangroup-code-error\" class=\"strs-input-error\"></div>\n        <input id=\"strs-fangroup-code\" class=\"strs-input\" type=\"text\" name=\"fangroupCode\" required>\n      </div>\n      <div>\n        <button id=\"strs-btn-joinfg\" class=\"strs-button success\" type=\"button\">Join this fan group</button>\n      </div>\n    </form>\n  </div>\n</div>\n";
+	module.exports = "<div class=\"strs-content strs-flex strs-flex-column strs-flex-center-h\">\n  <div class=\"strs-pb-10\">\n    <h3>\n      <span data-strs-trl=\"strs.fg.validatefgcodelabel\">Please enter the code to join the fan group</span>\n      <span id=\"strs-span-fangroup-name\"></span>\n    </h3>\n  </div>\n  <div class=\"strs-row strs-collapse\">\n    <form class=\"strs-flex strs-flex-column strs-flex-center-h strs-small-12\" novalidate autocomplete=\"off\">\n      <div class=\"strs-columns strs-small-12\">\n        <div id=\"strs-fangroup-code-error\" class=\"strs-input-error\"></div>\n        <input id=\"strs-fangroup-code\" class=\"strs-input\" type=\"text\" name=\"fangroupCode\" data-strs-placeholder=\"strs.fg.fgcodeplaceholder\" required>\n      </div>\n      <div>\n        <button id=\"strs-btn-joinfg\" class=\"strs-button success\" type=\"button\" data-strs-trl=\"strs.fg.joinbutton\">Join this fan group</button>\n      </div>\n    </form>\n  </div>\n</div>\n";
 
 /***/ },
 /* 822 */
+/***/ function(module, exports) {
+
+	module.exports = [
+		{
+			"key": "strs.login.title",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Sign in to seaters.com"
+				}
+			]
+		}
+	];
+
+/***/ },
+/* 823 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";

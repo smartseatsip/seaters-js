@@ -19,17 +19,7 @@ const ticketsHtml: string = require('./tickets.html');
 const validateHtml: string = require('./validate.html');
 const wlHtml: string = require('./wl.html');
 const fgCodeHtml: string = require('./fgcode.html');
-const translationStore = new TranslationStore([
-  {
-    key: 'foo',
-    translations: [
-      {
-        locale: 'en',
-        translation: 'bar'
-      }
-    ]
-  }
-]);
+const translationStore = new TranslationStore(require('../../../translations.json'));
 
 export enum JWL_EXIT_STATUS {
   JOINED, CANCELLED, ERROR

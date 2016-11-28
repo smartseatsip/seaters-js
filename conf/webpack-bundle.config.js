@@ -37,6 +37,10 @@ module.exports = {
         loaders: ['css', 'sass']
       },
       {
+        test: /\.json$/,
+        loader: 'json-loader'
+      },
+      {
         test: /\.ts$/,
         loader: 'awesome-typescript-loader'
       }
