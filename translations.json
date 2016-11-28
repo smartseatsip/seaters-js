@@ -236,6 +236,51 @@
         "translation": "Visit fan group"
       }
     ]
+  },
+  {
+    "key": "strs.tickets.title",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Select number of seats"
+      }
+    ]
+  },
+  {
+    "key": "strs.tickets.bookbutton",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Book my seats"
+      }
+    ]
+  },
+  {
+    "key": "strs.fg.validatefgcodelabel",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Please enter the code to join the fan group"
+      }
+    ]
+  },
+  {
+    "key": "strs.fg.fgcodeplaceholder",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Fan group code"
+      }
+    ]
+  },
+  {
+    "key": "strs.fg.joinbutton",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Join this fan group"
+      }
+    ]
   }
 
 
