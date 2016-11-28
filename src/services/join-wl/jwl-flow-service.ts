@@ -4,6 +4,7 @@ import { ModalService } from '../modal-service';
 import { WaitingListService, ExtendedWaitingList, WAITING_LIST_ACTION_STATUS } from '../waiting-list-service';
 import { FanGroupService, ExtendedFanGroup, FAN_GROUP_ACTION_STATUS } from '../fan-group-service';
 import { Fan } from '../../seaters-api/fan/fan';
+import {FanGroup} from "../../seaters-api/fan/fan-group";
 
 declare var require: any;
 
@@ -127,13 +128,14 @@ export class JwlFlowService {
         var wl = data.wl, fg = data.fg;
         return this.ensureFGAndWLAreEligable(fg, wl)
         .then(() => this.joinFanGroupIfNeeded(fg))
-        .then(() => this.joinWaitingListIfNeeded(wl, data.numberOfSeats));
-      });
+        .then(() => this.joinWaitingListIfNeeded(wl, data.numberOfSeats))
+      })
     }
 
     private checkFanGroupEligability (fg: ExtendedFanGroup) {
       return fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_LEAVE ||
-        fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_JOIN;
+        fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_JOIN ||
+        fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_UNLOCK
     }
 
     private checkWaitingListEligability (wl: ExtendedWaitingList) {
@@ -318,6 +320,58 @@ export class JwlFlowService {
       return deferred.promise;
     }
 
+
+    private doProtectedFanGroupValidation(fanGroup: ExtendedFanGroup):  Promise<ExtendedFanGroup> {
+      // Reset form errors
+      this.modalService.resetFormErrors();
+
+      // Get fields
+      var fanGroupCode = (<HTMLInputElement>this.modalService.findElementById("strs-fangroup-code")).value;
+
+      // Client-side validations
+      var validationErrors = this.validateProtectedFanGroupValidationForm(fanGroupCode);
+      if (validationErrors.length > 0) {
+        this.modalService.showFormErrors(validationErrors);
+        return this.endoftheline();
+      }
+
+      //Verify protection code
+      this.enableButton('strs-btn-joinfg',false);
+      return this.fanGroupService.joinProtectedFanGroup(fanGroup, fanGroupCode)
+        .then(
+          (fg) =>  {
+            console.log("membership");
+            console.log(fg);
+            return Promise.resolve(fg)
+          }
+          ,
+          err => {
+            this.enableButton('strs-btn-joinfg',true);
+            var message = this.extractMsgAndLogError('doProtectedFanGroupValidation', err);
+            //TODO better error handling:
+            this.modalService.showFieldError('strs-fangroup-code-error',"Invalid code");
+            return this.endoftheline();
+          });
+    }
+
+
+    private ensureProtectedFanGroupValidated(fanGroup: ExtendedFanGroup): Promise<ExtendedFanGroup> {
+      this.modalService.showModal(
+        require('./fgcode.html'),
+        require('./app.css')
+      );
+
+      var deferred = this.defer<ExtendedFanGroup>();
+
+      var fgName = (<HTMLElement>this.modalService.findElementById('strs-span-fangroup-name'));
+      fgName.innerHTML = fanGroup.translatedName;
+
+      var joinFgBtn = this.modalService.findElementById('strs-btn-joinfg');
+      joinFgBtn.onclick = () => this.doProtectedFanGroupValidation(fanGroup).then(deferred.resolve, deferred.reject);
+
+      return deferred.promise;
+    }
+
     /**
      * Provides and returns a promise for seat selection and start showing the seat selection form
      * @param wl
@@ -422,6 +476,15 @@ export class JwlFlowService {
       return validationErrors;
     }
 
+    private validateProtectedFanGroupValidationForm(code:string) {
+      var validationErrors = [];
+
+      if(!this.modalService.validateRequired(code)) {
+        validationErrors.push({field:'strs-fangroup-code', error:'Mandatory'});
+      }
+      return validationErrors;
+    }
+
 
     private hasRank (wl: ExtendedWaitingList) {
       return wl.actionStatus === WAITING_LIST_ACTION_STATUS.CONFIRM ||
@@ -449,9 +512,11 @@ export class JwlFlowService {
             return Promise.resolve(fg);
         } else if (fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_JOIN) {
             return this.fanGroupService.joinFanGroup(fg.id);
-        } else {
-            console.error('[JwlFlowService] Unsupported FG action status: %s', fg.actionStatus);
-            return Promise.reject(JWL_EXIT_STATUS.ERROR);
+        } else if (fg.actionStatus == FAN_GROUP_ACTION_STATUS.CAN_UNLOCK && fg.accessMode === 'CODE_PROTECTED') {
+            return this.ensureProtectedFanGroupValidated(fg);
+        }
+        else {
+            return Promise.reject('Unsupported FG action status: ' + fg.actionStatus);
         }
     }
 
