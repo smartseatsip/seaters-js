@@ -1,6 +1,8 @@
 /// <reference path="../../node_modules/typescript/lib/lib.d.ts" />
 
 import { Promise } from 'es6-promise';
+import { TranslationStore, TranslationService } from './translation-service';
+import { Array } from 'core-js/library';
 
 declare var require: any;
 
@@ -12,9 +14,13 @@ export class ModalService {
 
     private modalContent: HTMLElement;
 
+    private translationStore: TranslationStore;
+
     private onClose: () => void;
 
-    constructor () {
+    constructor (
+        private translationService: TranslationService
+    ) {
     }
 
     private onEscape (callback: () => void): () => void {
@@ -138,9 +144,10 @@ export class ModalService {
       }
     }
 
-    showModal (style: string, onClose: () => void) {
+    showModal (style: string, translationStore: TranslationStore, onClose: () => void) {
         this.setupOverlay();
         this.setupModal();
+        this.translationStore = translationStore;
         this.onClose = onClose;
         this.modalContent = <HTMLDivElement>document.createElement('div');
         var styleElement = <HTMLStyleElement>document.createElement('style');
@@ -151,8 +158,20 @@ export class ModalService {
         this.showOverlay();
     }
 
+    private replaceTranslations () {
+        this.findElementsByAttributeName(this.modalContent, 'data-strs-trl').forEach(element => {
+            element.innerHTML = this.translationService.translateFromStore(
+                this.translationStore,
+                element.getAttribute('data-strs-trl'),
+                'en'
+            );
+        });
+    }
+
     setModalContent (html: string, style?: string) {
         this.modalContent.innerHTML = html;
+        this.replaceTranslations();
+        this.modalContent.querySelector
         if (style) {
             var styleElement = <HTMLStyleElement>document.createElement('style');
             styleElement.innerHTML = style;
@@ -175,6 +194,22 @@ export class ModalService {
 
     findElementById<T extends HTMLElement> (id: string):T {
         return <T>document.getElementById(id);
+    }
+
+    findElementsByAttributeName<T extends HTMLElement> (root: HTMLElement, attributeName: string): T[] {
+        var elements = [];
+        function loopChildren (element: HTMLElement) {
+            Array.from(element.childNodes).forEach(child => {
+                if (child instanceof HTMLElement) {
+                    if (child.attributes[attributeName]) {
+                        elements.push(child);
+                    }
+                    return loopChildren(child);
+                }
+            });
+        }
+        loopChildren(root);
+        return elements;
     }
 
 }

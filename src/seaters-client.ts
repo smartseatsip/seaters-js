@@ -39,7 +39,7 @@ export class SeatersClient {
     
     this.api = new SeatersApi(options.apiPrefix);
     this.translationService = new TranslationService();
-    this.modalService = new ModalService();
+    this.modalService = new ModalService(this.translationService);
     
     this.sessionService = new SessionService(this.api);
     this.waitingListService = new WaitingListService(this.api);

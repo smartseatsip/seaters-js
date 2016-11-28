@@ -4,7 +4,8 @@ import { ModalService } from '../modal-service';
 import { WaitingListService, ExtendedWaitingList, WAITING_LIST_ACTION_STATUS } from '../waiting-list-service';
 import { FanGroupService, ExtendedFanGroup, FAN_GROUP_ACTION_STATUS } from '../fan-group-service';
 import { Fan } from '../../seaters-api/fan/fan';
-import {FanGroup} from "../../seaters-api/fan/fan-group";
+import { FanGroup } from '../../seaters-api/fan/fan-group';
+import { TranslationStore } from '../translation-service';
 
 declare var require: any;
 
@@ -18,6 +19,17 @@ const ticketsHtml: string = require('./tickets.html');
 const validateHtml: string = require('./validate.html');
 const wlHtml: string = require('./wl.html');
 const fgCodeHtml: string = require('./fgcode.html');
+const translationStore = new TranslationStore([
+  {
+    key: 'foo',
+    translations: [
+      {
+        locale: 'en',
+        translation: 'bar'
+      }
+    ]
+  }
+]);
 
 export enum JWL_EXIT_STATUS {
   JOINED, CANCELLED, ERROR
@@ -87,7 +99,7 @@ export class JwlFlowService {
      */
     startFlow (wlId: string): Promise<JWL_EXIT_STATUS> {
       var deferred = this.defer<JWL_EXIT_STATUS>();
-      this.modalService.showModal(appCss, () => deferred.reject(JWL_EXIT_STATUS.CANCELLED));
+      this.modalService.showModal(appCss, translationStore, () => deferred.reject(JWL_EXIT_STATUS.CANCELLED));
 
       this.ensureFanIsLoggedIn()
       .then(fan => this.ensureFanHasValidEmail(fan))
