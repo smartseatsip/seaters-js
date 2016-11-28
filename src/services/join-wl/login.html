@@ -2,7 +2,7 @@
   <div class="strs-content">
     <div class="strs-row strs-pb-10">
       <h3>
-        <span>Login</span>
+        <span data-strs-trl="strs.login.title">Login</span>
       </h3>
     </div>
 
@@ -11,26 +11,29 @@
         <!-- EMAIL -->
         <div class="strs-columns strs-large-12">
           <div id="strs-email-error" class="strs-input-error"></div>
-          <input id="strs-email" class="strs-input" placeholder="Email" type="text" required>
+          <input id="strs-email" class="strs-input" placeholder="Email" type="text" data-strs-placeholder="strs.login.emailplaceholder" required>
         </div>
 
         <!-- PASSWORD -->
         <div class="strs-columns strs-large-12">
           <div id="strs-password-error" class="strs-input-error"></div>
-          <input id="strs-password" class="strs-input" placeholder="Password" type="password" required>
+          <input id="strs-password" class="strs-input" placeholder="Password" type="password"  data-strs-placeholder="strs.login.passwordplaceholder" required>
         </div>
 
 
         <!-- Button -->
         <div class="strs-columns strs-large-12">
           <button id="strs-btn-login" type="button" class="strs-button success expand">
-            <span>Login</span>
+            <span data-strs-trl="strs.login.btnlogin">Login</span>
           </button>
         </div>
 
         <!-- signup link -->
         <div class="strs-columns strs-large-12 strs-hint strs-flex strs-flex-row strs-flex-center-h">
-          <span><p>No account yet ? <a id="strs-nav-signup" href="#" class="strs-link">Signup here !</a></p></span>
+            <p>
+              <span data-strs-trl="strs.login.noaccountlabel">No account yet ?</span>
+              <a id="strs-nav-signup" href="#" class="strs-link" data-strs-trl="strs.login.signuplink">Signup here !</a>
+            </p>
         </div>
 
       </form>

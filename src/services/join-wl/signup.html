@@ -1,7 +1,7 @@
 <div class="strs-content">
   <div class="strs-row strs-pb-10">
     <h3>
-      <span>Sign up</span>
+      <span data-strs-trl="strs.signup.title">Sign up</span>
     </h3>
   </div>
   <div class="strs-row">
@@ -11,44 +11,42 @@
         <!-- FIRST NAME -->
         <div class="strs-columns strs-large-6 strs-l-rpadding">
           <div id="strs-firstname-error" class="strs-input-error"></div>
-          <input id="strs-firstname" class="strs-input" placeholder="First Name" type="text" required>
+          <input id="strs-firstname" class="strs-input" placeholder="First Name" type="text" data-strs-placeholder="strs.signup.firstnameplaceholder" required>
         </div>
 
         <!-- LAST NAME -->
         <div class="strs-columns strs-large-6">
           <div id="strs-lastname-error" class="strs-input-error"></div>
-          <input id="strs-lastname" class="strs-input" placeholder="Last Name" type="text" required>
+          <input id="strs-lastname" class="strs-input" placeholder="Last Name" type="text" data-strs-placeholder="strs.signup.lastnameplaceholder" required>
         </div>
 
 
       <!-- EMAIL -->
-
         <div class="strs-columns strs-large-12">
           <div id="strs-email-error" class="strs-input-error"></div>
-          <input id="strs-email" class="strs-input" placeholder="Email" type="text" required>
+          <input id="strs-email" class="strs-input" placeholder="Email" type="text" data-strs-placeholder="strs.signup.emailplaceholder" required>
         </div>
-
 
       <!-- PASSWORD -->
-
         <div class="strs-columns strs-large-12">
           <div id="strs-password-error" class="strs-input-error"></div>
-          <input id="strs-password" class="strs-input" placeholder="Password" type="password" required>
+          <input id="strs-password" class="strs-input" placeholder="Password" type="password" data-strs-placeholder="strs.signup.passwordplaceholder" required>
         </div>
-
 
       <!-- T&C -->
       <div class="strs-columns strs-large-12 strs-hint strs-pb-10">
-        <span><p>By signing up, you agree to Seaters' <a href="http://getseaters.com/user-agreement/" class="strs-link">Terms &amp; Conditions</a>
-        and <a href="http://getseaters.com/privacy/" class="strs-link">Privacy Policy</a></p>
-        </span>
+          <p>
+            <span data-strs-trl="strs.signup.infotext1label">By signing up, you agree to Seaters'</span>
+            <a href="http://getseaters.com/user-agreement/" class="strs-link" data-strs-trl="strs.signup.termsandconditionslink">Terms &amp; Conditions</a>
+            <span data-strs-trl="strs.signup.infotext2label"> and </span>
+            <a href="http://getseaters.com/privacy/" class="strs-link" data-strs-trl="strs.signup.privacypolicylink">Privacy Policy</a>
+          </p>
       </div>
 
       <!-- SUBMIT BUTTON  -->
-
         <div class="strs-columns strs-large-12">
           <button id="strs-btn-signup" class="strs-button success expand" type="button">
-            <span>Sign up</span>
+            <span data-strs-trl="strs.signup.signupbutton">Sign up</span>
           </button>
         </div>
 
