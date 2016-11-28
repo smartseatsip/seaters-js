@@ -14,5 +14,5 @@ cp dist/seaters.bundle.* tmp/
 cp -r examples tmp/
 cp -r assets tmp/
 cd tmp
-find . -not -path . | tar -cvzf "${NAME}-${VERSION}.tar.gz" --files-from -
+find . -not -path . | tar -czf "${NAME}-${VERSION}.tgz" --files-from - > /dev/null
 cd ..

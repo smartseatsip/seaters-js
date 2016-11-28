@@ -76,10 +76,10 @@ var SeatersSDK =
 	        this.sessionService = new session_service_1.SessionService(this.api);
 	        this.waitingListService = new waiting_list_service_1.WaitingListService(this.api);
 	        this.fanGroupService = new fan_group_service_1.FanGroupService(this.api);
-	        this.jwlFlowService = new jwl_flow_service_1.JwlFlowService(this.modalService, this.sessionService, this.waitingListService, this.fanGroupService);
+	        this.jwlFlowService = new jwl_flow_service_1.JwlFlowService(this.modalService, this.sessionService, this.waitingListService, this.fanGroupService, this.translationService);
 	    }
 	    SeatersClient.DEFAULT_OPTIONS = {
-	        apiPrefix: 'https://api.qa-seaters.com/api'
+	        apiPrefix: 'https://api.dev-seaters.com/api'
 	    };
 	    return SeatersClient;
 	}());
@@ -27531,6 +27531,14 @@ var SeatersSDK =
 	    AuthenticationApi.prototype.validate = function (input) {
 	        return this.apiContext.put('/auth/validate', input);
 	    };
+	    /**
+	     *
+	     * @param input
+	     * @returns {any}
+	     */
+	    AuthenticationApi.prototype.resetEmail = function (input) {
+	        return this.apiContext.post('/auth/signup/reset-email', input);
+	    };
 	    return AuthenticationApi;
 	}());
 	exports.AuthenticationApi = AuthenticationApi;
@@ -27558,6 +27566,7 @@ var SeatersSDK =
 	var SessionService = (function () {
 	    function SessionService(api, sessionStrategy) {
 	        this.api = api;
+	        this.sessionToken = "";
 	        this.sessionStrategy = sessionStrategy || SESSION_STRATEGY.EXPIRE;
 	    }
 	    SessionService.prototype.applyExpireSessionStrategy = function (session) {
@@ -27569,6 +27578,7 @@ var SeatersSDK =
 	    };
 	    SessionService.prototype.finishLogin = function (session) {
 	        this.api.setHeader(AUTH_HEADER, AUTH_BEARER + ' ' + session.token);
+	        this.sessionToken = session.token;
 	        switch (this.sessionStrategy) {
 	            default: this.applyExpireSessionStrategy(session);
 	        }
@@ -27608,10 +27618,17 @@ var SeatersSDK =
 	            code: code
 	        }).then(function () { return _this.setCurrentFan(); });
 	    };
+	    SessionService.prototype.doEmailReset = function (email) {
+	        return this.api.authentication.resetEmail({
+	            email: email,
+	            token: this.sessionToken
+	        });
+	    };
 	    SessionService.prototype.doLogout = function () {
 	        console.log('[SessionService] doLogout'); //DEBUG
 	        this.api.unsetHeader(AUTH_HEADER);
 	        this.currentFan = undefined;
+	        this.sessionToken = undefined;
 	    };
 	    SessionService.prototype.whoami = function () {
 	        return this.currentFan;
@@ -44168,11 +44185,15 @@ var SeatersSDK =
 	})(exports.JWL_EXIT_STATUS || (exports.JWL_EXIT_STATUS = {}));
 	var JWL_EXIT_STATUS = exports.JWL_EXIT_STATUS;
 	var JwlFlowService = (function () {
-	    function JwlFlowService(modalService, sessionService, waitingListService, fanGroupService) {
+	    function JwlFlowService(modalService, sessionService, waitingListService, fanGroupService, translationService) {
 	        this.modalService = modalService;
 	        this.sessionService = sessionService;
 	        this.waitingListService = waitingListService;
 	        this.fanGroupService = fanGroupService;
+	        this.translationService = translationService;
+	        this.locale = 'en'; //TODO: via config
+	        this.mandatoryFieldError = 'strs.forms.mandatory';
+	        this.mandatoryFieldError = translationService.translateFromStore(translationStore, this.mandatoryFieldError, this.locale);
 	    }
 	    /**
 	     * Extract the message from an error and log this message with it's details
@@ -44297,8 +44318,8 @@ var SeatersSDK =
 	            _this.modalService.closeModal();
 	            deferred.resolve(JWL_EXIT_STATUS.JOINED);
 	        };
-	        var waitingListName = this.modalService.findElementById('strs-wl-name');
-	        waitingListName.innerHTML = wl.displayName;
+	        var eventName = this.modalService.findElementById('strs-wl-eventname');
+	        eventName.innerHTML = wl.eventName.en;
 	        var displaySection;
 	        //TODO: split up different scenario's in different modal contents
 	        if (wl.waitingListStatus === 'OPEN' && this.hasRank(wl)) {
@@ -44370,12 +44391,12 @@ var SeatersSDK =
 	        //Test email
 	        if (!this.modalService.validateRequired(email)) {
 	            //validationErrors.push({field:'strs-email', error:'sl_input_err_required'});
-	            validationErrors.push({ field: 'strs-email', error: 'Mandatory' });
+	            validationErrors.push({ field: 'strs-email', error: this.mandatoryFieldError });
 	        }
 	        //Test password
 	        if (!this.modalService.validateRequired(password)) {
 	            //validationErrors.push({field:'strs-password', error:'sl_input_err_required'});
-	            validationErrors.push({ field: 'strs-password', error: 'Mandatory' });
+	            validationErrors.push({ field: 'strs-password', error: this.mandatoryFieldError });
 	        }
 	        return validationErrors;
 	    };
@@ -44405,7 +44426,7 @@ var SeatersSDK =
 	        }
 	        this.enableButton('strs-btn-signup', false);
 	        return this.sessionService.doEmailPasswordSignUp(email, password, firstname, lastname)
-	            .then(function (fan) { return fan; }, function (err) {
+	            .then(function (fan) { return _this.askToValidateEmail(fan); }, function (err) {
 	            _this.enableButton('strs-btn-signup', true);
 	            var message = _this.extractMsgAndLogError('doSignup', err);
 	            _this.modalService.showFieldError('strs-email-error', message);
@@ -44413,11 +44434,14 @@ var SeatersSDK =
 	        });
 	    };
 	    JwlFlowService.prototype.ensureFanHasValidEmail = function (fan) {
+	        var _this = this;
 	        if (fan.validatedEmail) {
 	            return es6_promise_1.Promise.resolve(fan);
 	        }
 	        else {
-	            return this.askToValidateEmail(fan);
+	            //TODO - for now, resend email each time this might be needed -> decide if an additional screen needs to be added to request this instead
+	            return this.sessionService.doEmailReset(fan.email)
+	                .then(function () { return _this.askToValidateEmail(fan); });
 	        }
 	    };
 	    JwlFlowService.prototype.askToValidateEmail = function (fan) {
@@ -44528,22 +44552,22 @@ var SeatersSDK =
 	        //Test email
 	        if (!this.modalService.validateRequired(email)) {
 	            //validationErrors.push({field:'strs-email', error:'sl_input_err_required'});
-	            validationErrors.push({ field: 'strs-email', error: 'Mandatory' });
+	            validationErrors.push({ field: 'strs-email', error: this.mandatoryFieldError });
 	        }
 	        //Test password
 	        if (!this.modalService.validateRequired(password)) {
 	            //validationErrors.push({field:'strs-password', error:'sl_input_err_required'});
-	            validationErrors.push({ field: 'strs-password', error: 'Mandatory' });
+	            validationErrors.push({ field: 'strs-password', error: this.mandatoryFieldError });
 	        }
 	        //Test firstname
 	        if (!this.modalService.validateRequired(firstname)) {
 	            //validationErrors.push({field:'strs-firstname', error:'sl_input_err_required'});
-	            validationErrors.push({ field: 'strs-firstname', error: 'Mandatory' });
+	            validationErrors.push({ field: 'strs-firstname', error: this.mandatoryFieldError });
 	        }
 	        //Test lastname
 	        if (!this.modalService.validateRequired(lastname)) {
 	            //validationErrors.push({field:'strs-lastname', error:'sl_input_err_required'});
-	            validationErrors.push({ field: 'strs-lastname', error: 'Mandatory' });
+	            validationErrors.push({ field: 'strs-lastname', error: this.mandatoryFieldError });
 	        }
 	        return validationErrors;
 	    };
@@ -44552,14 +44576,14 @@ var SeatersSDK =
 	        //Test email
 	        if (!this.modalService.validateRequired(code)) {
 	            //validationErrors.push({field:'strs-confirmation-code', error:'sl_input_err_required'});
-	            validationErrors.push({ field: 'strs-confirmation-code', error: 'Mandatory' });
+	            validationErrors.push({ field: 'strs-confirmation-code', error: this.mandatoryFieldError });
 	        }
 	        return validationErrors;
 	    };
 	    JwlFlowService.prototype.validateProtectedFanGroupValidationForm = function (code) {
 	        var validationErrors = [];
 	        if (!this.modalService.validateRequired(code)) {
-	            validationErrors.push({ field: 'strs-fangroup-code', error: 'Mandatory' });
+	            validationErrors.push({ field: 'strs-fangroup-code', error: this.mandatoryFieldError });
 	        }
 	        return validationErrors;
 	    };
@@ -44669,7 +44693,7 @@ var SeatersSDK =
 	
 	
 	// module
-	exports.push([module.id, "html {\n  font-size: 16px;\n}\n\n.strs-left {\n  float: left !important; }\n\n.strs-right {\n  float: right !important; }\n\n.strs-clearfix:before, .strs-clearfix:after {\n  content: \" \";\n  display: table; }\n.strs-clearfix:after {\n  clear: both;\n}\n\n/* Row and columns */\n.strs-row {\n  margin: 0 auto;\n  max-width: 62.5rem;\n  width: 100%; }\n.strs-row:before, .strs-row:after {\n  content: \" \";\n  display: table; }\n.strs-row:after {\n  clear: both; }\n.strs-row.collapse > .strs-column,\n.strs-row.collapse > .strs-columns {\n  padding-left: 0;\n  padding-right: 0; }\n.strs-row.collapse .strs-row {\n  margin-left: 0;\n  margin-right: 0; }\n.strs-row .strs-row {\n  margin: 0 -0.9375rem;\n  max-width: none;\n  width: auto; }\n.strs-row .strs-row:before, .strs-row .strs-row:after {\n  content: \" \";\n  display: table; }\n.strs-row .strs-row:after {\n  clear: both; }\n.strs-row .strs-row.collapse {\n  margin: 0;\n  max-width: none;\n  width: auto; }\n.strs-row .strs-row.collapse:before, .strs-row .strs-row.collapse:after {\n  content: \" \";\n  display: table; }\n.strs-row .strs-row.collapse:after {\n  clear: both; }\n\n.strs-column,\n.strs-columns {\n  padding-left: 0.9375rem;\n  padding-right: 0.9375rem;\n  width: 100%;\n  float: left; }\n.strs-column + .strs-column:last-child,\n.strs-columns + .strs-column:last-child, .strs-column +\n.strs-columns:last-child,\n.strs-columns +\n.strs-columns:last-child {\n  float: right; }\n.strs-column + .strs-column.end,\n.strs-columns + .strs-column.end, .strs-column +\n.strs-columns.end,\n.strs-columns +\n.strs-columns.end {\n  float: left; }\n\n/* column sizes */\n@media only screen {\n  .strs-small-push-0 {\n    position: relative;\n    left: 0;\n    right: auto; }\n\n  .strs-small-pull-0 {\n    position: relative;\n    right: 0;\n    left: auto; }\n\n  .strs-small-push-1 {\n    position: relative;\n    left: 8.33333%;\n    right: auto; }\n\n  .strs-small-pull-1 {\n    position: relative;\n    right: 8.33333%;\n    left: auto; }\n\n  .strs-small-push-2 {\n    position: relative;\n    left: 16.66667%;\n    right: auto; }\n\n  .strs-small-pull-2 {\n    position: relative;\n    right: 16.66667%;\n    left: auto; }\n\n  .strs-small-push-3 {\n    position: relative;\n    left: 25%;\n    right: auto; }\n\n  .strs-small-pull-3 {\n    position: relative;\n    right: 25%;\n    left: auto; }\n\n  .strs-small-push-4 {\n    position: relative;\n    left: 33.33333%;\n    right: auto; }\n\n  .strs-small-pull-4 {\n    position: relative;\n    right: 33.33333%;\n    left: auto; }\n\n  .strs-small-push-5 {\n    position: relative;\n    left: 41.66667%;\n    right: auto; }\n\n  .strs-small-pull-5 {\n    position: relative;\n    right: 41.66667%;\n    left: auto; }\n\n  .strs-small-push-6 {\n    position: relative;\n    left: 50%;\n    right: auto; }\n\n  .strs-small-pull-6 {\n    position: relative;\n    right: 50%;\n    left: auto; }\n\n  .strs-small-push-7 {\n    position: relative;\n    left: 58.33333%;\n    right: auto; }\n\n  .strs-small-pull-7 {\n    position: relative;\n    right: 58.33333%;\n    left: auto; }\n\n  .strs-small-push-8 {\n    position: relative;\n    left: 66.66667%;\n    right: auto; }\n\n  .strs-small-pull-8 {\n    position: relative;\n    right: 66.66667%;\n    left: auto; }\n\n  .strs-small-push-9 {\n    position: relative;\n    left: 75%;\n    right: auto; }\n\n  .strs-small-pull-9 {\n    position: relative;\n    right: 75%;\n    left: auto; }\n\n  .strs-small-push-10 {\n    position: relative;\n    left: 83.33333%;\n    right: auto; }\n\n  .strs-small-pull-10 {\n    position: relative;\n    right: 83.33333%;\n    left: auto; }\n\n  .strs-small-push-11 {\n    position: relative;\n    left: 91.66667%;\n    right: auto; }\n\n  .strs-small-pull-11 {\n    position: relative;\n    right: 91.66667%;\n    left: auto; }\n\n  .strs-column,\n  .strs-columns {\n    position: relative;\n    padding-left: 0.9375rem;\n    padding-right: 0.9375rem;\n    float: left; }\n\n  .strs-small-1 {\n    width: 8.33333%; }\n\n  .strs-small-2 {\n    width: 16.66667%; }\n\n  .strs-small-3 {\n    width: 25%; }\n\n  .strs-small-4 {\n    width: 33.33333%; }\n\n  .strs-small-5 {\n    width: 41.66667%; }\n\n  .strs-small-6 {\n    width: 50%; }\n\n  .strs-small-7 {\n    width: 58.33333%; }\n\n  .strs-small-8 {\n    width: 66.66667%; }\n\n  .strs-small-9 {\n    width: 75%; }\n\n  .strs-small-10 {\n    width: 83.33333%; }\n\n  .strs-small-11 {\n    width: 91.66667%; }\n\n  .strs-small-12 {\n    width: 100%; }\n\n  .strs-small-offset-0 {\n    margin-left: 0 !important; }\n\n  .strs-small-offset-1 {\n    margin-left: 8.33333% !important; }\n\n  .strs-small-offset-2 {\n    margin-left: 16.66667% !important; }\n\n  .strs-small-offset-3 {\n    margin-left: 25% !important; }\n\n  .strs-small-offset-4 {\n    margin-left: 33.33333% !important; }\n\n  .strs-small-offset-5 {\n    margin-left: 41.66667% !important; }\n\n  .strs-small-offset-6 {\n    margin-left: 50% !important; }\n\n  .strs-small-offset-7 {\n    margin-left: 58.33333% !important; }\n\n  .strs-small-offset-8 {\n    margin-left: 66.66667% !important; }\n\n  .strs-small-offset-9 {\n    margin-left: 75% !important; }\n\n  .strs-small-offset-10 {\n    margin-left: 83.33333% !important; }\n\n  .strs-small-offset-11 {\n    margin-left: 91.66667% !important; }\n\n  .strs-small-reset-order {\n    float: left;\n    left: auto;\n    margin-left: 0;\n    margin-right: 0;\n    right: auto; }\n\n  .strs-column.strs-small-centered,\n  .strs-columns.strs-small-centered {\n    margin-left: auto;\n    margin-right: auto;\n    float: none; }\n\n  .strs-column.strs-small-uncentered,\n  .strs-columns.strs-small-uncentered {\n    float: left;\n    margin-left: 0;\n    margin-right: 0; }\n\n  .strs-column.strs-small-centered:last-child,\n  .strs-columns.strs-small-centered:last-child {\n    float: none; }\n\n  .strs-column.strs-small-uncentered:last-child,\n  .strs-columns.strs-small-uncentered:last-child {\n    float: left; }\n\n  .strs-column.strs-small-uncentered.opposite,\n  .strs-columns.strs-small-uncentered.opposite {\n    float: right; }\n\n  .strs-row.strs-small-collapse > .strs-column,\n  .strs-row.strs-small-collapse > .strs-columns {\n    padding-left: 0;\n    padding-right: 0; }\n  .strs-row.strs-small-collapse .strs-row {\n    margin-left: 0;\n    margin-right: 0; }\n  .strs-row.strs-small-uncollapse > .strs-column,\n  .strs-row.strs-small-uncollapse > .strs-columns {\n    padding-left: 0.9375rem;\n    padding-right: 0.9375rem;\n    float: left; } }\n@media only screen and (min-width: 40.0625em) {\n  .strs-medium-push-0 {\n    position: relative;\n    left: 0;\n    right: auto; }\n\n  .strs-medium-pull-0 {\n    position: relative;\n    right: 0;\n    left: auto; }\n\n  .strs-medium-push-1 {\n    position: relative;\n    left: 8.33333%;\n    right: auto; }\n\n  .strs-medium-pull-1 {\n    position: relative;\n    right: 8.33333%;\n    left: auto; }\n\n  .strs-medium-push-2 {\n    position: relative;\n    left: 16.66667%;\n    right: auto; }\n\n  .strs-medium-pull-2 {\n    position: relative;\n    right: 16.66667%;\n    left: auto; }\n\n  .strs-medium-push-3 {\n    position: relative;\n    left: 25%;\n    right: auto; }\n\n  .strs-medium-pull-3 {\n    position: relative;\n    right: 25%;\n    left: auto; }\n\n  .strs-medium-push-4 {\n    position: relative;\n    left: 33.33333%;\n    right: auto; }\n\n  .strs-medium-pull-4 {\n    position: relative;\n    right: 33.33333%;\n    left: auto; }\n\n  .strs-medium-push-5 {\n    position: relative;\n    left: 41.66667%;\n    right: auto; }\n\n  .strs-medium-pull-5 {\n    position: relative;\n    right: 41.66667%;\n    left: auto; }\n\n  .strs-medium-push-6 {\n    position: relative;\n    left: 50%;\n    right: auto; }\n\n  .strs-medium-pull-6 {\n    position: relative;\n    right: 50%;\n    left: auto; }\n\n  .strs-medium-push-7 {\n    position: relative;\n    left: 58.33333%;\n    right: auto; }\n\n  .strs-medium-pull-7 {\n    position: relative;\n    right: 58.33333%;\n    left: auto; }\n\n  .strs-medium-push-8 {\n    position: relative;\n    left: 66.66667%;\n    right: auto; }\n\n  .strs-medium-pull-8 {\n    position: relative;\n    right: 66.66667%;\n    left: auto; }\n\n  .strs-medium-push-9 {\n    position: relative;\n    left: 75%;\n    right: auto; }\n\n  .strs-medium-pull-9 {\n    position: relative;\n    right: 75%;\n    left: auto; }\n\n  .strs-medium-push-10 {\n    position: relative;\n    left: 83.33333%;\n    right: auto; }\n\n  .strs-medium-pull-10 {\n    position: relative;\n    right: 83.33333%;\n    left: auto; }\n\n  .strs-medium-push-11 {\n    position: relative;\n    left: 91.66667%;\n    right: auto; }\n\n  .strs-medium-pull-11 {\n    position: relative;\n    right: 91.66667%;\n    left: auto; }\n\n  .strs-column,\n  .strs-columns {\n    position: relative;\n    padding-left: 0.9375rem;\n    padding-right: 0.9375rem;\n    float: left; }\n\n  .strs-medium-1 {\n    width: 8.33333%; }\n\n  .strs-medium-2 {\n    width: 16.66667%; }\n\n  .strs-medium-3 {\n    width: 25%; }\n\n  .strs-medium-4 {\n    width: 33.33333%; }\n\n  .strs-medium-5 {\n    width: 41.66667%; }\n\n  .strs-medium-6 {\n    width: 50%; }\n\n  .strs-medium-7 {\n    width: 58.33333%; }\n\n  .strs-medium-8 {\n    width: 66.66667%; }\n\n  .strs-medium-9 {\n    width: 75%; }\n\n  .strs-medium-10 {\n    width: 83.33333%; }\n\n  .strs-medium-11 {\n    width: 91.66667%; }\n\n  .strs-medium-12 {\n    width: 100%; }\n\n  .strs-medium-offset-0 {\n    margin-left: 0 !important; }\n\n  .strs-medium-offset-1 {\n    margin-left: 8.33333% !important; }\n\n  .strs-medium-offset-2 {\n    margin-left: 16.66667% !important; }\n\n  .strs-medium-offset-3 {\n    margin-left: 25% !important; }\n\n  .strs-medium-offset-4 {\n    margin-left: 33.33333% !important; }\n\n  .strs-medium-offset-5 {\n    margin-left: 41.66667% !important; }\n\n  .strs-medium-offset-6 {\n    margin-left: 50% !important; }\n\n  .strs-medium-offset-7 {\n    margin-left: 58.33333% !important; }\n\n  .strs-medium-offset-8 {\n    margin-left: 66.66667% !important; }\n\n  .strs-medium-offset-9 {\n    margin-left: 75% !important; }\n\n  .strs-medium-offset-10 {\n    margin-left: 83.33333% !important; }\n\n  .strs-medium-offset-11 {\n    margin-left: 91.66667% !important; }\n\n  .strs-medium-reset-order {\n    float: left;\n    left: auto;\n    margin-left: 0;\n    margin-right: 0;\n    right: auto; }\n\n  .strs-column.strs-medium-centered,\n  .strs-columns.strs-medium-centered {\n    margin-left: auto;\n    margin-right: auto;\n    float: none; }\n\n  .strs-column.strs-medium-uncentered,\n  .strs-columns.strs-medium-uncentered {\n    float: left;\n    margin-left: 0;\n    margin-right: 0; }\n\n  .strs-column.strs-medium-centered:last-child,\n  .strs-columns.strs-medium-centered:last-child {\n    float: none; }\n\n  .strs-column.strs-medium-uncentered:last-child,\n  .strs-columns.strs-medium-uncentered:last-child {\n    float: left; }\n\n  .strs-column.strs-medium-uncentered.opposite,\n  .strs-columns.strs-medium-uncentered.opposite {\n    float: right; }\n\n  .strs-row.strs-medium-collapse > .strs-column,\n  .strs-row.strs-medium-collapse > .strs-columns {\n    padding-left: 0;\n    padding-right: 0; }\n  .strs-row.strs-medium-collapse .strs-row {\n    margin-left: 0;\n    margin-right: 0; }\n  .strs-row.strs-medium-uncollapse > .strs-column,\n  .strs-row.strs-medium-uncollapse > .strs-columns {\n    padding-left: 0.9375rem;\n    padding-right: 0.9375rem;\n    float: left; }\n\n  .strs-push-0 {\n    position: relative;\n    left: 0;\n    right: auto; }\n\n  .strs-pull-0 {\n    position: relative;\n    right: 0;\n    left: auto; }\n\n  .strs-push-1 {\n    position: relative;\n    left: 8.33333%;\n    right: auto; }\n\n  .strs-pull-1 {\n    position: relative;\n    right: 8.33333%;\n    left: auto; }\n\n  .strs-push-2 {\n    position: relative;\n    left: 16.66667%;\n    right: auto; }\n\n  .strs-pull-2 {\n    position: relative;\n    right: 16.66667%;\n    left: auto; }\n\n  .strs-push-3 {\n    position: relative;\n    left: 25%;\n    right: auto; }\n\n  .strs-pull-3 {\n    position: relative;\n    right: 25%;\n    left: auto; }\n\n  .strs-push-4 {\n    position: relative;\n    left: 33.33333%;\n    right: auto; }\n\n  .strs-pull-4 {\n    position: relative;\n    right: 33.33333%;\n    left: auto; }\n\n  .strs-push-5 {\n    position: relative;\n    left: 41.66667%;\n    right: auto; }\n\n  .strs-pull-5 {\n    position: relative;\n    right: 41.66667%;\n    left: auto; }\n\n  .strs-push-6 {\n    position: relative;\n    left: 50%;\n    right: auto; }\n\n  .strs-pull-6 {\n    position: relative;\n    right: 50%;\n    left: auto; }\n\n  .strs-push-7 {\n    position: relative;\n    left: 58.33333%;\n    right: auto; }\n\n  .strs-pull-7 {\n    position: relative;\n    right: 58.33333%;\n    left: auto; }\n\n  .strs-push-8 {\n    position: relative;\n    left: 66.66667%;\n    right: auto; }\n\n  .strs-pull-8 {\n    position: relative;\n    right: 66.66667%;\n    left: auto; }\n\n  .strs-push-9 {\n    position: relative;\n    left: 75%;\n    right: auto; }\n\n  .strs-pull-9 {\n    position: relative;\n    right: 75%;\n    left: auto; }\n\n  .strs-push-10 {\n    position: relative;\n    left: 83.33333%;\n    right: auto; }\n\n  .strs-pull-10 {\n    position: relative;\n    right: 83.33333%;\n    left: auto; }\n\n  .strs-push-11 {\n    position: relative;\n    left: 91.66667%;\n    right: auto; }\n\n  .strs-pull-11 {\n    position: relative;\n    right: 91.66667%;\n    left: auto; } }\n@media only screen and (min-width: 64.0625em) {\n  .strs-large-push-0 {\n    position: relative;\n    left: 0;\n    right: auto; }\n\n  .strs-large-pull-0 {\n    position: relative;\n    right: 0;\n    left: auto; }\n\n  .strs-large-push-1 {\n    position: relative;\n    left: 8.33333%;\n    right: auto; }\n\n  .strs-large-pull-1 {\n    position: relative;\n    right: 8.33333%;\n    left: auto; }\n\n  .strs-large-push-2 {\n    position: relative;\n    left: 16.66667%;\n    right: auto; }\n\n  .strs-large-pull-2 {\n    position: relative;\n    right: 16.66667%;\n    left: auto; }\n\n  .strs-large-push-3 {\n    position: relative;\n    left: 25%;\n    right: auto; }\n\n  .strs-large-pull-3 {\n    position: relative;\n    right: 25%;\n    left: auto; }\n\n  .strs-large-push-4 {\n    position: relative;\n    left: 33.33333%;\n    right: auto; }\n\n  .strs-large-pull-4 {\n    position: relative;\n    right: 33.33333%;\n    left: auto; }\n\n  .strs-large-push-5 {\n    position: relative;\n    left: 41.66667%;\n    right: auto; }\n\n  .strs-large-pull-5 {\n    position: relative;\n    right: 41.66667%;\n    left: auto; }\n\n  .strs-large-push-6 {\n    position: relative;\n    left: 50%;\n    right: auto; }\n\n  .strs-large-pull-6 {\n    position: relative;\n    right: 50%;\n    left: auto; }\n\n  .strs-large-push-7 {\n    position: relative;\n    left: 58.33333%;\n    right: auto; }\n\n  .strs-large-pull-7 {\n    position: relative;\n    right: 58.33333%;\n    left: auto; }\n\n  .strs-large-push-8 {\n    position: relative;\n    left: 66.66667%;\n    right: auto; }\n\n  .strs-large-pull-8 {\n    position: relative;\n    right: 66.66667%;\n    left: auto; }\n\n  .strs-large-push-9 {\n    position: relative;\n    left: 75%;\n    right: auto; }\n\n  .strs-large-pull-9 {\n    position: relative;\n    right: 75%;\n    left: auto; }\n\n  .strs-large-push-10 {\n    position: relative;\n    left: 83.33333%;\n    right: auto; }\n\n  .strs-large-pull-10 {\n    position: relative;\n    right: 83.33333%;\n    left: auto; }\n\n  .strs-large-push-11 {\n    position: relative;\n    left: 91.66667%;\n    right: auto; }\n\n  .strs-large-pull-11 {\n    position: relative;\n    right: 91.66667%;\n    left: auto; }\n\n  .strs-column,\n  .strs-columns {\n    position: relative;\n    padding-left: 0.9375rem;\n    padding-right: 0.9375rem;\n    float: left; }\n\n  .strs-large-1 {\n    width: 8.33333%; }\n\n  .strs-large-2 {\n    width: 16.66667%; }\n\n  .strs-large-3 {\n    width: 25%; }\n\n  .strs-large-4 {\n    width: 33.33333%; }\n\n  .strs-large-5 {\n    width: 41.66667%; }\n\n  .strs-large-6 {\n    width: 50%; }\n\n  .strs-large-7 {\n    width: 58.33333%; }\n\n  .strs-large-8 {\n    width: 66.66667%; }\n\n  .strs-large-9 {\n    width: 75%; }\n\n  .strs-large-10 {\n    width: 83.33333%; }\n\n  .strs-large-11 {\n    width: 91.66667%; }\n\n  .strs-large-12 {\n    width: 100%; }\n\n  .strs-large-offset-0 {\n    margin-left: 0 !important; }\n\n  .strs-large-offset-1 {\n    margin-left: 8.33333% !important; }\n\n  .strs-large-offset-2 {\n    margin-left: 16.66667% !important; }\n\n  .strs-large-offset-3 {\n    margin-left: 25% !important; }\n\n  .strs-large-offset-4 {\n    margin-left: 33.33333% !important; }\n\n  .strs-large-offset-5 {\n    margin-left: 41.66667% !important; }\n\n  .strs-large-offset-6 {\n    margin-left: 50% !important; }\n\n  .strs-large-offset-7 {\n    margin-left: 58.33333% !important; }\n\n  .strs-large-offset-8 {\n    margin-left: 66.66667% !important; }\n\n  .strs-large-offset-9 {\n    margin-left: 75% !important; }\n\n  .strs-large-offset-10 {\n    margin-left: 83.33333% !important; }\n\n  .strs-large-offset-11 {\n    margin-left: 91.66667% !important; }\n\n  .strs-large-reset-order {\n    float: left;\n    left: auto;\n    margin-left: 0;\n    margin-right: 0;\n    right: auto; }\n\n  .strs-column.strs-large-centered,\n  .strs-columns.strs-large-centered {\n    margin-left: auto;\n    margin-right: auto;\n    float: none; }\n\n  .strs-column.strs-large-uncentered,\n  .strs-columns.strs-large-uncentered {\n    float: left;\n    margin-left: 0;\n    margin-right: 0; }\n\n  .strs-column.strs-large-centered:last-child,\n  .strs-columns.strs-large-centered:last-child {\n    float: none; }\n\n  .strs-column.strs-large-uncentered:last-child,\n  .strs-columns.strs-large-uncentered:last-child {\n    float: left; }\n\n  .strs-column.strs-large-uncentered.opposite,\n  .strs-columns.strs-large-uncentered.opposite {\n    float: right; }\n\n  .strs-row.strs-large-collapse > .strs-column,\n  .strs-row.strs-large-collapse > .strs-columns {\n    padding-left: 0;\n    padding-right: 0; }\n  .strs-row.strs-large-collapse .strs-row {\n    margin-left: 0;\n    margin-right: 0; }\n  .strs-row.strs-large-uncollapse > .strs-column,\n  .strs-row.strs-large-uncollapse > .strs-columns {\n    padding-left: 0.9375rem;\n    padding-right: 0.9375rem;\n    float: left; }\n\n  .strs-push-0 {\n    position: relative;\n    left: 0;\n    right: auto; }\n\n  .strs-pull-0 {\n    position: relative;\n    right: 0;\n    left: auto; }\n\n  .strs-push-1 {\n    position: relative;\n    left: 8.33333%;\n    right: auto; }\n\n  .strs-pull-1 {\n    position: relative;\n    right: 8.33333%;\n    left: auto; }\n\n  .strs-push-2 {\n    position: relative;\n    left: 16.66667%;\n    right: auto; }\n\n  .strs-pull-2 {\n    position: relative;\n    right: 16.66667%;\n    left: auto; }\n\n  .strs-push-3 {\n    position: relative;\n    left: 25%;\n    right: auto; }\n\n  .strs-pull-3 {\n    position: relative;\n    right: 25%;\n    left: auto; }\n\n  .strs-push-4 {\n    position: relative;\n    left: 33.33333%;\n    right: auto; }\n\n  .strs-pull-4 {\n    position: relative;\n    right: 33.33333%;\n    left: auto; }\n\n  .strs-push-5 {\n    position: relative;\n    left: 41.66667%;\n    right: auto; }\n\n  .strs-pull-5 {\n    position: relative;\n    right: 41.66667%;\n    left: auto; }\n\n  .strs-push-6 {\n    position: relative;\n    left: 50%;\n    right: auto; }\n\n  .strs-pull-6 {\n    position: relative;\n    right: 50%;\n    left: auto; }\n\n  .strs-push-7 {\n    position: relative;\n    left: 58.33333%;\n    right: auto; }\n\n  .strs-pull-7 {\n    position: relative;\n    right: 58.33333%;\n    left: auto; }\n\n  .strs-push-8 {\n    position: relative;\n    left: 66.66667%;\n    right: auto; }\n\n  .strs-pull-8 {\n    position: relative;\n    right: 66.66667%;\n    left: auto; }\n\n  .strs-push-9 {\n    position: relative;\n    left: 75%;\n    right: auto; }\n\n  .strs-pull-9 {\n    position: relative;\n    right: 75%;\n    left: auto; }\n\n  .strs-push-10 {\n    position: relative;\n    left: 83.33333%;\n    right: auto; }\n\n  .strs-pull-10 {\n    position: relative;\n    right: 83.33333%;\n    left: auto; }\n\n  .strs-push-11 {\n    position: relative;\n    left: 91.66667%;\n    right: auto; }\n\n  .strs-pull-11 {\n    position: relative;\n    right: 91.66667%;\n    left: auto; } }\n\n/* Buttons */\n.strs-button {\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  border-radius: 0;\n  border-style: solid;\n  border-width: 0;\n  cursor: pointer;\n  font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif;\n  font-weight: normal;\n  line-height: normal;\n  margin: 0 0 1.25rem;\n  position: relative;\n  text-align: center;\n  text-decoration: none;\n  text-transform: none;\n  display: inline-block;\n  padding: 1rem 2rem 1.0625rem 2rem;\n  font-size: 1rem;\n  background-color: #008CBA;\n  border-color: #007095;\n  color: #FFFFFF;\n  transition: background-color 300ms ease-out; }\n\n.strs-button:hover, .strs-button:focus {\n  background-color: #007095; }\n.strs-button:hover, .strs-button:focus {\n  color: #FFFFFF; }\n\n.strs-button.secondary {\n  background-color: #e7e7e7;\n  border-color: #b9b9b9;\n  color: #333333; }\n.strs-button.secondary:hover, .strs-button.secondary:focus {\n  background-color: #b9b9b9; }\n.strs-button.secondary:hover, .strs-button.secondary:focus {\n  color: #333333; }\n\n.strs-button.success {\n  background-color: #43AC6A;\n  border-color: #368a55;\n  color: #FFFFFF; }\n.strs-button.success:hover, .strs-button.success:focus {\n  background-color: #10CCC2; }\n.strs-button.success:hover, .strs-button.success:focus {\n  color: #FFFFFF; }\n\n.strs-button.alert {\n  background-color: #f04124;\n  border-color: #cf2a0e;\n  color: #FFFFFF; }\n.strs-button.alert:hover, .strs-button.alert:focus {\n  background-color: #cf2a0e; }\n.strs-button.alert:hover, .strs-button.alert:focus {\n  color: #FFFFFF; }\n\n.strs-button.warning {\n  background-color: #f08a24;\n  border-color: #cf6e0e;\n  color: #FFFFFF; }\n.strs-button.warning:hover, .strs-button.warning:focus {\n  background-color: #cf6e0e; }\n.strs-button.warning:hover, .strs-button.warning:focus {\n  color: #FFFFFF; }\n\n.strs-button.info {\n  background-color: #a0d3e8;\n  border-color: #61b6d9;\n  color: #333333; }\n.strs-button.info:hover, .strs-button.info:focus {\n  background-color: #61b6d9; }\n.strs-button.info:hover, .strs-button.info:focus {\n  color: #FFFFFF; }\n\n.strs-button.large {\n  padding: 1.125rem 2.25rem 1.1875rem 2.25rem;\n  font-size: 1.25rem; }\n.strs-button.small {\n  padding: 0.875rem 1.75rem 0.9375rem 1.75rem;\n  font-size: 0.8125rem; }\n.strs-button.tiny {\n  padding: 0.625rem 1.25rem 0.6875rem 1.25rem;\n  font-size: 0.6875rem; }\n.strs-button.expand {\n  padding: 1rem 2rem 1.0625rem 2rem;\n  font-size: 1rem;\n  padding-bottom: 1.0625rem;\n  padding-top: 1rem;\n  padding-left: 1rem;\n  padding-right: 1rem;\n  width: 100%; }\n.strs-button.left-align {\n  text-align: left;\n  text-indent: 0.75rem; }\n.strs-button.right-align {\n  text-align: right;\n  padding-right: 0.75rem; }\n.strs-button.radius {\n  border-radius: 3px; }\n.strs-button.round {\n  border-radius: 1000px; }\n.strs-button.disabled, .strs-button[disabled] {\n  background-color: #008CBA;\n  border-color: #007095;\n  color: #FFFFFF;\n  box-shadow: none;\n  cursor: default;\n  opacity: 0.7; }\n\n.strs-button.disabled:hover, .strs-button.disabled:focus, .strs-button[disabled]:hover, .strs-button[disabled]:focus {\n  background-color: #10CCC2; }\n.strs-button.disabled:hover, .strs-button.disabled:focus, .strs-button[disabled]:hover, .strs-button[disabled]:focus {\n  color: #FFFFFF; }\n.strs-button.disabled:hover, .strs-button.disabled:focus, .strs-button[disabled]:hover, .strs-button[disabled]:focus {\n  background-color: #008CBA; }\n\n.strs-button.disabled.secondary, .strs-button[disabled].secondary {\n  background-color: #e7e7e7;\n  border-color: #b9b9b9;\n  color: #333333;\n  box-shadow: none;\n  cursor: default;\n  opacity: 0.7; }\n.strs-button.disabled.secondary:hover, .strs-button.disabled.secondary:focus, .strs-button[disabled].secondary:hover, .strs-button[disabled].secondary:focus {\n  background-color: #b9b9b9; }\n.strs-button.disabled.secondary:hover, .strs-button.disabled.secondary:focus, .strs-button[disabled].secondary:hover, .strs-button[disabled].secondary:focus {\n  color: #333333; }\n.strs-button.disabled.secondary:hover, .strs-button.disabled.secondary:focus, .strs-button[disabled].secondary:hover, .strs-button[disabled].secondary:focus {\n  background-color: #e7e7e7; }\n\n.strs-button.disabled.success, .strs-button[disabled].success {\n  background-color: #62ccc6;;\n  color: #FFFFFF;\n  box-shadow: none;\n  cursor: default;\n  opacity: 0.7; }\n.strs-button.disabled.success:hover, .strs-button.disabled.success:focus, .strs-button[disabled].success:hover, .strs-button[disabled].success:focus {\n  background-color: #62ccc6; }\n.strs-button.disabled.success:hover, .strs-button.disabled.success:focus, .strs-button[disabled].success:hover, .strs-button[disabled].success:focus {\n  color: #FFFFFF; }\n\n\n.strs-button.disabled.alert, .strs-button[disabled].alert {\n  background-color: #f04124;\n  border-color: #cf2a0e;\n  color: #FFFFFF;\n  box-shadow: none;\n  cursor: default;\n  opacity: 0.7; }\n.strs-button.disabled.alert:hover, .strs-button.disabled.alert:focus, .strs-button[disabled].alert:hover, .strs-button[disabled].alert:focus {\n  background-color: #cf2a0e; }\n.strs-button.disabled.alert:hover, .strs-button.disabled.alert:focus, .strs-button[disabled].alert:hover, .strs-button[disabled].alert:focus {\n  color: #FFFFFF; }\n.strs-button.disabled.alert:hover, .strs-button.disabled.alert:focus, .strs-button[disabled].alert:hover, .strs-button[disabled].alert:focus {\n  background-color: #f04124; }\n\n.strs-button.disabled.warning, .strs-button[disabled].warning {\n  background-color: #f08a24;\n  border-color: #cf6e0e;\n  color: #FFFFFF;\n  box-shadow: none;\n  cursor: default;\n  opacity: 0.7; }\n.strs-button.disabled.warning:hover, .strs-button.disabled.warning:focus, .strs-button[disabled].warning:hover, .strs-button[disabled].warning:focus {\n  background-color: #cf6e0e; }\n.strs-button.disabled.warning:hover, .strs-button.disabled.warning:focus, .strs-button[disabled].warning:hover, .strs-button[disabled].warning:focus {\n  color: #FFFFFF; }\n.strs-button.disabled.warning:hover, .strs-button.disabled.warning:focus, .strs-button[disabled].warning:hover, .strs-button[disabled].warning:focus {\n  background-color: #f08a24; }\n\n.strs-button.disabled.info, .strs-button[disabled].info {\n  background-color: #a0d3e8;\n  border-color: #61b6d9;\n  color: #333333;\n  box-shadow: none;\n  cursor: default;\n  opacity: 0.7; }\n.strs-button.disabled.info:hover, .strs-button.disabled.info:focus, .strs-button[disabled].info:hover, .strs-button[disabled].info:focus {\n  background-color: #61b6d9; }\n.strs-button.disabled.info:hover, .strs-button.disabled.info:focus, .strs-button[disabled].info:hover, .strs-button[disabled].info:focus {\n  color: #FFFFFF; }\n.strs-button.disabled.info:hover, .strs-button.disabled.info:focus, .strs-button[disabled].info:hover, .strs-button[disabled].info:focus {\n  background-color: #a0d3e8; }\n\n.strs-button::-moz-focus-inner {\n  border: 0;\n  padding: 0;\n}\n\n\n/* Standard Forms */\nform {\n  margin: 0 0 1rem;\n}\n\n/* Using forms within rows, we need to set some defaults */\nform .strs-row .strs-row {\n  margin: 0 -0.5rem; }\nform .strs-row .strs-row .strs-column,\nform .strs-row .strs-row .strs-columns {\n  padding: 0 0.5rem; }\nform .strs-row .strs-row.collapse {\n  margin: 0; }\nform .strs-row .strs-row.collapse .strs-column,\nform .strs-row .strs-row.collapse .strs-columns {\n  padding: 0; }\nform .strs-row .strs-row.collapse input {\n  -webkit-border-bottom-right-radius: 0;\n  -webkit-border-top-right-radius: 0;\n  border-bottom-right-radius: 0;\n  border-top-right-radius: 0; }\nform .strs-row input.strs-column,\nform .strs-row input.strs-columns,\nform .strs-row textarea.strs-column,\nform .strs-row textarea.strs-columns {\n  padding-left: 0.5rem; }\n\n\n/* Basic input fields */\ninput.strs-input:not([type]),\ninput.strs-input[type=\"text\"],\ninput.strs-input[type=\"password\"],\ninput.strs-input[type=\"number\"] {\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  border-radius: 0;\n  background-color: #FFFFFF;\n  border-style: solid;\n  border-width: 1px;\n  border-color: #cccccc;\n  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  color: rgba(0, 0, 0, 0.75);\n  display: block;\n  font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif;\n  font-size: 14px;\n  font-weight: normal;\n  font-style: normal;\n  line-height: 1.3;\n  height: 2.3125rem;\n  margin: 0 0 1rem 0;\n  padding: 0.5rem;\n  width: 100%;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n  -webkit-transition: border-color 0.15s linear, background 0.15s linear;\n  -moz-transition: border-color 0.15s linear, background 0.15s linear;\n  -ms-transition: border-color 0.15s linear, background 0.15s linear;\n  -o-transition: border-color 0.15s linear, background 0.15s linear;\n  transition: border-color 0.15s linear, background 0.15s linear; }\n\ninput.strs-input:not([type]):focus,\ninput.strs-input[type=\"text\"]:focus,\ninput.strs-input[type=\"password\"]:focus,\ninput.strs-input[type=\"number\"]:focus {\n  background: #fafafa;\n  border-color: #999999;\n  outline: none; }\n\ninput.strs-input:not([type]):disabled,\ninput.strs-input[type=\"text\"]:disabled,\ninput.strs-input[type=\"password\"]:disabled,\ninput.strs-input[type=\"number\"]:disabled {\n  background-color: #DDDDDD;\n  cursor: default; }\n\ninput.strs-input:not([type])[disabled],\ninput.strs-input:not([type])[readonly],\nfieldset[disabled] input.strs-input:not([type]),\ninput.strs-input[type=\"text\"][disabled],\ninput.strs-input[type=\"text\"][readonly],\nfieldset[disabled] input.strs-input[type=\"text\"],\ninput.strs-input[type=\"password\"][disabled],\ninput.strs-input[type=\"password\"][readonly],\nfieldset[disabled] input.strs-input[type=\"password\"],\ninput.strs-input[type=\"number\"][disabled],\ninput.strs-input[type=\"number\"][readonly],\nfieldset[disabled] input.strs-input[type=\"number\"] {\n  background-color: #DDDDDD;\n  cursor: default; }\n\ninput.strs-input:not([type]).radius,\ninput.strs-input[type=\"text\"].radius,\ninput.strs-input[type=\"password\"].radius,\ninput.strs-input[type=\"number\"].radius {\n  border-radius: 3px; }\n\ninput.strs-input[type=\"submit\"] {\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  border-radius: 0; }\n\n\nselect.strs-select {\n  -webkit-appearance: none !important;\n  -moz-appearance: none !important;\n  background-color: #FAFAFA;\n  border-radius: 0;\n  background-image: url(\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgeD0iMTJweCIgeT0iMHB4IiB3aWR0aD0iMjRweCIgaGVpZ2h0PSIzcHgiIHZpZXdCb3g9IjAgMCA2IDMiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDYgMyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHBvbHlnb24gcG9pbnRzPSI1Ljk5MiwwIDIuOTkyLDMgLTAuMDA4LDAgIi8+PC9zdmc+\");\n  background-position: 100% center;\n  background-repeat: no-repeat;\n  border-style: solid;\n  border-width: 1px;\n  border-color: #cccccc;\n  width: 100%;\n  color: rgba(0, 0, 0, 0.75);\n  font-family: inherit;\n  font-size: 0.875rem;\n  line-height: normal;\n  margin: 0 0 1rem 0;\n  padding: 0.5rem;\n  border-radius: 0;\n  height: 2.3125rem; }\nselect.strs-select::-ms-expand {\n  display: none; }\nselect.strs-select.radius {\n  border-radius: 3px; }\nselect.strs-select:focus {\n  background-color: #f3f3f3;\n  border-color: #999999; }\nselect.strs-select:disabled {\n  background-color: #DDDDDD;\n  cursor: default; }\nselect.strs-select[multiple] {\n  height: auto; }\n\n/* Typography resets */\n.strs-content div,\n.strs-content dl,\n.strs-content dt,\n.strs-content dd,\n.strs-content ul,\n.strs-content ol,\n.strs-content li,\n.strs-content h1,\n.strs-content h2,\n.strs-content h3,\n.strs-content h4,\n.strs-content h5,\n.strs-content h6,\n.strs-content pre,\n.strs-content form,\n.strs-content p,\n.strs-content blockquote,\n.strs-content th,\n.strs-content td,\n.strs-content button,\n.strs-content input {\n  margin: 0;\n  padding: 0; }\n\n.strs-content h3 {\n  font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif;\n  font-style: normal;\n  font-weight: normal;\n  line-height: 1.5;\n  font-size: 24px;\n}\n\n/*\n * Application/button css\n */\n\n.strs-button:focus, .strs-select:focus, .strs-link:focus {\n  outline: 0 !important;\n}\n\n.strs-flex {\n  display: flex;\n}\n.strs-flex-row {\n  flex-direction: row;\n}\n.strs-flex-column {\n  flex-direction: column;\n}\n.strs-flex-column.strs-flex-center-h, .strs-flex-row.strs-flex-center-v{\n  align-items: center;\n}\n.strs-flex-column.strs-flex-center-v, .strs-flex-row.strs-flex-center-h{\n  justify-content: center;\n}\n\n.strs-mb-none {\n  margin-bottom: 0 !important;\n}\n.strs-pb-10 {\n  padding-bottom: .8rem !important;\n}\n\n@media only screen and (min-width: 64.0625em) {\n  .strs-l-rpadding {\n    padding-right: .9375rem!important;\n  }\n}\n\n.strs-content {\n  font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif;\n  font-style: normal;\n  font-weight: normal;\n  font-size: 16px;\n  line-height: 1.5;\n  color: #000;\n  background-color: #F2F2F2;\n  height: 100%;\n  margin: 0;\n  text-shadow: none;\n\n  padding: 1rem 1rem!important;\n}\n\n.strs-input-error {\n  font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif;\n  font-style: italic;\n  font-weight: normal;\n  font-size: 12px;\n  line-height: 1.5;\n  color: #D16F6F;\n  display: none;\n}\n\n.strs-hint {\n  font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif;\n  font-size: 16px;\n  font-style: normal;\n  font-weight: normal;\n  line-height: 1.5;\n  color: grey;\n}\n\na.strs-link {\n  font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif;\n  font-size: 16px;\n  font-weight: bold;\n  font-style: normal;\n  line-height: 1.5;\n  color:#10CCC2 !important;\n  text-decoration: none;\n}\na.strs-link:hover {\n  cursor: pointer;\n}\na.strs-link:active, a.strs-link:visited  {\n  color:#10CCC2 !important;\n  font-weight: bold;\n}\n\n.strs-button.success {\n  display: inline-block;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif;\n  font-size: 1rem;\n  font-weight: 700;\n  line-height: normal;\n  margin: 0 0 .3125rem;\n  padding: .6875rem 1.375rem .75rem;\n  position: relative;\n  text-align: center;\n  text-decoration: none;\n  transition: background-color .3s ease-out;\n  cursor: pointer;\n  background-color: #10CCC2;\n  border-radius: 1000px;\n}\n\n.strs-button.success.expand {\n  padding-left: .6875rem;\n  padding-right: .6875rem;\n  width: 100%;\n}\n\n.strs-wl-closed {\n  color: #888;\n}\n\n.strs-wl-data-title {\n  font-size:16px;\n  color: #A6A6A6;\n}\n.strs-wl-data-value {\n  color: #10ccc2;\n  font-size:22px;\n  font-weight: bold;\n}\n\n#strs-wl-open, #strs-wl-closed {\n  display: none;\n}\n", ""]);
+	exports.push([module.id, "html {\n  font-size: 16px;\n}\n\n.strs-left {\n  float: left !important; }\n\n.strs-right {\n  float: right !important; }\n\n.strs-clearfix:before, .strs-clearfix:after {\n  content: \" \";\n  display: table; }\n.strs-clearfix:after {\n  clear: both;\n}\n\n/* Row and columns */\n.strs-row {\n  margin: 0 auto;\n  max-width: 62.5rem;\n  width: 100%; }\n.strs-row:before, .strs-row:after {\n  content: \" \";\n  display: table; }\n.strs-row:after {\n  clear: both; }\n.strs-row.collapse > .strs-column,\n.strs-row.collapse > .strs-columns {\n  padding-left: 0;\n  padding-right: 0; }\n.strs-row.collapse .strs-row {\n  margin-left: 0;\n  margin-right: 0; }\n.strs-row .strs-row {\n  margin: 0 -0.9375rem;\n  max-width: none;\n  width: auto; }\n.strs-row .strs-row:before, .strs-row .strs-row:after {\n  content: \" \";\n  display: table; }\n.strs-row .strs-row:after {\n  clear: both; }\n.strs-row .strs-row.collapse {\n  margin: 0;\n  max-width: none;\n  width: auto; }\n.strs-row .strs-row.collapse:before, .strs-row .strs-row.collapse:after {\n  content: \" \";\n  display: table; }\n.strs-row .strs-row.collapse:after {\n  clear: both; }\n\n.strs-column,\n.strs-columns {\n  padding-left: 0.9375rem;\n  padding-right: 0.9375rem;\n  width: 100%;\n  float: left; }\n.strs-column + .strs-column:last-child,\n.strs-columns + .strs-column:last-child, .strs-column +\n.strs-columns:last-child,\n.strs-columns +\n.strs-columns:last-child {\n  float: right; }\n.strs-column + .strs-column.end,\n.strs-columns + .strs-column.end, .strs-column +\n.strs-columns.end,\n.strs-columns +\n.strs-columns.end {\n  float: left; }\n\n/* column sizes */\n@media only screen {\n  .strs-small-push-0 {\n    position: relative;\n    left: 0;\n    right: auto; }\n\n  .strs-small-pull-0 {\n    position: relative;\n    right: 0;\n    left: auto; }\n\n  .strs-small-push-1 {\n    position: relative;\n    left: 8.33333%;\n    right: auto; }\n\n  .strs-small-pull-1 {\n    position: relative;\n    right: 8.33333%;\n    left: auto; }\n\n  .strs-small-push-2 {\n    position: relative;\n    left: 16.66667%;\n    right: auto; }\n\n  .strs-small-pull-2 {\n    position: relative;\n    right: 16.66667%;\n    left: auto; }\n\n  .strs-small-push-3 {\n    position: relative;\n    left: 25%;\n    right: auto; }\n\n  .strs-small-pull-3 {\n    position: relative;\n    right: 25%;\n    left: auto; }\n\n  .strs-small-push-4 {\n    position: relative;\n    left: 33.33333%;\n    right: auto; }\n\n  .strs-small-pull-4 {\n    position: relative;\n    right: 33.33333%;\n    left: auto; }\n\n  .strs-small-push-5 {\n    position: relative;\n    left: 41.66667%;\n    right: auto; }\n\n  .strs-small-pull-5 {\n    position: relative;\n    right: 41.66667%;\n    left: auto; }\n\n  .strs-small-push-6 {\n    position: relative;\n    left: 50%;\n    right: auto; }\n\n  .strs-small-pull-6 {\n    position: relative;\n    right: 50%;\n    left: auto; }\n\n  .strs-small-push-7 {\n    position: relative;\n    left: 58.33333%;\n    right: auto; }\n\n  .strs-small-pull-7 {\n    position: relative;\n    right: 58.33333%;\n    left: auto; }\n\n  .strs-small-push-8 {\n    position: relative;\n    left: 66.66667%;\n    right: auto; }\n\n  .strs-small-pull-8 {\n    position: relative;\n    right: 66.66667%;\n    left: auto; }\n\n  .strs-small-push-9 {\n    position: relative;\n    left: 75%;\n    right: auto; }\n\n  .strs-small-pull-9 {\n    position: relative;\n    right: 75%;\n    left: auto; }\n\n  .strs-small-push-10 {\n    position: relative;\n    left: 83.33333%;\n    right: auto; }\n\n  .strs-small-pull-10 {\n    position: relative;\n    right: 83.33333%;\n    left: auto; }\n\n  .strs-small-push-11 {\n    position: relative;\n    left: 91.66667%;\n    right: auto; }\n\n  .strs-small-pull-11 {\n    position: relative;\n    right: 91.66667%;\n    left: auto; }\n\n  .strs-column,\n  .strs-columns {\n    position: relative;\n    padding-left: 0.9375rem;\n    padding-right: 0.9375rem;\n    float: left; }\n\n  .strs-small-1 {\n    width: 8.33333%; }\n\n  .strs-small-2 {\n    width: 16.66667%; }\n\n  .strs-small-3 {\n    width: 25%; }\n\n  .strs-small-4 {\n    width: 33.33333%; }\n\n  .strs-small-5 {\n    width: 41.66667%; }\n\n  .strs-small-6 {\n    width: 50%; }\n\n  .strs-small-7 {\n    width: 58.33333%; }\n\n  .strs-small-8 {\n    width: 66.66667%; }\n\n  .strs-small-9 {\n    width: 75%; }\n\n  .strs-small-10 {\n    width: 83.33333%; }\n\n  .strs-small-11 {\n    width: 91.66667%; }\n\n  .strs-small-12 {\n    width: 100%; }\n\n  .strs-small-offset-0 {\n    margin-left: 0 !important; }\n\n  .strs-small-offset-1 {\n    margin-left: 8.33333% !important; }\n\n  .strs-small-offset-2 {\n    margin-left: 16.66667% !important; }\n\n  .strs-small-offset-3 {\n    margin-left: 25% !important; }\n\n  .strs-small-offset-4 {\n    margin-left: 33.33333% !important; }\n\n  .strs-small-offset-5 {\n    margin-left: 41.66667% !important; }\n\n  .strs-small-offset-6 {\n    margin-left: 50% !important; }\n\n  .strs-small-offset-7 {\n    margin-left: 58.33333% !important; }\n\n  .strs-small-offset-8 {\n    margin-left: 66.66667% !important; }\n\n  .strs-small-offset-9 {\n    margin-left: 75% !important; }\n\n  .strs-small-offset-10 {\n    margin-left: 83.33333% !important; }\n\n  .strs-small-offset-11 {\n    margin-left: 91.66667% !important; }\n\n  .strs-small-reset-order {\n    float: left;\n    left: auto;\n    margin-left: 0;\n    margin-right: 0;\n    right: auto; }\n\n  .strs-column.strs-small-centered,\n  .strs-columns.strs-small-centered {\n    margin-left: auto;\n    margin-right: auto;\n    float: none; }\n\n  .strs-column.strs-small-uncentered,\n  .strs-columns.strs-small-uncentered {\n    float: left;\n    margin-left: 0;\n    margin-right: 0; }\n\n  .strs-column.strs-small-centered:last-child,\n  .strs-columns.strs-small-centered:last-child {\n    float: none; }\n\n  .strs-column.strs-small-uncentered:last-child,\n  .strs-columns.strs-small-uncentered:last-child {\n    float: left; }\n\n  .strs-column.strs-small-uncentered.opposite,\n  .strs-columns.strs-small-uncentered.opposite {\n    float: right; }\n\n  .strs-row.strs-small-collapse > .strs-column,\n  .strs-row.strs-small-collapse > .strs-columns {\n    padding-left: 0;\n    padding-right: 0; }\n  .strs-row.strs-small-collapse .strs-row {\n    margin-left: 0;\n    margin-right: 0; }\n  .strs-row.strs-small-uncollapse > .strs-column,\n  .strs-row.strs-small-uncollapse > .strs-columns {\n    padding-left: 0.9375rem;\n    padding-right: 0.9375rem;\n    float: left; } }\n@media only screen and (min-width: 40.0625em) {\n  .strs-medium-push-0 {\n    position: relative;\n    left: 0;\n    right: auto; }\n\n  .strs-medium-pull-0 {\n    position: relative;\n    right: 0;\n    left: auto; }\n\n  .strs-medium-push-1 {\n    position: relative;\n    left: 8.33333%;\n    right: auto; }\n\n  .strs-medium-pull-1 {\n    position: relative;\n    right: 8.33333%;\n    left: auto; }\n\n  .strs-medium-push-2 {\n    position: relative;\n    left: 16.66667%;\n    right: auto; }\n\n  .strs-medium-pull-2 {\n    position: relative;\n    right: 16.66667%;\n    left: auto; }\n\n  .strs-medium-push-3 {\n    position: relative;\n    left: 25%;\n    right: auto; }\n\n  .strs-medium-pull-3 {\n    position: relative;\n    right: 25%;\n    left: auto; }\n\n  .strs-medium-push-4 {\n    position: relative;\n    left: 33.33333%;\n    right: auto; }\n\n  .strs-medium-pull-4 {\n    position: relative;\n    right: 33.33333%;\n    left: auto; }\n\n  .strs-medium-push-5 {\n    position: relative;\n    left: 41.66667%;\n    right: auto; }\n\n  .strs-medium-pull-5 {\n    position: relative;\n    right: 41.66667%;\n    left: auto; }\n\n  .strs-medium-push-6 {\n    position: relative;\n    left: 50%;\n    right: auto; }\n\n  .strs-medium-pull-6 {\n    position: relative;\n    right: 50%;\n    left: auto; }\n\n  .strs-medium-push-7 {\n    position: relative;\n    left: 58.33333%;\n    right: auto; }\n\n  .strs-medium-pull-7 {\n    position: relative;\n    right: 58.33333%;\n    left: auto; }\n\n  .strs-medium-push-8 {\n    position: relative;\n    left: 66.66667%;\n    right: auto; }\n\n  .strs-medium-pull-8 {\n    position: relative;\n    right: 66.66667%;\n    left: auto; }\n\n  .strs-medium-push-9 {\n    position: relative;\n    left: 75%;\n    right: auto; }\n\n  .strs-medium-pull-9 {\n    position: relative;\n    right: 75%;\n    left: auto; }\n\n  .strs-medium-push-10 {\n    position: relative;\n    left: 83.33333%;\n    right: auto; }\n\n  .strs-medium-pull-10 {\n    position: relative;\n    right: 83.33333%;\n    left: auto; }\n\n  .strs-medium-push-11 {\n    position: relative;\n    left: 91.66667%;\n    right: auto; }\n\n  .strs-medium-pull-11 {\n    position: relative;\n    right: 91.66667%;\n    left: auto; }\n\n  .strs-column,\n  .strs-columns {\n    position: relative;\n    padding-left: 0.9375rem;\n    padding-right: 0.9375rem;\n    float: left; }\n\n  .strs-medium-1 {\n    width: 8.33333%; }\n\n  .strs-medium-2 {\n    width: 16.66667%; }\n\n  .strs-medium-3 {\n    width: 25%; }\n\n  .strs-medium-4 {\n    width: 33.33333%; }\n\n  .strs-medium-5 {\n    width: 41.66667%; }\n\n  .strs-medium-6 {\n    width: 50%; }\n\n  .strs-medium-7 {\n    width: 58.33333%; }\n\n  .strs-medium-8 {\n    width: 66.66667%; }\n\n  .strs-medium-9 {\n    width: 75%; }\n\n  .strs-medium-10 {\n    width: 83.33333%; }\n\n  .strs-medium-11 {\n    width: 91.66667%; }\n\n  .strs-medium-12 {\n    width: 100%; }\n\n  .strs-medium-offset-0 {\n    margin-left: 0 !important; }\n\n  .strs-medium-offset-1 {\n    margin-left: 8.33333% !important; }\n\n  .strs-medium-offset-2 {\n    margin-left: 16.66667% !important; }\n\n  .strs-medium-offset-3 {\n    margin-left: 25% !important; }\n\n  .strs-medium-offset-4 {\n    margin-left: 33.33333% !important; }\n\n  .strs-medium-offset-5 {\n    margin-left: 41.66667% !important; }\n\n  .strs-medium-offset-6 {\n    margin-left: 50% !important; }\n\n  .strs-medium-offset-7 {\n    margin-left: 58.33333% !important; }\n\n  .strs-medium-offset-8 {\n    margin-left: 66.66667% !important; }\n\n  .strs-medium-offset-9 {\n    margin-left: 75% !important; }\n\n  .strs-medium-offset-10 {\n    margin-left: 83.33333% !important; }\n\n  .strs-medium-offset-11 {\n    margin-left: 91.66667% !important; }\n\n  .strs-medium-reset-order {\n    float: left;\n    left: auto;\n    margin-left: 0;\n    margin-right: 0;\n    right: auto; }\n\n  .strs-column.strs-medium-centered,\n  .strs-columns.strs-medium-centered {\n    margin-left: auto;\n    margin-right: auto;\n    float: none; }\n\n  .strs-column.strs-medium-uncentered,\n  .strs-columns.strs-medium-uncentered {\n    float: left;\n    margin-left: 0;\n    margin-right: 0; }\n\n  .strs-column.strs-medium-centered:last-child,\n  .strs-columns.strs-medium-centered:last-child {\n    float: none; }\n\n  .strs-column.strs-medium-uncentered:last-child,\n  .strs-columns.strs-medium-uncentered:last-child {\n    float: left; }\n\n  .strs-column.strs-medium-uncentered.opposite,\n  .strs-columns.strs-medium-uncentered.opposite {\n    float: right; }\n\n  .strs-row.strs-medium-collapse > .strs-column,\n  .strs-row.strs-medium-collapse > .strs-columns {\n    padding-left: 0;\n    padding-right: 0; }\n  .strs-row.strs-medium-collapse .strs-row {\n    margin-left: 0;\n    margin-right: 0; }\n  .strs-row.strs-medium-uncollapse > .strs-column,\n  .strs-row.strs-medium-uncollapse > .strs-columns {\n    padding-left: 0.9375rem;\n    padding-right: 0.9375rem;\n    float: left; }\n\n  .strs-push-0 {\n    position: relative;\n    left: 0;\n    right: auto; }\n\n  .strs-pull-0 {\n    position: relative;\n    right: 0;\n    left: auto; }\n\n  .strs-push-1 {\n    position: relative;\n    left: 8.33333%;\n    right: auto; }\n\n  .strs-pull-1 {\n    position: relative;\n    right: 8.33333%;\n    left: auto; }\n\n  .strs-push-2 {\n    position: relative;\n    left: 16.66667%;\n    right: auto; }\n\n  .strs-pull-2 {\n    position: relative;\n    right: 16.66667%;\n    left: auto; }\n\n  .strs-push-3 {\n    position: relative;\n    left: 25%;\n    right: auto; }\n\n  .strs-pull-3 {\n    position: relative;\n    right: 25%;\n    left: auto; }\n\n  .strs-push-4 {\n    position: relative;\n    left: 33.33333%;\n    right: auto; }\n\n  .strs-pull-4 {\n    position: relative;\n    right: 33.33333%;\n    left: auto; }\n\n  .strs-push-5 {\n    position: relative;\n    left: 41.66667%;\n    right: auto; }\n\n  .strs-pull-5 {\n    position: relative;\n    right: 41.66667%;\n    left: auto; }\n\n  .strs-push-6 {\n    position: relative;\n    left: 50%;\n    right: auto; }\n\n  .strs-pull-6 {\n    position: relative;\n    right: 50%;\n    left: auto; }\n\n  .strs-push-7 {\n    position: relative;\n    left: 58.33333%;\n    right: auto; }\n\n  .strs-pull-7 {\n    position: relative;\n    right: 58.33333%;\n    left: auto; }\n\n  .strs-push-8 {\n    position: relative;\n    left: 66.66667%;\n    right: auto; }\n\n  .strs-pull-8 {\n    position: relative;\n    right: 66.66667%;\n    left: auto; }\n\n  .strs-push-9 {\n    position: relative;\n    left: 75%;\n    right: auto; }\n\n  .strs-pull-9 {\n    position: relative;\n    right: 75%;\n    left: auto; }\n\n  .strs-push-10 {\n    position: relative;\n    left: 83.33333%;\n    right: auto; }\n\n  .strs-pull-10 {\n    position: relative;\n    right: 83.33333%;\n    left: auto; }\n\n  .strs-push-11 {\n    position: relative;\n    left: 91.66667%;\n    right: auto; }\n\n  .strs-pull-11 {\n    position: relative;\n    right: 91.66667%;\n    left: auto; } }\n@media only screen and (min-width: 64.0625em) {\n  .strs-large-push-0 {\n    position: relative;\n    left: 0;\n    right: auto; }\n\n  .strs-large-pull-0 {\n    position: relative;\n    right: 0;\n    left: auto; }\n\n  .strs-large-push-1 {\n    position: relative;\n    left: 8.33333%;\n    right: auto; }\n\n  .strs-large-pull-1 {\n    position: relative;\n    right: 8.33333%;\n    left: auto; }\n\n  .strs-large-push-2 {\n    position: relative;\n    left: 16.66667%;\n    right: auto; }\n\n  .strs-large-pull-2 {\n    position: relative;\n    right: 16.66667%;\n    left: auto; }\n\n  .strs-large-push-3 {\n    position: relative;\n    left: 25%;\n    right: auto; }\n\n  .strs-large-pull-3 {\n    position: relative;\n    right: 25%;\n    left: auto; }\n\n  .strs-large-push-4 {\n    position: relative;\n    left: 33.33333%;\n    right: auto; }\n\n  .strs-large-pull-4 {\n    position: relative;\n    right: 33.33333%;\n    left: auto; }\n\n  .strs-large-push-5 {\n    position: relative;\n    left: 41.66667%;\n    right: auto; }\n\n  .strs-large-pull-5 {\n    position: relative;\n    right: 41.66667%;\n    left: auto; }\n\n  .strs-large-push-6 {\n    position: relative;\n    left: 50%;\n    right: auto; }\n\n  .strs-large-pull-6 {\n    position: relative;\n    right: 50%;\n    left: auto; }\n\n  .strs-large-push-7 {\n    position: relative;\n    left: 58.33333%;\n    right: auto; }\n\n  .strs-large-pull-7 {\n    position: relative;\n    right: 58.33333%;\n    left: auto; }\n\n  .strs-large-push-8 {\n    position: relative;\n    left: 66.66667%;\n    right: auto; }\n\n  .strs-large-pull-8 {\n    position: relative;\n    right: 66.66667%;\n    left: auto; }\n\n  .strs-large-push-9 {\n    position: relative;\n    left: 75%;\n    right: auto; }\n\n  .strs-large-pull-9 {\n    position: relative;\n    right: 75%;\n    left: auto; }\n\n  .strs-large-push-10 {\n    position: relative;\n    left: 83.33333%;\n    right: auto; }\n\n  .strs-large-pull-10 {\n    position: relative;\n    right: 83.33333%;\n    left: auto; }\n\n  .strs-large-push-11 {\n    position: relative;\n    left: 91.66667%;\n    right: auto; }\n\n  .strs-large-pull-11 {\n    position: relative;\n    right: 91.66667%;\n    left: auto; }\n\n  .strs-column,\n  .strs-columns {\n    position: relative;\n    padding-left: 0.9375rem;\n    padding-right: 0.9375rem;\n    float: left; }\n\n  .strs-large-1 {\n    width: 8.33333%; }\n\n  .strs-large-2 {\n    width: 16.66667%; }\n\n  .strs-large-3 {\n    width: 25%; }\n\n  .strs-large-4 {\n    width: 33.33333%; }\n\n  .strs-large-5 {\n    width: 41.66667%; }\n\n  .strs-large-6 {\n    width: 50%; }\n\n  .strs-large-7 {\n    width: 58.33333%; }\n\n  .strs-large-8 {\n    width: 66.66667%; }\n\n  .strs-large-9 {\n    width: 75%; }\n\n  .strs-large-10 {\n    width: 83.33333%; }\n\n  .strs-large-11 {\n    width: 91.66667%; }\n\n  .strs-large-12 {\n    width: 100%; }\n\n  .strs-large-offset-0 {\n    margin-left: 0 !important; }\n\n  .strs-large-offset-1 {\n    margin-left: 8.33333% !important; }\n\n  .strs-large-offset-2 {\n    margin-left: 16.66667% !important; }\n\n  .strs-large-offset-3 {\n    margin-left: 25% !important; }\n\n  .strs-large-offset-4 {\n    margin-left: 33.33333% !important; }\n\n  .strs-large-offset-5 {\n    margin-left: 41.66667% !important; }\n\n  .strs-large-offset-6 {\n    margin-left: 50% !important; }\n\n  .strs-large-offset-7 {\n    margin-left: 58.33333% !important; }\n\n  .strs-large-offset-8 {\n    margin-left: 66.66667% !important; }\n\n  .strs-large-offset-9 {\n    margin-left: 75% !important; }\n\n  .strs-large-offset-10 {\n    margin-left: 83.33333% !important; }\n\n  .strs-large-offset-11 {\n    margin-left: 91.66667% !important; }\n\n  .strs-large-reset-order {\n    float: left;\n    left: auto;\n    margin-left: 0;\n    margin-right: 0;\n    right: auto; }\n\n  .strs-column.strs-large-centered,\n  .strs-columns.strs-large-centered {\n    margin-left: auto;\n    margin-right: auto;\n    float: none; }\n\n  .strs-column.strs-large-uncentered,\n  .strs-columns.strs-large-uncentered {\n    float: left;\n    margin-left: 0;\n    margin-right: 0; }\n\n  .strs-column.strs-large-centered:last-child,\n  .strs-columns.strs-large-centered:last-child {\n    float: none; }\n\n  .strs-column.strs-large-uncentered:last-child,\n  .strs-columns.strs-large-uncentered:last-child {\n    float: left; }\n\n  .strs-column.strs-large-uncentered.opposite,\n  .strs-columns.strs-large-uncentered.opposite {\n    float: right; }\n\n  .strs-row.strs-large-collapse > .strs-column,\n  .strs-row.strs-large-collapse > .strs-columns {\n    padding-left: 0;\n    padding-right: 0; }\n  .strs-row.strs-large-collapse .strs-row {\n    margin-left: 0;\n    margin-right: 0; }\n  .strs-row.strs-large-uncollapse > .strs-column,\n  .strs-row.strs-large-uncollapse > .strs-columns {\n    padding-left: 0.9375rem;\n    padding-right: 0.9375rem;\n    float: left; }\n\n  .strs-push-0 {\n    position: relative;\n    left: 0;\n    right: auto; }\n\n  .strs-pull-0 {\n    position: relative;\n    right: 0;\n    left: auto; }\n\n  .strs-push-1 {\n    position: relative;\n    left: 8.33333%;\n    right: auto; }\n\n  .strs-pull-1 {\n    position: relative;\n    right: 8.33333%;\n    left: auto; }\n\n  .strs-push-2 {\n    position: relative;\n    left: 16.66667%;\n    right: auto; }\n\n  .strs-pull-2 {\n    position: relative;\n    right: 16.66667%;\n    left: auto; }\n\n  .strs-push-3 {\n    position: relative;\n    left: 25%;\n    right: auto; }\n\n  .strs-pull-3 {\n    position: relative;\n    right: 25%;\n    left: auto; }\n\n  .strs-push-4 {\n    position: relative;\n    left: 33.33333%;\n    right: auto; }\n\n  .strs-pull-4 {\n    position: relative;\n    right: 33.33333%;\n    left: auto; }\n\n  .strs-push-5 {\n    position: relative;\n    left: 41.66667%;\n    right: auto; }\n\n  .strs-pull-5 {\n    position: relative;\n    right: 41.66667%;\n    left: auto; }\n\n  .strs-push-6 {\n    position: relative;\n    left: 50%;\n    right: auto; }\n\n  .strs-pull-6 {\n    position: relative;\n    right: 50%;\n    left: auto; }\n\n  .strs-push-7 {\n    position: relative;\n    left: 58.33333%;\n    right: auto; }\n\n  .strs-pull-7 {\n    position: relative;\n    right: 58.33333%;\n    left: auto; }\n\n  .strs-push-8 {\n    position: relative;\n    left: 66.66667%;\n    right: auto; }\n\n  .strs-pull-8 {\n    position: relative;\n    right: 66.66667%;\n    left: auto; }\n\n  .strs-push-9 {\n    position: relative;\n    left: 75%;\n    right: auto; }\n\n  .strs-pull-9 {\n    position: relative;\n    right: 75%;\n    left: auto; }\n\n  .strs-push-10 {\n    position: relative;\n    left: 83.33333%;\n    right: auto; }\n\n  .strs-pull-10 {\n    position: relative;\n    right: 83.33333%;\n    left: auto; }\n\n  .strs-push-11 {\n    position: relative;\n    left: 91.66667%;\n    right: auto; }\n\n  .strs-pull-11 {\n    position: relative;\n    right: 91.66667%;\n    left: auto; } }\n\n/* Buttons */\n.strs-button {\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  border-radius: 0;\n  border-style: solid;\n  border-width: 0;\n  cursor: pointer;\n  font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif;\n  font-weight: normal;\n  line-height: normal;\n  margin: 0 0 1.25rem;\n  position: relative;\n  text-align: center;\n  text-decoration: none;\n  text-transform: none;\n  display: inline-block;\n  padding: 1rem 2rem 1.0625rem 2rem;\n  font-size: 1rem;\n  background-color: #008CBA;\n  border-color: #007095;\n  color: #FFFFFF;\n  transition: background-color 300ms ease-out; }\n\n.strs-button:hover, .strs-button:focus {\n  background-color: #007095; }\n.strs-button:hover, .strs-button:focus {\n  color: #FFFFFF; }\n\n.strs-button.secondary {\n  background-color: #e7e7e7;\n  border-color: #b9b9b9;\n  color: #333333; }\n.strs-button.secondary:hover, .strs-button.secondary:focus {\n  background-color: #b9b9b9; }\n.strs-button.secondary:hover, .strs-button.secondary:focus {\n  color: #333333; }\n\n.strs-button.success {\n  background-color: #43AC6A;\n  border-color: #368a55;\n  color: #FFFFFF; }\n.strs-button.success:hover, .strs-button.success:focus {\n  background-color: #10CCC2; }\n.strs-button.success:hover, .strs-button.success:focus {\n  color: #FFFFFF; }\n\n.strs-button.alert {\n  background-color: #f04124;\n  border-color: #cf2a0e;\n  color: #FFFFFF; }\n.strs-button.alert:hover, .strs-button.alert:focus {\n  background-color: #cf2a0e; }\n.strs-button.alert:hover, .strs-button.alert:focus {\n  color: #FFFFFF; }\n\n.strs-button.warning {\n  background-color: #f08a24;\n  border-color: #cf6e0e;\n  color: #FFFFFF; }\n.strs-button.warning:hover, .strs-button.warning:focus {\n  background-color: #cf6e0e; }\n.strs-button.warning:hover, .strs-button.warning:focus {\n  color: #FFFFFF; }\n\n.strs-button.info {\n  background-color: #a0d3e8;\n  border-color: #61b6d9;\n  color: #333333; }\n.strs-button.info:hover, .strs-button.info:focus {\n  background-color: #61b6d9; }\n.strs-button.info:hover, .strs-button.info:focus {\n  color: #FFFFFF; }\n\n.strs-button.large {\n  padding: 1.125rem 2.25rem 1.1875rem 2.25rem;\n  font-size: 1.25rem; }\n.strs-button.small {\n  padding: 0.875rem 1.75rem 0.9375rem 1.75rem;\n  font-size: 0.8125rem; }\n.strs-button.tiny {\n  padding: 0.625rem 1.25rem 0.6875rem 1.25rem;\n  font-size: 0.6875rem; }\n.strs-button.expand {\n  padding: 1rem 2rem 1.0625rem 2rem;\n  font-size: 1rem;\n  padding-bottom: 1.0625rem;\n  padding-top: 1rem;\n  padding-left: 1rem;\n  padding-right: 1rem;\n  width: 100%; }\n.strs-button.left-align {\n  text-align: left;\n  text-indent: 0.75rem; }\n.strs-button.right-align {\n  text-align: right;\n  padding-right: 0.75rem; }\n.strs-button.radius {\n  border-radius: 3px; }\n.strs-button.round {\n  border-radius: 1000px; }\n.strs-button.disabled, .strs-button[disabled] {\n  background-color: #008CBA;\n  border-color: #007095;\n  color: #FFFFFF;\n  box-shadow: none;\n  cursor: default;\n  opacity: 0.7; }\n\n.strs-button.disabled:hover, .strs-button.disabled:focus, .strs-button[disabled]:hover, .strs-button[disabled]:focus {\n  background-color: #10CCC2; }\n.strs-button.disabled:hover, .strs-button.disabled:focus, .strs-button[disabled]:hover, .strs-button[disabled]:focus {\n  color: #FFFFFF; }\n.strs-button.disabled:hover, .strs-button.disabled:focus, .strs-button[disabled]:hover, .strs-button[disabled]:focus {\n  background-color: #008CBA; }\n\n.strs-button.disabled.secondary, .strs-button[disabled].secondary {\n  background-color: #e7e7e7;\n  border-color: #b9b9b9;\n  color: #333333;\n  box-shadow: none;\n  cursor: default;\n  opacity: 0.7; }\n.strs-button.disabled.secondary:hover, .strs-button.disabled.secondary:focus, .strs-button[disabled].secondary:hover, .strs-button[disabled].secondary:focus {\n  background-color: #b9b9b9; }\n.strs-button.disabled.secondary:hover, .strs-button.disabled.secondary:focus, .strs-button[disabled].secondary:hover, .strs-button[disabled].secondary:focus {\n  color: #333333; }\n.strs-button.disabled.secondary:hover, .strs-button.disabled.secondary:focus, .strs-button[disabled].secondary:hover, .strs-button[disabled].secondary:focus {\n  background-color: #e7e7e7; }\n\n.strs-button.disabled.success, .strs-button[disabled].success {\n  background-color: #62ccc6;;\n  color: #FFFFFF;\n  box-shadow: none;\n  cursor: default;\n  opacity: 0.7; }\n.strs-button.disabled.success:hover, .strs-button.disabled.success:focus, .strs-button[disabled].success:hover, .strs-button[disabled].success:focus {\n  background-color: #62ccc6; }\n.strs-button.disabled.success:hover, .strs-button.disabled.success:focus, .strs-button[disabled].success:hover, .strs-button[disabled].success:focus {\n  color: #FFFFFF; }\n\n\n.strs-button.disabled.alert, .strs-button[disabled].alert {\n  background-color: #f04124;\n  border-color: #cf2a0e;\n  color: #FFFFFF;\n  box-shadow: none;\n  cursor: default;\n  opacity: 0.7; }\n.strs-button.disabled.alert:hover, .strs-button.disabled.alert:focus, .strs-button[disabled].alert:hover, .strs-button[disabled].alert:focus {\n  background-color: #cf2a0e; }\n.strs-button.disabled.alert:hover, .strs-button.disabled.alert:focus, .strs-button[disabled].alert:hover, .strs-button[disabled].alert:focus {\n  color: #FFFFFF; }\n.strs-button.disabled.alert:hover, .strs-button.disabled.alert:focus, .strs-button[disabled].alert:hover, .strs-button[disabled].alert:focus {\n  background-color: #f04124; }\n\n.strs-button.disabled.warning, .strs-button[disabled].warning {\n  background-color: #f08a24;\n  border-color: #cf6e0e;\n  color: #FFFFFF;\n  box-shadow: none;\n  cursor: default;\n  opacity: 0.7; }\n.strs-button.disabled.warning:hover, .strs-button.disabled.warning:focus, .strs-button[disabled].warning:hover, .strs-button[disabled].warning:focus {\n  background-color: #cf6e0e; }\n.strs-button.disabled.warning:hover, .strs-button.disabled.warning:focus, .strs-button[disabled].warning:hover, .strs-button[disabled].warning:focus {\n  color: #FFFFFF; }\n.strs-button.disabled.warning:hover, .strs-button.disabled.warning:focus, .strs-button[disabled].warning:hover, .strs-button[disabled].warning:focus {\n  background-color: #f08a24; }\n\n.strs-button.disabled.info, .strs-button[disabled].info {\n  background-color: #a0d3e8;\n  border-color: #61b6d9;\n  color: #333333;\n  box-shadow: none;\n  cursor: default;\n  opacity: 0.7; }\n.strs-button.disabled.info:hover, .strs-button.disabled.info:focus, .strs-button[disabled].info:hover, .strs-button[disabled].info:focus {\n  background-color: #61b6d9; }\n.strs-button.disabled.info:hover, .strs-button.disabled.info:focus, .strs-button[disabled].info:hover, .strs-button[disabled].info:focus {\n  color: #FFFFFF; }\n.strs-button.disabled.info:hover, .strs-button.disabled.info:focus, .strs-button[disabled].info:hover, .strs-button[disabled].info:focus {\n  background-color: #a0d3e8; }\n\n.strs-button::-moz-focus-inner {\n  border: 0;\n  padding: 0;\n}\n\n\n/* Standard Forms */\nform {\n  margin: 0 0 1rem;\n}\n\n/* Using forms within rows, we need to set some defaults */\nform .strs-row .strs-row {\n  margin: 0 -0.5rem; }\nform .strs-row .strs-row .strs-column,\nform .strs-row .strs-row .strs-columns {\n  padding: 0 0.5rem; }\nform .strs-row .strs-row.collapse {\n  margin: 0; }\nform .strs-row .strs-row.collapse .strs-column,\nform .strs-row .strs-row.collapse .strs-columns {\n  padding: 0; }\nform .strs-row .strs-row.collapse input {\n  -webkit-border-bottom-right-radius: 0;\n  -webkit-border-top-right-radius: 0;\n  border-bottom-right-radius: 0;\n  border-top-right-radius: 0; }\nform .strs-row input.strs-column,\nform .strs-row input.strs-columns,\nform .strs-row textarea.strs-column,\nform .strs-row textarea.strs-columns {\n  padding-left: 0.5rem; }\n\n\n/* Basic input fields */\ninput.strs-input:not([type]),\ninput.strs-input[type=\"text\"],\ninput.strs-input[type=\"password\"],\ninput.strs-input[type=\"number\"] {\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  border-radius: 0;\n  background-color: #FFFFFF;\n  border-style: solid;\n  border-width: 1px;\n  border-color: #cccccc;\n  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  color: rgba(0, 0, 0, 0.75);\n  display: block;\n  font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif;\n  font-size: 14px;\n  font-weight: normal;\n  font-style: normal;\n  line-height: 1.3;\n  height: 2.3125rem;\n  margin: 0 0 1rem 0;\n  padding: 0.5rem;\n  width: 100%;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n  -webkit-transition: border-color 0.15s linear, background 0.15s linear;\n  -moz-transition: border-color 0.15s linear, background 0.15s linear;\n  -ms-transition: border-color 0.15s linear, background 0.15s linear;\n  -o-transition: border-color 0.15s linear, background 0.15s linear;\n  transition: border-color 0.15s linear, background 0.15s linear; }\n\ninput.strs-input:not([type]):focus,\ninput.strs-input[type=\"text\"]:focus,\ninput.strs-input[type=\"password\"]:focus,\ninput.strs-input[type=\"number\"]:focus {\n  background: #fafafa;\n  border-color: #999999;\n  outline: none; }\n\ninput.strs-input:not([type]):disabled,\ninput.strs-input[type=\"text\"]:disabled,\ninput.strs-input[type=\"password\"]:disabled,\ninput.strs-input[type=\"number\"]:disabled {\n  background-color: #DDDDDD;\n  cursor: default; }\n\ninput.strs-input:not([type])[disabled],\ninput.strs-input:not([type])[readonly],\nfieldset[disabled] input.strs-input:not([type]),\ninput.strs-input[type=\"text\"][disabled],\ninput.strs-input[type=\"text\"][readonly],\nfieldset[disabled] input.strs-input[type=\"text\"],\ninput.strs-input[type=\"password\"][disabled],\ninput.strs-input[type=\"password\"][readonly],\nfieldset[disabled] input.strs-input[type=\"password\"],\ninput.strs-input[type=\"number\"][disabled],\ninput.strs-input[type=\"number\"][readonly],\nfieldset[disabled] input.strs-input[type=\"number\"] {\n  background-color: #DDDDDD;\n  cursor: default; }\n\ninput.strs-input:not([type]).radius,\ninput.strs-input[type=\"text\"].radius,\ninput.strs-input[type=\"password\"].radius,\ninput.strs-input[type=\"number\"].radius {\n  border-radius: 3px; }\n\ninput.strs-input[type=\"submit\"] {\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  border-radius: 0; }\n\n\nselect.strs-select {\n  -webkit-appearance: none !important;\n  -moz-appearance: none !important;\n  background-color: #FAFAFA;\n  border-radius: 0;\n  background-image: url(\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgeD0iMTJweCIgeT0iMHB4IiB3aWR0aD0iMjRweCIgaGVpZ2h0PSIzcHgiIHZpZXdCb3g9IjAgMCA2IDMiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDYgMyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHBvbHlnb24gcG9pbnRzPSI1Ljk5MiwwIDIuOTkyLDMgLTAuMDA4LDAgIi8+PC9zdmc+\");\n  background-position: 100% center;\n  background-repeat: no-repeat;\n  border-style: solid;\n  border-width: 1px;\n  border-color: #cccccc;\n  width: 100%;\n  color: rgba(0, 0, 0, 0.75);\n  font-family: inherit;\n  font-size: 0.875rem;\n  line-height: normal;\n  margin: 0 0 1rem 0;\n  padding: 0.5rem;\n  border-radius: 0;\n  height: 2.3125rem; }\nselect.strs-select::-ms-expand {\n  display: none; }\nselect.strs-select.radius {\n  border-radius: 3px; }\nselect.strs-select:focus {\n  background-color: #f3f3f3;\n  border-color: #999999; }\nselect.strs-select:disabled {\n  background-color: #DDDDDD;\n  cursor: default; }\nselect.strs-select[multiple] {\n  height: auto; }\n\n/* Typography resets */\n.strs-content div,\n.strs-content dl,\n.strs-content dt,\n.strs-content dd,\n.strs-content ul,\n.strs-content ol,\n.strs-content li,\n.strs-content h1,\n.strs-content h2,\n.strs-content h3,\n.strs-content h4,\n.strs-content h5,\n.strs-content h6,\n.strs-content pre,\n.strs-content form,\n.strs-content p,\n.strs-content blockquote,\n.strs-content th,\n.strs-content td,\n.strs-content button,\n.strs-content input {\n  margin: 0;\n  padding: 0; }\n\n.strs-content h3 {\n  font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif;\n  font-style: normal;\n  font-weight: normal;\n  line-height: 1.5;\n  font-size: 24px;\n}\n\n/*\n * Application/button css\n */\n\n.strs-button:focus, .strs-select:focus, .strs-link:focus {\n  outline: 0 !important;\n}\n\n.strs-flex {\n  display: flex;\n}\n.strs-flex-row {\n  flex-direction: row;\n}\n.strs-flex-column {\n  flex-direction: column;\n}\n.strs-flex-column.strs-flex-center-h, .strs-flex-row.strs-flex-center-v{\n  align-items: center;\n}\n.strs-flex-column.strs-flex-center-v, .strs-flex-row.strs-flex-center-h{\n  justify-content: center;\n}\n\n.strs-mb-none {\n  margin-bottom: 0 !important;\n}\n.strs-pb-10 {\n  padding-bottom: .8rem !important;\n}\n\n@media only screen and (min-width: 64.0625em) {\n  .strs-l-rpadding {\n    padding-right: .9375rem!important;\n  }\n}\n\n.strs-content {\n  font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif;\n  font-style: normal;\n  font-weight: normal;\n  font-size: 16px;\n  line-height: 1.5;\n  color: #000;\n  background-color: #F2F2F2;\n  height: 100%;\n  margin: 0;\n  text-shadow: none;\n\n  padding: 1rem 1rem!important;\n}\n\n.strs-input-error {\n  font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif;\n  font-style: italic;\n  font-weight: normal;\n  font-size: 12px;\n  line-height: 1.5;\n  color: #D16F6F;\n  display: none;\n}\n\n.strs-hint {\n  font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif;\n  font-size: 16px;\n  font-style: normal;\n  font-weight: normal;\n  line-height: 1.5;\n  color: grey;\n}\n\na.strs-link {\n  font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif;\n  font-size: 16px;\n  font-weight: bold;\n  font-style: normal;\n  line-height: 1.5;\n  color:#10CCC2 !important;\n  text-decoration: none;\n}\na.strs-link:hover {\n  cursor: pointer;\n}\na.strs-link:active, a.strs-link:visited  {\n  color:#10CCC2 !important;\n  font-weight: bold;\n}\n\n.strs-button.success {\n  display: inline-block;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif;\n  font-size: 1rem;\n  font-weight: 700;\n  line-height: normal;\n  margin: 0 0 .3125rem;\n  padding: .6875rem 1.375rem .75rem;\n  position: relative;\n  text-align: center;\n  text-decoration: none;\n  transition: background-color .3s ease-out;\n  cursor: pointer;\n  background-color: #10CCC2;\n  border-radius: 1000px;\n}\n\n.strs-button.success.expand {\n  padding-left: .6875rem;\n  padding-right: .6875rem;\n  width: 100%;\n}\n\n.strs-wl-closed {\n  color: #888;\n  text-align: center;\n}\n\n.strs-wl-data-title {\n  font-size:16px;\n  color: #A6A6A6;\n}\n.strs-wl-data-value {\n  color: #10ccc2;\n  font-size:22px;\n  font-weight: bold;\n}\n\n#strs-wl-open, #strs-wl-closed {\n  display: none;\n}\n", ""]);
 	
 	// exports
 
@@ -44754,19 +44778,19 @@ var SeatersSDK =
 /* 816 */
 /***/ function(module, exports) {
 
-	module.exports = "\n  <div class=\"strs-content\">\n    <div class=\"strs-row strs-pb-10\">\n      <h3>\n        <span data-strs-trl=\"strs.login.title\">Login</span>\n      </h3>\n    </div>\n\n    <div class=\"strs-row\">\n      <form name=\"strs-login-form\" novalidate autocomplete=\"off\">\n        <!-- EMAIL -->\n        <div class=\"strs-columns strs-large-12\">\n          <div id=\"strs-email-error\" class=\"strs-input-error\"></div>\n          <input id=\"strs-email\" class=\"strs-input\" type=\"text\" data-strs-placeholder=\"strs.login.emailplaceholder\" required>\n        </div>\n\n        <!-- PASSWORD -->\n        <div class=\"strs-columns strs-large-12\">\n          <div id=\"strs-password-error\" class=\"strs-input-error\"></div>\n          <input id=\"strs-password\" class=\"strs-input\" type=\"password\"  data-strs-placeholder=\"strs.login.passwordplaceholder\" required>\n        </div>\n\n\n        <!-- Button -->\n        <div class=\"strs-columns strs-large-12\">\n          <button id=\"strs-btn-login\" type=\"button\" class=\"strs-button success expand\">\n            <span data-strs-trl=\"strs.login.btnlogin\">Login</span>\n          </button>\n        </div>\n\n        <!-- signup link -->\n        <div class=\"strs-columns strs-large-12 strs-hint strs-flex strs-flex-row strs-flex-center-h\">\n            <p>\n              <span data-strs-trl=\"strs.login.noaccountlabel\">No account yet ?</span>\n              <a id=\"strs-nav-signup\" href=\"#\" class=\"strs-link\" data-strs-trl=\"strs.login.signuplink\">Signup here !</a>\n            </p>\n        </div>\n\n      </form>\n    </div>\n  </div>\n";
+	module.exports = "\n  <div class=\"strs-content\">\n    <div class=\"strs-row strs-flex strs-flex-column strs-flex-center-h strs-pb-10\">\n      <h3>\n        <span data-strs-trl=\"strs.login.title\">Login</span>\n      </h3>\n    </div>\n\n    <div class=\"strs-row\">\n      <form name=\"strs-login-form\" novalidate autocomplete=\"off\">\n        <!-- EMAIL -->\n        <div class=\"strs-columns strs-large-12\">\n          <div id=\"strs-email-error\" class=\"strs-input-error\"></div>\n          <input id=\"strs-email\" class=\"strs-input\" type=\"text\" data-strs-placeholder=\"strs.login.emailplaceholder\" required>\n        </div>\n\n        <!-- PASSWORD -->\n        <div class=\"strs-columns strs-large-12\">\n          <div id=\"strs-password-error\" class=\"strs-input-error\"></div>\n          <input id=\"strs-password\" class=\"strs-input\" type=\"password\"  data-strs-placeholder=\"strs.login.passwordplaceholder\" required>\n        </div>\n\n\n        <!-- Button -->\n        <div class=\"strs-columns strs-large-12\">\n          <button id=\"strs-btn-login\" type=\"button\" class=\"strs-button success expand\">\n            <span data-strs-trl=\"strs.login.btnlogin\">Login</span>\n          </button>\n        </div>\n\n        <!-- signup link -->\n        <div class=\"strs-columns strs-large-12 strs-hint strs-flex strs-flex-row strs-flex-center-h\">\n            <p>\n              <span data-strs-trl=\"strs.login.noaccountlabel\">No account yet ?</span>\n              <a id=\"strs-nav-signup\" href=\"#\" class=\"strs-link\" data-strs-trl=\"strs.login.signuplink\">Signup here !</a>\n            </p>\n        </div>\n\n      </form>\n    </div>\n  </div>\n";
 
 /***/ },
 /* 817 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"strs-content\">\n  <div class=\"strs-row strs-pb-10\">\n    <h3>\n      <span data-strs-trl=\"strs.signup.title\">Sign up</span>\n    </h3>\n  </div>\n  <div class=\"strs-row\">\n    <form name=\"signupForm\" class=\"\"novalidate autocomplete=\"off\">\n      <!-- novalidate prevents HTML5 validation since we will be validating ourselves -->\n\n        <!-- FIRST NAME -->\n        <div class=\"strs-columns strs-large-6 strs-l-rpadding\">\n          <div id=\"strs-firstname-error\" class=\"strs-input-error\"></div>\n          <input id=\"strs-firstname\" class=\"strs-input\" placeholder=\"First Name\" type=\"text\" data-strs-placeholder=\"strs.signup.firstnameplaceholder\" required>\n        </div>\n\n        <!-- LAST NAME -->\n        <div class=\"strs-columns strs-large-6\">\n          <div id=\"strs-lastname-error\" class=\"strs-input-error\"></div>\n          <input id=\"strs-lastname\" class=\"strs-input\" placeholder=\"Last Name\" type=\"text\" data-strs-placeholder=\"strs.signup.lastnameplaceholder\" required>\n        </div>\n\n\n      <!-- EMAIL -->\n        <div class=\"strs-columns strs-large-12\">\n          <div id=\"strs-email-error\" class=\"strs-input-error\"></div>\n          <input id=\"strs-email\" class=\"strs-input\" placeholder=\"Email\" type=\"text\" data-strs-placeholder=\"strs.signup.emailplaceholder\" required>\n        </div>\n\n      <!-- PASSWORD -->\n        <div class=\"strs-columns strs-large-12\">\n          <div id=\"strs-password-error\" class=\"strs-input-error\"></div>\n          <input id=\"strs-password\" class=\"strs-input\" placeholder=\"Password\" type=\"password\" data-strs-placeholder=\"strs.signup.passwordplaceholder\" required>\n        </div>\n\n      <!-- T&C -->\n      <div class=\"strs-columns strs-large-12 strs-hint strs-pb-10\">\n          <p>\n            <span data-strs-trl=\"strs.signup.infotext1label\">By signing up, you agree to Seaters'</span>\n            <a href=\"http://getseaters.com/user-agreement/\" class=\"strs-link\" data-strs-trl=\"strs.signup.termsandconditionslink\">Terms &amp; Conditions</a>\n            <span data-strs-trl=\"strs.signup.infotext2label\"> and </span>\n            <a href=\"http://getseaters.com/privacy/\" class=\"strs-link\" data-strs-trl=\"strs.signup.privacypolicylink\">Privacy Policy</a>\n          </p>\n      </div>\n\n      <!-- SUBMIT BUTTON  -->\n        <div class=\"strs-columns strs-large-12\">\n          <button id=\"strs-btn-signup\" class=\"strs-button success expand\" type=\"button\">\n            <span data-strs-trl=\"strs.signup.signupbutton\">Sign up</span>\n          </button>\n        </div>\n\n    </form>\n  </div>\n</div>\n\n\n\n";
+	module.exports = "<div class=\"strs-content\">\n  <div class=\"strs-row strs-flex strs-flex-column strs-flex-center-h strs-pb-10\">\n    <h3>\n      <span data-strs-trl=\"strs.signup.title\">Sign up</span>\n    </h3>\n  </div>\n  <div class=\"strs-row\">\n    <form name=\"signupForm\" class=\"\"novalidate autocomplete=\"off\">\n      <!-- novalidate prevents HTML5 validation since we will be validating ourselves -->\n\n        <!-- FIRST NAME -->\n        <div class=\"strs-columns strs-large-6 strs-l-rpadding\">\n          <div id=\"strs-firstname-error\" class=\"strs-input-error\"></div>\n          <input id=\"strs-firstname\" class=\"strs-input\" placeholder=\"First Name\" type=\"text\" data-strs-placeholder=\"strs.signup.firstnameplaceholder\" required>\n        </div>\n\n        <!-- LAST NAME -->\n        <div class=\"strs-columns strs-large-6\">\n          <div id=\"strs-lastname-error\" class=\"strs-input-error\"></div>\n          <input id=\"strs-lastname\" class=\"strs-input\" placeholder=\"Last Name\" type=\"text\" data-strs-placeholder=\"strs.signup.lastnameplaceholder\" required>\n        </div>\n\n\n      <!-- EMAIL -->\n        <div class=\"strs-columns strs-large-12\">\n          <div id=\"strs-email-error\" class=\"strs-input-error\"></div>\n          <input id=\"strs-email\" class=\"strs-input\" placeholder=\"Email\" type=\"text\" data-strs-placeholder=\"strs.signup.emailplaceholder\" required>\n        </div>\n\n      <!-- PASSWORD -->\n        <div class=\"strs-columns strs-large-12\">\n          <div id=\"strs-password-error\" class=\"strs-input-error\"></div>\n          <input id=\"strs-password\" class=\"strs-input\" placeholder=\"Password\" type=\"password\" data-strs-placeholder=\"strs.signup.passwordplaceholder\" required>\n        </div>\n\n      <!-- T&C -->\n      <div class=\"strs-columns strs-large-12 strs-hint strs-pb-10\">\n          <p>\n            <span data-strs-trl=\"strs.signup.infotext1label\">By signing up, you agree to Seaters'</span>\n            <a href=\"http://getseaters.com/user-agreement/\" class=\"strs-link\" data-strs-trl=\"strs.signup.termsandconditionslink\">Terms &amp; Conditions</a>\n            <span data-strs-trl=\"strs.signup.infotext2label\"> and </span>\n            <a href=\"http://getseaters.com/privacy/\" class=\"strs-link\" data-strs-trl=\"strs.signup.privacypolicylink\">Privacy Policy</a>\n          </p>\n      </div>\n\n      <!-- SUBMIT BUTTON  -->\n        <div class=\"strs-columns strs-large-12\">\n          <button id=\"strs-btn-signup\" class=\"strs-button success expand\" type=\"button\">\n            <span data-strs-trl=\"strs.signup.signupbutton\">Sign up</span>\n          </button>\n        </div>\n\n    </form>\n  </div>\n</div>\n\n\n\n";
 
 /***/ },
 /* 818 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"strs-content\">\n  <div class=\"strs-pb-10\">\n    <h3>\n      <span data-strs-trl=\"strs.tickets.title\">Select number of seats</span>\n    </h3>\n  </div>\n\n  <div class=\"strs-flex strs-flex-column strs-flex-center-h\">\n    <div class=\"strs-row strs-collapse\">\n      <form class=\"strs-flex strs-flex-column strs-flex-center-h strs-small-12\" novalidate autocomplete=\"off\">\n        <div class=\"strs-columns strs-small-6\">\n          <div id=\"strs-seats-error\" class=\"strs-input-error\"></div>\n          <select id=\"strs-seats\" class=\"strs-select\">\n          </select>\n        </div>\n        <div>\n          <button id=\"strs-btn-bookseats\" class=\"strs-button success\" type=\"button\" data-strs-trl=\"strs.tickets.bookbutton\">Book my seats</button>\n        </div>\n      </form>\n    </div>\n\n  </div>\n\n</div>\n";
+	module.exports = "<div class=\"strs-content\">\n  <div class=\"strs-flex strs-flex-column strs-flex-center-h strs-pb-10\">\n    <h3>\n      <span data-strs-trl=\"strs.tickets.title\">Select number of seats</span>\n    </h3>\n  </div>\n\n  <div class=\"strs-flex strs-flex-column strs-flex-center-h\">\n    <div class=\"strs-row strs-collapse\">\n      <form class=\"strs-flex strs-flex-column strs-flex-center-h strs-small-12\" novalidate autocomplete=\"off\">\n        <div class=\"strs-columns strs-small-6\">\n          <div id=\"strs-seats-error\" class=\"strs-input-error\"></div>\n          <select id=\"strs-seats\" class=\"strs-select\">\n          </select>\n        </div>\n        <div>\n          <button id=\"strs-btn-bookseats\" class=\"strs-button success\" type=\"button\" data-strs-trl=\"strs.tickets.bookbutton\">Book my seats</button>\n        </div>\n      </form>\n    </div>\n\n  </div>\n\n</div>\n";
 
 /***/ },
 /* 819 */
@@ -44778,7 +44802,7 @@ var SeatersSDK =
 /* 820 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"strs-content\">\n\n  <div class=\"strs-row strs-pb-10\">\n    <h3 id=\"strs-wl-name\"></h3>\n    <div id=\"strs-wl-closed\">\n      <h4 class=\"strs-wl-closed strs-pb-10\" data-strs-trl=\"strs.wl.closedwllabel\">Closed</h4>\n      <span>\n        <p class=\"strs-mb-none\" data-strs-trl=\"strs.wl.closedwlinfolabel\">This wish list has been closed.</p>\n        <p>\n          <span data-strs-trl=\"strs.wl.visitfglabel\">Visit fan group</span>\n          <a id=\"strs-fg-slug\" href=\"http://www.seaters.com/myfangroup\" class=\"strs-link\"></a>\n        </p>\n      </span>\n    </div>\n  </div>\n\n  <div id=\"strs-wl-open\">\n    <div class=\"strs-row\">\n      <div class=\"strs-columns strs-small-6 strs-flex strs-flex-column strs-flex-center-h strs-wl-data-title\" data-strs-trl=\"strs.wl.likelihood\">Likelihood</div>\n      <div class=\"strs-columns strs-small-6 strs-flex strs-flex-column strs-flex-center-h strs-wl-data-title\" data-strs-trl=\"strs.wl.rank\">Rank</div>\n    </div>\n    <div class=\"strs-row strs-pb-10\">\n      <div id=\"strs-wl-likelihood\" class=\"strs-columns strs-small-6 strs-flex strs-flex-column strs-flex-center-h strs-wl-data-value\">25.00 %</div>\n      <div id=\"strs-wl-rank\" class=\"strs-columns strs-small-6 strs-flex strs-flex-column strs-flex-center-h strs-wl-data-value\"># 1</div>\n    </div>\n  </div>\n\n  <div class=\"strs-row strs-collapse\">\n    <div class=\"strs-columns strs-large-12\">\n      <button id=\"strs-btn-close\" class=\"strs-button success expand\" type=\"button\" data-strs-trl=\"strs.wl.closebutton\">Close</button>\n    </div>\n  </div>\n\n\n</div>\n";
+	module.exports = "<div class=\"strs-content\">\n\n  <div class=\"strs-row strs-flex strs-flex-column strs-flex-center-h strs-pb-10\">\n    <h3 id=\"strs-wl-eventname\"></h3>\n    <div id=\"strs-wl-closed\">\n      <h4 class=\"strs-wl-closed strs-pb-10\" data-strs-trl=\"strs.wl.closedwllabel\">Closed</h4>\n      <span>\n        <p class=\"strs-mb-none\" data-strs-trl=\"strs.wl.closedwlinfolabel\">This wish list has been closed.</p>\n        <p>\n          <span data-strs-trl=\"strs.wl.visitfglabel\">Visit fan group</span>\n          <a id=\"strs-fg-slug\" href=\"http://www.seaters.com/myfangroup\" class=\"strs-link\"></a>\n        </p>\n      </span>\n    </div>\n  </div>\n\n  <div id=\"strs-wl-open\">\n    <div class=\"strs-row\">\n      <div class=\"strs-columns strs-small-6 strs-flex strs-flex-column strs-flex-center-h strs-wl-data-title\" data-strs-trl=\"strs.wl.likelihood\">Likelihood</div>\n      <div class=\"strs-columns strs-small-6 strs-flex strs-flex-column strs-flex-center-h strs-wl-data-title\" data-strs-trl=\"strs.wl.rank\">Rank</div>\n    </div>\n    <div class=\"strs-row strs-pb-10\">\n      <div id=\"strs-wl-likelihood\" class=\"strs-columns strs-small-6 strs-flex strs-flex-column strs-flex-center-h strs-wl-data-value\">25.00 %</div>\n      <div id=\"strs-wl-rank\" class=\"strs-columns strs-small-6 strs-flex strs-flex-column strs-flex-center-h strs-wl-data-value\"># 1</div>\n    </div>\n  </div>\n\n  <div class=\"strs-row strs-collapse\">\n    <div class=\"strs-columns strs-large-12\">\n      <button id=\"strs-btn-close\" class=\"strs-button success expand\" type=\"button\" data-strs-trl=\"strs.wl.closebutton\">Close</button>\n    </div>\n  </div>\n\n\n</div>\n";
 
 /***/ },
 /* 821 */
@@ -44792,11 +44816,290 @@ var SeatersSDK =
 
 	module.exports = [
 		{
+			"key": "strs.forms.mandatory",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Mandatory"
+				}
+			]
+		},
+		{
 			"key": "strs.login.title",
 			"translations": [
 				{
 					"locale": "en",
-					"translation": "Sign in to seaters.com"
+					"translation": "Sign in"
+				}
+			]
+		},
+		{
+			"key": "strs.login.emailplaceholder",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Email"
+				}
+			]
+		},
+		{
+			"key": "strs.login.passwordplaceholder",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Password"
+				}
+			]
+		},
+		{
+			"key": "strs.login.noaccountlabel",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "No account yet ?"
+				}
+			]
+		},
+		{
+			"key": "strs.login.signuplink",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Signup here !"
+				}
+			]
+		},
+		{
+			"key": "strs.login.btnlogin",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Login"
+				}
+			]
+		},
+		{
+			"key": "strs.signup.title",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Sign up"
+				}
+			]
+		},
+		{
+			"key": "strs.signup.firstnameplaceholder",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "First Name"
+				}
+			]
+		},
+		{
+			"key": "strs.signup.lastnameplaceholder",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Last Name"
+				}
+			]
+		},
+		{
+			"key": "strs.signup.emailplaceholder",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Email"
+				}
+			]
+		},
+		{
+			"key": "strs.signup.passwordplaceholder",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Password"
+				}
+			]
+		},
+		{
+			"key": "strs.signup.infotext1label",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "By signing up, you agree to Seaters'"
+				}
+			]
+		},
+		{
+			"key": "strs.signup.infotext2label",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": " and "
+				}
+			]
+		},
+		{
+			"key": "strs.signup.termsandconditionslink",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Terms & Conditions"
+				}
+			]
+		},
+		{
+			"key": "strs.signup.privacypolicylink",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Privacy Policy"
+				}
+			]
+		},
+		{
+			"key": "strs.signup.signupbutton",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Sign up"
+				}
+			]
+		},
+		{
+			"key": "strs.validateemail.title",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Welcome. It's nice to meet you,"
+				}
+			]
+		},
+		{
+			"key": "strs.validateemail.welcomemessage",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "We just sent you a confirmation email. In order to confirm your registration, please enter the code mentioned in the email below."
+				}
+			]
+		},
+		{
+			"key": "strs.validateemail.emailcodeplaceholder",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Your personal code"
+				}
+			]
+		},
+		{
+			"key": "strs.validateemail.confirmbutton",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Confirm email"
+				}
+			]
+		},
+		{
+			"key": "strs.wl.likelihood",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Likelihood"
+				}
+			]
+		},
+		{
+			"key": "strs.wl.rank",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Rank"
+				}
+			]
+		},
+		{
+			"key": "strs.wl.closebutton",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Close"
+				}
+			]
+		},
+		{
+			"key": "strs.wl.closedwllabel",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Closed"
+				}
+			]
+		},
+		{
+			"key": "strs.wl.closedwlinfolabel",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "This wish list has been closed."
+				}
+			]
+		},
+		{
+			"key": "strs.wl.visitfglabel",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Visit fan group"
+				}
+			]
+		},
+		{
+			"key": "strs.tickets.title",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Select number of seats"
+				}
+			]
+		},
+		{
+			"key": "strs.tickets.bookbutton",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Book my seats"
+				}
+			]
+		},
+		{
+			"key": "strs.fg.validatefgcodelabel",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Please enter the code to join the fan group"
+				}
+			]
+		},
+		{
+			"key": "strs.fg.fgcodeplaceholder",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Fan group code"
+				}
+			]
+		},
+		{
+			"key": "strs.fg.joinbutton",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Join this fan group"
 				}
 			]
 		}
