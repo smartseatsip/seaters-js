@@ -5,11 +5,12 @@ import { WaitingListService, ExtendedWaitingList, WAITING_LIST_ACTION_STATUS } f
 import { FanGroupService, ExtendedFanGroup, FAN_GROUP_ACTION_STATUS } from '../fan-group-service';
 import { Fan } from '../../seaters-api/fan/fan';
 import { FanGroup } from '../../seaters-api/fan/fan-group';
+import { Price } from '../../seaters-api/fan/waiting-list';
 import { TranslationStore, TranslationService, Locale } from '../translation-service';
 
 declare var require: any;
 
-// static assets
+// static assetss
 const appCss: string = require('./app.css');
 const loadingCss: string = require('./loading.scss');
 const loadingHtml: string = require('./loading.html');
@@ -165,6 +166,7 @@ export class JwlFlowService {
 
     private showRankAndLikelihood(wl: ExtendedWaitingList): Promise<void> {
       console.log('[JwlFlowService] showing rank and likelihood');
+
       this.modalService.setModalContent(wlHtml);
 
       var deferred = this.defer<void>();
@@ -380,6 +382,19 @@ export class JwlFlowService {
     }
 
     /**
+     * Updates the pricing info upon selecting seats
+     * @param price
+     */
+    private updateSeatPricing (price: Price) {
+      var ticketPrice = (<HTMLElement>this.modalService.findElementById('strs-ticket-price'));
+      ticketPrice.innerHTML = price.formattedTotalFacialPrice;
+      var ticketFee = (<HTMLElement>this.modalService.findElementById('strs-ticket-fee'));
+      ticketFee.innerHTML = price.formattedFee;
+      var ticketTotal = (<HTMLElement>this.modalService.findElementById('strs-ticket-total'));
+      ticketTotal.innerHTML = price.formattedTotal;
+    }
+
+    /**
      * Provides and returns a promise for seat selection and start showing the seat selection form
      * @param wl
      * @returns {Promise}
@@ -399,6 +414,16 @@ export class JwlFlowService {
       //Setup select values
       var seat = this.modalService.findElementById('strs-btn-bookseats');
       var seatSelect = <HTMLSelectElement> this.modalService.findElementById('strs-seats');
+      seatSelect.onchange = (e) => {
+          var numberOfSeats:number = +(<HTMLSelectElement>e.target).value;
+          this.waitingListService.getWaitingListPrice(wl.waitingListId, numberOfSeats)
+            .then (price => this.updateSeatPricing(price) );
+      };
+      //Get initial pricing for 1 seat
+      this.waitingListService.getWaitingListPrice(wl.waitingListId, 1)
+        .then (price => this.updateSeatPricing(price));
+
+      //Add seat options
       for (var i = 0; i < wl.maxNumberOfSeatsPerPosition; i++) {
         var opt = document.createElement('option');
         opt.value = String(i+1);
