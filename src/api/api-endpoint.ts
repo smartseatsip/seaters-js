@@ -36,7 +36,7 @@ export class ApiEndpoint {
     }
 
     private renderConcreteEndpoint () : string {
-        var endpointParamRx = /:([a-zA-Z][a-zA-Z0-9]*)/;
+        var endpointParamRx = /:([a-zA-Z][a-zA-Z0-9]*)/g;
         return this.abstractEndpoint.replace(endpointParamRx, (match) => {
             return this.renderEndpointParam(match.substr(1));
         });
@@ -55,7 +55,7 @@ export class ApiEndpoint {
         var res = this.concreteEndpoint;
         // if there is already a query part
         if (res.lastIndexOf('?') >= 0) {
-            // append '&' there is none yet 
+            // append '&' there is none yet
             if (!/&$/.test(res)) {
                 res = res + '&';
             }

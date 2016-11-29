@@ -1,7 +1,7 @@
 import { ApiContext } from '../../api';
 import { PagedResult } from '../paged-result';
 import { PagingOptions } from '../paging-options';
-import { WaitingList } from './waiting-list';
+import { WaitingList,Price } from './waiting-list';
 import { FanGroup, Request } from './fan-group';
 import { Fan } from "./fan";
 
@@ -49,8 +49,14 @@ export class FanApi {
         return ApiContext.buildEndpointParams({waitingListId: waitingListId});
     }
 
+    private wlPriceEp = this.rootEp + '/waiting-lists/:waitingListId/price/:numberOfSeats';
+
     waitingList (waitingListId: string): Promise<WaitingList> {
         return this.apiContext.get<WaitingList>(this.wlEp, this.wlEndpointParams(waitingListId));
+    }
+
+    waitingListPrice (waitingListId: string, numberOfSeats: number): Promise<Price> {
+        return this.apiContext.get<Price>(this.wlPriceEp, ApiContext.buildEndpointParams({waitingListId: waitingListId, numberOfSeats: numberOfSeats}));
     }
 
     joinWaitingList (waitingListId: string, numberOfSeats: number): Promise<WaitingList> {

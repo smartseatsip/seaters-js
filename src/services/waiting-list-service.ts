@@ -1,6 +1,6 @@
 import { SeatersApi } from '../seaters-api';
 import { Promise } from 'es6-promise';
-import { WaitingList } from '../seaters-api/fan/waiting-list';
+import { WaitingList, Price } from '../seaters-api/fan/waiting-list';
 import * as core from 'core-js/library';
 import { retryUntil } from './util';
 
@@ -31,7 +31,7 @@ export class WaitingListService {
     getWaitingList (waitingListId: string): Promise<ExtendedWaitingList> {
         return this.api.fan.waitingList(waitingListId);
     }
-    
+
     getWaitingListActionStatus (waitingList: WaitingList): WAITING_LIST_ACTION_STATUS {
         var seat = waitingList.seat;
         var position = waitingList.position;
@@ -72,7 +72,7 @@ export class WaitingListService {
         if(position.status === 'WAITING_SEAT') {
             return WAITING_LIST_ACTION_STATUS.WAIT;
         }
-        
+
         // In WL with seat
         if(position.status === 'HAS_SEAT') {
             if(seat) {
@@ -144,6 +144,10 @@ export class WaitingListService {
                 1000
             );
         });
+    }
+
+    getWaitingListPrice (waitingListId: string, numberOfSeats: number) : Promise<Price> {
+      return this.api.fan.waitingListPrice(waitingListId, numberOfSeats);
     }
 
 }
