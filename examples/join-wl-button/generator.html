@@ -3,38 +3,49 @@
   <head>
     <meta charset="utf-8">
     <title>Seaters Library: Join WL button generator</title>
+    <link rel="stylesheet" href="./generator.css">
     <script type="text/javascript" src="/seaters.bundle.js"></script>
-    <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.0-rc.2/angular.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="generator.js"></script>
+    <script type="text/javascript" src="./generator.js"></script>
   </head>
   <body ng-app="app">
-    <h1>Join the Wish List&reg; button generator</h1>
-    
-    <h2>1. <u>Choose your button</u></h2>
-    
-    <div ng-repeat="button in buttons">
-        <img ng-src="{{button.localUrl}}">
+    <div class="container" ng-controller="GeneratorController as generator" ng-init="generator.selectedButton = generator.buttons[0]">
+      <h1>Join the Wish List&reg; button generator</h1>
+      
+      <h2>1. <u>Choose your button</u></h2>
+
+      <div class="container">
+        <div class="row">
+          <div ng-repeat="button in generator.buttons" class="col-sm-4">
+              <input class="form-control" type="radio" ng-model="generator.selectedButton" ng-value="button" name="selectedButton">
+              <button ng-class="['strs-btn', button.cssClass]" ng-click="generator.selectedButton = button"></button>
+              <br />
+          </div>
+        </div>
+      </div>
+
+      <hr />
+
+      <h2>2. <u>Paste the link of your wish list</u></h2>
+      
+      Url: <input type="text" class="form-control" ng-model="generator.wlUrl" />
+      
+      <hr />
+
+      <h2>3. <u>Copy the code</u><i class="fa fa-refresh" ng-click="generator.renderCode()"></i></h2>
+      
+      <pre style="border: 1px black solid; width: 600px; height: 300px;">{{generator.code}}</pre>
+
+      <h3>Result</h3>
+      <div style="border: 1px black solid; padding: 10px; width: 100%;">
+          <iframe style="border:0;width:100%;height:300px;" id="sandbox"></iframe>
+      </div>
+      
+      <br />
     </div>
-
-    <hr />
-
-    <h2>2. <u>Paste the link of your wish list</u></h2>
-    
-    Url: <input type="text" ng-model="wlUrl" />
-    
-    <hr />
-
-    <h2>3. <u>Copy the code</u></h2>
-    
-    <pre style="border: 1px black solid; width: 600px; height: 300px;">{{code}}</pre>
-
-    <h3>Result</h3>
-    <div style="border: 1px black solid; padding: 10px; width: 100%;">
-        <iframe sytle="border:0;width:100%;height:300px;" ng-src="{{iframeSrc}}"></iframe>
-    </div>
-
   </body>
 </html>

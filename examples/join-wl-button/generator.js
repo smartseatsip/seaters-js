@@ -1,27 +1,24 @@
 angular.module('app',[])
-.run(function($rootScope, $window) {
-
-    $rootScope.buttons = [
-        // 'Button - Dark@2x.png',                                                                                                                                                    
-        'Button - Dark.png',                                                                                                                                                    
-        // 'Button - Dark - roll-over@2x.png',
-        // 'Button - Dark - roll-over.png',
-        // 'Button - Dark.svg',
-        
-        // 'Button - Teal@2x.png',
-        'Button - Teal.png',
-        // 'Button - Teal - roll-over@2x.png',
-        // 'Button - Teal - roll-over.png',
-        // 'Button - Teal.svg',
-        
-        // 'Button - White@2x.png',
-        'Button - White.png',
-        // 'Button - White - roll-over@2x.png',
-        // 'Button - White - roll-over.png'
-    ].map(fileName => {
+.controller('GeneratorController', function($scope, $timeout) {
+    this.buttons = ['dark', 'teal', 'white'].map(name => {
         return {
-            fileName: fileName,
-            localUrl: '/assets/join-wl/images/'+encodeURIComponent(fileName)
+            name: name,
+            cssClass: 'strs-btn-'+name 
         };
     });
+    
+    this.wlUrl = 'https://www.seaters.com/bco/waitinglist/671af8d2-07d8-46c9-857e-77494903933e';
+    
+    this.renderCode = () => {
+        var uuidMatches = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.exec(this.wlUrl);
+        var wlId = (uuidMatches.length > 0 && uuidMatches[0]) || '????';
+        var headPart = '<script src="https://sdk.dev-seaters.com/seaters.bundle.js" type="text/javascript"></script>\n' +
+            '<link rel="stylesheet" href="https://sdk.dev-seaters.com/assets/join-wl/css/seaters-join-wl.css">\n';
+        var bodyPart = '<button class="strs-joinwl-btn strs-joinwl-btn-'+this.selectedButton.name+'" onclick="SeatersSDK.joinwl(\''+wlId+'\')"></button>';
+        this.code = headPart + bodyPart;
+        
+        var sandboxSrc = '<html><head>'+headPart+'</head><body>'+bodyPart+'</body></html>';
+        document.getElementById('sandbox').src =  'data:text/html;charset=utf-8,' + escape(sandboxSrc);
+    };
+    
 });

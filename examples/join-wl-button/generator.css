@@ -1,0 +1,34 @@
+.strs-btn-radio {
+    height: 48px !important;
+}
+.strs-btn {
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-color: #fff !important;
+    width: 256px;
+    height: 48px;
+    border: 0;
+}
+
+.strs-btn-dark {
+    background-image: url("/assets/join-wl/images/btn-dark.png");
+}
+.strs-btn-dark:active {
+    background-image: url("/assets/join-wl/images/btn-dark-active.png");
+}
+
+.strs-btn-teal {
+    background-image: url("/assets/join-wl/images/btn-teal.png");
+}
+
+.strs-btn-teal:active {
+    background-image: url("/assets/join-wl/images/btn-teal-active.png");
+}
+
+.strs-btn-white:active {
+    background-image: url("/assets/join-wl/images/btn-white.png");
+}
+
+.strs-btn-white {
+    background-image: url("/assets/join-wl/images/btn-white-active.png");
+}
