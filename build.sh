@@ -9,10 +9,10 @@ npm run typings install
 npm run gulp build:bundle
 #TODO run all tests
 rm -rf tmp
-mkdir -p tmp
-cp dist/seaters.bundle.* tmp/
-cp -r examples tmp/
-cp -r assets tmp/
+mkdir -p tmp/seaters-sdk
+cp dist/seaters.bundle.* tmp/seaters-sdk/
+cp -r examples tmp/seaters-sdk/
+cp -r assets tmp/seaters-sdk/
 cd tmp
-find . -not -path . | tar -czf "${NAME}-${VERSION}.tgz" --files-from - > /dev/null
+tar -czf "${NAME}-${VERSION}.tgz" seaters-sdk
 cd ..
