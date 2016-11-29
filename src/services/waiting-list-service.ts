@@ -137,7 +137,7 @@ export class WaitingListService {
     joinWaitingList (waitingListId: string, numberOfSeats: number): Promise<ExtendedWaitingList> {
         return this.api.fan.joinWaitingList(waitingListId, numberOfSeats)
         .then(() => {
-            return retryUntil(
+            return retryUntil<ExtendedWaitingList>(
                 () => this.getExtendedWaitingList(waitingListId),
                 (fg) => fg.actionStatus !== WAITING_LIST_ACTION_STATUS.BOOK,
                 10,

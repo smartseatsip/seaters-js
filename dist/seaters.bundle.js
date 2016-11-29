@@ -50,7 +50,7 @@ var SeatersSDK =
 	var seaters_client_1 = __webpack_require__(1);
 	exports.SeatersClient = seaters_client_1.SeatersClient;
 	exports.SeatersClientOptions = seaters_client_1.SeatersClientOptions;
-	var join_wl_1 = __webpack_require__(823);
+	var join_wl_1 = __webpack_require__(824);
 	exports.joinWl = join_wl_1.joinWl;
 
 
@@ -63,10 +63,10 @@ var SeatersSDK =
 	var seaters_api_1 = __webpack_require__(306);
 	var session_service_1 = __webpack_require__(691);
 	var waiting_list_service_1 = __webpack_require__(803);
-	var fan_group_service_1 = __webpack_require__(808);
-	var modal_service_1 = __webpack_require__(809);
-	var jwl_flow_service_1 = __webpack_require__(810);
-	var translation_service_1 = __webpack_require__(811);
+	var fan_group_service_1 = __webpack_require__(809);
+	var modal_service_1 = __webpack_require__(810);
+	var jwl_flow_service_1 = __webpack_require__(811);
+	var translation_service_1 = __webpack_require__(812);
 	var SeatersClient = (function () {
 	    function SeatersClient(options) {
 	        options = core.Object.assign({}, SeatersClient.DEFAULT_OPTIONS, options);
@@ -42681,6 +42681,8 @@ var SeatersSDK =
 	"use strict";
 	var retry_until_1 = __webpack_require__(805);
 	exports.retryUntil = retry_until_1.retryUntil;
+	var deferred_promise_1 = __webpack_require__(808);
+	exports.DeferredPromise = deferred_promise_1.DeferredPromise;
 
 
 /***/ },
@@ -42694,6 +42696,7 @@ var SeatersSDK =
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var es6_promise_1 = __webpack_require__(806);
+	var deferred_promise_1 = __webpack_require__(808);
 	var RetryUntilTimeoutError = (function (_super) {
 	    __extends(RetryUntilTimeoutError, _super);
 	    function RetryUntilTimeoutError(limit) {
@@ -42704,6 +42707,7 @@ var SeatersSDK =
 	}(Error));
 	exports.RetryUntilTimeoutError = RetryUntilTimeoutError;
 	function retryUntil(promiseFn, conditionFn, limit, delay) {
+	    var deferred = new deferred_promise_1.DeferredPromise();
 	    function retry(attempt) {
 	        if (attempt > limit) {
 	            return es6_promise_1.Promise.reject(new RetryUntilTimeoutError(limit));
@@ -42715,12 +42719,14 @@ var SeatersSDK =
 	                conditionIsMet = conditionFn(result);
 	            }
 	            catch (e) {
-	                console.log('[retryUntil] - condition quit with an exception', e.stack);
-	                return es6_promise_1.Promise.reject(e);
+	                console.log('[retryUntil] - condition quit with an exception', e.message || e, e.stack);
+	                deferred.reject(e);
+	                return;
 	            }
 	            if (conditionIsMet) {
 	                console.log('[retryUntil] - condition has been met');
-	                return es6_promise_1.Promise.resolve(result);
+	                deferred.resolve(result);
+	                return;
 	            }
 	            else {
 	                // delay the next attempt if needed
@@ -42729,7 +42735,8 @@ var SeatersSDK =
 	            }
 	        });
 	    }
-	    return retry(1);
+	    retry(1);
+	    return deferred.promise;
 	}
 	exports.retryUntil = retryUntil;
 	function timeoutPromise(timeInMs) {
@@ -42737,6 +42744,7 @@ var SeatersSDK =
 	        setTimeout(function () { return resolve(); }, timeInMs);
 	    });
 	}
+	exports.timeoutPromise = timeoutPromise;
 
 
 /***/ },
@@ -43913,6 +43921,25 @@ var SeatersSDK =
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
+	var es6_promise_1 = __webpack_require__(806);
+	var DeferredPromise = (function () {
+	    function DeferredPromise() {
+	        var _this = this;
+	        this.promise = new es6_promise_1.Promise(function (resolve, reject) {
+	            _this.resolve = resolve;
+	            _this.reject = reject;
+	        });
+	    }
+	    return DeferredPromise;
+	}());
+	exports.DeferredPromise = DeferredPromise;
+
+
+/***/ },
+/* 809 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
 	var util_1 = __webpack_require__(804);
 	var library_1 = __webpack_require__(2);
 	(function (FAN_GROUP_ACTION_STATUS) {
@@ -43977,7 +44004,7 @@ var SeatersSDK =
 
 
 /***/ },
-/* 809 */
+/* 810 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../node_modules/typescript/lib/lib.d.ts" />
@@ -44159,25 +44186,25 @@ var SeatersSDK =
 
 
 /***/ },
-/* 810 */
+/* 811 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var es6_promise_1 = __webpack_require__(806);
 	var waiting_list_service_1 = __webpack_require__(803);
-	var fan_group_service_1 = __webpack_require__(808);
-	var translation_service_1 = __webpack_require__(811);
+	var fan_group_service_1 = __webpack_require__(809);
+	var translation_service_1 = __webpack_require__(812);
 	// static assets
-	var appCss = __webpack_require__(812);
-	var loadingCss = __webpack_require__(814);
-	var loadingHtml = __webpack_require__(815);
-	var loginHtml = __webpack_require__(816);
-	var signupHtml = __webpack_require__(817);
-	var ticketsHtml = __webpack_require__(818);
-	var validateHtml = __webpack_require__(819);
-	var wlHtml = __webpack_require__(820);
-	var fgCodeHtml = __webpack_require__(821);
-	var translationStore = new translation_service_1.TranslationStore(__webpack_require__(822));
+	var appCss = __webpack_require__(813);
+	var loadingCss = __webpack_require__(815);
+	var loadingHtml = __webpack_require__(816);
+	var loginHtml = __webpack_require__(817);
+	var signupHtml = __webpack_require__(818);
+	var ticketsHtml = __webpack_require__(819);
+	var validateHtml = __webpack_require__(820);
+	var wlHtml = __webpack_require__(821);
+	var fgCodeHtml = __webpack_require__(822);
+	var translationStore = new translation_service_1.TranslationStore(__webpack_require__(823));
 	(function (JWL_EXIT_STATUS) {
 	    JWL_EXIT_STATUS[JWL_EXIT_STATUS["JOINED"] = 0] = "JOINED";
 	    JWL_EXIT_STATUS[JWL_EXIT_STATUS["CANCELLED"] = 1] = "CANCELLED";
@@ -44469,11 +44496,7 @@ var SeatersSDK =
 	        //Verify protection code
 	        this.enableButton('strs-btn-joinfg', false);
 	        return this.fanGroupService.joinProtectedFanGroup(fanGroup, fanGroupCode)
-	            .then(function (fg) {
-	            console.log("membership");
-	            console.log(fg);
-	            return es6_promise_1.Promise.resolve(fg);
-	        }, function (err) {
+	            .then(function (fg) { return fg; }, function (err) {
 	            _this.enableButton('strs-btn-joinfg', true);
 	            var message = _this.extractMsgAndLogError('doProtectedFanGroupValidation', err);
 	            //TODO better error handling:
@@ -44625,7 +44648,7 @@ var SeatersSDK =
 
 
 /***/ },
-/* 811 */
+/* 812 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -44685,10 +44708,10 @@ var SeatersSDK =
 
 
 /***/ },
-/* 812 */
+/* 813 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(813)();
+	exports = module.exports = __webpack_require__(814)();
 	// imports
 	
 	
@@ -44699,7 +44722,7 @@ var SeatersSDK =
 
 
 /***/ },
-/* 813 */
+/* 814 */
 /***/ function(module, exports) {
 
 	/*
@@ -44755,10 +44778,10 @@ var SeatersSDK =
 
 
 /***/ },
-/* 814 */
+/* 815 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(813)();
+	exports = module.exports = __webpack_require__(814)();
 	// imports
 	
 	
@@ -44769,49 +44792,49 @@ var SeatersSDK =
 
 
 /***/ },
-/* 815 */
+/* 816 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"loading-outer\">\n    <div class=\"loading-inner\">\n        <div class=\"spinner\">\n            <div class=\"rect1\"></div>\n            <div class=\"rect2\"></div>\n            <div class=\"rect3\"></div>\n            <div class=\"rect4\"></div>\n            <div class=\"rect5\"></div>\n        </div>\n    </div>\n</div>";
 
 /***/ },
-/* 816 */
+/* 817 */
 /***/ function(module, exports) {
 
 	module.exports = "\n  <div class=\"strs-content\">\n    <div class=\"strs-row strs-flex strs-flex-column strs-flex-center-h strs-pb-10\">\n      <h3>\n        <span data-strs-trl=\"strs.login.title\">Login</span>\n      </h3>\n    </div>\n\n    <div class=\"strs-row\">\n      <form name=\"strs-login-form\" novalidate autocomplete=\"off\">\n        <!-- EMAIL -->\n        <div class=\"strs-columns strs-large-12\">\n          <div id=\"strs-email-error\" class=\"strs-input-error\"></div>\n          <input id=\"strs-email\" class=\"strs-input\" type=\"text\" data-strs-placeholder=\"strs.login.emailplaceholder\" required>\n        </div>\n\n        <!-- PASSWORD -->\n        <div class=\"strs-columns strs-large-12\">\n          <div id=\"strs-password-error\" class=\"strs-input-error\"></div>\n          <input id=\"strs-password\" class=\"strs-input\" type=\"password\"  data-strs-placeholder=\"strs.login.passwordplaceholder\" required>\n        </div>\n\n\n        <!-- Button -->\n        <div class=\"strs-columns strs-large-12\">\n          <button id=\"strs-btn-login\" type=\"button\" class=\"strs-button success expand\">\n            <span data-strs-trl=\"strs.login.btnlogin\">Login</span>\n          </button>\n        </div>\n\n        <!-- signup link -->\n        <div class=\"strs-columns strs-large-12 strs-hint strs-flex strs-flex-row strs-flex-center-h\">\n            <p>\n              <span data-strs-trl=\"strs.login.noaccountlabel\">No account yet ?</span>\n              <a id=\"strs-nav-signup\" href=\"#\" class=\"strs-link\" data-strs-trl=\"strs.login.signuplink\">Signup here !</a>\n            </p>\n        </div>\n\n      </form>\n    </div>\n  </div>\n";
 
 /***/ },
-/* 817 */
+/* 818 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"strs-content\">\n  <div class=\"strs-row strs-flex strs-flex-column strs-flex-center-h strs-pb-10\">\n    <h3>\n      <span data-strs-trl=\"strs.signup.title\">Sign up</span>\n    </h3>\n  </div>\n  <div class=\"strs-row\">\n    <form name=\"signupForm\" class=\"\"novalidate autocomplete=\"off\">\n      <!-- novalidate prevents HTML5 validation since we will be validating ourselves -->\n\n        <!-- FIRST NAME -->\n        <div class=\"strs-columns strs-large-6 strs-l-rpadding\">\n          <div id=\"strs-firstname-error\" class=\"strs-input-error\"></div>\n          <input id=\"strs-firstname\" class=\"strs-input\" placeholder=\"First Name\" type=\"text\" data-strs-placeholder=\"strs.signup.firstnameplaceholder\" required>\n        </div>\n\n        <!-- LAST NAME -->\n        <div class=\"strs-columns strs-large-6\">\n          <div id=\"strs-lastname-error\" class=\"strs-input-error\"></div>\n          <input id=\"strs-lastname\" class=\"strs-input\" placeholder=\"Last Name\" type=\"text\" data-strs-placeholder=\"strs.signup.lastnameplaceholder\" required>\n        </div>\n\n\n      <!-- EMAIL -->\n        <div class=\"strs-columns strs-large-12\">\n          <div id=\"strs-email-error\" class=\"strs-input-error\"></div>\n          <input id=\"strs-email\" class=\"strs-input\" placeholder=\"Email\" type=\"text\" data-strs-placeholder=\"strs.signup.emailplaceholder\" required>\n        </div>\n\n      <!-- PASSWORD -->\n        <div class=\"strs-columns strs-large-12\">\n          <div id=\"strs-password-error\" class=\"strs-input-error\"></div>\n          <input id=\"strs-password\" class=\"strs-input\" placeholder=\"Password\" type=\"password\" data-strs-placeholder=\"strs.signup.passwordplaceholder\" required>\n        </div>\n\n      <!-- T&C -->\n      <div class=\"strs-columns strs-large-12 strs-hint strs-pb-10\">\n          <p>\n            <span data-strs-trl=\"strs.signup.infotext1label\">By signing up, you agree to Seaters'</span>\n            <a href=\"http://getseaters.com/user-agreement/\" class=\"strs-link\" data-strs-trl=\"strs.signup.termsandconditionslink\">Terms &amp; Conditions</a>\n            <span data-strs-trl=\"strs.signup.infotext2label\"> and </span>\n            <a href=\"http://getseaters.com/privacy/\" class=\"strs-link\" data-strs-trl=\"strs.signup.privacypolicylink\">Privacy Policy</a>\n          </p>\n      </div>\n\n      <!-- SUBMIT BUTTON  -->\n        <div class=\"strs-columns strs-large-12\">\n          <button id=\"strs-btn-signup\" class=\"strs-button success expand\" type=\"button\">\n            <span data-strs-trl=\"strs.signup.signupbutton\">Sign up</span>\n          </button>\n        </div>\n\n    </form>\n  </div>\n</div>\n\n\n\n";
 
 /***/ },
-/* 818 */
+/* 819 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"strs-content\">\n  <div class=\"strs-flex strs-flex-column strs-flex-center-h strs-pb-10\">\n    <h3>\n      <span data-strs-trl=\"strs.tickets.title\">Select number of seats</span>\n    </h3>\n  </div>\n\n  <div class=\"strs-flex strs-flex-column strs-flex-center-h\">\n    <div class=\"strs-row strs-collapse\">\n      <form class=\"strs-flex strs-flex-column strs-flex-center-h strs-small-12\" novalidate autocomplete=\"off\">\n        <div class=\"strs-columns strs-small-6\">\n          <div id=\"strs-seats-error\" class=\"strs-input-error\"></div>\n          <select id=\"strs-seats\" class=\"strs-select\">\n          </select>\n        </div>\n        <div>\n          <button id=\"strs-btn-bookseats\" class=\"strs-button success\" type=\"button\" data-strs-trl=\"strs.tickets.bookbutton\">Book my seats</button>\n        </div>\n      </form>\n    </div>\n\n  </div>\n\n</div>\n";
 
 /***/ },
-/* 819 */
+/* 820 */
 /***/ function(module, exports) {
 
 	module.exports = "\n    <div class=\"strs-content strs-flex strs-flex-column strs-flex-center-h\">\n      <div class=\"strs-pb-10\">\n        <h3>\n          <span data-strs-trl=\"strs.validateemail.title\">Welcome. It's nice to meet you,</span>\n          <span id=\"strs-span-firstname\"></span>\n        </h3>\n      </div>\n      <div class=\"strs-pb-10\">\n        <span data-strs-trl=\"strs.validateemail.welcomemessage\">We just sent you a confirmation email. In order to confirm your registration, please enter the code mentioned in the email below.</span>\n      </div>\n      <div class=\"strs-row strs-collapse\">\n        <form name=\"validateForm\" class=\"strs-flex strs-flex-column strs-flex-center-h strs-small-12\" novalidate autocomplete=\"off\">\n          <div class=\"strs-columns strs-small-12\">\n            <div id=\"strs-confirmation-code-error\" class=\"strs-input-error\"></div>\n            <input id=\"strs-confirmation-code\" class=\"strs-input\" type=\"text\" name=\"confirmationCode\" placeholder=\"Your personal code\" data-strs-placeholder=\"strs.validateemail.emailcodeplaceholder\" required>\n          </div>\n          <div>\n            <button id=\"strs-btn-validate\" class=\"strs-button success\" type=\"button\" data-strs-trl=\"strs.validateemail.confirmbutton\">Confirm email</button>\n          </div>\n        </form>\n      </div>\n    </div>\n";
 
 /***/ },
-/* 820 */
+/* 821 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"strs-content\">\n\n  <div class=\"strs-row strs-flex strs-flex-column strs-flex-center-h strs-pb-10\">\n    <h3 id=\"strs-wl-eventname\"></h3>\n    <div id=\"strs-wl-closed\">\n      <h4 class=\"strs-wl-closed strs-pb-10\" data-strs-trl=\"strs.wl.closedwllabel\">Closed</h4>\n      <span>\n        <p class=\"strs-mb-none\" data-strs-trl=\"strs.wl.closedwlinfolabel\">This wish list has been closed.</p>\n        <p>\n          <span data-strs-trl=\"strs.wl.visitfglabel\">Visit fan group</span>\n          <a id=\"strs-fg-slug\" href=\"http://www.seaters.com/myfangroup\" class=\"strs-link\"></a>\n        </p>\n      </span>\n    </div>\n  </div>\n\n  <div id=\"strs-wl-open\">\n    <div class=\"strs-row\">\n      <div class=\"strs-columns strs-small-6 strs-flex strs-flex-column strs-flex-center-h strs-wl-data-title\" data-strs-trl=\"strs.wl.likelihood\">Likelihood</div>\n      <div class=\"strs-columns strs-small-6 strs-flex strs-flex-column strs-flex-center-h strs-wl-data-title\" data-strs-trl=\"strs.wl.rank\">Rank</div>\n    </div>\n    <div class=\"strs-row strs-pb-10\">\n      <div id=\"strs-wl-likelihood\" class=\"strs-columns strs-small-6 strs-flex strs-flex-column strs-flex-center-h strs-wl-data-value\">25.00 %</div>\n      <div id=\"strs-wl-rank\" class=\"strs-columns strs-small-6 strs-flex strs-flex-column strs-flex-center-h strs-wl-data-value\"># 1</div>\n    </div>\n  </div>\n\n  <div class=\"strs-row strs-collapse\">\n    <div class=\"strs-columns strs-large-12\">\n      <button id=\"strs-btn-close\" class=\"strs-button success expand\" type=\"button\" data-strs-trl=\"strs.wl.closebutton\">Close</button>\n    </div>\n  </div>\n\n\n</div>\n";
 
 /***/ },
-/* 821 */
+/* 822 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"strs-content strs-flex strs-flex-column strs-flex-center-h\">\n  <div class=\"strs-pb-10\">\n    <h3>\n      <span data-strs-trl=\"strs.fg.validatefgcodelabel\">Please enter the code to join the fan group</span>\n      <span id=\"strs-span-fangroup-name\"></span>\n    </h3>\n  </div>\n  <div class=\"strs-row strs-collapse\">\n    <form class=\"strs-flex strs-flex-column strs-flex-center-h strs-small-12\" novalidate autocomplete=\"off\">\n      <div class=\"strs-columns strs-small-12\">\n        <div id=\"strs-fangroup-code-error\" class=\"strs-input-error\"></div>\n        <input id=\"strs-fangroup-code\" class=\"strs-input\" type=\"text\" name=\"fangroupCode\" data-strs-placeholder=\"strs.fg.fgcodeplaceholder\" required>\n      </div>\n      <div>\n        <button id=\"strs-btn-joinfg\" class=\"strs-button success\" type=\"button\" data-strs-trl=\"strs.fg.joinbutton\">Join this fan group</button>\n      </div>\n    </form>\n  </div>\n</div>\n";
 
 /***/ },
-/* 822 */
+/* 823 */
 /***/ function(module, exports) {
 
 	module.exports = [
@@ -45106,7 +45129,7 @@ var SeatersSDK =
 	];
 
 /***/ },
-/* 823 */
+/* 824 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";

@@ -350,20 +350,13 @@ export class JwlFlowService {
       //Verify protection code
       this.enableButton('strs-btn-joinfg',false);
       return this.fanGroupService.joinProtectedFanGroup(fanGroup, fanGroupCode)
-        .then(
-          (fg) =>  {
-            console.log("membership");
-            console.log(fg);
-            return Promise.resolve(fg)
-          }
-          ,
-          err => {
-            this.enableButton('strs-btn-joinfg',true);
-            var message = this.extractMsgAndLogError('doProtectedFanGroupValidation', err);
-            //TODO better error handling:
-            this.modalService.showFieldError('strs-fangroup-code-error',"Invalid code");
-            return this.endoftheline();
-          });
+        .then(fg => fg, err => {
+          this.enableButton('strs-btn-joinfg',true);
+          var message = this.extractMsgAndLogError('doProtectedFanGroupValidation', err);
+          //TODO better error handling:
+          this.modalService.showFieldError('strs-fangroup-code-error',"Invalid code");
+          return this.endoftheline();
+        });
     }
 
 

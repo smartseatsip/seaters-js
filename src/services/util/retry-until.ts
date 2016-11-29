@@ -1,5 +1,7 @@
 import { Promise } from 'es6-promise';
 
+import  { DeferredPromise } from './deferred-promise';
+
 export type PromiseFn<T> = () => Promise<T>;
 
 export type ConditionFn<T> = (t:T) => boolean;
@@ -18,6 +20,7 @@ export function retryUntil<T> (
     limit: number,
     delay: number
 ): Promise<T> {
+    var deferred = new DeferredPromise<T> ();
 
     function retry (attempt) {
         if(attempt > limit) {
@@ -29,13 +32,15 @@ export function retryUntil<T> (
             try {
                 conditionIsMet = conditionFn(result);
             } catch (e) {
-                console.log('[retryUntil] - condition quit with an exception', e.stack);
-                return Promise.reject(e);
+                console.log('[retryUntil] - condition quit with an exception', e.message || e, e.stack);
+                deferred.reject(e);
+                return;
             }
 
             if (conditionIsMet) {
                 console.log('[retryUntil] - condition has been met');
-                return Promise.resolve(result);
+                deferred.resolve(result);
+                return;
             } else {
                 // delay the next attempt if needed
                 return timeoutPromise(delay || 0)
@@ -44,11 +49,11 @@ export function retryUntil<T> (
         });
     }
 
-    return retry(1);
-
+    retry(1);
+    return deferred.promise;
 }
 
-function timeoutPromise (timeInMs): Promise<void> {
+export function timeoutPromise (timeInMs): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         setTimeout(() => resolve(), timeInMs);
     });
