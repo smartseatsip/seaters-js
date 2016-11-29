@@ -14,7 +14,7 @@ angular.module('app',[])
         var wlId = (uuidMatches.length > 0 && uuidMatches[0]) || '????';
         var headPart = '<script src="https://sdk.dev-seaters.com/seaters.bundle.js" type="text/javascript"></script>\n' +
             '<link rel="stylesheet" href="https://sdk.dev-seaters.com/assets/join-wl/css/seaters-join-wl.css">\n';
-        var bodyPart = '<button class="strs-joinwl-btn strs-joinwl-btn-'+this.selectedButton.name+'" onclick="SeatersSDK.joinwl(\''+wlId+'\')"></button>';
+        var bodyPart = '<button class="strs-joinwl-btn strs-joinwl-btn-'+this.selectedButton.name+'" onclick="SeatersSDK.joinWl(\''+wlId+'\')"></button>';
         this.code = headPart + bodyPart;
         
         var sandboxSrc = '<html><head>'+headPart+'</head><body>'+bodyPart+'</body></html>';
