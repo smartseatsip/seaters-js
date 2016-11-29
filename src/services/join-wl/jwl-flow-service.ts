@@ -124,20 +124,20 @@ export class JwlFlowService {
       return this.waitingListService.getExtendedWaitingList(wlId)
       .then(wl => {
         return this.fanGroupService.getExtendedFanGroup(wl.groupId)
-        .then( fg => { return { fg: fg, wl: wl } })
-        .then( data => this.chooseSeats(wl).then(numberOfSeats => {
-          return {
-            fg: data.fg,
-            wl: data.wl,
-            numberOfSeats: numberOfSeats
-          };
-        }));
+        .then( fg => { return { fg: fg, wl: wl } });
       })
       .then(data => {
         var wl = data.wl, fg = data.fg;
         return this.ensureFGAndWLAreEligable(fg, wl)
         .then(() => this.joinFanGroupIfNeeded(fg))
-        .then(() => this.joinWaitingListIfNeeded(wl, data.numberOfSeats))
+        .then (() => this.chooseSeats(wl)).then(numberOfSeats => {
+            return {
+              fg: data.fg,
+              wl: data.wl,
+              numberOfSeats: numberOfSeats
+            };
+          })
+        .then((data) => this.joinWaitingListIfNeeded(wl, data.numberOfSeats))
       })
     }
 
