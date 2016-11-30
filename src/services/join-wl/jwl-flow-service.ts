@@ -352,9 +352,8 @@ export class JwlFlowService {
       return this.fanGroupService.joinProtectedFanGroup(fanGroup, fanGroupCode)
         .then(fg => fg, err => {
           this.enableButton('strs-btn-joinfg',true);
-          var message = this.extractMsgAndLogError('doProtectedFanGroupValidation', err);
-          //TODO better error handling:
-          this.modalService.showFieldError('strs-fangroup-code-error',"Invalid code");
+          var translatedErrorMessage = this.translationService.translateFromStore(translationStore, err.message, this.locale);
+          this.modalService.showFieldError('strs-fangroup-code-error', translatedErrorMessage);
           return this.endoftheline();
         });
     }

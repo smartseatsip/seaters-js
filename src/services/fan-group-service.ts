@@ -71,15 +71,50 @@ export class FanGroupService {
         });
     }
 
-    joinProtectedFanGroup (fg:FanGroup, code: string): Promise<ExtendedFanGroup> {
-      return this.api.fan.joinProtectedFanGroup(fg, code)
-        .then(() => {
+
+    checkUnlockStatus(fg) {
+      if(!fg.membership.request) {
+        throw 'strs.api.servererror';
+      }
+      else if(fg.membership.request.status === 'PENDING') {
+        return false;
+      }
+      else if(fg.membership.request.status === 'ACCEPTED') {
+        return true;
+      }
+      else if(fg.membership.request.status === 'REJECTED') {
+        throw 'strs.api.fg.invalidcode'
+      }
+      else {
+        throw 'strs.api.servererror';
+      }
+    }
+
+
+    joinProtectedFanGroup (fg:FanGroup, code: string): Promise<Object> {
+
+      return this.getExtendedFanGroup(fg.id)
+        .then( (fg) => this.api.fan.joinProtectedFanGroup(fg, code) )
+        .then (() => {
           return retryUntil(
             () => this.getExtendedFanGroup(fg.id),
-            (fg) => (fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_LEAVE) ,
+            (fg) => this.checkUnlockStatus(fg) ,
             10,
             1000
-          );
+          )
+            .then (
+              (fg) => {
+                return retryUntil(
+                  () => this.getExtendedFanGroup(fg.id),
+                  (fg) => fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_LEAVE ,
+                  10,
+                  1000
+                )
+              },
+              err =>  {
+                return Promise.reject(Error(err));
+              }
+            );
         });
     }
 

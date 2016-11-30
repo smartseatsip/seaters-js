@@ -1,5 +1,23 @@
 [
   {
+    "key": "strs.api.servererror",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Unknown server problem"
+      }
+    ]
+  },
+  {
+    "key": "strs.api.fg.invalidcode",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Invalid fan group code"
+      }
+    ]
+  },
+  {
     "key": "strs.forms.mandatory",
     "translations": [
       {
