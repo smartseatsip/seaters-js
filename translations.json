@@ -81,20 +81,11 @@
     ]
   },
   {
-    "key": "strs.login.noaccountlabel",
-    "translations": [
-      {
-        "locale": "en",
-        "translation": "No account yet ?"
-      }
-    ]
-  },
-  {
     "key": "strs.login.signuplink",
     "translations": [
       {
         "locale": "en",
-        "translation": "Signup here !"
+        "translation": "No account yet ? Signup here !"
       }
     ]
   },

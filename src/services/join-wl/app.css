@@ -1060,8 +1060,8 @@ html {
   display: inline-block;
   padding: 1rem 2rem 1.0625rem 2rem;
   font-size: 1rem;
-  background-color: #008CBA;
-  border-color: #007095;
+  background-color: #3E82F7;
+  border-color: #3E82F7;
   color: #FFFFFF;
   transition: background-color 300ms ease-out; }
 
@@ -1084,7 +1084,7 @@ html {
   border-color: #368a55;
   color: #FFFFFF; }
 .strs-button.success:hover, .strs-button.success:focus {
-  background-color: #10CCC2; }
+  background-color: #3B78E7; }
 .strs-button.success:hover, .strs-button.success:focus {
   color: #FFFFFF; }
 
@@ -1151,11 +1151,11 @@ html {
   opacity: 0.7; }
 
 .strs-button.disabled:hover, .strs-button.disabled:focus, .strs-button[disabled]:hover, .strs-button[disabled]:focus {
-  background-color: #10CCC2; }
+  background-color: #3E82F7; }
 .strs-button.disabled:hover, .strs-button.disabled:focus, .strs-button[disabled]:hover, .strs-button[disabled]:focus {
   color: #FFFFFF; }
 .strs-button.disabled:hover, .strs-button.disabled:focus, .strs-button[disabled]:hover, .strs-button[disabled]:focus {
-  background-color: #008CBA; }
+  background-color: #7da7f1; }
 
 .strs-button.disabled.secondary, .strs-button[disabled].secondary {
   background-color: #e7e7e7;
@@ -1172,13 +1172,13 @@ html {
   background-color: #e7e7e7; }
 
 .strs-button.disabled.success, .strs-button[disabled].success {
-  background-color: #62ccc6;;
+  background-color: #7da7f1;;
   color: #FFFFFF;
   box-shadow: none;
   cursor: default;
   opacity: 0.7; }
 .strs-button.disabled.success:hover, .strs-button.disabled.success:focus, .strs-button[disabled].success:hover, .strs-button[disabled].success:focus {
-  background-color: #62ccc6; }
+  background-color: #7da7f1; }
 .strs-button.disabled.success:hover, .strs-button.disabled.success:focus, .strs-button[disabled].success:hover, .strs-button[disabled].success:focus {
   color: #FFFFFF; }
 
@@ -1480,14 +1480,14 @@ a.strs-link {
   font-weight: bold;
   font-style: normal;
   line-height: 1.5;
-  color:#10CCC2 !important;
+  color:#3E82F7 !important;
   text-decoration: none;
 }
 a.strs-link:hover {
   cursor: pointer;
 }
 a.strs-link:active, a.strs-link:visited  {
-  color:#10CCC2 !important;
+  color:#3E82F7 !important;
   font-weight: bold;
 }
 
@@ -1506,8 +1506,8 @@ a.strs-link:active, a.strs-link:visited  {
   text-decoration: none;
   transition: background-color .3s ease-out;
   cursor: pointer;
-  background-color: #10CCC2;
-  border-radius: 1000px;
+  background-color: #3E82F7;
+  border-radius: 5px;
 }
 
 .strs-button.success.expand {
