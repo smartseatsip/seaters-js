@@ -27,11 +27,29 @@
     ]
   },
   {
-    "key": "strs.error.subtitle",
+    "key": "strs.error.unexpected.subtitle",
     "translations": [
       {
         "locale": "en",
         "translation": "An unexpected problem has occured"
+      }
+    ]
+  },
+  {
+    "key": "strs.error.unabletojoinfg.subtitle",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Unable to join fan group"
+      }
+    ]
+  },
+  {
+    "key": "strs.error.unabletojoinfg.message",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "This fan group cannot be joined at this time. Contact Seaters for more information on this."
       }
     ]
   },

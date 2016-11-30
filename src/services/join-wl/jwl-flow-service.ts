@@ -59,13 +59,18 @@ export class JwlFlowService {
       (<HTMLButtonElement>this.modalService.findElementById(btnId)).disabled = !enabled;
     }
 
-    private showErrorForm(message:string): Promise<void> {
+    private showErrorForm(message: string, subtitle? :string): Promise<void> {
       this.modalService.setModalContent(errorHtml);
 
       var deferred = this.defer<void>();
 
       var errorMsg = <HTMLElement>this.modalService.findElementById('strs-error-message');
       errorMsg.innerHTML = message;
+
+      if (subtitle) {
+        var errorSubtitle = <HTMLElement>this.modalService.findElementById('strs-error-subtitle');
+        errorSubtitle.innerHTML = subtitle;
+      }
 
       var closeBtn = this.modalService.findElementById('strs-btn-close');
       closeBtn.onclick = () => {
@@ -145,6 +150,7 @@ export class JwlFlowService {
               .then( fg => { return { fg: fg, wl: wl } });
           },
           (err) => {
+            //TODO : translate error messages - backend changes needed first
             var message = JSON.parse(this.extractMsgAndLogError('ensureFanHasJoinedFgAndWl', err));
             this.showErrorForm(message.errorMsg);
           })
@@ -166,7 +172,7 @@ export class JwlFlowService {
     private checkFanGroupEligability (fg: ExtendedFanGroup) {
       return fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_LEAVE ||
         fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_JOIN ||
-        fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_UNLOCK
+        (fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_UNLOCK && fg.accessMode === 'CODE_PROTECTED') //Only consider code protected for now
     }
 
     private checkWaitingListEligability (wl: ExtendedWaitingList) {
@@ -176,11 +182,9 @@ export class JwlFlowService {
     private ensureFGAndWLAreEligable (fg: ExtendedFanGroup, wl: ExtendedWaitingList): Promise<void> {
       console.log('[JwlFlowService] ensuring FG and WL are eligable for JWL');
       if (!(this.checkFanGroupEligability(fg) && this.checkWaitingListEligability(wl))) {
-        this.modalService.setModalContent(
-          'To join this wish list, visit https://seaters.com/'+fg.slug+'/'+wl.waitingListId,
-          //TODO: make template
-        );
-        return this.endoftheline<void>();
+        var errSubtitle = this.translationService.translateFromStore(translationStore, 'strs.error.unabletojoinfg.subtitle', this.locale);
+        var errMessage = this.translationService.translateFromStore(translationStore, 'strs.error.unabletojoinfg.message', this.locale);
+        return this.showErrorForm(errMessage, errSubtitle);
       } else {
         return Promise.resolve();
       }
