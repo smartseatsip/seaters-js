@@ -225,15 +225,21 @@
       }
     ]
   },
-
-
-
+  {
+    "key": "strs.wl.seats",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Number of seats"
+      }
+    ]
+  },
   {
     "key": "strs.wl.likelihood",
     "translations": [
       {
         "locale": "en",
-        "translation": "Likelihood"
+        "translation": "Your probability to receive tickets"
       }
     ]
   },
@@ -242,7 +248,7 @@
     "translations": [
       {
         "locale": "en",
-        "translation": "Rank"
+        "translation": "Your position in the wish list"
       }
     ]
   },

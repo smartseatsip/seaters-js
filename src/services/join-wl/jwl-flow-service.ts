@@ -213,6 +213,8 @@ export class JwlFlowService {
         waitingListLikelihood.innerHTML = wl.position.likelihood+" %";
         var waitingListRank = <HTMLElement>this.modalService.findElementById('strs-wl-rank');
         waitingListRank.innerHTML = "# "+wl.position.rank;
+        var waitingListNumberOfSeats = <HTMLElement>this.modalService.findElementById('strs-wl-seats');
+        waitingListNumberOfSeats.innerHTML = String(wl.position.numberOfSeats);
       }
       else if (wl.waitingListStatus === 'CLOSED') {
         displaySection = this.modalService.findElementById('strs-wl-closed');
