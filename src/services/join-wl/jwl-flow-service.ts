@@ -302,8 +302,9 @@ export class JwlFlowService {
       return this.sessionService.doEmailPasswordSignUp(email, password, firstname, lastname)
       .then(fan => { return this.askToValidateEmail(fan); }, err => {
           this.enableButton('strs-btn-signup', true);
-          var message = this.extractMsgAndLogError('doSignup', err);
-          this.modalService.showFieldError('strs-email-error', message);
+          var message = JSON.parse(this.extractMsgAndLogError('doSignup', err));
+          //TODO: replace by translatable error messages (API backend change needed)
+          this.modalService.showFieldError('strs-email-error', message.message);
           return this.endoftheline();
       });
     }
