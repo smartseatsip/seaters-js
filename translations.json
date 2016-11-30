@@ -18,6 +18,33 @@
     ]
   },
   {
+    "key": "strs.error.title",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Error"
+      }
+    ]
+  },
+  {
+    "key": "strs.error.subtitle",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "An unexpected problem has occured"
+      }
+    ]
+  },
+  {
+    "key": "strs.error.closebutton",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Close"
+      }
+    ]
+  },
+  {
     "key": "strs.forms.mandatory",
     "translations": [
       {

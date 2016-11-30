@@ -20,6 +20,7 @@ const ticketsHtml: string = require('./tickets.html');
 const validateHtml: string = require('./validate.html');
 const wlHtml: string = require('./wl.html');
 const fgCodeHtml: string = require('./fgcode.html');
+const errorHtml: string = require('./error.html');
 const translationStore = new TranslationStore(require('../../../translations.json'));
 
 export enum JWL_EXIT_STATUS {
@@ -56,6 +57,22 @@ export class JwlFlowService {
      */
     private enableButton(btnId: string, enabled:boolean) {
       (<HTMLButtonElement>this.modalService.findElementById(btnId)).disabled = !enabled;
+    }
+
+    private showErrorForm(message:string): Promise<void> {
+      this.modalService.setModalContent(errorHtml);
+
+      var deferred = this.defer<void>();
+
+      var errorMsg = <HTMLElement>this.modalService.findElementById('strs-error-message');
+      errorMsg.innerHTML = message;
+
+      var closeBtn = this.modalService.findElementById('strs-btn-close');
+      closeBtn.onclick = () => {
+        this.modalService.closeModal();
+        deferred.resolve(JWL_EXIT_STATUS.ERROR);
+      };
+      return deferred.promise;
     }
 
     /**
@@ -122,10 +139,15 @@ export class JwlFlowService {
       this.modalService.setModalContent(loadingHtml, loadingCss);
 
       return this.waitingListService.getExtendedWaitingList(wlId)
-      .then(wl => {
-        return this.fanGroupService.getExtendedFanGroup(wl.groupId)
-        .then( fg => { return { fg: fg, wl: wl } });
-      })
+      .then(
+          wl => {
+            return this.fanGroupService.getExtendedFanGroup(wl.groupId)
+              .then( fg => { return { fg: fg, wl: wl } });
+          },
+          (err) => {
+            var message = JSON.parse(this.extractMsgAndLogError('ensureFanHasJoinedFgAndWl', err));
+            this.showErrorForm(message.errorMsg);
+          })
       .then(data => {
         var wl = data.wl, fg = data.fg;
         return this.ensureFGAndWLAreEligable(fg, wl)
