@@ -1467,7 +1467,7 @@ select.strs-select[multiple] {
   font-weight: normal;
   font-size: 12px;
   line-height: 1.5;
-  color: #D16F6F;
+  color: #D16F6F !important;
   display: none;
 }
 
@@ -1477,7 +1477,7 @@ select.strs-select[multiple] {
   font-style: normal;
   font-weight: normal;
   line-height: 1.5;
-  color: grey;
+  color: grey !important;
 }
 
 a.strs-link {
@@ -1529,7 +1529,6 @@ a.strs-link:active, a.strs-link:visited  {
 
 .strs-wl-data-title {
   font-size:14px;
-  color: #A6A6A6;
 }
 .strs-wl-data-value {
   color: #10ccc2 !important;
