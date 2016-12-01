@@ -56,7 +56,9 @@ html {
   padding-left: 0.9375rem;
   padding-right: 0.9375rem;
   width: 100%;
-  float: left; }
+  float: left;
+  box-sizing: border-box;
+}
 .strs-column + .strs-column:last-child,
 .strs-columns + .strs-column:last-child, .strs-column +
 .strs-columns:last-child,
@@ -1441,8 +1443,11 @@ select.strs-select[multiple] {
 }
 
 @media only screen and (min-width: 64.0625em) {
-  .strs-l-rpadding {
-    padding-right: .9375rem!important;
+  .strs-pr-8 {
+    padding-right: 8px !important;
+  }
+  .strs-pl-8 {
+    padding-left: 8px !important;
   }
 }
 
