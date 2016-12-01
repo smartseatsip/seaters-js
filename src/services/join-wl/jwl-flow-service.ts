@@ -306,6 +306,11 @@ export class JwlFlowService {
       var deferred = this.defer<Fan>();
       var signupBtn = this.modalService.findElementById('strs-btn-signup');
       signupBtn.onclick = () => this.doSignup().then(deferred.resolve, deferred.reject);
+      var navToLogin = this.modalService.findElementById('strs-nav-login');
+      navToLogin.onclick = (evt) => {
+        evt.preventDefault();
+        this.showLogin().then(deferred.resolve, deferred.reject);
+      };
       return deferred.promise;
     }
 

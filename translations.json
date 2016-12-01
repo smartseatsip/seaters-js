@@ -208,6 +208,15 @@
     ]
   },
   {
+    "key": "strs.signup.loginlink",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "Already an account ? Login here"
+      }
+    ]
+  },
+  {
     "key": "strs.validateemail.title",
     "translations": [
       {
