@@ -4,26 +4,31 @@
     <meta charset="utf-8">
     <title>Seaters Library: Join WL button generator</title>
     <link rel="stylesheet" href="./generator.css">
-    <script type="text/javascript" src="/seaters.bundle.js"></script>
+    <script src="/seaters.bundle.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.0-rc.2/angular.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.0-rc.2/angular.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="./generator.js"></script>
+    <script src="./generator.js"></script>
   </head>
   <body ng-app="app">
-    <div class="container" ng-controller="GeneratorController as generator" ng-init="generator.selectedButton = generator.buttons[0]">
+    <div class="container" ng-controller="GeneratorController as generator">
       <h1>Join the Wish List&reg; button generator</h1>
       
       <h2>1. <u>Choose your button</u></h2>
 
       <div class="container">
-        <div class="row">
-          <div ng-repeat="button in generator.buttons" class="col-sm-4">
-              <input class="form-control" type="radio" ng-model="generator.selectedButton" ng-value="button" name="selectedButton">
-              <button ng-class="['strs-btn', button.cssClass]" ng-click="generator.selectedButton = button"></button>
-              <br />
+        <div class="row" ng-repeat="buttonRow in generator.buttons">
+          <div class="col-lg-6" ng-repeat="button in buttonRow">
+            <div class="row">
+              <div class="col-sm-4">
+                <input class="form-control" type="radio" ng-model="generator.selectedButton" ng-value="button" name="selectedButton">
+              </div>
+              <div class="col-sm-8">
+                <button ng-class="['strs-btn', button.cssClass]" ng-click="generator.selectedButton = button"></button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -32,20 +37,47 @@
 
       <h2>2. <u>Paste the link of your wish list</u></h2>
       
-      Url: <input type="text" class="form-control" ng-model="generator.wlUrl" />
-      
+      <form class="form-horizontal">
+        <div class="form-group">
+          <label class="control-label col-sm-2" for="wlUrl">Url</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" ng-model="generator.wlUrl" name="wlUrl" />
+          </div>
+        </div>
+      </form>
+
       <hr />
 
-      <h2>3. <u>Copy the code</u><i class="fa fa-refresh" ng-click="generator.renderCode()"></i></h2>
+      <h2>
+        3. <u>Copy the code</u>
+        <button class="btn" ng-click="generator.renderCode()"><i class="fa fa-fw fa-refresh"></i></button>
+        <button class="btn" ng-click="generator.copyCode()"><i class="fa fa-fw fa-copy"></i></button>
+      </h2>
       
-      <pre style="border: 1px black solid; width: 600px; height: 300px;">{{generator.code}}</pre>
-
-      <h3>Result</h3>
-      <div style="border: 1px black solid; padding: 10px; width: 100%;">
-          <iframe style="border:0;width:100%;height:300px;" id="sandbox"></iframe>
+      <div class="row">
+        <div class="col-lg-6">
+          <textarea id="code" class="code">{{generator.code}}</textarea>
+        </div>
+        <div class="col-lg-6">
+          <div class="sandbox-wrapper">
+            <iframe class="sandbox" id="sandbox"></iframe>
+          </div>
+        </div>
       </div>
+
+      <hr />
+
+      <h2>4. <u>Embed in your website</u></h2>
       
-      <br />
+      <p>For fast prototyping you can simply put the snippet wherever you want it to appear in your website.</p>
+      <p>For using the seaters integration in production you should consider the following points:</p>
+
+      <ul>
+        <li>Load the script tag, referring to seaters.bundle.js, only once in the document head</li>
+        <li>The css and button assets can be copied locally for better performance</li>
+        <li>Customize the join button even further by placing the on-click="SeatersSDK.joinWl(...)" on any element you want</li> 
+      </ul>
+
     </div>
   </body>
 </html>

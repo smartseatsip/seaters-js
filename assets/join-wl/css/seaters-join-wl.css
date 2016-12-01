@@ -29,3 +29,11 @@
 .strs-joinwl-btn-white {
     background-image: url("https://sdk.dev-seaters.com/assets/join-wl/images/btn-white-active.png");
 }
+
+.strs-joinwl-btn-navy {
+    background-image: url("/assets/join-wl/images/btn-navy.png");
+}
+
+.strs-joinwl-btn-navy:active {
+    background-image: url("/assets/join-wl/images/btn-navy-active.png");
+}
