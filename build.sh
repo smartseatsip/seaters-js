@@ -6,6 +6,7 @@ echo "building ${NAME} version ${VERSION}"
 
 npm install
 npm run typings install
+npm run gulp update-translations
 npm run gulp build:bundle
 #TODO run all tests
 rm -rf tmp

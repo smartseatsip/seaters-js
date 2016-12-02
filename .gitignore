@@ -8,3 +8,4 @@ npm-debug.log
 test-configs/*
 !test-configs/default.json
 tmp/
+translations.json
