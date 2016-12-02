@@ -40,6 +40,8 @@
     "jasmine-ts": "0.0.3",
     "json-loader": "^0.5.4",
     "node-sass": "^3.13.0",
+    "request": "^2.79.0",
+    "request-promise": "^4.1.1",
     "sass-loader": "^4.0.2",
     "serve-static": "^1.11.1",
     "source-map-support": "^0.4.6",

@@ -44938,15 +44938,6 @@ var SeatersSDK =
 
 	module.exports = [
 		{
-			"key": "strs.api.servererror",
-			"translations": [
-				{
-					"locale": "en",
-					"translation": "Unknown server problem"
-				}
-			]
-		},
-		{
 			"key": "strs.api.fg.invalidcode",
 			"translations": [
 				{
@@ -44956,38 +44947,11 @@ var SeatersSDK =
 			]
 		},
 		{
-			"key": "strs.error.title",
+			"key": "strs.api.servererror",
 			"translations": [
 				{
 					"locale": "en",
-					"translation": "Error"
-				}
-			]
-		},
-		{
-			"key": "strs.error.unexpected.subtitle",
-			"translations": [
-				{
-					"locale": "en",
-					"translation": "An unexpected problem has occured"
-				}
-			]
-		},
-		{
-			"key": "strs.error.unabletojoinfg.subtitle",
-			"translations": [
-				{
-					"locale": "en",
-					"translation": "Unable to join fan group"
-				}
-			]
-		},
-		{
-			"key": "strs.error.unabletojoinfg.message",
-			"translations": [
-				{
-					"locale": "en",
-					"translation": "This fan group cannot be joined at this time. Contact Seaters for more information on this."
+					"translation": "Unknown server problem"
 				}
 			]
 		},
@@ -45001,6 +44965,69 @@ var SeatersSDK =
 			]
 		},
 		{
+			"key": "strs.error.title",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Error"
+				}
+			]
+		},
+		{
+			"key": "strs.error.unabletojoinfg.message",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "This fan group cannot be joined at this time. Contact Seaters for more information on this."
+				}
+			]
+		},
+		{
+			"key": "strs.error.unabletojoinfg.subtitle",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Unable to join fan group"
+				}
+			]
+		},
+		{
+			"key": "strs.error.unexpected.subtitle",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "An unexpected problem has occured"
+				}
+			]
+		},
+		{
+			"key": "strs.fg.fgcodeplaceholder",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Fan group code"
+				}
+			]
+		},
+		{
+			"key": "strs.fg.joinbutton",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Join this fan group"
+				}
+			]
+		},
+		{
+			"key": "strs.fg.validatefgcodelabel",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Please enter the code to join the fan group"
+				}
+			]
+		},
+		{
 			"key": "strs.forms.mandatory",
 			"translations": [
 				{
@@ -45010,7 +45037,7 @@ var SeatersSDK =
 			]
 		},
 		{
-			"key": "strs.login.title",
+			"key": "strs.login.btnlogin",
 			"translations": [
 				{
 					"locale": "en",
@@ -45046,38 +45073,11 @@ var SeatersSDK =
 			]
 		},
 		{
-			"key": "strs.login.btnlogin",
+			"key": "strs.login.title",
 			"translations": [
 				{
 					"locale": "en",
-					"translation": "Login"
-				}
-			]
-		},
-		{
-			"key": "strs.signup.title",
-			"translations": [
-				{
-					"locale": "en",
-					"translation": "Sign up"
-				}
-			]
-		},
-		{
-			"key": "strs.signup.firstnameplaceholder",
-			"translations": [
-				{
-					"locale": "en",
-					"translation": "First Name"
-				}
-			]
-		},
-		{
-			"key": "strs.signup.lastnameplaceholder",
-			"translations": [
-				{
-					"locale": "en",
-					"translation": "Last Name"
+					"translation": "Sign in to seaters.com"
 				}
 			]
 		},
@@ -45091,11 +45091,11 @@ var SeatersSDK =
 			]
 		},
 		{
-			"key": "strs.signup.passwordplaceholder",
+			"key": "strs.signup.firstnameplaceholder",
 			"translations": [
 				{
 					"locale": "en",
-					"translation": "Password"
+					"translation": "First Name"
 				}
 			]
 		},
@@ -45118,11 +45118,29 @@ var SeatersSDK =
 			]
 		},
 		{
-			"key": "strs.signup.termsandconditionslink",
+			"key": "strs.signup.lastnameplaceholder",
 			"translations": [
 				{
 					"locale": "en",
-					"translation": "Terms & Conditions"
+					"translation": "Last Name"
+				}
+			]
+		},
+		{
+			"key": "strs.signup.loginlink",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Already an account ? Login here"
+				}
+			]
+		},
+		{
+			"key": "strs.signup.passwordplaceholder",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Password"
 				}
 			]
 		},
@@ -45145,11 +45163,56 @@ var SeatersSDK =
 			]
 		},
 		{
-			"key": "strs.signup.loginlink",
+			"key": "strs.signup.termsandconditionslink",
 			"translations": [
 				{
 					"locale": "en",
-					"translation": "Already an account ? Login here"
+					"translation": "Terms & Conditions"
+				}
+			]
+		},
+		{
+			"key": "strs.signup.title",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Sign up"
+				}
+			]
+		},
+		{
+			"key": "strs.tickets.bookbutton",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Book my seats"
+				}
+			]
+		},
+		{
+			"key": "strs.tickets.title",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Select number of seats"
+				}
+			]
+		},
+		{
+			"key": "strs.validateemail.confirmbutton",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Confirm email"
+				}
+			]
+		},
+		{
+			"key": "strs.validateemail.emailcodeplaceholder",
+			"translations": [
+				{
+					"locale": "en",
+					"translation": "Your personal code"
 				}
 			]
 		},
@@ -45172,29 +45235,29 @@ var SeatersSDK =
 			]
 		},
 		{
-			"key": "strs.validateemail.emailcodeplaceholder",
+			"key": "strs.wl.closebutton",
 			"translations": [
 				{
 					"locale": "en",
-					"translation": "Your personal code"
+					"translation": "Close"
 				}
 			]
 		},
 		{
-			"key": "strs.validateemail.confirmbutton",
+			"key": "strs.wl.closedwlinfolabel",
 			"translations": [
 				{
 					"locale": "en",
-					"translation": "Confirm email"
+					"translation": "This wish list has been closed."
 				}
 			]
 		},
 		{
-			"key": "strs.wl.seats",
+			"key": "strs.wl.closedwllabel",
 			"translations": [
 				{
 					"locale": "en",
-					"translation": "Number of seats"
+					"translation": "Closed"
 				}
 			]
 		},
@@ -45217,29 +45280,11 @@ var SeatersSDK =
 			]
 		},
 		{
-			"key": "strs.wl.closebutton",
+			"key": "strs.wl.seats",
 			"translations": [
 				{
 					"locale": "en",
-					"translation": "Close"
-				}
-			]
-		},
-		{
-			"key": "strs.wl.closedwllabel",
-			"translations": [
-				{
-					"locale": "en",
-					"translation": "Closed"
-				}
-			]
-		},
-		{
-			"key": "strs.wl.closedwlinfolabel",
-			"translations": [
-				{
-					"locale": "en",
-					"translation": "This wish list has been closed."
+					"translation": "Number of seats"
 				}
 			]
 		},
@@ -45249,51 +45294,6 @@ var SeatersSDK =
 				{
 					"locale": "en",
 					"translation": "Visit fan group"
-				}
-			]
-		},
-		{
-			"key": "strs.tickets.title",
-			"translations": [
-				{
-					"locale": "en",
-					"translation": "Select number of seats"
-				}
-			]
-		},
-		{
-			"key": "strs.tickets.bookbutton",
-			"translations": [
-				{
-					"locale": "en",
-					"translation": "Book my seats"
-				}
-			]
-		},
-		{
-			"key": "strs.fg.validatefgcodelabel",
-			"translations": [
-				{
-					"locale": "en",
-					"translation": "Please enter the code to join the fan group"
-				}
-			]
-		},
-		{
-			"key": "strs.fg.fgcodeplaceholder",
-			"translations": [
-				{
-					"locale": "en",
-					"translation": "Fan group code"
-				}
-			]
-		},
-		{
-			"key": "strs.fg.joinbutton",
-			"translations": [
-				{
-					"locale": "en",
-					"translation": "Join this fan group"
 				}
 			]
 		}
