@@ -65,13 +65,13 @@ export class ModalService {
 
         var modalServiceStyle = document.createElement('style');
         modalServiceStyle.innerHTML = modalServiceCss;
-        
+
         var body = document.getElementsByTagName('body')[0];
         body.appendChild(modalServiceStyle);
 
         this.overlay = document.createElement('div');
         this.overlay.id = 'seaters-overlay';
-        
+
         this.hideOverlay(false);// start hidden
 
         // register close actions
@@ -147,11 +147,15 @@ export class ModalService {
         this.setupModal();
         this.translationStore = translationStore;
         this.onClose = onClose;
+        var closeButton = <HTMLDivElement>document.createElement('div');
+        closeButton.className = 'strs-modal-close medium';
+        closeButton.onclick= ( () => this.hideOverlay(true));
         this.modalContent = <HTMLDivElement>document.createElement('div');
         var styleElement = <HTMLStyleElement>document.createElement('style');
         styleElement.innerHTML = style;
         this.modal.innerHTML = '';
         this.modal.appendChild(styleElement);
+        this.modal.appendChild(closeButton);
         this.modal.appendChild(this.modalContent);
         this.showOverlay();
     }

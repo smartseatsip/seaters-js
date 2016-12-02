@@ -19,4 +19,44 @@
     margin: 0px auto;
     margin-top: 200px;
     padding: 8px;
+    position:relative;
 }
+
+.strs-modal-close {
+    height: 20px;
+    width: 20px;
+    position: absolute;
+    top:15px;
+    right:10px;
+    box-sizing: border-box;
+    line-height: 20px;
+    display: inline-block;
+
+    &:before, &:after {
+      transform: rotate(-45deg);
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: 0;
+      margin-top: -5px;
+      margin-left: -25px;
+      display: block;
+      height: 4px;
+      width: 20px;
+      background-color: #CCC;
+      transition: all 0.2s ease-out;
+    }
+
+    &:after {
+      transform: rotate(45deg);
+    }
+}
+.strs-modal-close:hover {
+    cursor: pointer;
+
+    &:before, &:after {
+      background-color: #AAA;
+    }
+}
+
+
