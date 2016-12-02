@@ -66,6 +66,15 @@ export class ModalService {
         this.overlay.style.bottom = '0px';
         this.overlay.style.backgroundColor = 'rgba(30, 30, 30, 0.3)';
         this.overlay.style.display = 'none';
+        this.overlay.style.fontSize = '16px';
+        this.overlay.onclick = (evt) => {
+         if ((<HTMLElement>evt.target).id === this.overlay.id) {
+           this.hideOverlay();
+           if (this.onClose) {
+             this.onClose();
+           }
+         }
+        };
 
         this.onEscape(() => {
             this.hideOverlay();
@@ -187,7 +196,7 @@ export class ModalService {
         if (style) {
             var styleElement = <HTMLStyleElement>document.createElement('style');
             styleElement.innerHTML = style;
-            this.modalContent.appendChild(styleElement);         
+            this.modalContent.appendChild(styleElement);
         }
     }
 
