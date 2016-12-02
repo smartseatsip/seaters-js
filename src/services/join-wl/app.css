@@ -1402,6 +1402,7 @@ select.strs-select[multiple] {
   font-weight: normal;
   line-height: 1.5;
   font-size: 24px;
+  text-align: center;
 }
 
 /*
@@ -1431,12 +1432,18 @@ select.strs-select[multiple] {
 .strs-mb-none {
   margin-bottom: 0 !important;
 }
+.strs-mr-4 {
+  margin-right:  .3125rem !important;
+}
 .strs-pb-10 {
   padding-bottom: .8rem !important;
 }
 .strs-lr-4 {
   padding-left: .25rem !important;
   padding-right: .25rem !important;
+}
+.strs-text-center {
+  text-align: center;
 }
 .strs-text-right {
   text-align: right;
@@ -1464,6 +1471,15 @@ select.strs-select[multiple] {
   text-shadow: none;
 
   padding: 1rem 1rem!important;
+}
+
+.strs-section {
+  margin: 10px 0 25px !important;
+}
+
+.strs-section-title {
+  font-weight: bold;
+  text-align: center;
 }
 
 .strs-input-error {
@@ -1528,7 +1544,7 @@ a.strs-link:active, a.strs-link:visited  {
 }
 
 .strs-wl-closed {
-  color: #888;
+  color: #888 !important;
   text-align: center;
 }
 
@@ -1536,7 +1552,7 @@ a.strs-link:active, a.strs-link:visited  {
   font-size:14px;
 }
 .strs-wl-data-value {
-  color: #10ccc2 !important;
+  color: #2EA54F !important;
   font-size:14px;
   font-weight: bold;
   text-align: right;
@@ -1554,4 +1570,21 @@ a.strs-link:active, a.strs-link:visited  {
 
 #strs-wl-open, #strs-wl-closed {
   display: none;
+}
+
+.strs-checkmark {
+  display:inline-block;
+}
+.strs-checkmark:after{
+  /*Add another block-level blank space*/
+  content: '';
+  display: block;
+  /*Make it a small rectangle so the border will create an L-shape*/
+  width: 6px;
+  height: 13px;
+  /*Add a white border on the bottom and left, creating that 'L' */
+  border: solid #2EA54F;
+  border-width: 0 3px 3px 0;
+  /*Rotate the L 45 degrees to turn it into a checkmark*/
+  transform: rotate(45deg);
 }
