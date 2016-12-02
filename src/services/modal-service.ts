@@ -49,10 +49,11 @@ export class ModalService {
         this.overlay.style.display = 'block';
     }
 
-    private hideOverlay () {
+    private hideOverlay (invokeClose) {
+        if (this.overlay.style.display === 'none') { return; }
         console.log('[ModalService] hiding seaters overlay');
         this.overlay.style.display = 'none';
-        if (this.onClose) {
+        if (invokeClose && this.onClose) {
             this.onClose();
         }
     }
@@ -71,17 +72,15 @@ export class ModalService {
         this.overlay = document.createElement('div');
         this.overlay.id = 'seaters-overlay';
         
-        this.overlay.onclick = (evt) => {
-         if ((<HTMLElement>evt.target).id === this.overlay.id) {
-           this.hideOverlay();
-         }
-        };
+        this.hideOverlay(false);// start hidden
 
-        this.hideOverlay();// start hidden
-        
-        this.onEscape(() => {
-            this.hideOverlay();
-        });
+        // register close actions
+        this.overlay.onclick = (evt) => {
+            if ((<HTMLElement>evt.target).id === this.overlay.id) {
+                this.hideOverlay(true);
+            }
+        };
+        this.onEscape(() => this.hideOverlay(true));
 
         body.appendChild(this.overlay);
         return this.overlay;
@@ -189,7 +188,7 @@ export class ModalService {
     }
 
     closeModal () {
-        this.hideOverlay();
+        this.hideOverlay(true);
         this.modal.innerHTML = '';
     }
 

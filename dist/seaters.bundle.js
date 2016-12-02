@@ -44064,10 +44064,13 @@ var SeatersSDK =
 	        console.log('[ModalService] showing seaters overlay');
 	        this.overlay.style.display = 'block';
 	    };
-	    ModalService.prototype.hideOverlay = function () {
+	    ModalService.prototype.hideOverlay = function (invokeClose) {
+	        if (this.overlay.style.display === 'none') {
+	            return;
+	        }
 	        console.log('[ModalService] hiding seaters overlay');
 	        this.overlay.style.display = 'none';
-	        if (this.onClose) {
+	        if (invokeClose && this.onClose) {
 	            this.onClose();
 	        }
 	    };
@@ -44082,15 +44085,14 @@ var SeatersSDK =
 	        body.appendChild(modalServiceStyle);
 	        this.overlay = document.createElement('div');
 	        this.overlay.id = 'seaters-overlay';
+	        this.hideOverlay(false); // start hidden
+	        // register close actions
 	        this.overlay.onclick = function (evt) {
 	            if (evt.target.id === _this.overlay.id) {
-	                _this.hideOverlay();
+	                _this.hideOverlay(true);
 	            }
 	        };
-	        this.hideOverlay(); // start hidden
-	        this.onEscape(function () {
-	            _this.hideOverlay();
-	        });
+	        this.onEscape(function () { return _this.hideOverlay(true); });
 	        body.appendChild(this.overlay);
 	        return this.overlay;
 	    };
@@ -44178,7 +44180,7 @@ var SeatersSDK =
 	        }
 	    };
 	    ModalService.prototype.closeModal = function () {
-	        this.hideOverlay();
+	        this.hideOverlay(true);
 	        this.modal.innerHTML = '';
 	    };
 	    ModalService.prototype.findElementByClass = function (cssClass) {
