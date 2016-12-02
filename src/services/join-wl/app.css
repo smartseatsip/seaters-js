@@ -1,6 +1,3 @@
-html {
-  font-size: 16px;
-}
 
 .strs-left {
   float: left !important; }
@@ -18,7 +15,7 @@ html {
 /* Row and columns */
 .strs-row {
   margin: 0 auto;
-  max-width: 62.5rem;
+  max-width: 62.5em;
   width: 100%; }
 .strs-row:before, .strs-row:after {
   content: " ";
@@ -33,7 +30,7 @@ html {
   margin-left: 0;
   margin-right: 0; }
 .strs-row .strs-row {
-  margin: 0 -0.9375rem;
+  margin: 0 -0.9375em;
   max-width: none;
   width: auto; }
 .strs-row .strs-row:before, .strs-row .strs-row:after {
@@ -53,8 +50,8 @@ html {
 
 .strs-column,
 .strs-columns {
-  padding-left: 0.9375rem;
-  padding-right: 0.9375rem;
+  padding-left: 0.9375em;
+  padding-right: 0.9375em;
   width: 100%;
   float: left;
   box-sizing: border-box;
@@ -197,8 +194,8 @@ html {
   .strs-column,
   .strs-columns {
     position: relative;
-    padding-left: 0.9375rem;
-    padding-right: 0.9375rem;
+    padding-left: 0.9375em;
+    padding-right: 0.9375em;
     float: left; }
 
   .strs-small-1 {
@@ -313,8 +310,8 @@ html {
     margin-right: 0; }
   .strs-row.strs-small-uncollapse > .strs-column,
   .strs-row.strs-small-uncollapse > .strs-columns {
-    padding-left: 0.9375rem;
-    padding-right: 0.9375rem;
+    padding-left: 0.9375em;
+    padding-right: 0.9375em;
     float: left; } }
 @media only screen and (min-width: 40.0625em) {
   .strs-medium-push-0 {
@@ -440,8 +437,8 @@ html {
   .strs-column,
   .strs-columns {
     position: relative;
-    padding-left: 0.9375rem;
-    padding-right: 0.9375rem;
+    padding-left: 0.9375em;
+    padding-right: 0.9375em;
     float: left; }
 
   .strs-medium-1 {
@@ -556,8 +553,8 @@ html {
     margin-right: 0; }
   .strs-row.strs-medium-uncollapse > .strs-column,
   .strs-row.strs-medium-uncollapse > .strs-columns {
-    padding-left: 0.9375rem;
-    padding-right: 0.9375rem;
+    padding-left: 0.9375em;
+    padding-right: 0.9375em;
     float: left; }
 
   .strs-push-0 {
@@ -803,8 +800,8 @@ html {
   .strs-column,
   .strs-columns {
     position: relative;
-    padding-left: 0.9375rem;
-    padding-right: 0.9375rem;
+    padding-left: 0.9375em;
+    padding-right: 0.9375em;
     float: left; }
 
   .strs-large-1 {
@@ -919,8 +916,8 @@ html {
     margin-right: 0; }
   .strs-row.strs-large-uncollapse > .strs-column,
   .strs-row.strs-large-uncollapse > .strs-columns {
-    padding-left: 0.9375rem;
-    padding-right: 0.9375rem;
+    padding-left: 0.9375em;
+    padding-right: 0.9375em;
     float: left; }
 
   .strs-push-0 {
@@ -1054,14 +1051,14 @@ html {
   font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
   font-weight: normal;
   line-height: normal;
-  margin: 0 0 1.25rem;
+  margin: 0 0 1.25em;
   position: relative;
   text-align: center;
   text-decoration: none;
   text-transform: none;
   display: inline-block;
-  padding: 1rem 2rem 1.0625rem 2rem;
-  font-size: 1rem;
+  padding: 1em 2em 1.0625em 2em;
+  font-size: 1em;
   background-color: #3E82F7;
   border-color: #3E82F7;
   color: #FFFFFF;
@@ -1118,28 +1115,28 @@ html {
   color: #FFFFFF; }
 
 .strs-button.large {
-  padding: 1.125rem 2.25rem 1.1875rem 2.25rem;
-  font-size: 1.25rem; }
+  padding: 1.125em 2.25em 1.1875em 2.25em;
+  font-size: 1.25em; }
 .strs-button.small {
-  padding: 0.875rem 1.75rem 0.9375rem 1.75rem;
-  font-size: 0.8125rem; }
+  padding: 0.875em 1.75em 0.9375em 1.75em;
+  font-size: 0.8125em; }
 .strs-button.tiny {
-  padding: 0.625rem 1.25rem 0.6875rem 1.25rem;
-  font-size: 0.6875rem; }
+  padding: 0.625em 1.25em 0.6875em 1.25em;
+  font-size: 0.6875em; }
 .strs-button.expand {
-  padding: 1rem 2rem 1.0625rem 2rem;
-  font-size: 1rem;
-  padding-bottom: 1.0625rem;
-  padding-top: 1rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding: 1em 2em 1.0625em 2em;
+  font-size: 1em;
+  padding-bottom: 1.0625em;
+  padding-top: 1em;
+  padding-left: 1em;
+  padding-right: 1em;
   width: 100%; }
 .strs-button.left-align {
   text-align: left;
-  text-indent: 0.75rem; }
+  text-indent: 0.75em; }
 .strs-button.right-align {
   text-align: right;
-  padding-right: 0.75rem; }
+  padding-right: 0.75em; }
 .strs-button.radius {
   border-radius: 3px; }
 .strs-button.round {
@@ -1235,15 +1232,15 @@ html {
 
 /* Standard Forms */
 form {
-  margin: 0 0 1rem;
+  margin: 0 0 1em;
 }
 
 /* Using forms within rows, we need to set some defaults */
 form .strs-row .strs-row {
-  margin: 0 -0.5rem; }
+  margin: 0 -0.5em; }
 form .strs-row .strs-row .strs-column,
 form .strs-row .strs-row .strs-columns {
-  padding: 0 0.5rem; }
+  padding: 0 0.5em; }
 form .strs-row .strs-row.collapse {
   margin: 0; }
 form .strs-row .strs-row.collapse .strs-column,
@@ -1258,7 +1255,7 @@ form .strs-row input.strs-column,
 form .strs-row input.strs-columns,
 form .strs-row textarea.strs-column,
 form .strs-row textarea.strs-columns {
-  padding-left: 0.5rem; }
+  padding-left: 0.5em; }
 
 
 /* Basic input fields */
@@ -1281,9 +1278,9 @@ input.strs-input[type="number"] {
   font-weight: normal;
   font-style: normal;
   line-height: 1.3;
-  height: 2.3125rem;
-  margin: 0 0 1rem 0;
-  padding: 0.5rem;
+  height: 2.65em;
+  margin: 0 0 1.14em 0;
+  padding: 0.57em;
   width: 100%;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -1350,12 +1347,12 @@ select.strs-select {
   width: 100%;
   color: rgba(0, 0, 0, 0.75);
   font-family: inherit;
-  font-size: 0.875rem;
+  font-size: 0.875em;
   line-height: normal;
-  margin: 0 0 1rem 0;
-  padding: 0.5rem;
+  margin: 0 0 1em 0;
+  padding: 0.5em;
   border-radius: 0;
-  height: 2.3125rem; }
+  height: 2.3125em; }
 select.strs-select::-ms-expand {
   display: none; }
 select.strs-select.radius {
@@ -1433,14 +1430,14 @@ select.strs-select[multiple] {
   margin-bottom: 0 !important;
 }
 .strs-mr-4 {
-  margin-right:  .3125rem !important;
+  margin-right:  .3125em !important;
 }
 .strs-pb-10 {
-  padding-bottom: .8rem !important;
+  padding-bottom: .8em !important;
 }
 .strs-lr-4 {
-  padding-left: .25rem !important;
-  padding-right: .25rem !important;
+  padding-left: .25em !important;
+  padding-right: .25em !important;
 }
 .strs-text-center {
   text-align: center;
@@ -1470,7 +1467,7 @@ select.strs-select[multiple] {
   margin: 0;
   text-shadow: none;
 
-  padding: 1rem 1rem!important;
+  padding: 1em 1em!important;
 }
 
 .strs-section {
@@ -1523,11 +1520,11 @@ a.strs-link:active, a.strs-link:visited  {
   -webkit-appearance: none;
   -moz-appearance: none;
   font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
-  font-size: 1rem;
+  font-size: 1em;
   font-weight: 700;
   line-height: normal;
-  margin: 0 0 .3125rem;
-  padding: .6875rem 1.375rem .75rem;
+  margin: 0 0 .3125em;
+  padding: .6875em 1.375em .75em;
   position: relative;
   text-align: center;
   text-decoration: none;
@@ -1538,8 +1535,8 @@ a.strs-link:active, a.strs-link:visited  {
 }
 
 .strs-button.success.expand {
-  padding-left: .6875rem;
-  padding-right: .6875rem;
+  padding-left: .6875em;
+  padding-right: .6875em;
   width: 100%;
 }
 
