@@ -253,6 +253,15 @@
     ]
   },
   {
+    "key": "strs.wl.inwl",
+    "translations": [
+      {
+        "locale": "en",
+        "translation": "You are in the wish list"
+      }
+    ]
+  },
+  {
     "key": "strs.wl.seats",
     "translations": [
       {
@@ -266,7 +275,7 @@
     "translations": [
       {
         "locale": "en",
-        "translation": "Your probability to receive tickets"
+        "translation": "Your likelihood to receive tickets"
       }
     ]
   },
@@ -347,7 +356,7 @@
     "translations": [
       {
         "locale": "en",
-        "translation": "Fan group code"
+        "translation": "Code"
       }
     ]
   },
@@ -356,7 +365,7 @@
     "translations": [
       {
         "locale": "en",
-        "translation": "Join this fan group"
+        "translation": "Submit"
       }
     ]
   }
