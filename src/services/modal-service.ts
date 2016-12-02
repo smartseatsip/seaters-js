@@ -6,6 +6,8 @@ import { Array } from 'core-js/library';
 
 declare var require: any;
 
+const modalServiceCss = require('./modal-service.scss');
+
 export class ModalService {
 
     private overlay: HTMLElement;
@@ -50,6 +52,9 @@ export class ModalService {
     private hideOverlay () {
         console.log('[ModalService] hiding seaters overlay');
         this.overlay.style.display = 'none';
+        if (this.onClose) {
+            this.onClose();
+        }
     }
 
     private setupOverlay () {
@@ -57,33 +62,28 @@ export class ModalService {
             return this.overlay;
         }
 
+        var modalServiceStyle = document.createElement('style');
+        modalServiceStyle.innerHTML = modalServiceCss;
+        
+        var body = document.getElementsByTagName('body')[0];
+        body.appendChild(modalServiceStyle);
+
         this.overlay = document.createElement('div');
         this.overlay.id = 'seaters-overlay';
-        this.overlay.style.position = 'fixed';
-        this.overlay.style.left = '0px';
-        this.overlay.style.right = '0px';
-        this.overlay.style.top = '0px';
-        this.overlay.style.bottom = '0px';
-        this.overlay.style.backgroundColor = 'rgba(30, 30, 30, 0.3)';
-        this.overlay.style.display = 'none';
-        this.overlay.style.fontSize = '16px';
+        
         this.overlay.onclick = (evt) => {
          if ((<HTMLElement>evt.target).id === this.overlay.id) {
            this.hideOverlay();
-           if (this.onClose) {
-             this.onClose();
-           }
          }
         };
 
+        this.hideOverlay();// start hidden
+        
         this.onEscape(() => {
             this.hideOverlay();
-            if (this.onClose) {
-                this.onClose();
-            }
         });
 
-        document.getElementsByTagName('body')[0].appendChild(this.overlay);
+        body.appendChild(this.overlay);
         return this.overlay;
     }
 
@@ -95,19 +95,7 @@ export class ModalService {
 
         this.modal = document.createElement('div');
         this.modal.id = 'seaters-modal';
-        this.modal.style.marginLeft = 'auto 50%';
-        this.modal.style.marginRight = 'auto 50%';
-        this.modal.style.minHeight = '200px';
-        this.modal.style.backgroundColor = '#fff';
-        this.modal.style.borderRadius = '5px';
-        this.modal.style.boxShadow = '2px 2px 5px #888888';
-        this.modal.style.width = '332px';
-        this.modal.style.margin = '0px auto';
-        this.modal.style.marginTop = '200px';
-        this.modal.style.padding = '8px';
-
         this.overlay.appendChild(this.modal);
-
         return this.modal;
     }
 

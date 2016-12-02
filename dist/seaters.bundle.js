@@ -46,11 +46,11 @@ var SeatersSDK =
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	exports.version = "0.0.3";
+	exports.version = "0.0.4";
 	var seaters_client_1 = __webpack_require__(1);
 	exports.SeatersClient = seaters_client_1.SeatersClient;
 	exports.SeatersClientOptions = seaters_client_1.SeatersClientOptions;
-	var join_wl_1 = __webpack_require__(825);
+	var join_wl_1 = __webpack_require__(826);
 	exports.joinWl = join_wl_1.joinWl;
 
 
@@ -65,8 +65,8 @@ var SeatersSDK =
 	var waiting_list_service_1 = __webpack_require__(803);
 	var fan_group_service_1 = __webpack_require__(809);
 	var modal_service_1 = __webpack_require__(810);
-	var jwl_flow_service_1 = __webpack_require__(811);
-	var translation_service_1 = __webpack_require__(812);
+	var jwl_flow_service_1 = __webpack_require__(813);
+	var translation_service_1 = __webpack_require__(814);
 	var SeatersClient = (function () {
 	    function SeatersClient(options) {
 	        options = core.Object.assign({}, SeatersClient.DEFAULT_OPTIONS, options);
@@ -44041,6 +44041,7 @@ var SeatersSDK =
 	/// <reference path="../../node_modules/typescript/lib/lib.d.ts" />
 	"use strict";
 	var library_1 = __webpack_require__(2);
+	var modalServiceCss = __webpack_require__(811);
 	var ModalService = (function () {
 	    function ModalService(translationService) {
 	        this.translationService = translationService;
@@ -44072,22 +44073,20 @@ var SeatersSDK =
 	        if (this.overlay !== undefined) {
 	            return this.overlay;
 	        }
+	        var modalServiceStyle = document.createElement('style');
+	        modalServiceStyle.innerHTML = modalServiceCss;
+	        var body = document.getElementsByTagName('body')[0];
+	        body.appendChild(modalServiceStyle);
 	        this.overlay = document.createElement('div');
 	        this.overlay.id = 'seaters-overlay';
-	        this.overlay.style.position = 'fixed';
-	        this.overlay.style.left = '0px';
-	        this.overlay.style.right = '0px';
-	        this.overlay.style.top = '0px';
-	        this.overlay.style.bottom = '0px';
-	        this.overlay.style.backgroundColor = 'rgba(30, 30, 30, 0.3)';
-	        this.overlay.style.display = 'none';
+	        this.hideOverlay(); // start hidden
 	        this.onEscape(function () {
 	            _this.hideOverlay();
 	            if (_this.onClose) {
 	                _this.onClose();
 	            }
 	        });
-	        document.getElementsByTagName('body')[0].appendChild(this.overlay);
+	        body.appendChild(this.overlay);
 	        return this.overlay;
 	    };
 	    ModalService.prototype.setupModal = function () {
@@ -44096,16 +44095,6 @@ var SeatersSDK =
 	        }
 	        this.modal = document.createElement('div');
 	        this.modal.id = 'seaters-modal';
-	        this.modal.style.marginLeft = 'auto 50%';
-	        this.modal.style.marginRight = 'auto 50%';
-	        this.modal.style.minHeight = '200px';
-	        this.modal.style.backgroundColor = '#fff';
-	        this.modal.style.borderRadius = '5px';
-	        this.modal.style.boxShadow = '2px 2px 5px #888888';
-	        this.modal.style.width = '332px';
-	        this.modal.style.margin = '0px auto';
-	        this.modal.style.marginTop = '200px';
-	        this.modal.style.padding = '8px';
 	        this.overlay.appendChild(this.modal);
 	        return this.modal;
 	    };
@@ -44220,23 +44209,93 @@ var SeatersSDK =
 /* 811 */
 /***/ function(module, exports, __webpack_require__) {
 
+	exports = module.exports = __webpack_require__(812)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "#seaters-overlay {\n  position: fixed;\n  left: 0px;\n  right: 0px;\n  top: 0px;\n  bottom: 0px;\n  background-color: rgba(30, 30, 30, 0.3); }\n\n#seaters-modal {\n  margin-left: auto 50%;\n  margin-right: auto 50%;\n  min-height: 200px;\n  background-color: #fff;\n  border-radius: 5px;\n  box-shadow: 2px 2px 5px #888888;\n  width: 332px;\n  margin: 0px auto;\n  margin-top: 200px;\n  padding: 8px; }\n", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 812 */
+/***/ function(module, exports) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	// css base code, injected by the css-loader
+	module.exports = function() {
+		var list = [];
+	
+		// return the list of modules as css string
+		list.toString = function toString() {
+			var result = [];
+			for(var i = 0; i < this.length; i++) {
+				var item = this[i];
+				if(item[2]) {
+					result.push("@media " + item[2] + "{" + item[1] + "}");
+				} else {
+					result.push(item[1]);
+				}
+			}
+			return result.join("");
+		};
+	
+		// import a list of modules into the list
+		list.i = function(modules, mediaQuery) {
+			if(typeof modules === "string")
+				modules = [[null, modules, ""]];
+			var alreadyImportedModules = {};
+			for(var i = 0; i < this.length; i++) {
+				var id = this[i][0];
+				if(typeof id === "number")
+					alreadyImportedModules[id] = true;
+			}
+			for(i = 0; i < modules.length; i++) {
+				var item = modules[i];
+				// skip already imported module
+				// this implementation is not 100% perfect for weird media query combinations
+				//  when a module is imported multiple times with different media queries.
+				//  I hope this will never occur (Hey this way we have smaller bundles)
+				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+					if(mediaQuery && !item[2]) {
+						item[2] = mediaQuery;
+					} else if(mediaQuery) {
+						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+					}
+					list.push(item);
+				}
+			}
+		};
+		return list;
+	};
+
+
+/***/ },
+/* 813 */
+/***/ function(module, exports, __webpack_require__) {
+
 	"use strict";
 	var es6_promise_1 = __webpack_require__(806);
 	var waiting_list_service_1 = __webpack_require__(803);
 	var fan_group_service_1 = __webpack_require__(809);
-	var translation_service_1 = __webpack_require__(812);
+	var translation_service_1 = __webpack_require__(814);
 	// static assetss
-	var appCss = __webpack_require__(813);
-	var loadingCss = __webpack_require__(815);
-	var loadingHtml = __webpack_require__(816);
-	var loginHtml = __webpack_require__(817);
-	var signupHtml = __webpack_require__(818);
-	var ticketsHtml = __webpack_require__(819);
-	var validateHtml = __webpack_require__(820);
-	var wlHtml = __webpack_require__(821);
-	var fgCodeHtml = __webpack_require__(822);
-	var errorHtml = __webpack_require__(823);
-	var translationStore = new translation_service_1.TranslationStore(__webpack_require__(824));
+	var appCss = __webpack_require__(815);
+	var loadingCss = __webpack_require__(816);
+	var loadingHtml = __webpack_require__(817);
+	var loginHtml = __webpack_require__(818);
+	var signupHtml = __webpack_require__(819);
+	var ticketsHtml = __webpack_require__(820);
+	var validateHtml = __webpack_require__(821);
+	var wlHtml = __webpack_require__(822);
+	var fgCodeHtml = __webpack_require__(823);
+	var errorHtml = __webpack_require__(824);
+	var translationStore = new translation_service_1.TranslationStore(__webpack_require__(825));
 	(function (JWL_EXIT_STATUS) {
 	    JWL_EXIT_STATUS[JWL_EXIT_STATUS["JOINED"] = 0] = "JOINED";
 	    JWL_EXIT_STATUS[JWL_EXIT_STATUS["CANCELLED"] = 1] = "CANCELLED";
@@ -44726,7 +44785,7 @@ var SeatersSDK =
 
 
 /***/ },
-/* 812 */
+/* 814 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -44786,10 +44845,10 @@ var SeatersSDK =
 
 
 /***/ },
-/* 813 */
+/* 815 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(814)();
+	exports = module.exports = __webpack_require__(812)();
 	// imports
 	
 	
@@ -44800,66 +44859,10 @@ var SeatersSDK =
 
 
 /***/ },
-/* 814 */
-/***/ function(module, exports) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	// css base code, injected by the css-loader
-	module.exports = function() {
-		var list = [];
-	
-		// return the list of modules as css string
-		list.toString = function toString() {
-			var result = [];
-			for(var i = 0; i < this.length; i++) {
-				var item = this[i];
-				if(item[2]) {
-					result.push("@media " + item[2] + "{" + item[1] + "}");
-				} else {
-					result.push(item[1]);
-				}
-			}
-			return result.join("");
-		};
-	
-		// import a list of modules into the list
-		list.i = function(modules, mediaQuery) {
-			if(typeof modules === "string")
-				modules = [[null, modules, ""]];
-			var alreadyImportedModules = {};
-			for(var i = 0; i < this.length; i++) {
-				var id = this[i][0];
-				if(typeof id === "number")
-					alreadyImportedModules[id] = true;
-			}
-			for(i = 0; i < modules.length; i++) {
-				var item = modules[i];
-				// skip already imported module
-				// this implementation is not 100% perfect for weird media query combinations
-				//  when a module is imported multiple times with different media queries.
-				//  I hope this will never occur (Hey this way we have smaller bundles)
-				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-					if(mediaQuery && !item[2]) {
-						item[2] = mediaQuery;
-					} else if(mediaQuery) {
-						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-					}
-					list.push(item);
-				}
-			}
-		};
-		return list;
-	};
-
-
-/***/ },
-/* 815 */
+/* 816 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(814)();
+	exports = module.exports = __webpack_require__(812)();
 	// imports
 	
 	
@@ -44870,55 +44873,55 @@ var SeatersSDK =
 
 
 /***/ },
-/* 816 */
+/* 817 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"loading-outer\">\n    <div class=\"loading-inner\">\n        <div class=\"spinner\">\n            <div class=\"rect1\"></div>\n            <div class=\"rect2\"></div>\n            <div class=\"rect3\"></div>\n            <div class=\"rect4\"></div>\n            <div class=\"rect5\"></div>\n        </div>\n    </div>\n</div>";
 
 /***/ },
-/* 817 */
+/* 818 */
 /***/ function(module, exports) {
 
 	module.exports = "\n  <div class=\"strs-content\">\n    <div class=\"strs-row strs-flex strs-flex-column strs-flex-center-h strs-pb-10\">\n      <h3>\n        <span data-strs-trl=\"strs.login.title\">Login</span>\n      </h3>\n    </div>\n\n    <div class=\"strs-row\">\n      <form name=\"strs-login-form\" novalidate autocomplete=\"off\">\n        <!-- EMAIL -->\n        <div class=\"strs-columns strs-large-12\">\n          <div id=\"strs-email-error\" class=\"strs-input-error\"></div>\n          <input id=\"strs-email\" class=\"strs-input\" type=\"text\" data-strs-placeholder=\"strs.login.emailplaceholder\" required>\n        </div>\n\n        <!-- PASSWORD -->\n        <div class=\"strs-columns strs-large-12\">\n          <div id=\"strs-password-error\" class=\"strs-input-error\"></div>\n          <input id=\"strs-password\" class=\"strs-input\" type=\"password\"  data-strs-placeholder=\"strs.login.passwordplaceholder\" required>\n        </div>\n\n\n        <!-- Button -->\n        <div class=\"strs-columns strs-large-12\">\n          <button id=\"strs-btn-login\" type=\"button\" class=\"strs-button success expand\">\n            <span data-strs-trl=\"strs.login.btnlogin\">Login</span>\n          </button>\n        </div>\n\n        <!-- signup link -->\n        <div class=\"strs-columns strs-large-12 strs-hint strs-flex strs-flex-row strs-flex-center-h\">\n            <p>\n              <a id=\"strs-nav-signup\" href=\"#\" class=\"strs-link\" data-strs-trl=\"strs.login.signuplink\">No account yet ? Signup here !</a>\n            </p>\n        </div>\n\n      </form>\n    </div>\n  </div>\n";
 
 /***/ },
-/* 818 */
+/* 819 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"strs-content\">\n  <div class=\"strs-row strs-flex strs-flex-column strs-flex-center-h strs-pb-10\">\n    <h3>\n      <span data-strs-trl=\"strs.signup.title\">Sign up</span>\n    </h3>\n  </div>\n  <div class=\"strs-row\">\n    <form name=\"signupForm\" class=\"\"novalidate autocomplete=\"off\">\n      <!-- novalidate prevents HTML5 validation since we will be validating ourselves -->\n\n        <!-- FIRST NAME -->\n        <div class=\"strs-columns strs-large-6 strs-l-rpadding\">\n          <div id=\"strs-firstname-error\" class=\"strs-input-error\"></div>\n          <input id=\"strs-firstname\" class=\"strs-input\" placeholder=\"First Name\" type=\"text\" data-strs-placeholder=\"strs.signup.firstnameplaceholder\" required>\n        </div>\n\n        <!-- LAST NAME -->\n        <div class=\"strs-columns strs-large-6\">\n          <div id=\"strs-lastname-error\" class=\"strs-input-error\"></div>\n          <input id=\"strs-lastname\" class=\"strs-input\" placeholder=\"Last Name\" type=\"text\" data-strs-placeholder=\"strs.signup.lastnameplaceholder\" required>\n        </div>\n\n\n      <!-- EMAIL -->\n        <div class=\"strs-columns strs-large-12\">\n          <div id=\"strs-email-error\" class=\"strs-input-error\"></div>\n          <input id=\"strs-email\" class=\"strs-input\" placeholder=\"Email\" type=\"text\" data-strs-placeholder=\"strs.signup.emailplaceholder\" required>\n        </div>\n\n      <!-- PASSWORD -->\n        <div class=\"strs-columns strs-large-12\">\n          <div id=\"strs-password-error\" class=\"strs-input-error\"></div>\n          <input id=\"strs-password\" class=\"strs-input\" placeholder=\"Password\" type=\"password\" data-strs-placeholder=\"strs.signup.passwordplaceholder\" required>\n        </div>\n\n      <!-- T&C -->\n      <div class=\"strs-columns strs-large-12 strs-pb-10\">\n          <p class=\"strs-hint\">\n            <span data-strs-trl=\"strs.signup.infotext1label\">By signing up, you agree to Seaters'</span>\n            <a href=\"http://getseaters.com/user-agreement/\" target=\"_blank\" class=\"strs-link\" data-strs-trl=\"strs.signup.termsandconditionslink\">Terms &amp; Conditions</a>\n            <span data-strs-trl=\"strs.signup.infotext2label\"> and </span>\n            <a href=\"http://getseaters.com/privacy/\" target=\"_blank\" class=\"strs-link\" data-strs-trl=\"strs.signup.privacypolicylink\">Privacy Policy</a>\n          </p>\n      </div>\n\n      <!-- SUBMIT BUTTON  -->\n        <div class=\"strs-columns strs-large-12\">\n          <button id=\"strs-btn-signup\" class=\"strs-button success expand\" type=\"button\">\n            <span data-strs-trl=\"strs.signup.signupbutton\">Sign up</span>\n          </button>\n        </div>\n\n    </form>\n  </div>\n</div>\n\n\n\n";
 
 /***/ },
-/* 819 */
+/* 820 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"strs-content\">\n  <div class=\"strs-flex strs-flex-column strs-flex-center-h strs-pb-10\">\n    <h3>\n      <span data-strs-trl=\"strs.tickets.title\">Select number of seats</span>\n    </h3>\n  </div>\n\n  <div class=\"strs-flex strs-flex-column strs-flex-center-h\">\n    <div class=\"strs-row strs-collapse\">\n      <form class=\"strs-flex strs-flex-column strs-flex-center-h strs-small-12\" novalidate autocomplete=\"off\">\n\n        <div class=\"strs-columns strs-small-6\">\n          <div id=\"strs-seats-error\" class=\"strs-input-error\"></div>\n          <select id=\"strs-seats\" class=\"strs-select\">\n          </select>\n        </div>\n\n        <div class=\"strs-columns strs-small-10 strs-pb-10\">\n          <div class=\"strs-small-12\">\n            <div class=\"strs-columns strs-small-6 strs-wl-data-pricing\">Ticket Price</div>\n            <div id=\"strs-ticket-price\" class=\"strs-columns strs-small-6 strs-wl-data-pricing strs-text-right\"></div>\n          </div>\n          <div class=\"strs-small-12\">\n            <div class=\"strs-columns strs-small-6 strs-wl-data-pricing\">Fee</div>\n            <div id=\"strs-ticket-fee\" class=\"strs-columns strs-small-6 strs-wl-data-pricing strs-text-right\"></div>\n          </div>\n          <div class=\"strs-small-12\">\n            <div class=\"strs-columns strs-small-6 strs-wl-data-pricing total\">Total Price</div>\n            <div id=\"strs-ticket-total\" class=\"strs-columns strs-small-6 strs-wl-data-pricing total strs-text-right\"></div>\n          </div>\n        </div>\n\n\n        <div class=\"strs-columns strs-large-12\">\n          <button id=\"strs-btn-bookseats\" class=\"strs-button success expand\" type=\"button\" data-strs-trl=\"strs.tickets.bookbutton\">Book my seats</button>\n        </div>\n      </form>\n    </div>\n\n  </div>\n\n</div>\n";
 
 /***/ },
-/* 820 */
+/* 821 */
 /***/ function(module, exports) {
 
 	module.exports = "\n    <div class=\"strs-content strs-flex strs-flex-column strs-flex-center-h\">\n      <div class=\"strs-pb-10\">\n        <h3>\n          <span data-strs-trl=\"strs.validateemail.title\">Welcome. It's nice to meet you,</span>\n          <span id=\"strs-span-firstname\"></span>\n        </h3>\n      </div>\n      <div class=\"strs-pb-10\">\n        <span data-strs-trl=\"strs.validateemail.welcomemessage\">We just sent you a confirmation email. In order to confirm your registration, please enter the code mentioned in the email below.</span>\n      </div>\n      <div class=\"strs-row strs-collapse\">\n        <form name=\"validateForm\" class=\"strs-flex strs-flex-column strs-flex-center-h strs-small-12\" novalidate autocomplete=\"off\">\n          <div class=\"strs-columns strs-small-12\">\n            <div id=\"strs-confirmation-code-error\" class=\"strs-input-error\"></div>\n            <input id=\"strs-confirmation-code\" class=\"strs-input\" type=\"text\" name=\"confirmationCode\" placeholder=\"Your personal code\" data-strs-placeholder=\"strs.validateemail.emailcodeplaceholder\" required>\n          </div>\n          <div class=\"strs-columns strs-large-12\">\n            <button id=\"strs-btn-validate\" class=\"strs-button success expand\" type=\"button\" data-strs-trl=\"strs.validateemail.confirmbutton\">Confirm email</button>\n          </div>\n        </form>\n      </div>\n    </div>\n";
 
 /***/ },
-/* 821 */
+/* 822 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"strs-content\">\n\n  <div class=\"strs-row strs-flex strs-flex-column strs-flex-center-h strs-pb-10\">\n    <h3 id=\"strs-wl-eventname\"></h3>\n    <div id=\"strs-wl-closed\">\n      <h4 class=\"strs-wl-closed strs-pb-10\" data-strs-trl=\"strs.wl.closedwllabel\">Closed</h4>\n      <span>\n        <p class=\"strs-mb-none\" data-strs-trl=\"strs.wl.closedwlinfolabel\">This wish list has been closed.</p>\n        <p>\n          <span data-strs-trl=\"strs.wl.visitfglabel\">Visit fan group</span>\n          <a id=\"strs-fg-slug\" href=\"http://www.seaters.com/myfangroup\" target=\"_blank\" class=\"strs-link\"></a>\n        </p>\n      </span>\n    </div>\n  </div>\n\n  <div id=\"strs-wl-open\">\n\n    <div class=\"strs-row strs-lr-4\">\n      <div class=\"strs-columns strs-small-8 strs-wl-data-title\" data-strs-trl=\"strs.wl.seats\">Number of Seats</div>\n      <div id=\"strs-wl-seats\" class=\"strs-columns strs-small-4 strs-wl-data-value\">2</div>\n    </div>\n\n    <div class=\"strs-row strs-lr-4\">\n      <div class=\"strs-columns strs-small-8 strs-wl-data-title\" data-strs-trl=\"strs.wl.rank\">Rank</div>\n      <div id=\"strs-wl-rank\" class=\"strs-columns strs-small-4 strs-wl-data-value\"># 1</div>\n    </div>\n\n    <div class=\"strs-row strs-pb-10 strs-lr-4\">\n      <div class=\"strs-columns strs-small-8 strs-wl-data-title\" data-strs-trl=\"strs.wl.likelihood\">Likelihood</div>\n      <div id=\"strs-wl-likelihood\" class=\"strs-columns strs-small-4 strs-wl-data-value\">25.00 %</div>\n    </div>\n\n\n\n  </div>\n\n  <div class=\"strs-row strs-collapse\">\n    <div class=\"strs-columns strs-large-12\">\n      <button id=\"strs-btn-close\" class=\"strs-button success expand\" type=\"button\" data-strs-trl=\"strs.wl.closebutton\">Close</button>\n    </div>\n  </div>\n\n\n</div>\n";
 
 /***/ },
-/* 822 */
+/* 823 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"strs-content strs-flex strs-flex-column strs-flex-center-h\">\n  <div class=\"strs-pb-10\">\n    <h3>\n      <span data-strs-trl=\"strs.fg.validatefgcodelabel\">Please enter the code to join the fan group</span>\n      <span id=\"strs-span-fangroup-name\"></span>\n    </h3>\n  </div>\n  <div class=\"strs-row strs-collapse\">\n    <form class=\"strs-flex strs-flex-column strs-flex-center-h strs-small-12\" novalidate autocomplete=\"off\">\n      <div class=\"strs-columns strs-small-12\">\n        <div id=\"strs-fangroup-code-error\" class=\"strs-input-error\"></div>\n        <input id=\"strs-fangroup-code\" class=\"strs-input\" type=\"text\" name=\"fangroupCode\" data-strs-placeholder=\"strs.fg.fgcodeplaceholder\" required>\n      </div>\n      <div class=\"strs-columns strs-large-12\">\n        <button id=\"strs-btn-joinfg\" class=\"strs-button success expand\" type=\"button\" data-strs-trl=\"strs.fg.joinbutton\">Join this fan group</button>\n      </div>\n    </form>\n  </div>\n</div>\n";
 
 /***/ },
-/* 823 */
+/* 824 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"strs-content strs-flex strs-flex-column strs-flex-center-h\">\n  <div class=\"strs-pb-10\">\n    <h3>\n      <span data-strs-trl=\"strs.error.title\">Error</span>\n    </h3>\n  </div>\n\n  <div class=\"strs-pb-10\">\n    <span id=\"strs-error-subtitle\" data-strs-trl=\"strs.error.unexpected.subtitle\">An unexpected problem has occured</span>\n  </div>\n\n  <div class=\"strs-pb-10\">\n    <span id=\"strs-error-message\"></span>\n  </div>\n\n  <div class=\"strs-row strs-collapse\">\n    <div class=\"strs-columns strs-large-12\">\n      <button id=\"strs-btn-close\" class=\"strs-button success expand\" type=\"button\" data-strs-trl=\"strs.error.closebutton\">Close</button>\n    </div>\n  </div>\n</div>\n";
 
 /***/ },
-/* 824 */
+/* 825 */
 /***/ function(module, exports) {
 
 	module.exports = [
@@ -45276,7 +45279,7 @@ var SeatersSDK =
 	];
 
 /***/ },
-/* 825 */
+/* 826 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";

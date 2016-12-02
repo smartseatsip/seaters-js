@@ -1,0 +1,22 @@
+#seaters-overlay {
+    position: fixed;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    background-color: rgba(30, 30, 30, 0.3);
+    font-size: 16px !important;
+}
+
+#seaters-modal {
+    margin-left: auto 50%;
+    margin-right: auto 50%;
+    min-height: 200px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 2px 2px 5px #888888;
+    width: 332px;
+    margin: 0px auto;
+    margin-top: 200px;
+    padding: 8px;
+}

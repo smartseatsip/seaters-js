@@ -3,12 +3,18 @@
   <head>
     <meta charset="utf-8">
     <title>Seaters Library Example: Join WL button</title>
+
     <script type="text/javascript" src="/seaters.bundle.js"></script>
+    <link rel="stylesheet" href="/assets/join-wl/css/seaters-join-wl.css">
+
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script type="text/javascript" src="app.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chance/1.0.4/chance.min.js"></script>
+
   </head>
   <body ng-app="app">
     <h1>SeatersSDK (v{{SeatersSDK.version}}) Join WL button</h1>
@@ -16,18 +22,18 @@
     <br />
     
     <div class="container">
-        <div class="row">
+        <div class="row" ng-repeat="evt in events" style="margin-bottom: 30px;">
             <div class="col-sm-2">
-                *img*
+                <img ng-src="{{evt.img}}">
             </div>
             <div class="col-sm-6">
-                <b>Oceade: the wreckening.</b><br />
-                <em>Brupark 1, Brussel</em><br />
-                <span>1 Dec 2016</span>
+                <b>{{evt.name}}</b><br />
+                <em>{{evt.location}}</em><br />
+                <span>{{evt.date}}</span>
             </div>
             <div class="col-sm-4">
-                <button ng-click="joinWl('671af8d2-07d8-46c9-857e-77494903933e')">
-                    Add to wishlist
+                <button class="strs-joinwl-btn" ng-class="'strs-joinwl-btn-'+evt.theme"
+                    ng-click="SeatersSDK.joinWl(evt.wlId)">
                 </button>
             </div>
         </div>
