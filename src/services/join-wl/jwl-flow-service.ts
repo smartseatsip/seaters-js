@@ -488,8 +488,9 @@ export class JwlFlowService {
       .then(fan => fan, err => {
         this.enableButton('strs-btn-validate',true);
         var message = this.extractMsgAndLogError('doEmailValidation', err);
-        //For now, add general always show this error, as error info is in different format coming back
-        this.modalService.showFieldError('strs-confirmation-code-error',"Wrong validation code");
+        var translatedErrorMessage = this.translationService.translateFromStore(translationStore, 'strs.error.signup.invalidcode' , this.locale);
+        this.modalService.showFieldError('strs-confirmation-code-error', translatedErrorMessage);
+
         return this.endoftheline();
       });
     }
