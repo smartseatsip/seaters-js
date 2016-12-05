@@ -35,12 +35,12 @@ export class TranslationService {
 
     translateFromObject (obj: Object, locale: Locale) {
         var translation: string = undefined;
-        
+
         if (obj.hasOwnProperty(locale)) {
             translation = obj[locale];
         } else {
             translation = obj[TranslationService.DEFAULT_LOCALE];
-            console.warn('[TranslationService] Missing %s translation for %s', locale, translation); 
+            console.warn('[TranslationService] Missing %s translation for %s', locale, translation);
         }
 
         if (!translation) {
@@ -52,6 +52,10 @@ export class TranslationService {
     }
 
     translateFromStore (store: TranslationStore, key: string, locale: Locale) {
+        //Ignore empty keys
+        if (key==="")
+          return "";
+
         if (store.has(key)) {
             var obj = store.get(key);
         } else {

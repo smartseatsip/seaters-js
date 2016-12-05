@@ -47,9 +47,17 @@ export class JwlFlowService {
      */
     private extractMsgAndLogError (pre, err): string {
       var message = err instanceof Error ? err.message : JSON.stringify(err);
-      var details = err.stack || '';
+      var details = err.field || '';
       console.error('[JwlFlowService] ' + pre + ': ' + message, details);
       return message;
+    }
+
+    private extractApiErrorTranslationKey(error, field) : string {
+      for (var errDet of error.details) {
+        if (errDet.field === field)
+          return errDet.error.translationKey;
+      }
+      return "";
     }
 
     /**
@@ -87,13 +95,22 @@ export class JwlFlowService {
     private showFormErrorsApiLogin(error) {
       if (error instanceof String) {
         this.modalService.showFieldError('strs-email-error', 'Oops! Something went wrong. Please contact customer service.');
-      } else if (error.details.length > 0) {//Test for detailed errors
-        if (error.details[0].field === 'emailPasswordCredentials.email'){
-          this.modalService.showFieldError('strs-email-error', error.details[0].error.defaultMessage);
-        }
-      } else { //Test for general error
-        this.modalService.showFieldError('strs-email-error',error.error.defaultMessage);
+        return;
       }
+      else if (error.rawResponse.body) {//Test for detailed errors
+        var err = JSON.parse(error.rawResponse.body);
+        if (err.details) {
+          //Show error for email field, if any
+          var errMsgKey = this.extractApiErrorTranslationKey(err, 'emailPasswordCredentials.email');
+          var translatedErrorMessage = this.translationService.translateFromStore(translationStore, errMsgKey, this.locale);
+          this.modalService.showFieldError('strs-email-error', translatedErrorMessage);
+          return;
+        }
+      }
+      
+      //Default fallback - assumes invalid credentials
+      var translatedErrorMessage = this.translationService.translateFromStore(translationStore, "api_email_password_credentials_invalid_credentials", this.locale);
+      this.modalService.showFieldError('strs-email-error',translatedErrorMessage);
     }
 
     /**
@@ -271,7 +288,6 @@ export class JwlFlowService {
       return this.sessionService.doEmailPasswordLogin(email, password)
       .then(fan => fan, err => {
         this.enableButton('strs-btn-login', true);
-        var message = this.extractMsgAndLogError('doLogin', err);
         this.showFormErrorsApiLogin(err);
         return this.endoftheline();// will come back via another call to doLogin
       });
@@ -335,9 +351,10 @@ export class JwlFlowService {
       return this.sessionService.doEmailPasswordSignUp(email, password, firstname, lastname)
       .then(fan => { return this.askToValidateEmail(fan); }, err => {
           this.enableButton('strs-btn-signup', true);
-          var message = JSON.parse(this.extractMsgAndLogError('doSignup', err));
-          //TODO: replace by translatable error messages (API backend change needed)
-          this.modalService.showFieldError('strs-email-error', message.message);
+          var errMsgKey = this.extractApiErrorTranslationKey(JSON.parse(err.rawResponse.body), 'email');
+          var translatedErrorMessage = this.translationService.translateFromStore(translationStore, errMsgKey, this.locale);
+          this.modalService.showFieldError('strs-email-error', translatedErrorMessage);
+
           return this.endoftheline();
       });
     }

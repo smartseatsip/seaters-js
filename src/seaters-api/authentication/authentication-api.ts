@@ -24,7 +24,7 @@ export class AuthenticationApi {
    * @returns {any}
      */
     signup(input: SignupData): Promise<UserData> {
-      return this.apiContext.post<UserData>('/auth/signup', input);
+      return this.apiContext.post<UserData>('/v2/authentication/signup', input);
     }
 
   /**
