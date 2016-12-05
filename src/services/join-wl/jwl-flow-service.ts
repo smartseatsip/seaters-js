@@ -107,7 +107,7 @@ export class JwlFlowService {
           return;
         }
       }
-      
+
       //Default fallback - assumes invalid credentials
       var translatedErrorMessage = this.translationService.translateFromStore(translationStore, "api_email_password_credentials_invalid_credentials", this.locale);
       this.modalService.showFieldError('strs-email-error',translatedErrorMessage);
@@ -415,8 +415,13 @@ export class JwlFlowService {
 
       var deferred = this.defer<ExtendedFanGroup>();
 
-      var fgName = (<HTMLElement>this.modalService.findElementById('strs-span-fangroup-name'));
+      var fgName = (<HTMLElement>this.modalService.findElementById('strs-fangroup-name'));
       fgName.innerHTML = fanGroup.translatedName;
+
+      var fgCustomText = (<HTMLElement>this.modalService.findElementById('strs-fg-customtext'));
+      fgCustomText.innerHTML = fanGroup.protectionCodeExplanation;
+      if (fanGroup.protectionCodeExplanation==='')
+        fgCustomText.style.display = 'none';
 
       var joinFgBtn = this.modalService.findElementById('strs-btn-joinfg');
       joinFgBtn.onclick = () => this.doProtectedFanGroupValidation(fanGroup).then(deferred.resolve, deferred.reject);
