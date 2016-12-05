@@ -1401,6 +1401,23 @@ select.strs-select[multiple] {
   font-size: 24px;
   text-align: center;
 }
+.strs-title {
+  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1.5;
+  font-size: 1.5em;
+  text-align: center;
+  margin-bottom: 1em !important;
+}
+.strs-subtitle {
+  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 1em;
+  text-align: center;
+  margin-bottom: 1.5em !important;
+}
 
 /*
  * Application/button css
