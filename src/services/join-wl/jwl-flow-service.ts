@@ -204,7 +204,7 @@ export class JwlFlowService {
       };
 
       var eventName = <HTMLElement> this.modalService.findElementById('strs-wl-eventname');
-      eventName.innerHTML = wl.eventName.en;
+      eventName.innerHTML = wl.translatedEventName;
       var displaySection;
 
       //TODO: split up different scenario's in different modal contents
@@ -225,7 +225,7 @@ export class JwlFlowService {
         displaySection.style.display = 'block';
         //set fan group slug
         var fanGroupSlug = <HTMLAnchorElement>this.modalService.findElementById('strs-fg-slug');
-        fanGroupSlug.innerHTML = wl.groupName.en;
+        fanGroupSlug.innerHTML = wl.translatedGroupName;
         fanGroupSlug.href = "http://www.seaters.com/"+wl.groupSlug;
       }
       //TODO: link to seaters for further actions (soon/pay/preauth/accept/print...)
