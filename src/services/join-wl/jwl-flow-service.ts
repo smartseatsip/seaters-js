@@ -99,17 +99,24 @@ export class JwlFlowService {
       }
       else if (error.rawResponse.body) {//Test for detailed errors
         var err = JSON.parse(error.rawResponse.body);
-        if (err.details) {
+        if (err.details && err.details.length) {
           //Show error for email field, if any
           var errMsgKey = this.extractApiErrorTranslationKey(err, 'emailPasswordCredentials.email');
           var translatedErrorMessage = this.translationService.translateFromStore(translationStore, errMsgKey, this.locale);
           this.modalService.showFieldError('strs-email-error', translatedErrorMessage);
           return;
         }
+
+        if (err.error.translationKey) {
+          console.log('doing it');
+          var translatedErrorMessage = this.translationService.translateFromStore(translationStore, err.error.translationKey, this.locale);
+          this.modalService.showFieldError('strs-email-error', translatedErrorMessage);
+          return;
+        }
       }
 
       //Default fallback - assumes invalid credentials
-      var translatedErrorMessage = this.translationService.translateFromStore(translationStore, "api_email_password_credentials_invalid_credentials", this.locale);
+      var translatedErrorMessage = this.translationService.translateFromStore(translationStore, "api_credentials_not_matching", this.locale);
       this.modalService.showFieldError('strs-email-error',translatedErrorMessage);
     }
 
