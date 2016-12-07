@@ -69,7 +69,10 @@ export class ApiContext {
     }
 
     handle2XXResponse<T> (response: popsicle.Response): Promise<T> {
-        return Promise.resolve(JSON.parse(response.body));
+        if (response.body.length )
+          return Promise.resolve(JSON.parse(response.body));
+        else
+          return Promise.resolve(response.body);
     }
 
     tryParseJSON (json: string) {
@@ -127,6 +130,7 @@ export class ApiContext {
         switch(response.status) {
             case 200:
             case 201:
+            case 202:
             case 204: return this.handle2XXResponse(response);
             case 400: return this.handle4XXResponse(response);
             default: return this.handleUnexpectedResponse(response);
