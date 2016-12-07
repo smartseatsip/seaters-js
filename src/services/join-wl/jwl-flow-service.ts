@@ -381,9 +381,6 @@ export class JwlFlowService {
 
       var deferred = this.defer<Fan>();
 
-      var userSpan = this.modalService.findElementById('strs-span-firstname');
-      userSpan.innerHTML = fan.firstName;
-
       var validateEmailBtn = this.modalService.findElementById('strs-btn-validate');
       validateEmailBtn.onclick = () => this.doEmailValidation(fan).then(deferred.resolve, deferred.reject);
 
