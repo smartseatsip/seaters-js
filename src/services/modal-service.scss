@@ -60,12 +60,19 @@
     }
 }
 
-.strs-powered-button {
+a.strs-powered-button {
   display:block;
-  width: 184px;
-  height: 45px;
-  margin: 38px auto;
+  width: 164px;
+  height: 24px;
+  margin: 48px auto;
   margin-bottom: 0;
-  border: 1px solid #d1d1d1;
+  border: 0;
+  background-image: url("/assets/join-wl/images/powered-by-seaters.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.35;
+}
+a.strs-powered-button:hover {
+  opacity: 1;
 }
 
