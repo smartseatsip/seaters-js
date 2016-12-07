@@ -6,6 +6,9 @@
     bottom: 0px;
     background-color: rgba(30, 30, 30, 0.3);
     font-size: 16px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #seaters-modal {
@@ -13,21 +16,19 @@
     margin-right: auto 50%;
     min-height: 200px;
     background-color: #fff;
-    border-radius: 5px;
+    border-radius: 6px;
     box-shadow: 2px 2px 5px #888888;
-    width: 332px;
-    margin: 0px auto;
-    margin-top: 200px;
-    padding: 8px;
+    width: 320px;
+    padding: 48px 30px 14px 30px;
     position:relative;
 }
 
 .strs-modal-close {
-    height: 20px;
-    width: 20px;
+    height: 14px;
+    width: 14px;
     position: absolute;
-    top:15px;
-    right:10px;
+    top:20px;
+    left:286px;
     box-sizing: border-box;
     line-height: 20px;
     display: inline-block;
@@ -41,8 +42,8 @@
       margin-top: -5px;
       margin-left: -25px;
       display: block;
-      height: 4px;
-      width: 20px;
+      height: 2px;
+      width: 16px;
       background-color: #CCC;
       transition: all 0.2s ease-out;
     }
@@ -59,4 +60,12 @@
     }
 }
 
+.strs-powered-button {
+  display:block;
+  width: 184px;
+  height: 45px;
+  margin: 38px auto;
+  margin-bottom: 0;
+  border: 1px solid #d1d1d1;
+}
 

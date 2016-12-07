@@ -46,7 +46,7 @@ export class ModalService {
 
     private showOverlay () {
         console.log('[ModalService] showing seaters overlay');
-        this.overlay.style.display = 'block';
+        this.overlay.style.display = 'flex';
     }
 
     private hideOverlay (invokeClose) {
@@ -150,6 +150,10 @@ export class ModalService {
         var closeButton = <HTMLDivElement>document.createElement('div');
         closeButton.className = 'strs-modal-close medium';
         closeButton.onclick= ( () => this.hideOverlay(true));
+        var poweredButton = <HTMLAnchorElement>document.createElement('a');
+        poweredButton.className = 'strs-powered-button';
+        poweredButton.href = "http://getseaters.com";
+        poweredButton.target = "_blanc";
         this.modalContent = <HTMLDivElement>document.createElement('div');
         var styleElement = <HTMLStyleElement>document.createElement('style');
         styleElement.innerHTML = style;
@@ -157,6 +161,7 @@ export class ModalService {
         this.modal.appendChild(styleElement);
         this.modal.appendChild(closeButton);
         this.modal.appendChild(this.modalContent);
+        this.modal.appendChild(poweredButton);
         this.showOverlay();
     }
 

@@ -1269,8 +1269,7 @@ input.strs-input[type="number"] {
   background-color: #FFFFFF;
   border-style: solid;
   border-width: 1px;
-  border-color: #cccccc;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border-color: #d1d1d1;
   color: rgba(0, 0, 0, 0.75);
   display: block;
   font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
@@ -1278,7 +1277,7 @@ input.strs-input[type="number"] {
   font-weight: normal;
   font-style: normal;
   line-height: 1.3;
-  height: 2.65em;
+  height: 2.5em;
   margin: 0 0 1.14em 0;
   padding: 0.57em;
   width: 100%;
@@ -1479,12 +1478,9 @@ select.strs-select[multiple] {
   font-size: 16px;
   line-height: 1.5;
   color: #000;
-  background-color: #F2F2F2;
   height: 100%;
   margin: 0;
   text-shadow: none;
-
-  padding: 1em 1em!important;
 }
 
 .strs-section {
