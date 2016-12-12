@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
 
 .strs-left {
   float: left !important; }
@@ -1449,11 +1451,21 @@ select.strs-select[multiple] {
   justify-content: center;
 }
 
+.strs-mt-none {
+  margin-top: 0 !important;
+}
 .strs-mb-none {
+  margin-bottom: 0 !important;
+}
+.strs-mtb-none {
+  margin-top: 0 !important;
   margin-bottom: 0 !important;
 }
 .strs-mt-16 {
   margin-top:  16px !important;
+}
+.strs-mt-24 {
+  margin-top:  24px !important;
 }
 .strs-mb-16 {
   margin-bottom:  16px !important;
@@ -1569,16 +1581,18 @@ a.strs-link:active, a.strs-link:visited  {
 .strs-button.success.expand {
   padding-left: .6875em;
   padding-right: .6875em;
-  width: 100%;
+  width: 260px;
+  margin: 0 auto;
+  display: block;
 }
 
 .strs-wl-closed {
   color: #888 !important;
-  text-align: center;
 }
 
 .strs-wl-data-title {
   font-size:14px;
+  ine-height: 1.36 !important;
 }
 .strs-wl-data-value {
   color: #2EA54F !important;
@@ -1616,4 +1630,14 @@ a.strs-link:active, a.strs-link:visited  {
   border-width: 0 3px 3px 0;
   /*Rotate the L 45 degrees to turn it into a checkmark*/
   transform: rotate(45deg);
+}
+
+.strs-panel {
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+}
+
+.strs-panel.wide {
+  background-color: #f8f8f8;
+  padding: 16px 8px 16px 8px !important;
 }

@@ -1,52 +1,61 @@
 <div class="strs-content">
 
-  <div class="strs-row strs-flex strs-flex-column strs-flex-center-h strs-pb-10">
-    <h3 id="strs-wl-eventname"></h3>
-    <div id="strs-wl-closed">
-      <h4 class="strs-wl-closed strs-pb-10" data-strs-trl="strs.wl.closedwllabel">Closed</h4>
-      <span>
-        <p class="strs-mb-none" data-strs-trl="strs.wl.closedwlinfolabel">This wish list has been closed.</p>
-        <p>
-          <span data-strs-trl="strs.wl.visitfglabel">Visit fan group</span>
-          <a id="strs-fg-slug" href="http://www.seaters.com/myfangroup" target="_blank" class="strs-link"></a>
+  <div class="strs-panel">
+    <div class="strs-row strs-flex strs-flex-column strs-flex-center-h strs-pb-10">
+
+      <p id="strs-wl-eventname" class="strs-title strs-mtb-none"></p>
+      <div id="strs-wl-closed">
+        <p class="strs-subtitle strs-wl-closed" data-strs-trl="strs.wl.closedwllabel">Closed</p>
+        <p class="strs-subtitle strs-mb-none" data-strs-trl="strs.wl.closedwlinfolabel">This wish list has been closed.</p>
+        <p class="strs-subtitle strs-mtb-none">
+            <span data-strs-trl="strs.wl.visitfglabel">Visit fan group</span>
+            <a id="strs-fg-slug" href="http://www.seaters.com/myfangroup" target="_blank" class="strs-link"></a>
         </p>
-      </span>
+
+        <div class="strs-row strs-collapse strs-mt-24">
+          <div class="strs-columns strs-large-12">
+            <button id="strs-wlclosed-btn-close" class="strs-button success expand" type="button" data-strs-trl="strs.wl.closebutton">Close</button>
+          </div>
+        </div>
+      </div>
+
     </div>
+
   </div>
 
-  <div id="strs-wl-open">
+  <div id="strs-wl-open" class="strs-panel wide">
+    <div>
+      <div class="strs-row strs-section">
+        <div class="strs-columns strs-small-12 strs-text-center">
+          <span class="strs-checkmark strs-mr-4"></span>
+          <span class="strs-section-title" data-strs-trl="strs.wl.inwl">You are in the wish list</span>
+        </div>
+      </div>
 
-    <div class="strs-row strs-section">
-      <div class="strs-columns strs-small-12 strs-text-center">
-        <span class="strs-checkmark strs-mr-4"></span>
-        <span class="strs-section-title" data-strs-trl="strs.wl.inwl">You are in the wish list</span>
+      <div class="strs-row strs-lr-4">
+        <div class="strs-columns strs-small-9 strs-wl-data-title" data-strs-trl="strs.wl.seats">Number of Seats</div>
+        <div id="strs-wl-seats" class="strs-columns strs-small-3 strs-wl-data-value">2</div>
+      </div>
+
+      <div class="strs-row strs-lr-4">
+        <div class="strs-columns strs-small-9 strs-wl-data-title" data-strs-trl="strs.wl.rank">Rank</div>
+        <div id="strs-wl-rank" class="strs-columns strs-small-3 strs-wl-data-value"># 1</div>
+      </div>
+
+      <div class="strs-row strs-lr-4">
+        <div class="strs-columns strs-small-9 strs-wl-data-title" data-strs-trl="strs.wl.likelihood">Likelihood</div>
+        <div id="strs-wl-likelihood" class="strs-columns strs-small-3 strs-wl-data-value">25.00 %</div>
       </div>
     </div>
 
-    <div class="strs-row strs-lr-4">
-      <div class="strs-columns strs-small-8 strs-wl-data-title" data-strs-trl="strs.wl.seats">Number of Seats</div>
-      <div id="strs-wl-seats" class="strs-columns strs-small-4 strs-wl-data-value">2</div>
+    <div class="strs-row strs-collapse strs-mt-24">
+        <div class="strs-columns strs-large-12">
+        <button id="strs-wlopen-btn-close" class="strs-button success expand" type="button" data-strs-trl="strs.wl.closebutton">Close</button>
+      </div>
     </div>
-
-    <div class="strs-row strs-lr-4">
-      <div class="strs-columns strs-small-8 strs-wl-data-title" data-strs-trl="strs.wl.rank">Rank</div>
-      <div id="strs-wl-rank" class="strs-columns strs-small-4 strs-wl-data-value"># 1</div>
-    </div>
-
-    <div class="strs-row strs-pb-10 strs-lr-4">
-      <div class="strs-columns strs-small-8 strs-wl-data-title" data-strs-trl="strs.wl.likelihood">Likelihood</div>
-      <div id="strs-wl-likelihood" class="strs-columns strs-small-4 strs-wl-data-value">25.00 %</div>
-    </div>
-
-
 
   </div>
 
-  <div class="strs-row strs-collapse">
-    <div class="strs-columns strs-large-12">
-      <button id="strs-btn-close" class="strs-button success expand" type="button" data-strs-trl="strs.wl.closebutton">Close</button>
-    </div>
-  </div>
 
 
 </div>

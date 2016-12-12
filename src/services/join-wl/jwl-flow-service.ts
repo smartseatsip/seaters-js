@@ -221,18 +221,11 @@ export class JwlFlowService {
 
       var deferred = this.defer<void>();
 
-      var closeBtn = this.modalService.findElementById('strs-btn-close');
-      closeBtn.onclick = () => {
-        this.modalService.closeModal();
-        deferred.resolve(JWL_EXIT_STATUS.JOINED);
-      };
-
       var eventName = <HTMLElement> this.modalService.findElementById('strs-wl-eventname');
       eventName.innerHTML = wl.translatedEventName;
       var displaySection;
 
       //TODO: split up different scenario's in different modal contents
-
       if (wl.waitingListStatus === 'OPEN' && this.hasRank(wl)) {
         displaySection = this.modalService.findElementById('strs-wl-open');
         displaySection.style.display = 'block';
@@ -253,6 +246,19 @@ export class JwlFlowService {
         fanGroupSlug.href = "http://www.seaters.com/"+wl.groupSlug;
       }
       //TODO: link to seaters for further actions (soon/pay/preauth/accept/print...)
+
+      var onClose = () => {
+        this.modalService.closeModal();
+        deferred.resolve(JWL_EXIT_STATUS.JOINED);
+      };
+      var closeBtnWlOpen = this.modalService.findElementById('strs-wlopen-btn-close');
+      closeBtnWlOpen.onclick = onClose;
+      var closeBtnWlClosed = this.modalService.findElementById('strs-wlclosed-btn-close');
+      closeBtnWlClosed.onclick = onClose;
+
+      console.log(closeBtnWlClosed);
+      console.log(closeBtnWlOpen);
+
 
       return deferred.promise;
     }
