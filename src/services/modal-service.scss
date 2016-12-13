@@ -19,10 +19,9 @@
     border-radius: 6px;
     box-shadow: 2px 2px 5px #888888;
     width: 320px;
-
+    box-sizing: border-box;
     padding: 48px 10px 14px 10px;
-
-  position:relative;
+    position:relative;
 }
 
 .strs-modal-close {
