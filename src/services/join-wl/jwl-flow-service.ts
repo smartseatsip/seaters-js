@@ -7,6 +7,7 @@ import { Fan } from '../../seaters-api/fan/fan';
 import { FanGroup } from '../../seaters-api/fan/fan-group';
 import { Price } from '../../seaters-api/fan/waiting-list';
 import { TranslationStore, TranslationService, Locale } from '../translation-service';
+import * as moment from 'moment';
 
 declare var require: any;
 
@@ -29,7 +30,28 @@ export enum JWL_EXIT_STATUS {
 
 export class JwlFlowService {
 
+    private APP_LOCALE_FORMATS =
+      {
+        en: {
+          time: 'h:mm A',
+          date: 'MMMM D YYYY',
+          shortDate: 'MMM D',
+          datetime: 'MMM D YYYY h:mm A',
+          month: 'MMM',
+          day: 'D'
+        },
+        default: {
+          time: 'HH:mm',
+          date: 'D MMMM YYYY',
+          shortDate: 'D MMM',
+          datetime: 'dd/MM/YYYY HH:mm',
+          month: 'MMM',
+          day: 'D'
+        }
+      };
+
     private locale: Locale = 'en';//TODO: via config
+    private localeFormats;
     private mandatoryFieldError : string = 'strs.forms.mandatory';
 
     constructor (
@@ -40,6 +62,23 @@ export class JwlFlowService {
         private translationService: TranslationService
     ) {
       this.mandatoryFieldError = translationService.translateFromStore(translationStore, this.mandatoryFieldError, this.locale);
+      this.localeFormats = this.getLocaleFormats(this.locale);
+      moment.locale(this.locale);
+    }
+
+    private formatInTz(date, format) : string {
+      // throw away timezone part of the date
+      date = date.replace(/[+-]\d\d:\d\d/,'');
+      return moment.utc(date).format(format);
+    };
+
+    private  getLocaleFormats(locale) {
+      if(this.APP_LOCALE_FORMATS.hasOwnProperty(locale)) {
+        return this.APP_LOCALE_FORMATS[locale];
+      }
+      else {
+        return this.APP_LOCALE_FORMATS.default;
+      }
     }
 
     /**
@@ -223,6 +262,13 @@ export class JwlFlowService {
 
       var eventName = <HTMLElement> this.modalService.findElementById('strs-wl-eventname');
       eventName.innerHTML = wl.translatedEventName;
+      var eventVenue =  <HTMLElement> this.modalService.findElementById('strs-wl-eventvenue');
+      eventVenue.innerHTML = wl.translatedVenueName;
+      var eventCategory = <HTMLElement> this.modalService.findElementById('strs-wl-eventcategory');
+      eventCategory.innerHTML = wl.seatCategory;
+      var eventDateTime = <HTMLElement> this.modalService.findElementById('strs-wl-eventdatetime');
+      eventDateTime.innerHTML = this.formatInTz(wl.eventStartDate, this.localeFormats.shortDate) + " - "+this.formatInTz(wl.eventStartDate, this.localeFormats.time)
+
       var displaySection;
 
       //TODO: split up different scenario's in different modal contents
@@ -468,6 +514,15 @@ export class JwlFlowService {
 
       // otherwise ask how many he wants
       this.modalService.setModalContent(ticketsHtml);
+
+      var eventName = <HTMLElement> this.modalService.findElementById('strs-wl-eventname');
+      eventName.innerHTML = wl.translatedEventName;
+      var eventVenue =  <HTMLElement> this.modalService.findElementById('strs-wl-eventvenue');
+      eventVenue.innerHTML = wl.translatedVenueName;
+      var eventCategory = <HTMLElement> this.modalService.findElementById('strs-wl-eventcategory');
+      eventCategory.innerHTML = wl.seatCategory;
+      var eventDateTime = <HTMLElement> this.modalService.findElementById('strs-wl-eventdatetime');
+      eventDateTime.innerHTML = this.formatInTz(wl.eventStartDate, this.localeFormats.shortDate) + " - "+this.formatInTz(wl.eventStartDate, this.localeFormats.time)
 
       //Setup select values
       var seat = this.modalService.findElementById('strs-btn-bookseats');

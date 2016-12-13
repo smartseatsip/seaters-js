@@ -1050,7 +1050,7 @@
   border-style: solid;
   border-width: 0;
   cursor: pointer;
-  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  font-family: Roboto, Helvetica, sans-serif;
   font-weight: normal;
   line-height: normal;
   margin: 0 0 1.25em;
@@ -1273,7 +1273,7 @@ input.strs-input[type="number"] {
   border-width: 1px;
   border-color: #d1d1d1;
   display: block;
-  font-family: Roboto, Helvetica, Arial, sans-serif;
+  font-family: Roboto, Helvetica, sans-serif;
   font-size: 14px;
   font-weight: normal;
   font-style: normal;
@@ -1405,7 +1405,7 @@ select.strs-select[multiple] {
   color: #30323b;
 }
 .strs-title {
-  font-family: Roboto, Helvetica, Arial, sans-serif;
+  font-family: Roboto, Helvetica, sans-serif;
   font-style: normal;
   font-weight: 500;
   font-stretch: normal;
@@ -1416,7 +1416,7 @@ select.strs-select[multiple] {
   margin-bottom: 16px !important;
 }
 .strs-subtitle {
-  font-family: Roboto, Helvetica, Arial, sans-serif;
+  font-family: Roboto, Helvetica, sans-serif;
   font-style: normal;
   font-weight: normal;
   font-stretch: normal;
@@ -1486,6 +1486,9 @@ select.strs-select[multiple] {
 .strs-text-right {
   text-align: right;
 }
+.strs-text-upper {
+  text-transform: uppercase;
+}
 
 @media only screen and (min-width: 64.0625em) {
   .strs-pr-8 {
@@ -1497,7 +1500,7 @@ select.strs-select[multiple] {
 }
 
 .strs-content {
-  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  font-family: Roboto, Helvetica, sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
@@ -1518,7 +1521,7 @@ select.strs-select[multiple] {
 }
 
 .strs-input-error {
-  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  font-family: Roboto, Helvetica, sans-serif;
   font-style: italic;
   font-weight: normal;
   font-size: 12px;
@@ -1528,7 +1531,7 @@ select.strs-select[multiple] {
 }
 
 .strs-hint {
-  font-family: Roboto, Helvetica, Arial, sans-serif;;
+  font-family: Roboto, Helvetica, sans-serif;
   font-size: 14px;
   font-weight: normal;
   font-style: normal;
@@ -1537,7 +1540,7 @@ select.strs-select[multiple] {
 }
 
 a.strs-link {
-  font-family: Roboto, Helvetica, Arial, sans-serif;;
+  font-family: Roboto, Helvetica, sans-serif;
   font-size: 14px;
   font-weight: normal;
   font-style: normal;
@@ -1558,7 +1561,7 @@ a.strs-link:active, a.strs-link:visited  {
   -webkit-appearance: none;
   -moz-appearance: none;
   height: 40px;
-  font-family: Roboto, Helvetica, Arial, sans-serif;
+  font-family: Roboto, Helvetica, sans-serif;
   font-size: 14px;
   font-weight: 500;
   font-style: normal;
@@ -1591,25 +1594,30 @@ a.strs-link:active, a.strs-link:visited  {
 }
 
 .strs-wl-data-title {
-  font-size:14px;
-  ine-height: 1.36 !important;
+  font-size:16px;
+  line-height: 1.36 !important;
 }
 .strs-wl-data-value {
   color: #2EA54F !important;
-  font-size:14px;
+  font-size:16px;
   font-weight: bold;
   text-align: right;
+  line-height: 1.36 !important;
+}
+.strs-wl-data-title.small, .strs-wl-data-value.small {
+  font-size:14px !important;
 }
 
 .strs-wl-data-pricing {
-  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
-  font-size: 14px;
+  font-family: Roboto, Helvetica, sans-serif;
+  font-size: 16px;
   font-style: normal;
   font-weight: normal;
 }
 .strs-wl-data-pricing.total {
   font-weight: bold;
 }
+
 
 #strs-wl-open, #strs-wl-closed {
   display: none;
@@ -1641,3 +1649,27 @@ a.strs-link:active, a.strs-link:visited  {
   background-color: #f8f8f8;
   padding: 16px 8px 16px 8px !important;
 }
+.strs-panel .strs-panel-title {
+  font-family: Roboto, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  text-align: center;
+  color: #30323b;
+  margin-bottom: 16px !important;
+}
+
+.strs-eventinfo {
+  font-family: Roboto, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.71;
+  text-align: center;
+  color: #30323b;
+  margin: 2px 0px !important;
+}
+
+
