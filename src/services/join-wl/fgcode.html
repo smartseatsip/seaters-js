@@ -1,21 +1,22 @@
 <div class="strs-content strs-flex strs-flex-column strs-flex-center-h">
+  <div class="strs-panel">
+    <div class="strs-row">
+      <p class="strs-title" data-strs-trl="strs.fg.title">Enter the access code</p>
+      <p class="strs-subtitle" id="strs-fg-customtext"></p>
+      <p class="strs-subtitle strs-mb-none" data-strs-trl="strs.fg.validatefgcodelabel"></p>
+      <p class="strs-subtitle strs-text-upper" id="strs-fangroup-name" ></p>
+    </div>
 
-  <div class="strs-row">
-    <p class="strs-title" data-strs-trl="strs.fg.title">Enter the access code</p>
-    <p class="strs-subtitle" id="strs-fg-customtext"></p>
-    <p class="strs-subtitle" data-strs-trl="strs.fg.validatefgcodelabel"></p>
-    <p class="strs-subtitle" id="strs-fangroup-name" ></p>
-  </div>
-
-  <div class="strs-row strs-collapse">
-    <form class="strs-flex strs-flex-column strs-flex-center-h strs-small-12" novalidate autocomplete="off">
-      <div class="strs-columns strs-small-12">
-        <div id="strs-fangroup-code-error" class="strs-input-error"></div>
-        <input id="strs-fangroup-code" class="strs-input" type="text" name="fangroupCode" data-strs-placeholder="strs.fg.fgcodeplaceholder" required>
-      </div>
-      <div class="strs-columns strs-large-12">
-        <button id="strs-btn-joinfg" class="strs-button success expand" type="button" data-strs-trl="strs.fg.joinbutton">Join this fan group</button>
-      </div>
-    </form>
+    <div class="strs-row strs-collapse">
+      <form class="strs-flex strs-flex-column strs-flex-center-h strs-small-12" novalidate autocomplete="off">
+        <div class="strs-columns strs-small-12">
+          <input id="strs-fangroup-code" class="strs-input" type="text" name="fangroupCode" data-strs-placeholder="strs.fg.fgcodeplaceholder" required>
+          <div id="strs-fangroup-code-error" class="strs-input-error"></div>
+        </div>
+        <div class="strs-columns strs-large-12">
+          <button id="strs-btn-joinfg" class="strs-button success expand" type="button" data-strs-trl="strs.fg.joinbutton">Join this fan group</button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>

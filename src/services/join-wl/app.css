@@ -1522,12 +1522,13 @@ select.strs-select[multiple] {
 
 .strs-input-error {
   font-family: Roboto, Helvetica, sans-serif;
-  font-style: italic;
+  font-style: normal;
   font-weight: normal;
-  font-size: 12px;
-  line-height: 1.5;
-  color: #D16F6F !important;
+  font-stretch: normal;
+  font-size: 14px;
+  color: #ff7263 !important;
   display: none;
+  margin: -12px 0px 12px 0 !important;
 }
 
 .strs-hint {
