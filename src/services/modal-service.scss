@@ -46,7 +46,8 @@
       display: block;
       height: 2px;
       width: 16px;
-      background-color: #CCC;
+      background-color: #30323b;
+      opacity: 0.5;
       transition: all 0.2s ease-out;
     }
 
@@ -58,7 +59,7 @@
     cursor: pointer;
 
     &:before, &:after {
-      background-color: #AAA;
+      opacity: 1;
     }
 }
 
