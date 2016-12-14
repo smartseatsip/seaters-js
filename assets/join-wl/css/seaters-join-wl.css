@@ -8,26 +8,26 @@
 }
 
 .strs-joinwl-btn-dark {
-    background-image: url("https://sdk.dev-seaters.com/assets/join-wl/images/btn-dark.png");
+    background-image: url("/assets/join-wl/images/btn-dark.png");
 }
 .strs-joinwl-btn-dark:active {
-    background-image: url("https://sdk.dev-seaters.com/assets/join-wl/images/btn-dark-active.png");
+    background-image: url("/assets/join-wl/images/btn-dark-active.png");
 }
 
 .strs-joinwl-btn-teal {
-    background-image: url("https://sdk.dev-seaters.com/assets/join-wl/images/btn-teal.png");
+    background-image: url("/assets/join-wl/images/btn-teal.png");
 }
 
 .strs-joinwl-btn-teal:active {
-    background-image: url("https://sdk.dev-seaters.com/assets/join-wl/images/btn-teal-active.png");
+    background-image: url("/assets/join-wl/images/btn-teal-active.png");
 }
 
 .strs-joinwl-btn-white:active {
-    background-image: url("https://sdk.dev-seaters.com/assets/join-wl/images/btn-white.png");
+    background-image: url("/assets/join-wl/images/btn-white.png");
 }
 
 .strs-joinwl-btn-white {
-    background-image: url("https://sdk.dev-seaters.com/assets/join-wl/images/btn-white-active.png");
+    background-image: url("/assets/join-wl/images/btn-white-active.png");
 }
 
 .strs-joinwl-btn-navy {
