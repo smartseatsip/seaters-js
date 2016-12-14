@@ -96,19 +96,23 @@ gulp.task('update-translations', (done) => {
     headers: phraseappHeaders
   }).then(locales => {
     locales = JSON.parse(locales);
-    return Promise.all(locales.map(locale => {
-      return rp({
-        method: 'GET',
-        url: baseUrl + '/projects/' + phraseappProjectId + '/locales/' + locale.id  + '/download?file_format=json',
-        headers: phraseappHeaders
-      })
-      .then(localeTranslations => {
-        return {
-          locale: locale,
-          translations: JSON.parse(localeTranslations)
-        };
-      });
-    }));
+    var downloadLocaleFns = locales.map(locale => {
+      return (allLocaleTranslations) => {
+        return rp({
+          method: 'GET',
+          url: baseUrl + '/projects/' + phraseappProjectId + '/locales/' + locale.id  + '/download?file_format=json',
+          headers: phraseappHeaders
+        })
+        .then(localeTranslations => {
+          return allLocaleTranslations.concat({
+            locale: locale,
+            translations: JSON.parse(localeTranslations)
+          });
+        });
+      }
+    });
+    // run downloads sequential - phraseapp blocks concurrent downloads
+    return downloadLocaleFns.reduce((p, downloadLocaleFn) => p.then(downloadLocaleFn), Promise.resolve([]));
   })
   .then(localeTranslations => {
     var translationMap = {};
