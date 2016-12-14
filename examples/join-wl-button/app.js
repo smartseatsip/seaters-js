@@ -2,8 +2,8 @@ angular.module('app',[])
 .run(function($rootScope, $window) {
     var sdk = $rootScope.SeatersSDK = $window.SeatersSDK;
     var chance = $window.chance;
-    
-    var wlId = '671af8d2-07d8-46c9-857e-77494903933e';
+
+    var wlId = '40591787-936f-4c8a-b6e6-0a97f7583f69';
     $rootScope.events = ['dark','teal','white','navy'].map((theme) => {
         return {
             wlId: wlId,
