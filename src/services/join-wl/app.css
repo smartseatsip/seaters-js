@@ -1581,6 +1581,9 @@ a.strs-link:active, a.strs-link:visited  {
   background-color: #3E82F7 !important;
   border-radius: 5px;
 }
+.strs-button.success:hover {
+  background-color: #3B78E7 !important;
+}
 
 .strs-button.success.expand {
   padding-left: .6875em;
