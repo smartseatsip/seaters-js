@@ -64,7 +64,7 @@
 
 a.strs-powered-button {
   display:block;
-  width: 164px;
+  width: 165px;
   height: 24px;
   margin: 48px auto;
   margin-bottom: 10px;
@@ -73,6 +73,18 @@ a.strs-powered-button {
   background-size: contain;
   background-repeat: no-repeat;
   opacity: 0.35;
+}
+@media
+only screen and (-webkit-min-device-pixel-ratio: 2),
+only screen and (   min--moz-device-pixel-ratio: 2),
+only screen and (     -o-min-device-pixel-ratio: 2/1),
+only screen and (        min-device-pixel-ratio: 2),
+only screen and (                min-resolution: 192dpi),
+only screen and (                min-resolution: 2dppx) {
+  /* Retina-specific stuff here */
+  a.strs-powered-button {
+    background-image: url("/assets/join-wl/images/powered-by-seaters@2x.png");
+  }
 }
 a.strs-powered-button:hover {
   opacity: 1;
