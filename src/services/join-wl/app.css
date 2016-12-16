@@ -1299,6 +1299,7 @@ input.strs-input[type="password"]:focus,
 input.strs-input[type="number"]:focus {
   background: #fafafa;
   border-color: #999999;
+  color: #30323b;
   outline: none; }
 
 input.strs-input:not([type]):disabled,
@@ -1392,7 +1393,7 @@ select.strs-select[multiple] {
 .strs-content input {
   margin: 0;
   padding: 0;
-  color: #30323b !important;
+  color: #30323b;
 }
 
 .strs-content h3 {
