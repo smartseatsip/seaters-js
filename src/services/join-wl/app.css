@@ -1353,9 +1353,10 @@ select.strs-select {
   font-size: 0.875em;
   line-height: normal;
   margin: 0 0 1em 0;
-  padding: 0.5em;
+  padding: 12px 15px;
   border-radius: 0;
-  height: 2.3125em; }
+  height:40px;
+}
 select.strs-select::-ms-expand {
   display: none; }
 select.strs-select.radius {
@@ -1396,15 +1397,7 @@ select.strs-select[multiple] {
   color: #30323b;
 }
 
-.strs-content h3 {
-  font-style: normal;
-  font-weight: 500;
-  font-stretch: normal;
-  line-height: 1.5;
-  font-size: 24px;
-  text-align: center;
-  color: #30323b;
-}
+
 .strs-title {
   font-family: Roboto, Helvetica, sans-serif;
   font-style: normal;
@@ -1517,7 +1510,7 @@ select.strs-select[multiple] {
 }
 
 .strs-section-title {
-  font-weight: bold;
+  font-weight: 700;
   text-align: center;
 }
 
@@ -1605,7 +1598,7 @@ a.strs-link:active, a.strs-link:visited  {
 .strs-wl-data-value {
   color: #2EA54F !important;
   font-size:16px;
-  font-weight: bold;
+  font-weight: 700;
   text-align: right;
   line-height: 1.36 !important;
 }
@@ -1620,7 +1613,7 @@ a.strs-link:active, a.strs-link:visited  {
   font-weight: normal;
 }
 .strs-wl-data-pricing.total {
-  font-weight: bold;
+  font-weight: 700;
 }
 
 
@@ -1657,7 +1650,7 @@ a.strs-link:active, a.strs-link:visited  {
 .strs-panel .strs-panel-title {
   font-family: Roboto, Helvetica, sans-serif;
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 700;
   font-style: normal;
   font-stretch: normal;
   text-align: center;
