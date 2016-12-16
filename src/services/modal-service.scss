@@ -25,41 +25,20 @@
 }
 
 .strs-modal-close {
-    height: 14px;
-    width: 14px;
+    display: block;
+    height: 24px;
+    width: 24px;
     position: absolute;
     top:20px;
-    left:286px;
-    box-sizing: border-box;
-    line-height: 20px;
-    display: inline-block;
-
-    &:before, &:after {
-      transform: rotate(-45deg);
-      content: '';
-      position: absolute;
-      top: 50%;
-      right: 0;
-      margin-top: -5px;
-      margin-left: -25px;
-      display: block;
-      height: 2px;
-      width: 16px;
-      background-color: #30323b;
-      opacity: 0.5;
-      transition: all 0.2s ease-out;
-    }
-
-    &:after {
-      transform: rotate(45deg);
-    }
+    left:280px;
+    background-image: url("/assets/join-wl/images/icon-close.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.35;
 }
 .strs-modal-close:hover {
     cursor: pointer;
-
-    &:before, &:after {
-      opacity: 1;
-    }
+    opacity: 1;
 }
 
 a.strs-powered-button {
@@ -74,6 +53,14 @@ a.strs-powered-button {
   background-repeat: no-repeat;
   opacity: 0.35;
 }
+a.strs-powered-button:hover {
+  cursor: pointer;
+  opacity: 1;
+}
+
+
+
+
 @media
 only screen and (-webkit-min-device-pixel-ratio: 2),
 only screen and (   min--moz-device-pixel-ratio: 2),
@@ -82,11 +69,14 @@ only screen and (        min-device-pixel-ratio: 2),
 only screen and (                min-resolution: 192dpi),
 only screen and (                min-resolution: 2dppx) {
   /* Retina-specific stuff here */
+
+  .strs-modal-close {
+    background-image: url("/assets/join-wl/images/icon-close@2x.png");
+  }
+
   a.strs-powered-button {
     background-image: url("/assets/join-wl/images/powered-by-seaters@2x.png");
   }
-}
-a.strs-powered-button:hover {
-  opacity: 1;
+
 }
 
