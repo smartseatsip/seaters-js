@@ -21,7 +21,7 @@
     "rxjs": "5.0.0-rc.1"
   },
   "devDependencies": {
-    "awesome-typescript-loader": "^2.2.4",
+    "awesome-typescript-loader": "^3.0.0-beta.17",
     "chance": "1.0.4",
     "connect": "^3.5.0",
     "css-loader": "^0.25.0",
