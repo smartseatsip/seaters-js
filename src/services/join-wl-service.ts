@@ -1,7 +1,7 @@
 /// <reference path="../../node_modules/typescript/lib/lib.d.ts" />
 
 import { SessionService } from './session-service';
-import { WlService } from './wl-service';
+import { WaitingListService } from './waiting-list-service';
 import { Promise } from 'es6-promise';
 
 declare var require: any;
@@ -15,7 +15,7 @@ export class JoinWlService {
     private iframe: HTMLIFrameElement;
 
     constructor (
-        private wlService: WlService,
+        private waitingListService: WaitingListService,
         private sessionService: SessionService
     ) {
     }
@@ -365,7 +365,7 @@ export class JoinWlService {
         this.showFormErrors(validationErrors);
       else {
         //Login
-        this.sessionService.doValidation(email, confirmationCode)
+        this.sessionService.doEmailValidation(email, confirmationCode)
           .then(function(res) {
             alert("You have confirmed your email");
           }, function(err) {
