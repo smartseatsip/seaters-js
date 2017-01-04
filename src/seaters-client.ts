@@ -6,6 +6,8 @@ import { SeatersApi } from './seaters-api';
 import { SessionService } from './services/session-service';
 import { WaitingListService } from './services/waiting-list-service';
 import { FanGroupService } from './services/fan-group-service';
+import { EnvService } from './services/env-service';
+import { AlgoliaForSeatersService } from './services/algolia-for-seaters-service';
 import { ModalService } from './services/modal-service';
 import { JwlFlowService } from './services/join-wl/jwl-flow-service';
 import { TranslationService } from './services/translation-service';
@@ -34,6 +36,10 @@ export class SeatersClient {
 
   public translationService: TranslationService;
 
+  public envService: EnvService;
+
+  public algoliaForSeatersService: AlgoliaForSeatersService;
+
   constructor (options?: SeatersClientOptions) {
     options = core.Object.assign({}, SeatersClient.DEFAULT_OPTIONS, options);
 
@@ -44,6 +50,8 @@ export class SeatersClient {
     this.sessionService = new SessionService(this.api);
     this.waitingListService = new WaitingListService(this.api);
     this.fanGroupService = new FanGroupService(this.api);
+    this.envService = new EnvService(this.api.app);
+    this.algoliaForSeatersService = new AlgoliaForSeatersService(this.envService);
 
     this.jwlFlowService = new JwlFlowService(
       this.modalService,
