@@ -1,5 +1,3 @@
-/// <reference path="../../node_modules/typescript/lib/lib.d.ts" />
-
 import { Promise } from 'es6-promise';
 import { TranslationStore, TranslationService, Locale } from './translation-service';
 import { Array } from 'core-js/library';

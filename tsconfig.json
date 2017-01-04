@@ -4,7 +4,8 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "experimentalDecorators": true,
-    "outDir": "lib"
+    "outDir": "lib",
+    "declaration": true
   },
   "files": [
     "src/index.ts",

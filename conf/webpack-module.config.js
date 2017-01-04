@@ -4,12 +4,8 @@ var webpackHelpers = require('./webpack-helpers');
 
 var nodeModules = {};
 fs.readdirSync('node_modules')
-  .filter(function(x) {
-    return ['.bin'].indexOf(x) === -1;
-  })
-  .forEach(function(mod) {
-    nodeModules[mod] = 'commonjs ' + mod;
-  });
+  .filter(file => ['.bin'].indexOf(file) === -1)
+  .forEach(mod => nodeModules[mod] = 'commonjs ' + mod);
 
 module.exports = {
   entry: './src/index.ts',
@@ -28,24 +24,10 @@ module.exports = {
       'require("source-map-support").install();',
       { raw: true, entryOnly: false }
     ),
-    new webpack.NormalModuleReplacementPlugin(/(\.s?css)|(\.html)$/, 'node-noop')
+    // webpackHelpers.noopStaticResources
   ],
   module: {
-    loaders: [
-      webpackHelpers.replacePackageVersionLoader,
-      webpackHelpers.replaceApiLocationLoader(false),
-      {
-        test: /\.html$/,
-        loader: 'html-loader'
-      },
-      {
-        test: /\.css$/,
-        loader: 'css-loader'
-      },
-      {
-        test: /\.ts$/,
-        loader: 'awesome-typescript-loader'
-      }
-    ]
+    preLoaders: webpackHelpers.allPreLoaders,
+    loaders: webpackHelpers.allLoaders
   }
 }

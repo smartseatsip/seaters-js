@@ -9,3 +9,5 @@ test-configs/*
 !test-configs/default.json
 tmp/
 translations.json
+dist/
+lib/
