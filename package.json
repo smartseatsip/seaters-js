@@ -1,9 +1,9 @@
 {
   "name": "seaters",
-  "version": "1.0.0-RC",
+  "version": "0.0.5",
   "description": "Seaters functionality in a box!",
-  "main": "./lib/seaters.module.js",
-  "typings": "./lib/index",
+  "main": "./dist/seaters.module.js",
+  "typings": "./dist/index",
   "scripts": {
     "gulp": "node_modules/gulp/bin/gulp.js",
     "typings": "node_modules/typings/dist/bin.js",
@@ -22,7 +22,8 @@
     "moment": "2.17.1",
     "node-noop": "^1.0.0",
     "popsicle": "8.2.0",
-    "rxjs": "5.0.0-rc.1"
+    "rxjs": "5.0.0-rc.1",
+    "source-map-support": "^0.4.6"
   },
   "devDependencies": {
     "awesome-typescript-loader": "^3.0.0-beta.17",
@@ -46,9 +47,9 @@
     "node-sass": "^3.13.0",
     "request": "^2.79.0",
     "request-promise": "^4.1.1",
+    "run-sequence": "^1.2.2",
     "sass-loader": "^4.0.2",
     "serve-static": "^1.11.1",
-    "source-map-support": "^0.4.6",
     "string-replace-loader": "^1.0.5",
     "through2": "^2.0.1",
     "ts-loader": "^0.9.1",

@@ -14,24 +14,32 @@ var connect  = require('connect');
 var serveStatic = require('serve-static');
 var rp = require('request-promise');
 var fs = require('fs');
+var runSequence = require('run-sequence');//needed pre gulp4.0
 
 var server = undefined;
 
 gulp.task('clean', function() {
-  return gulp.src(['dist', 'errorShots', 'tmp'], {read:false})
+  return gulp.src(['lib', 'dist', 'errorShots', 'tmp'], {read:false})
     .pipe(clean());
 });
 
-gulp.task('build:bundle', ['clean'], function() {
+gulp.task('build:bundle', [], function() {
   return gulp.src('src/index.ts')
     .pipe(webpack(require('./conf/webpack-bundle.config.js')))
     .pipe(gulp.dest('.'));
 });
 
-gulp.task('build:module', ['clean'], function() {
+gulp.task('build:module', [], function() {
   return gulp.src('src/index.ts')
     .pipe(webpack(require('./conf/webpack-module.config.js')))
     .pipe(gulp.dest('.'));
+});
+
+var tsconfig = require('./tsconfig.json');
+gulp.task('build:typings', [], function() {
+  return gulp.src(tsconfig.files.concat('src/**/*.ts','!**/*.spec.ts'))
+    .pipe(typescript(tsconfig.compilerOptions))
+    .dts.pipe(gulp.dest('./dist/'));
 });
 
 function replaceVersion(src) {
@@ -74,7 +82,15 @@ gulp.task('test:e2e-node', ['build:module'], function() {
     .pipe(jasmine());
 });
 
-gulp.task('build', ['build:bundle', 'build:module']);
+gulp.task('build', [], cb => {
+  runSequence(
+    'clean',
+    'build:bundle',
+    'build:module',
+    'build:typings',
+    cb
+  );
+});
 
 gulp.task('test:e2e', ['test:e2e-browser', 'test:e2e-node']);
 
