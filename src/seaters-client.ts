@@ -7,7 +7,7 @@ import { SessionService } from './services/session-service';
 import { WaitingListService } from './services/waiting-list-service';
 import { FanGroupService } from './services/fan-group-service';
 import { EnvService } from './services/env-service';
-import { AlgoliaForSeatersService } from './services/algolia-for-seaters-service';
+import { AlgoliaForSeatersService } from './services/algolia-for-seaters/algolia-for-seaters-service';
 import { ModalService } from './services/modal-service';
 import { JwlFlowService } from './services/join-wl/jwl-flow-service';
 import { TranslationService } from './services/translation-service';
