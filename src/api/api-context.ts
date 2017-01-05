@@ -132,7 +132,9 @@ export class ApiContext {
             case 201:
             case 202:
             case 204: return this.handle2XXResponse(response);
-            case 400: return this.handle4XXResponse(response);
+            case 400:
+            case 410:
+            case 422: return this.handle4XXResponse(response);
             default: return this.handleUnexpectedResponse(response);
         }
     }

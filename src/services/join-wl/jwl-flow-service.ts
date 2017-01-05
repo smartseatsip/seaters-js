@@ -140,14 +140,13 @@ export class JwlFlowService {
         var err = JSON.parse(error.rawResponse.body);
         if (err.details && err.details.length) {
           //Show error for email field, if any
-          var errMsgKey = this.extractApiErrorTranslationKey(err, 'emailPasswordCredentials.email');
+          var errMsgKey = this.extractApiErrorTranslationKey(err, 'createOrRefreshToken.request.emailPasswordCredentials.email');
           var translatedErrorMessage = this.translationService.translateFromStore(translationStore, errMsgKey, this.locale);
           this.modalService.showFieldError('strs-email-error', translatedErrorMessage);
           return;
         }
 
         if (err.error.translationKey) {
-          console.log('doing it');
           var translatedErrorMessage = this.translationService.translateFromStore(translationStore, err.error.translationKey, this.locale);
           this.modalService.showFieldError('strs-email-error', translatedErrorMessage);
           return;
@@ -410,7 +409,7 @@ export class JwlFlowService {
       return this.sessionService.doEmailPasswordSignUp(email, password, firstname, lastname)
       .then(fan => { return this.askToValidateEmail(fan); }, err => {
           this.enableButton('strs-btn-signup', true);
-          var errMsgKey = this.extractApiErrorTranslationKey(JSON.parse(err.rawResponse.body), 'email');
+          var errMsgKey = this.extractApiErrorTranslationKey(JSON.parse(err.rawResponse.body), 'signUp.signUpRequest.email');
           var translatedErrorMessage = this.translationService.translateFromStore(translationStore, errMsgKey, this.locale);
           this.modalService.showFieldError('strs-email-error', translatedErrorMessage);
 
