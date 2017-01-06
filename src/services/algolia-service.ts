@@ -1,8 +1,8 @@
 import * as algoliasearch from 'algoliasearch';
 import { Promise } from 'es6-promise';
 
-export type SearchResult = {
-    hits: any[],
+export type SearchResult<T> = {
+    hits: T[],
     nbHits: number,
     page: number,
     nbPages: number,
@@ -32,7 +32,7 @@ export class AlgoliaService {
         this.searchIndex = this.client.initIndex(searchIndexName);
     }
 
-    search (query: algoliasearch.AlgoliaQueryParameters): Promise<any> {
+    search<T> (query: algoliasearch.AlgoliaQueryParameters): Promise<SearchResult<T>> {
         return this.searchIndex.search(query);
     }
 
