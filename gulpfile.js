@@ -88,6 +88,7 @@ gulp.task('build', [], cb => {
     'build:bundle',
     'build:module',
     'build:typings',
+    'fix-const-declaration',// temporary fix for issue: https://github.com/Microsoft/TypeScript/issues/13361
     cb
   );
 });
@@ -164,6 +165,12 @@ gulp.task('csvify-translations', () => {
       defaultTranslation: t.translations.filter(trl => trl.locale == 'en')[0].translation
     }
   }).forEach(trl => console.log('%s,"%s"', trl.key, trl.defaultTranslation.replace('"', '""')));
+});
+
+gulp.task('fix-const-declaration', () => {
+  return gulp.src('dist/index.d.ts')
+    .pipe(replace('export declare const version = "${package.version}";', 'export declare const version: string;'))
+    .pipe(gulp.dest('./dist/'));
 });
 
 gulp.task('default', ['test']);
