@@ -1,6 +1,6 @@
 {
   "name": "seaters",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Seaters functionality in a box!",
   "main": "./dist/seaters.module.js",
   "typings": "./dist/index",
@@ -20,7 +20,6 @@
     "core-js": "2.4.1",
     "moment": "2.17.1",
     "node-noop": "1.0.0",
-    "popsicle": "8.2.0",
     "rxjs": "5.0.0-rc.1",
     "source-map-support": "^0.4.6"
   },
