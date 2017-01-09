@@ -32,7 +32,8 @@ export class AlgoliaForSeatersService {
                 } else {
                     throw new Error('500 - unexpected nb hits from algolia on query: ' + res.query);
                 }
-            });
+            })
+            .then(r => algoliaService.stripAlgoliaFieldsFromObject(r));
         });
         
     }
@@ -42,7 +43,8 @@ export class AlgoliaForSeatersService {
             var query = algoliaService.buildExactSearchQuery(
                 fangroupId, 'groupId', 'WAITING_LIST', pageSize//, page
             );
-            return algoliaService.search(query);
+            return algoliaService.search(query)
+            .then(r => algoliaService.stripAlgoliaFieldsFromSearchResultHits(r));
         });
     }
 

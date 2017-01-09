@@ -17,8 +17,20 @@ export type SearchResult<T> = {
 export type SearchQuery = {
     indexName: string,
     query: string,
-    options: algoliasearch.AlgoliaQueryParameters
+    options: SearchQueryParameters
 };
+
+export type SearchQueryParameters = {
+    query: string,
+    restrictSearchableAttributes: string[],
+    typoTolerance: boolean,
+    getRankingInfo: boolean,
+    facets: string,
+    attributesToRetrieve: string[],
+    hitsPerPage: number,
+    facetFilters: string,
+    maxValuesPerFacet: string,
+}
 
 export class AlgoliaService {
 
@@ -32,8 +44,8 @@ export class AlgoliaService {
         this.searchIndex = this.client.initIndex(searchIndexName);
     }
 
-    search<T> (query: algoliasearch.AlgoliaQueryParameters): Promise<SearchResult<T>> {
-        return this.searchIndex.search(query);
+    search<T> (query: SearchQueryParameters): Promise<SearchResult<T>> {
+        return this.searchIndex.search(<algoliasearch.AlgoliaQueryParameters>query);
     }
 
     buildExactSearchQuery (
@@ -41,7 +53,7 @@ export class AlgoliaService {
         attribute: string,
         type: string,
         pageSize: number
-    ): algoliasearch.AlgoliaQueryParameters {
+    ): SearchQueryParameters {
         return {
             query: query,
             restrictSearchableAttributes: [attribute],
@@ -53,6 +65,18 @@ export class AlgoliaService {
             facetFilters: 'type:' + type,
             maxValuesPerFacet: pageSize.toString()
         };
+    }
+
+    stripAlgoliaFieldsFromObject<T> (result: any): T {
+        delete result._geoloc;
+        delete result._highlightResult;
+        delete result.objectID;
+        return <T> result;
+    }
+
+    stripAlgoliaFieldsFromSearchResultHits<T> (result: SearchResult<T>): SearchResult<T> {
+        result.hits.forEach(hit => this.stripAlgoliaFieldsFromObject(hit));
+        return result;
     }
 
 }
