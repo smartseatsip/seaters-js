@@ -1,11 +1,15 @@
 import { ApiRequestDefinition } from './api-request-definition';
 import { ApiEndpoint } from './api-endpoint';
-import { Request } from 'popsicle';
+import { RequestOptions, ServerResponse } from './request-driver';
+import { Promise } from 'es6-promise';
 
 export interface ApiRequest {
 
     requestDefinition: ApiRequestDefinition,
     endpoint: ApiEndpoint,
-    popsicleRequest: Request
+    rawRequest: {
+        options: RequestOptions,
+        promise: Promise<ServerResponse>
+    }
 
 }

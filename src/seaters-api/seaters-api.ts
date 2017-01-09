@@ -10,8 +10,8 @@ export class SeatersApi extends api.ApiContext {
     public fan: FanApi;
     public authentication: AuthenticationApi;
 
-    constructor (private prefix: string) {
-        super(prefix);
+    constructor (prefix: string, requestDriver: api.RequestDriver) {
+        super(prefix, requestDriver);
         this.app = new AppApi(this);
         this.fan = new FanApi(this);
         this.authentication = new AuthenticationApi(this);

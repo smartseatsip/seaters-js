@@ -1,10 +1,12 @@
 import { Subject } from 'rxjs';
-import * as popsicle from 'popsicle';
 import * as core from 'core-js/library';
+
 import { ApiRequestDefinition } from './api-request-definition';
 import { ApiRequest } from './api-request';
 import { ApiEndpoint } from './api-endpoint';
 import { ApiError, ERROR_TYPE } from './api-error';
+
+import { RequestDriver, RequestOptions, ServerResponse } from './request-driver';
 
 export class ApiContext {
 
@@ -12,9 +14,10 @@ export class ApiContext {
 
     private headers: Map<string, string>;
 
-    constructor (private apiPrefix: string) {
+    constructor (private apiPrefix: string, private requestDriver: RequestDriver) {
         this.requestsSubject = new Subject<ApiRequest>();
         this.headers = new core.Map<string, string>();
+        this.headers.set('Content-Type', 'application/json');
     }
 
     setHeader (header: string, value: string) {
@@ -40,27 +43,32 @@ export class ApiContext {
         );
     }
 
-    createPopsicleRequestOptions (requestDefinition: ApiRequestDefinition, endpoint: ApiEndpoint) : any {
+    createRequestOptions (requestDefinition: ApiRequestDefinition, endpoint: ApiEndpoint) : RequestOptions {
         var headers = this.mergeHeaders(requestDefinition.headers);
+        var body = requestDefinition.body !== undefined ? JSON.stringify(requestDefinition.body) : null;
         return {
             url: endpoint.absoluteEndpoint,
             method: requestDefinition.method || 'GET',
             headers: headers,
-            body: requestDefinition.body
+            body: body
         };
     }
 
-    public doRawRequest (requestDefinition: ApiRequestDefinition): Promise<popsicle.Response> {
+    public doRawRequest (requestDefinition: ApiRequestDefinition): Promise<ServerResponse> {
         var endpoint = this.createEndpoint(requestDefinition);
-        var popsicleRequestOptions = this.createPopsicleRequestOptions(requestDefinition, endpoint);
-        var popsicleRequest = popsicle.request(popsicleRequestOptions);
+        var requestOptions = this.createRequestOptions(requestDefinition, endpoint);
+        var request = this.requestDriver(requestOptions);
         var apiRequest: ApiRequest = {
             requestDefinition: requestDefinition,
             endpoint: endpoint,
-            popsicleRequest: popsicleRequest
+            rawRequest: {
+                options: requestOptions,
+                promise: request
+            }
         };
+        // notify all request listeners about the request that was just started
         this.requestsSubject.next(apiRequest);
-        return popsicleRequest;
+        return request;
     }
 
     doJsonRequest<T> (requestDefinition: ApiRequestDefinition): Promise<T> {
@@ -68,11 +76,12 @@ export class ApiContext {
             .then(response => JSON.parse(response.body));
     }
 
-    handle2XXResponse<T> (response: popsicle.Response): Promise<T> {
-        if (response.body.length )
-          return Promise.resolve(JSON.parse(response.body));
-        else
-          return Promise.resolve(response.body);
+    handle2XXResponse<T> (response: ServerResponse): Promise<T> {
+        if (response.body.length > 0) {
+            return Promise.resolve(JSON.parse(response.body));
+        } else {
+          return Promise.resolve(null);
+        }
     }
 
     tryParseJSON (json: string) {
@@ -83,7 +92,7 @@ export class ApiContext {
         }
     }
 
-    handleUnexpectedResponse<T> (response: popsicle.Response): Promise<T> {
+    handleUnexpectedResponse<T> (response: ServerResponse): Promise<T> {
         var apiError: ApiError;
         if(response instanceof Error) {
             apiError = {
@@ -105,7 +114,7 @@ export class ApiContext {
         return Promise.reject<T>(apiError);
     }
 
-    handle4XXResponse<T> (response: popsicle.Response): Promise<T> {
+    handle4XXResponse<T> (response: ServerResponse): Promise<T> {
         var body = this.tryParseJSON(response.body);
         var error: ApiError;
         if (!body) {
@@ -126,7 +135,7 @@ export class ApiContext {
         return Promise.reject<T>(error);
     }
 
-    handleResponse<T> (response: popsicle.Response): Promise<T> {
+    handleResponse<T> (response: ServerResponse): Promise<T> {
         switch(response.status) {
             case 200:
             case 201:

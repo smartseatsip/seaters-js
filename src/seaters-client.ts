@@ -1,7 +1,7 @@
-import { request } from 'popsicle';
 import { Promise } from 'es6-promise';
 import * as core from 'core-js/library';
 
+import { RequestDriver, BrowserRequestDriver } from './api';
 import { SeatersApi } from './seaters-api';
 import { SessionService } from './services/session-service';
 import { WaitingListService } from './services/waiting-list-service';
@@ -13,7 +13,8 @@ import { JwlFlowService } from './services/join-wl/jwl-flow-service';
 import { TranslationService } from './services/translation-service';
 
 export interface SeatersClientOptions {
-  apiPrefix: string
+  apiPrefix: string,
+  requestDriver?: RequestDriver
 }
 
 export class SeatersClient {
@@ -43,7 +44,9 @@ export class SeatersClient {
   constructor (options?: SeatersClientOptions) {
     options = core.Object.assign({}, SeatersClient.DEFAULT_OPTIONS, options);
 
-    this.api = new SeatersApi(options.apiPrefix);
+    var requestDriver: RequestDriver = options.requestDriver || BrowserRequestDriver;
+
+    this.api = new SeatersApi(options.apiPrefix, requestDriver);
     this.translationService = new TranslationService();
     this.modalService = new ModalService(this.translationService);
 

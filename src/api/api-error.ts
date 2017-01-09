@@ -1,11 +1,11 @@
-import * as popsicle from 'popsicle';
+import { ServerResponse } from './request-driver';
 
 export enum ERROR_TYPE {
     CLIENT, SERVER, LIBRARY
 }
 
 export interface ApiError {
-    rawResponse: popsicle.Response,
+    rawResponse: ServerResponse,
     type: ERROR_TYPE,
     error: string,
     errorMsg: string,
