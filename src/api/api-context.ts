@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import * as core from 'core-js/library';
+import { Map, Object } from 'core-js/library';
 
 import { ApiRequestDefinition } from './api-request-definition';
 import { ApiRequest } from './api-request';
@@ -16,7 +16,7 @@ export class ApiContext {
 
     constructor (private apiPrefix: string, private requestDriver: RequestDriver) {
         this.requestsSubject = new Subject<ApiRequest>();
-        this.headers = new core.Map<string, string>();
+        this.headers = new Map<string, string>();
         this.headers.set('Content-Type', 'application/json');
     }
 
@@ -31,14 +31,14 @@ export class ApiContext {
     private mergeHeaders (otherHeaders: any) {
         var merged = {};
         this.headers.forEach((v,k) => merged[k] = v);
-        return core.Object.assign(merged, otherHeaders);
+        return Object.assign(merged, otherHeaders);
     }
 
     createEndpoint (requestDefinition: ApiRequestDefinition): ApiEndpoint {
         return new ApiEndpoint(
             requestDefinition.abstractEndpoint,
-            requestDefinition.endpointParams || new core.Map<string, string>(),
-            requestDefinition.queryParams || new core.Map<string, string>(),
+            requestDefinition.endpointParams || new Map<string, string>(),
+            requestDefinition.queryParams || new Map<string, string>(),
             this.apiPrefix
         );
     }
@@ -163,8 +163,8 @@ export class ApiContext {
     ): Promise<T> {
         return this.doRequest({
             abstractEndpoint: abstractEndpoint,
-            endpointParams: endpointParams || new core.Map<string, string>(),
-            queryParams: queryParams || new core.Map<string, string>()
+            endpointParams: endpointParams || new Map<string, string>(),
+            queryParams: queryParams || new Map<string, string>()
         });
     }
 
@@ -177,8 +177,8 @@ export class ApiContext {
         return this.doRequest({
             method: 'PUT',
             abstractEndpoint: abstractEndpoint,
-            endpointParams: endpointParams || new core.Map<string, string>(),
-            queryParams: queryParams || new core.Map<string, string>(),
+            endpointParams: endpointParams || new Map<string, string>(),
+            queryParams: queryParams || new Map<string, string>(),
             body: body
         });
     }
@@ -193,14 +193,14 @@ export class ApiContext {
       return this.doRequest({
           method: 'POST',
           abstractEndpoint: abstractEndpoint,
-          endpointParams: endpointParams || new core.Map<string, string>(),
-          queryParams: queryParams || new core.Map<string, string>(),
+          endpointParams: endpointParams || new Map<string, string>(),
+          queryParams: queryParams || new Map<string, string>(),
           body: body
       });
     }
 
     public static buildEndpointParams(obj: Object): Map<string, string> {
-        var map = new core.Map<string, string>();
+        var map = new Map<string, string>();
         Object.keys(obj).forEach(k => map.set(k, obj[k]));
         return map;
     }

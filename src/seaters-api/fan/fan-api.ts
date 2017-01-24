@@ -1,9 +1,7 @@
 import { ApiContext } from '../../api';
 import { PagedResult } from '../paged-result';
 import { PagingOptions } from '../paging-options';
-import { WaitingList,Price } from './waiting-list';
-import { FanGroup, Request } from './fan-group';
-import { Fan } from "./fan";
+import { fan } from './fan-types';
 
 export class FanApi {
 
@@ -13,8 +11,8 @@ export class FanApi {
 
     private rootEp = '/fan';
 
-    fan (): Promise<Fan> {
-      return this.apiContext.get<Fan>(this.rootEp);
+    fan (): Promise<fan.Fan> {
+      return this.apiContext.get<fan.Fan>(this.rootEp);
     }
 
     private fgEp = this.rootEp + '/groups/:fanGroupId';
@@ -25,22 +23,22 @@ export class FanApi {
         return ApiContext.buildEndpointParams({fanGroupId: fanGroupId});
     }
 
-    fanGroup (fanGroupId: string): Promise<FanGroup> {
-        return this.apiContext.get<FanGroup>(this.fgEp, this.fgEndpointParams(fanGroupId));
+    fanGroup (fanGroupId: string): Promise<fan.FanGroup> {
+        return this.apiContext.get<fan.FanGroup>(this.fgEp, this.fgEndpointParams(fanGroupId));
     }
 
-    joinFanGroup (fanGroupId: string): Promise<FanGroup> {
-        return this.apiContext.post<FanGroup>(this.fgEp, null, this.fgEndpointParams(fanGroupId));
+    joinFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
+        return this.apiContext.post<fan.FanGroup>(this.fgEp, null, this.fgEndpointParams(fanGroupId));
     }
 
-    joinProtectedFanGroup (fg: FanGroup, code: string): Promise<Request> {
+    joinProtectedFanGroup (fg: fan.FanGroup, code: string): Promise<fan.FanGroupRequest> {
       var data = {
         code: code
       };
       if (!fg.membership.request)
-        return this.apiContext.post<Request>(this.fgProtectedWithoutRequest, data, this.fgEndpointParams(fg.id));
+        return this.apiContext.post<fan.FanGroupRequest>(this.fgProtectedWithoutRequest, data, this.fgEndpointParams(fg.id));
       else
-        return this.apiContext.put<Request>(this.fgProcectedWithRequest, data, this.fgEndpointParams(fg.id));
+        return this.apiContext.put<fan.FanGroupRequest>(this.fgProcectedWithRequest, data, this.fgEndpointParams(fg.id));
     }
 
     private wlEp = this.rootEp + '/waiting-lists/:waitingListId';
@@ -51,16 +49,19 @@ export class FanApi {
 
     private wlPriceEp = this.rootEp + '/waiting-lists/:waitingListId/price/:numberOfSeats';
 
-    waitingList (waitingListId: string): Promise<WaitingList> {
-        return this.apiContext.get<WaitingList>(this.wlEp, this.wlEndpointParams(waitingListId));
+    waitingList (waitingListId: string): Promise<fan.WaitingList> {
+        return this.apiContext.get<fan.WaitingList>(this.wlEp, this.wlEndpointParams(waitingListId));
     }
 
-    waitingListPrice (waitingListId: string, numberOfSeats: number): Promise<Price> {
-        return this.apiContext.get<Price>(this.wlPriceEp, ApiContext.buildEndpointParams({waitingListId: waitingListId, numberOfSeats: numberOfSeats}));
+    waitingListPrice (waitingListId: string, numberOfSeats: number): Promise<fan.Price> {
+        return this.apiContext.get<fan.Price>(
+            this.wlPriceEp,
+            ApiContext.buildEndpointParams({waitingListId: waitingListId, numberOfSeats: numberOfSeats})
+        );
     }
 
-    joinWaitingList (waitingListId: string, numberOfSeats: number): Promise<WaitingList> {
-        return this.apiContext.post<WaitingList>(
+    joinWaitingList (waitingListId: string, numberOfSeats: number): Promise<fan.WaitingList> {
+        return this.apiContext.post<fan.WaitingList>(
             this.wlEp+'/position',
             {
                 numberOfSeats: numberOfSeats

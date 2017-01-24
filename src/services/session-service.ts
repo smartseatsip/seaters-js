@@ -1,6 +1,4 @@
-import { SeatersApi } from '../seaters-api';
-import { Fan } from '../seaters-api/fan/fan'
-import { SessionToken } from '../seaters-api/authentication/token';
+import { SeatersApi, fan, authentication } from '../seaters-api';
 import { Promise } from 'es6-promise';
 import * as moment from 'moment';
 import {fail} from "assert";
@@ -14,7 +12,7 @@ export enum SESSION_STRATEGY {
 
 export class SessionService {
 
-    private currentFan: Fan;
+    private currentFan: fan.Fan;
 
     private sessionStrategy: SESSION_STRATEGY;
     private sessionToken : string = "";
@@ -26,7 +24,7 @@ export class SessionService {
         this.sessionStrategy = sessionStrategy || SESSION_STRATEGY.EXPIRE;
     }
 
-    private applyExpireSessionStrategy (session: SessionToken): void {
+    private applyExpireSessionStrategy (session: authentication.SessionToken): void {
         var expiration = moment.utc(session.expirationDate);
         var now = moment();
         console.log(
@@ -40,7 +38,7 @@ export class SessionService {
         );
     }
 
-    private finishLogin (session: SessionToken): Promise<Fan> {
+    private finishLogin (session: authentication.SessionToken): Promise<fan.Fan> {
         this.api.setHeader(AUTH_HEADER, AUTH_BEARER + ' ' + session.token);
         this.sessionToken = session.token;
         switch (this.sessionStrategy) {
@@ -49,12 +47,12 @@ export class SessionService {
         return this.setCurrentFan();
     }
 
-    private setCurrentFan (): Promise<Fan> {
+    private setCurrentFan (): Promise<fan.Fan> {
         return this.api.fan.fan()
         .then(fan => this.currentFan = fan);
     }
 
-    doEmailPasswordLogin (email: string, password: string, mfaToken?: string): Promise<Fan> {
+    doEmailPasswordLogin (email: string, password: string, mfaToken?: string): Promise<fan.Fan> {
         return this.api.authentication.token({
             emailPasswordCredentials: {
                 email: email,
@@ -65,7 +63,7 @@ export class SessionService {
     }
 
     //TODO: handle error case
-    doEmailPasswordSignUp (email:string, password: string, firstname: string, lastname: string, language?: string) : Promise<Fan> {
+    doEmailPasswordSignUp (email:string, password: string, firstname: string, lastname: string, language?: string) : Promise<fan.Fan> {
         return this.api.authentication.signup({
             email: email,
             password: password,
@@ -76,7 +74,7 @@ export class SessionService {
         .then(() => this.doEmailPasswordLogin(email, password));
     }
 
-    doEmailValidation (email: string, code: string): Promise<Fan> {
+    doEmailValidation (email: string, code: string): Promise<fan.Fan> {
         return this.api.authentication.validate({
             email: email,
             code: code

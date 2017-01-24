@@ -1,24 +1,11 @@
-import { SeatersApi } from '../seaters-api';
+import { Object } from 'core-js/library';
 import { Promise } from 'es6-promise';
-import { WaitingList, Price } from '../seaters-api/fan/waiting-list';
-import * as core from 'core-js/library';
-import { retryUntil } from './util';
 
-export enum WAITING_LIST_ACTION_STATUS {
-    UNLOCK, SOON, BOOK, WAIT, CONFIRM, GO_LIVE, ERROR
-}
+import { SeatersApi, fan } from '../../seaters-api';
+import { waitingListForFan } from './waiting-list-types'; 
+import { retryUntil } from './../util';
 
-export interface ExtendedWaitingList extends WaitingList {
-    /**
-     * What action can be taken next?
-     */
-    actionStatus: WAITING_LIST_ACTION_STATUS,
-
-    /**
-     * Is seaters currently processing your request?
-     */
-    processing: boolean
-}
+var WAITING_LIST_ACTION_STATUS = waitingListForFan.WAITING_LIST_ACTION_STATUS;
 
 export class WaitingListService {
 
@@ -28,11 +15,11 @@ export class WaitingListService {
 
     }
 
-    getWaitingList (waitingListId: string): Promise<ExtendedWaitingList> {
+    getWaitingList (waitingListId: string): Promise<waitingListForFan.ExtendedWaitingList> {
         return this.api.fan.waitingList(waitingListId);
     }
 
-    getWaitingListActionStatus (waitingList: WaitingList): WAITING_LIST_ACTION_STATUS {
+    getWaitingListActionStatus (waitingList: fan.WaitingList): waitingListForFan.WAITING_LIST_ACTION_STATUS {
         var seat = waitingList.seat;
         var position = waitingList.position;
         var request = waitingList.request;
@@ -127,17 +114,17 @@ export class WaitingListService {
 
     }
 
-    getExtendedWaitingList (waitingListId: string): Promise<ExtendedWaitingList> {
+    getExtendedWaitingList (waitingListId: string): Promise<waitingListForFan.ExtendedWaitingList> {
         return this.getWaitingList(waitingListId)
-        .then((wl) => core.Object.assign(wl, {
+        .then((wl) => Object.assign(wl, {
             actionStatus: this.getWaitingListActionStatus(wl)
         }));
     }
 
-    joinWaitingList (waitingListId: string, numberOfSeats: number): Promise<ExtendedWaitingList> {
+    joinWaitingList (waitingListId: string, numberOfSeats: number): Promise<waitingListForFan.ExtendedWaitingList> {
         return this.api.fan.joinWaitingList(waitingListId, numberOfSeats)
         .then(() => {
-            return retryUntil<ExtendedWaitingList>(
+            return retryUntil<waitingListForFan.ExtendedWaitingList>(
                 () => this.getExtendedWaitingList(waitingListId),
                 (fg) => fg.actionStatus !== WAITING_LIST_ACTION_STATUS.BOOK,
                 10,
@@ -146,7 +133,7 @@ export class WaitingListService {
         });
     }
 
-    getWaitingListPrice (waitingListId: string, numberOfSeats: number) : Promise<Price> {
+    getWaitingListPrice (waitingListId: string, numberOfSeats: number) : Promise<fan.Price> {
       return this.api.fan.waitingListPrice(waitingListId, numberOfSeats);
     }
 

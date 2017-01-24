@@ -1,19 +1,11 @@
-import { SeatersApi } from '../seaters-api';
 import { Promise } from 'es6-promise';
-import { FanGroup } from '../seaters-api/fan/fan-group';
-import { retryUntil } from './util';
 import { Object as coreObject } from 'core-js/library';
 
-export enum FAN_GROUP_ACTION_STATUS {
-    CAN_JOIN, CAN_LEAVE, CAN_UNLOCK, CAN_REQUEST, WAITING_FOR_APPROVAL
-}
+import { SeatersApi, fan } from '../../seaters-api';
+import { retryUntil } from './../util';
+import { fanGroupForFan } from './fan-group-types';
 
-export interface ExtendedFanGroup extends FanGroup {
-    /**
-     * FanGroup Fan's action status
-     */
-    actionStatus: FAN_GROUP_ACTION_STATUS,
-}
+var FAN_GROUP_ACTION_STATUS = fanGroupForFan.FAN_GROUP_ACTION_STATUS;
 
 export class FanGroupService {
 
@@ -23,11 +15,11 @@ export class FanGroupService {
 
     }
 
-    getFanGroup (fanGroupId: string): Promise<FanGroup> {
+    getFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
         return this.api.fan.fanGroup(fanGroupId);
     }
 
-    getFanGroupActionStatus (fanGroup: FanGroup): FAN_GROUP_ACTION_STATUS {
+    getFanGroupActionStatus (fanGroup: fan.FanGroup): fanGroupForFan.FAN_GROUP_ACTION_STATUS {
         var membership = fanGroup.membership;
 
         if (membership.member) {
@@ -52,14 +44,14 @@ export class FanGroupService {
         console.error('GroupService - unhandled group status', JSON.stringify(fanGroup));
     }
 
-    getExtendedFanGroup (fanGroupId: string): Promise<ExtendedFanGroup> {
+    getExtendedFanGroup (fanGroupId: string): Promise<fanGroupForFan.ExtendedFanGroup> {
         return this.getFanGroup(fanGroupId)
         .then(fg => coreObject.assign(fg, {
             actionStatus: this.getFanGroupActionStatus(fg)
         }));
     }
 
-    joinFanGroup (fanGroupId: string): Promise<ExtendedFanGroup> {
+    joinFanGroup (fanGroupId: string): Promise<fanGroupForFan.ExtendedFanGroup> {
         return this.api.fan.joinFanGroup(fanGroupId)
         .then(() => {
             return retryUntil(
@@ -91,7 +83,7 @@ export class FanGroupService {
     }
 
 
-    joinProtectedFanGroup (fg:FanGroup, code: string): Promise<Object> {
+    joinProtectedFanGroup (fg: fan.FanGroup, code: string): Promise<Object> {
 
       return this.getExtendedFanGroup(fg.id)
         .then( (fg) => this.api.fan.joinProtectedFanGroup(fg, code) )

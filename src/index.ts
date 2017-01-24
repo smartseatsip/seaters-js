@@ -1,3 +1,4 @@
 export const version: string = "${package.version}"; 
 export { SeatersClient, SeatersClientOptions } from './seaters-client';
-export { joinWl } from './join-wl';
+export { fan, app, authentication } from './seaters-api';
+export { waitingListForFan, fanGroupForFan } from './services';

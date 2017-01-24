@@ -1,6 +1,5 @@
 import { ApiContext } from '../../api';
-import { AuthenticationTokenInput, UserData, SessionToken } from './token';
-import { SignupData, ValidationData, ResetEmailData } from './signup';
+import { authentication } from './authentication-types';
 
 export class AuthenticationApi {
 
@@ -8,7 +7,7 @@ export class AuthenticationApi {
 
     }
 
-    token(input: AuthenticationTokenInput): Promise<SessionToken> {
+    token(input: authentication.AuthenticationTokenInput): Promise<authentication.SessionToken> {
         return this.apiContext.put<any>('/v2/authentication/token', input)
         .then(data => {
           return {
@@ -23,8 +22,8 @@ export class AuthenticationApi {
    * @param input
    * @returns {any}
      */
-    signup(input: SignupData): Promise<UserData> {
-      return this.apiContext.post<UserData>('/v2/authentication/signup', input);
+    signup(input: authentication.SignupData): Promise<authentication.UserData> {
+      return this.apiContext.post<authentication.UserData>('/v2/authentication/signup', input);
     }
 
   /**
@@ -32,7 +31,7 @@ export class AuthenticationApi {
    * @param input
    * @returns {any}
      */
-    validate(input: ValidationData) : Promise<void> {
+    validate(input: authentication.ValidationData) : Promise<void> {
       return this.apiContext.put<void>('/auth/validate', input);
     }
 
@@ -41,7 +40,7 @@ export class AuthenticationApi {
      * @param input
      * @returns {any}
      */
-    resetEmail(input: ResetEmailData) : Promise <void> {
+    resetEmail(input: authentication.ResetEmailData) : Promise <void> {
       return this.apiContext.post<void>('/auth/signup/reset-email', input);
     }
 

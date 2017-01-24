@@ -1,4 +1,4 @@
-import * as core from 'core-js/library';
+import { Map, Array } from 'core-js/library';
 
 export class ApiEndpoint {
 
@@ -43,7 +43,7 @@ export class ApiEndpoint {
     }
 
     private renderQueryParams() : string {
-        return core.Array.from(this.queryParams).map(entry => {
+        return Array.from(this.queryParams).map(entry => {
             return encodeURIComponent(entry[0]) + '=' + encodeURIComponent(entry[1])
         }).join('&');
     }

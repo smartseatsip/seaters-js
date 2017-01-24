@@ -1,4 +1,4 @@
-import * as core from 'core-js/library';
+import { Map } from 'core-js/library';
 
 export class PagingOptions {
     constructor (public itemOffset?: number, public maxPageSize?: number) {
