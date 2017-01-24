@@ -7,6 +7,12 @@ exports.allPreLoaders = [
     }
 ];
 
+exports.minifyPlugin = new webpack.optimize.UglifyJsPlugin({
+    mangle: {
+        except: []//['$super', '$', 'exports', 'require']
+    }
+});
+
 exports.replacePackageVersionLoader = {
     test: /index\.ts$/,
     loader: 'string-replace',
