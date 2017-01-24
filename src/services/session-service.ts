@@ -25,6 +25,7 @@ export class SessionService {
     }
 
     private applyExpireSessionStrategy (session: authentication.SessionToken): void {
+        //TODO: replace moment with smaller lib or embed needed functionality
         var expiration = moment.utc(session.expirationDate);
         var now = moment();
         console.log(

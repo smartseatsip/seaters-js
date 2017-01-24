@@ -16,7 +16,6 @@
   "dependencies": {
     "@types/core-js": "0.9.35",
     "@types/node": "6.0.56",
-    "algoliasearch": "3.20.2",
     "core-js": "2.4.1",
     "moment": "2.17.1",
     "node-noop": "1.0.0",

@@ -43,7 +43,7 @@ export class SeatersClient {
     this.waitingListService = new WaitingListService(this.api);
     this.fanGroupService = new FanGroupService(this.api);
     this.envService = new EnvService(this.api);
-    this.algoliaForSeatersService = new AlgoliaForSeatersService(this.envService);
+    this.algoliaForSeatersService = new AlgoliaForSeatersService(this.envService, requestDriver);
   }
 
 }
