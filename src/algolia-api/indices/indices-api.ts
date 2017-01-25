@@ -10,19 +10,6 @@ export class IndicesApi {
     
     }
     
-    /**
-     * query=99896a68-8a5d-48e4-947c-a344121b4316
-     * &getRankingInfo=1
-     * &facets=*
-     * &attributesToRetrieve=*
-     * &highlightPreTag=%3Cem%3E
-     * &highlightPostTag=%3C%2Fem%3E
-     * &hitsPerPage=10
-     * &facetFilters=%5B%22type%3AFAN_GROUP%22%5D
-     * &restrictSearchableAttributes=fanGroupId
-     * &typoTolerance=true&maxValuesPerFacet=100
-
-     */
     private serializeSearchQuery(searchQuery: SearchQuery): string {
         var params = [];
         function defaultSerializer (item: any) {
