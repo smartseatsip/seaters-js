@@ -133,6 +133,11 @@ export class WaitingListService {
         });
     }
 
+    leaveWaitingList (waitingListId: string): Promise<void> {
+        return this.api.fan.leaveWaitingList(waitingListId);
+        //TODO - poll waitingList to ensure position is gone
+    }
+
     getWaitingListPrice (waitingListId: string, numberOfSeats: number) : Promise<fan.Price> {
       return this.api.fan.waitingListPrice(waitingListId, numberOfSeats);
     }

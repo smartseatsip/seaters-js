@@ -198,6 +198,19 @@ export class ApiContext {
       });
     }
 
+    public delete<T> (
+        abstractEndpoint: string,
+        endpointParams?: Map<string, string>,
+        queryParams?: Map<string, string>
+    ) {
+        return this.doRequest({
+            method: 'DELETE',
+            abstractEndpoint: abstractEndpoint,
+            endpointParams: endpointParams || new Map<string, string>(),
+            queryParams: queryParams || new Map<string, string>()
+        });
+    }
+
     public static buildEndpointParams(obj: Object): Map<string, string> {
         var map = new Map<string, string>();
         Object.keys(obj).forEach(k => map.set(k, obj[k]));

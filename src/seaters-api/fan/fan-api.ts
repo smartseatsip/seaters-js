@@ -41,6 +41,11 @@ export class FanApi {
         return this.apiContext.put<fan.FanGroupRequest>(this.fgProcectedWithRequest, data, this.fgEndpointParams(fg.id));
     }
 
+    leaveFanGroup (fanGroupId: string): Promise<void> {
+        return this.apiContext.delete(this.fgEp, this.fgEndpointParams(fanGroupId))
+        .then(() => undefined);
+    }
+
     private wlEp = this.rootEp + '/waiting-lists/:waitingListId';
 
     private wlEndpointParams (waitingListId): Map<string, string> {
@@ -68,6 +73,13 @@ export class FanApi {
             },
             this.wlEndpointParams(waitingListId)
         );
+    }
+
+    leaveWaitingList (waitingListId: string): Promise<void> {
+        return this.apiContext.delete<void>(
+            this.wlEp + '/position',
+            this.wlEndpointParams(waitingListId)
+        ).then( () => undefined);
     }
 
 }

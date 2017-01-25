@@ -110,6 +110,11 @@ export class FanGroupService {
         });
     }
 
+    leaveFanGroup (fanGroupId: string): Promise<void> {
+        return this.api.fan.leaveFanGroup(fanGroupId);
+        //TODO - poll for fangroup request to be completely removed
+    }
+
 
 
 }
