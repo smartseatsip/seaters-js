@@ -1,7 +1,7 @@
 import { Promise } from 'es6-promise';
 import { Object } from 'core-js/library';
 
-import { RequestDriver, BrowserRequestDriver } from './api';
+import { RequestDriver, REQUEST_DRIVER_TYPE, getRequestDriver } from './api';
 import { SeatersApi } from './seaters-api';
 import { SessionService } from './services/session-service';
 import { WaitingListService } from './services/waiting-list/waiting-list-service';
@@ -11,13 +11,14 @@ import { AlgoliaForSeatersService } from './services/algolia-for-seaters/algolia
 
 export interface SeatersClientOptions {
   apiPrefix: string,
-  requestDriver?: RequestDriver
+  requestDriver?: REQUEST_DRIVER_TYPE
 }
 
 export class SeatersClient {
 
   private static DEFAULT_OPTIONS = <SeatersClientOptions> {
-    apiPrefix: '${api.location}'
+    apiPrefix: '${api.location}',
+    requestDriver: 'BROWSER'
   }
 
   public api: SeatersApi;
@@ -35,8 +36,8 @@ export class SeatersClient {
   constructor (options?: SeatersClientOptions) {
     options = Object.assign({}, SeatersClient.DEFAULT_OPTIONS, options);
 
-    var requestDriver: RequestDriver = options.requestDriver || BrowserRequestDriver;
-
+    var requestDriver = getRequestDriver(options.requestDriver);
+    
     this.api = new SeatersApi(options.apiPrefix, requestDriver);
     
     this.sessionService = new SessionService(this.api);
