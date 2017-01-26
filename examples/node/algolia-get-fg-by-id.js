@@ -1,9 +1,13 @@
-var SeatersSDK = require('../../dist/seaters.module.js');
-console.log('SeatersSDK v%s\n----------------\n', SeatersSDK.version);
+/**
+ * Get public FanGroup data by fanGroupId
+ * 
+ * minimum SDK version: 1.3.4
+ */
 
-var client = new SeatersSDK.SeatersClient();
-var fgId = 'fc25df56-85b2-492f-8f12-c6b197491adb';
-client.algoliaForSeatersService.getFangroupById(fgId).then(
-    res => console.log(res),
-    err => console.error('error on algolia search', err)
-);
+var shared = require('../shared');
+
+var client = shared.client();
+var fgId = shared.fgId;
+
+client.algoliaForSeatersService.getFangroupById(fgId)
+.then(res => console.log('Public FG data', res));

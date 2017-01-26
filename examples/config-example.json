@@ -1,0 +1,18 @@
+{
+    "admin": {
+        "email": "test@test.com",
+        "password": ""
+    },
+    "fan": {
+        "email": "test@test.com",
+        "password": ""
+    },
+    "fanGroup": {
+        "fanGroupId": "30034395-e3e0-48f9-9ba6-9762b1c4697c",
+        "waitingListId": "b52eb117-a7e7-4ede-b0ee-b3523c92592f",
+        "fanGroupOwner": {
+            "email": "test@test.com",
+            "password": ""
+        }
+    }
+}

@@ -1,31 +1,39 @@
-var fgId = '30034395-e3e0-48f9-9ba6-9762b1c4697c';
-var wlId = 'b52eb117-a7e7-4ede-b0ee-b3523c92592f';
+/**
+ * Join a FanGroup, then join a WaitingList of this FanGroup.
+ * Then leave the WaitingList and finally leave the FanGroup.
+ * 
+ * minimum SDK version: 1.3.4
+ */
 
-var SeatersSDK = require('../../dist/seaters.module.js');
-console.log('SeatersSDK v%s\n----------------\n', SeatersSDK.version);
+var shared = require('../shared');
 
-var client = new SeatersSDK.SeatersClient({ requestDriver: 'NODE' });
+var fgId = shared.fgId;
+var wlId = shared.wlId;
 
-client.sessionService.doEmailPasswordLogin('test@test.com', 'test')
-.then(() => client.fanGroupService.getFanGroup(fgId))
-.then(fg => {
-    if(fg.membership.member) {
-        return fg;
-    } else {
-        return client.fanGroupService.joinFanGroup(fgId);
-    }
-})
-.then(() => client.waitingListService.getWaitingList(wlId))
-.then(wl => {
-    if(wl.position) {
-        return wl.position;
-    } else {
-        return client.waitingListService.joinWaitingList(wlId, 1);
-    }
-})
-.then(() => client.waitingListService.leaveWaitingList(wlId))
-.then(() => client.fanGroupService.leaveFanGroup(fgId))
-.then(
-    () => console.log('Join FG - Join WL - Leave WL - Leave FG :: Success'),
-    (err) => console.error('Fail', err)
-);
+shared.fanClient().then(client => {
+
+    client.fanGroupService.getFanGroup(fgId)
+    .then(fg => {
+        if(fg.membership.member) {
+            return fg;
+        } else {
+            return client.fanGroupService.joinFanGroup(fgId);
+        }
+    })
+    .then(() => client.waitingListService.getWaitingList(wlId))
+    .then(wl => {
+        if(wl.position) {
+            return wl.position;
+        } else {
+            return client.waitingListService.joinWaitingList(wlId, 1);
+        }
+    })
+    .then(() => client.waitingListService.leaveWaitingList(wlId))
+    .then(() => client.fanGroupService.leaveFanGroup(fgId))
+    .then(
+        () => console.log('Join FG - Join WL - Leave WL - Leave FG :: Success'),
+        (err) => console.error('Fail', err)
+    )
+    .then(shared.exitOK, shared.exitFail);
+
+});
