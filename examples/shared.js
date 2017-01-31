@@ -32,12 +32,31 @@ function buildLoggedInClient(user) {
 exports.config = config;
 exports.fgId = config.fanGroup.fanGroupId;
 exports.wlId = config.fanGroup.waitingListId;
+
 exports.client = buildClient;
 exports.adminClient = function() { return buildLoggedInClient(config.admin); };
 exports.fanClient = function() { return buildLoggedInClient(config.fan); };
 exports.fgoClient = function() { return buildLoggedInClient(config.fanGroup.fanGroupOwner); };
+
+exports.clients = function() {
+    return Promise.all([
+        exports.adminClient(),
+        exports.fanClient(),
+        exports.fgoClient()
+    ]).then((clients) => {
+        return {
+            admin: clients[0],
+            fan: clients[1],
+            fgo: clients[2]
+        };
+    });
+}
+
 exports.exitOK = () => process.exit(0);
-exports.exitFail = () => process.exit(1);
+exports.exitFail = (err) => {
+    console.error('FAIL', err);
+    process.exit(1);
+};
 exports.exitFailMsg = (msg) => (err) => {
     if(err.error) {
         console.error('%s: %s => %s', msg, err.error, err.errorMsg);
@@ -45,4 +64,30 @@ exports.exitFailMsg = (msg) => (err) => {
         console.error('%s', msg, err);
     }
     exports.exitFail();
-}
+};
+
+exports.playbooks = {
+    
+    /**
+     * For a fan client, join a fg if needed and then join a wl in this fg
+     */
+    joinWl: function(client, fgId, wlId, numberOfSeats) {
+        return client.fanGroupService.getFanGroup(fgId)
+        .then(fg => {
+            if(fg.membership.member) {
+                return fg;
+            } else {
+                return client.fanGroupService.joinFanGroup(fgId);
+            }
+        })
+        .then(() => client.waitingListService.getWaitingList(wlId))
+        .then(wl => {
+            if(wl.position) {
+                return wl.position;
+            } else {
+                return client.waitingListService.joinWaitingList(wlId, numberOfSeats);
+            }
+        });
+    }
+
+};

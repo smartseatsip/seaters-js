@@ -15,71 +15,84 @@ export class FanApi {
       return this.apiContext.get<fan.Fan>(this.rootEp);
     }
 
-    private fgEp = this.rootEp + '/groups/:fanGroupId';
-    private fgProtectedWithoutRequest = this.fgEp + '/request-with-data';
-    private fgProcectedWithRequest    = this.fgEp + '/request';
-
     private fgEndpointParams (fanGroupId) {
         return ApiContext.buildEndpointParams({fanGroupId: fanGroupId});
     }
 
     fanGroup (fanGroupId: string): Promise<fan.FanGroup> {
-        return this.apiContext.get<fan.FanGroup>(this.fgEp, this.fgEndpointParams(fanGroupId));
+        return this.apiContext.get<fan.FanGroup>(
+            '/fan/groups/:fanGroupId',
+            this.fgEndpointParams(fanGroupId)
+        );
     }
 
     joinFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
-        return this.apiContext.post<fan.FanGroup>(this.fgEp, null, this.fgEndpointParams(fanGroupId));
+        return this.apiContext.post<fan.FanGroup>(
+            '/fan/groups/:fanGroupId',
+            null, this.fgEndpointParams(fanGroupId)
+        );
     }
 
     joinProtectedFanGroup (fg: fan.FanGroup, code: string): Promise<fan.FanGroupRequest> {
       var data = {
         code: code
       };
-      if (!fg.membership.request)
-        return this.apiContext.post<fan.FanGroupRequest>(this.fgProtectedWithoutRequest, data, this.fgEndpointParams(fg.id));
-      else
-        return this.apiContext.put<fan.FanGroupRequest>(this.fgProcectedWithRequest, data, this.fgEndpointParams(fg.id));
+      
+      if (!fg.membership.request) {
+        var endpoint1 = '/fan/groups/:fanGroupId/request-with-data';
+        return this.apiContext.post<fan.FanGroupRequest>(endpoint1, data, this.fgEndpointParams(fg.id));
+      }
+      else {
+        var endpoint2 = '/fan/groups/:fanGroupId/request';
+        return this.apiContext.put<fan.FanGroupRequest>(endpoint2, data, this.fgEndpointParams(fg.id));
+      }
     }
 
     leaveFanGroup (fanGroupId: string): Promise<void> {
-        return this.apiContext.delete(this.fgEp, this.fgEndpointParams(fanGroupId))
+        return this.apiContext.delete(
+            '/fan/groups/:fanGroupId',
+            this.fgEndpointParams(fanGroupId)
+        )
         .then(() => undefined);
     }
-
-    private wlEp = this.rootEp + '/waiting-lists/:waitingListId';
 
     private wlEndpointParams (waitingListId): Map<string, string> {
         return ApiContext.buildEndpointParams({waitingListId: waitingListId});
     }
 
-    private wlPriceEp = this.rootEp + '/waiting-lists/:waitingListId/price/:numberOfSeats';
-
     waitingList (waitingListId: string): Promise<fan.WaitingList> {
-        return this.apiContext.get<fan.WaitingList>(this.wlEp, this.wlEndpointParams(waitingListId));
+        var endpoint = '/fan/waiting-lists/:waitingListId';
+        var endpointParams = this.wlEndpointParams(waitingListId);
+        return this.apiContext.get<fan.WaitingList>(endpoint, endpointParams);
     }
 
     waitingListPrice (waitingListId: string, numberOfSeats: number): Promise<fan.Price> {
-        return this.apiContext.get<fan.Price>(
-            this.wlPriceEp,
-            ApiContext.buildEndpointParams({waitingListId: waitingListId, numberOfSeats: numberOfSeats})
-        );
+        var endpoint = '/fan/waiting-lists/:waitingListId/price/:numberOfSeats';
+        var endpointParams = ApiContext.buildEndpointParams({
+            waitingListId: waitingListId,
+            numberOfSeats: numberOfSeats
+        });
+        return this.apiContext.get<fan.Price>(endpoint, endpointParams);
     }
 
     joinWaitingList (waitingListId: string, numberOfSeats: number): Promise<fan.WaitingList> {
-        return this.apiContext.post<fan.WaitingList>(
-            this.wlEp+'/position',
-            {
-                numberOfSeats: numberOfSeats
-            },
-            this.wlEndpointParams(waitingListId)
-        );
+        var endpoint = '/fan/waiting-lists/:waitingListId/position';
+        var endpointParams = this.wlEndpointParams(waitingListId);
+        var data = { numberOfSeats: numberOfSeats };
+        return this.apiContext.post<fan.WaitingList>(endpoint, data, endpointParams);
     }
 
     leaveWaitingList (waitingListId: string): Promise<void> {
-        return this.apiContext.delete<void>(
-            this.wlEp + '/position',
-            this.wlEndpointParams(waitingListId)
-        ).then( () => undefined);
+        var endpoint = '/fan/waiting-lists/:waitingListId/position';
+        var endpointParams = this.wlEndpointParams(waitingListId);
+        return this.apiContext.delete<void>(endpoint, endpointParams)
+        .then(() => undefined);
     }
 
+    acceptSeats (waitingListId: string): Promise<fan.WaitingList> {
+        var endpoint = '/fan/waiting-lists/:waitingListId/accept';
+        var endpointParams = this.wlEndpointParams(waitingListId);
+        return this.apiContext.post<fan.WaitingList>(endpoint, null, endpointParams);
+    }
+    
 }

@@ -123,23 +123,34 @@ export class WaitingListService {
 
     joinWaitingList (waitingListId: string, numberOfSeats: number): Promise<waitingListForFan.ExtendedWaitingList> {
         return this.api.fan.joinWaitingList(waitingListId, numberOfSeats)
-        .then(() => {
-            return retryUntil<waitingListForFan.ExtendedWaitingList>(
-                () => this.getExtendedWaitingList(waitingListId),
-                (fg) => fg.actionStatus !== WAITING_LIST_ACTION_STATUS.BOOK,
-                10,
-                1000
-            );
-        });
+        .then(() => this.pollWaitingList(waitingListId, (wl) => wl.actionStatus !== WAITING_LIST_ACTION_STATUS.BOOK));
     }
 
-    leaveWaitingList (waitingListId: string): Promise<void> {
-        return this.api.fan.leaveWaitingList(waitingListId);
-        //TODO - poll waitingList to ensure position is gone
+    leaveWaitingList (waitingListId: string): Promise<waitingListForFan.ExtendedWaitingList> {
+        return this.api.fan.leaveWaitingList(waitingListId)
+        // wait until the status is returned to BOOK
+        .then(() => this.pollWaitingList(waitingListId, (wl) => wl.actionStatus === WAITING_LIST_ACTION_STATUS.BOOK));
     }
 
     getWaitingListPrice (waitingListId: string, numberOfSeats: number) : Promise<fan.Price> {
-      return this.api.fan.waitingListPrice(waitingListId, numberOfSeats);
+        return this.api.fan.waitingListPrice(waitingListId, numberOfSeats);
+    }
+
+    acceptSeats (waitingListId: string): Promise<waitingListForFan.ExtendedWaitingList> {
+        return this.api.fan.acceptSeats(waitingListId)
+        .then(() => this.pollWaitingList(waitingListId, (wl) => wl.actionStatus !== WAITING_LIST_ACTION_STATUS.CONFIRM));
+    }
+
+    private pollWaitingList (
+        waitingListId,
+        condition: (wl: waitingListForFan.ExtendedWaitingList) => boolean
+    ): Promise<waitingListForFan.ExtendedWaitingList> {
+        return retryUntil<waitingListForFan.ExtendedWaitingList> (
+            () => this.getExtendedWaitingList(waitingListId),
+            condition,
+            10,
+            1000
+        );
     }
 
 }

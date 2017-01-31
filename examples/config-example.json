@@ -14,5 +14,9 @@
             "email": "test@test.com",
             "password": ""
         }
+    },
+    "lockedFanGroup": {
+        "fanGroupId": "627a0b40-b9f4-4330-895c-267d12c230ea",
+        "code": "test"        
     }
 }

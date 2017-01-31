@@ -66,6 +66,7 @@ export class FanGroupService {
 
     checkUnlockStatus(fg) {
       if(!fg.membership.request) {
+        console.error('[FanGroupService] checkUnlockStatus - no request made');
         throw 'strs.api.servererror';
       }
       else if(fg.membership.request.status === 'PENDING') {
@@ -75,44 +76,48 @@ export class FanGroupService {
         return true;
       }
       else if(fg.membership.request.status === 'REJECTED') {
+        console.warn('[FanGroupService] checkUnlockStatus - code rejected');
         throw 'strs.api.fg.invalidcode'
       }
       else {
+        console.error('[FanGroupService] checkUnlockStatus - unknown status');
         throw 'strs.api.servererror';
       }
     }
 
 
-    joinProtectedFanGroup (fg: fan.FanGroup, code: string): Promise<Object> {
+    joinProtectedFanGroup (fanGroupId: string, code: string): Promise<fanGroupForFan.ExtendedFanGroup> {
 
-      return this.getExtendedFanGroup(fg.id)
-        .then( (fg) => this.api.fan.joinProtectedFanGroup(fg, code) )
-        .then (() => {
-          return retryUntil(
-            () => this.getExtendedFanGroup(fg.id),
-            (fg) => this.checkUnlockStatus(fg) ,
-            10,
-            1000
-          )
-            .then (
-              (fg) => {
-                return retryUntil(
-                  () => this.getExtendedFanGroup(fg.id),
-                  (fg) => fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_LEAVE ,
-                  10,
-                  1000
-                )
-              },
-              err =>  {
-                return Promise.reject(Error(err));
-              }
-            );
-        });
+      return this.getExtendedFanGroup(fanGroupId)
+        .then(fg => this.api.fan.joinProtectedFanGroup(fg, code))
+        // wait for request to be ACCEPTED
+        .then(() => this.pollFanGroup(fanGroupId, (fg) => this.checkUnlockStatus(fg)))
+        // wait for action status CAN_LEAVE
+        .then(() => this.pollFanGroup(fanGroupId, (fg) => fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_LEAVE));
+
+    }
+    // TODO: cleanup
+        //       err =>  {
+        //         return Promise.reject(Error(err));
+        //       }
+        //     );
+        // });
+
+    leaveFanGroup (fanGroupId: string): Promise<fanGroupForFan.ExtendedFanGroup> {
+        return this.api.fan.leaveFanGroup(fanGroupId)
+        .then(() => this.pollFanGroup(fanGroupId, (fg) => fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_JOIN));
     }
 
-    leaveFanGroup (fanGroupId: string): Promise<void> {
-        return this.api.fan.leaveFanGroup(fanGroupId);
-        //TODO - poll for fangroup request to be completely removed
+    private pollFanGroup (
+        fanGroupId: string,
+        condition: (fg: fanGroupForFan.ExtendedFanGroup) => boolean
+    ): Promise<fanGroupForFan.ExtendedFanGroup> {
+        return retryUntil<fanGroupForFan.ExtendedFanGroup> (
+            () => this.getExtendedFanGroup(fanGroupId),
+            condition,
+            10,
+            1000
+        );
     }
 
 

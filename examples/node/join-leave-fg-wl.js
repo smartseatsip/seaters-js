@@ -12,7 +12,7 @@ var wlId = shared.wlId;
 
 shared.fanClient().then(client => {
 
-    client.fanGroupService.getFanGroup(fgId)
+    return client.fanGroupService.getFanGroup(fgId)
     .then(fg => {
         if(fg.membership.member) {
             return fg;
@@ -30,10 +30,7 @@ shared.fanClient().then(client => {
     })
     .then(() => client.waitingListService.leaveWaitingList(wlId))
     .then(() => client.fanGroupService.leaveFanGroup(fgId))
-    .then(
-        () => console.log('Join FG - Join WL - Leave WL - Leave FG :: Success'),
-        (err) => console.error('Fail', err)
-    )
-    .then(shared.exitOK, shared.exitFail);
+    
 
-});
+})
+.then(shared.exitOK, shared.exitFail);
