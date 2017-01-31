@@ -33,6 +33,8 @@ exports.config = config;
 exports.fgId = config.fanGroup.fanGroupId;
 exports.wlId = config.fanGroup.waitingListId;
 
+exports.sdk = SeatersSDK;
+
 exports.client = buildClient;
 exports.adminClient = function() { return buildLoggedInClient(config.admin); };
 exports.fanClient = function() { return buildLoggedInClient(config.fan); };
