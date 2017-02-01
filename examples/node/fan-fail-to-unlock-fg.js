@@ -1,7 +1,7 @@
 /**
  * Try unlocking a FanGroup with a wrong code
  * 
- * minimum SDK version: 1.3.5
+ * minimum SDK version: 1.4.0
  */
 
 var shared = require('../shared');
@@ -11,25 +11,24 @@ var fgId = fg.fanGroupId;
 var code = fg.code;
 var sdk = shared.sdk;
 
-console.log(Object.keys(sdk.fanGroupForFan));
 shared.fanClient().then(client => {
 
-    return client.fanGroupService.getExtendedFanGroup(fgId)
+    return client.fanService.fanGroupService.getExtendedFanGroup(fgId)
     // ensure we can unlock it
     .then(fg => {
-        if(fg.actionStatus !== sdk.fanGroupForFan.FAN_GROUP_ACTION_STATUS.CAN_UNLOCK) {
+        if(fg.actionStatus !== sdk.fan.FAN_GROUP_ACTION_STATUS.CAN_UNLOCK) {
             if(fg.accessMode !== 'CODE_PROTECTED') {
                 throw new Error('Cannot unlock FG - FG is not CODE_PROTECTED');
             } else if(fg.membership.request) {
                 throw new Error('Cannot unlock FG - you have already unlocked the FG');
             } else {
-                throw new Error('Cannot unlock FG - other... [actionStatus:' + fg.actionStatus + ']');
+                throw new Error('Cannot unlock FG - other... [actionStatus:' + sdk.fan.FAN_GROUP_ACTION_STATUS[fg.actionStatus] + ']');
             }
         }
     })
     // unlock - try with a wrong code
     .then(() => {
-        return client.fanGroupService.joinProtectedFanGroup(fgId, 'a wrong unlock code')
+        return client.fanService.fanGroupService.joinProtectedFanGroup(fgId, 'a wrong unlock code')
         // expect it to fail
         .then(
             () => { throw new Error('Should not have unlocked the fg'); },
@@ -39,7 +38,8 @@ shared.fanClient().then(client => {
                 }
             }
         );
-    });
+    })
+    .then(() => console.log('Successfully failed to unlock'));
 
 })
 .then(shared.exitOK, shared.exitFail);

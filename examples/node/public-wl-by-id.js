@@ -1,7 +1,7 @@
 /**
- * Get public FanGroup data by fanGroupId
+ * Get public WaitingListData data by waitingListId
  * 
- * minimum SDK version: 1.3.4
+ * minimum SDK version: 1.4.0
  */
 
 var shared = require('../shared');
@@ -9,5 +9,5 @@ var shared = require('../shared');
 var client = shared.client();
 var fgId = shared.fgId;
 
-client.algoliaForSeatersService.getFangroupById(fgId)
+client.publicService.getFanGroup(fgId)
 .then(res => console.log('Public FG data', res));

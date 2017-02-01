@@ -5,9 +5,9 @@ import { Promise } from 'es6-promise';
 
 export class FanService {
 
-    private waitingListService: WaitingListService;
+    public waitingListService: WaitingListService;
 
-    private fanGroupService: FanGroupService;
+    public fanGroupService: FanGroupService;
 
     constructor (private seatersApi: SeatersApi) {
         this.waitingListService = new WaitingListService(seatersApi);
