@@ -6,7 +6,7 @@ import { SeatersApi } from './seaters-api';
 import { SessionService } from './services/session-service';
 import { WaitingListService } from './services/waiting-list/waiting-list-service';
 import { FanGroupService } from './services/fan-group/fan-group-service';
-import { EnvService } from './services/env-service';
+import { AppService } from './services/app-service';
 import { AlgoliaForSeatersService } from './services/algolia-for-seaters/algolia-for-seaters-service';
 
 export interface SeatersClientOptions {
@@ -29,7 +29,7 @@ export class SeatersClient {
 
   public fanGroupService: FanGroupService;
 
-  public envService: EnvService;
+  public appService: AppService;
 
   public algoliaForSeatersService: AlgoliaForSeatersService;
 
@@ -43,8 +43,8 @@ export class SeatersClient {
     this.sessionService = new SessionService(this.api);
     this.waitingListService = new WaitingListService(this.api);
     this.fanGroupService = new FanGroupService(this.api);
-    this.envService = new EnvService(this.api);
-    this.algoliaForSeatersService = new AlgoliaForSeatersService(this.envService, requestDriver);
+    this.appService = new AppService(this.api);
+    this.algoliaForSeatersService = new AlgoliaForSeatersService(this.appService, requestDriver);
   }
 
 }

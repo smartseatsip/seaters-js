@@ -1,5 +1,5 @@
 import { Promise } from 'es6-promise';
-import { EnvService } from './../env-service';
+import { AppService } from './../app-service';
 import { FanGroup } from './fan-group';
 import { WaitingList } from './waiting-list';
 import { AlgoliaApi, SearchQuery, SearchResult } from '../../algolia-api';
@@ -15,13 +15,13 @@ export class AlgoliaForSeatersService {
 
     private searchIndex: string;
 
-    constructor (private envService: EnvService, private requestDriver: RequestDriver) {
+    constructor (private appService: AppService, private requestDriver: RequestDriver) {
 
     }
 
     private api (): Promise<AlgoliaApi> {
         if(!this._apiP) {
-            this._apiP = this.envService.getEnv().then(env => {
+            this._apiP = this.appService.getEnv().then(env => {
                 var cfg = env.algoliaConfiguration;
                 this.searchIndex = cfg.indexName;
                 return new AlgoliaApi(cfg.appId, cfg.apiKey, this.requestDriver); 

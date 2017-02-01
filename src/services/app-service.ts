@@ -1,7 +1,7 @@
 import { SeatersApi, app } from '../seaters-api';
 import { Promise } from 'es6-promise';
 
-export class EnvService {
+export class AppService {
 
     private envP: Promise<app.Env>
 
