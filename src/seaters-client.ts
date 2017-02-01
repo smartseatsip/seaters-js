@@ -3,10 +3,7 @@ import { Object } from 'core-js/library';
 
 import { RequestDriver, REQUEST_DRIVER_TYPE, getRequestDriver } from './api';
 import { SeatersApi } from './seaters-api';
-import { SessionService } from './services/session-service';
-import { WaitingListService } from './services/waiting-list/waiting-list-service';
-import { FanGroupService } from './services/fan-group/fan-group-service';
-import { AppService } from './services/app-service';
+import { FanService, PublicService, SessionService, AppService } from './services';
 import { AlgoliaForSeatersService } from './services/algolia-for-seaters/algolia-for-seaters-service';
 
 export interface SeatersClientOptions {
@@ -21,30 +18,25 @@ export class SeatersClient {
     requestDriver: 'BROWSER'
   }
 
-  public api: SeatersApi;
+  public seatersApi: SeatersApi;
 
   public sessionService : SessionService;
-
-  public waitingListService: WaitingListService;
-
-  public fanGroupService: FanGroupService;
-
+  
   public appService: AppService;
 
-  public algoliaForSeatersService: AlgoliaForSeatersService;
+  public publicService: PublicService;
+
+  public fanService: FanService;
 
   constructor (options?: SeatersClientOptions) {
     options = Object.assign({}, SeatersClient.DEFAULT_OPTIONS, options);
-
     var requestDriver = getRequestDriver(options.requestDriver);
     
-    this.api = new SeatersApi(options.apiPrefix, requestDriver);
-    
-    this.sessionService = new SessionService(this.api);
-    this.waitingListService = new WaitingListService(this.api);
-    this.fanGroupService = new FanGroupService(this.api);
-    this.appService = new AppService(this.api);
-    this.algoliaForSeatersService = new AlgoliaForSeatersService(this.appService, requestDriver);
+    this.seatersApi = new SeatersApi(options.apiPrefix, requestDriver);
+    this.sessionService = new SessionService(this.seatersApi);
+    this.appService = new AppService(this.seatersApi);
+    this.publicService = new PublicService(this.appService, requestDriver, this.seatersApi);
+    this.fanService = new FanService(this.seatersApi);
   }
 
 }

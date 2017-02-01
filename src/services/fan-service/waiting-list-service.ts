@@ -1,11 +1,12 @@
 import { Object } from 'core-js/library';
 import { Promise } from 'es6-promise';
 
-import { SeatersApi, fan } from '../../seaters-api';
-import { waitingListForFan } from './waiting-list-types'; 
+import { SeatersApi } from '../../seaters-api';
+import { WaitingList } from '../../seaters-api/fan';
+import { fan } from './fan-types'; 
 import { retryUntil } from './../util';
 
-var WAITING_LIST_ACTION_STATUS = waitingListForFan.WAITING_LIST_ACTION_STATUS;
+var WAITING_LIST_ACTION_STATUS = fan.WAITING_LIST_ACTION_STATUS;
 
 export class WaitingListService {
 
@@ -15,11 +16,11 @@ export class WaitingListService {
 
     }
 
-    getWaitingList (waitingListId: string): Promise<waitingListForFan.ExtendedWaitingList> {
+    private getRawWaitingList (waitingListId: string): Promise<WaitingList> {
         return this.api.fan.waitingList(waitingListId);
     }
 
-    getWaitingListActionStatus (waitingList: fan.WaitingList): waitingListForFan.WAITING_LIST_ACTION_STATUS {
+    private getWaitingListActionStatus (waitingList: WaitingList): fan.WAITING_LIST_ACTION_STATUS {
         var seat = waitingList.seat;
         var position = waitingList.position;
         var request = waitingList.request;
@@ -114,19 +115,20 @@ export class WaitingListService {
 
     }
 
-    getExtendedWaitingList (waitingListId: string): Promise<waitingListForFan.ExtendedWaitingList> {
-        return this.getWaitingList(waitingListId)
+    getWaitingList (waitingListId: string): Promise<fan.WaitingList> {
+        return this.getRawWaitingList(waitingListId)
         .then((wl) => Object.assign(wl, {
             actionStatus: this.getWaitingListActionStatus(wl)
+            //TODO: pending status
         }));
     }
 
-    joinWaitingList (waitingListId: string, numberOfSeats: number): Promise<waitingListForFan.ExtendedWaitingList> {
+    joinWaitingList (waitingListId: string, numberOfSeats: number): Promise<fan.WaitingList> {
         return this.api.fan.joinWaitingList(waitingListId, numberOfSeats)
         .then(() => this.pollWaitingList(waitingListId, (wl) => wl.actionStatus !== WAITING_LIST_ACTION_STATUS.BOOK));
     }
 
-    leaveWaitingList (waitingListId: string): Promise<waitingListForFan.ExtendedWaitingList> {
+    leaveWaitingList (waitingListId: string): Promise<fan.WaitingList> {
         return this.api.fan.leaveWaitingList(waitingListId)
         // wait until the status is returned to BOOK
         .then(() => this.pollWaitingList(waitingListId, (wl) => wl.actionStatus === WAITING_LIST_ACTION_STATUS.BOOK));
@@ -136,17 +138,14 @@ export class WaitingListService {
         return this.api.fan.waitingListPrice(waitingListId, numberOfSeats);
     }
 
-    acceptSeats (waitingListId: string): Promise<waitingListForFan.ExtendedWaitingList> {
+    acceptSeats (waitingListId: string): Promise<fan.WaitingList> {
         return this.api.fan.acceptSeats(waitingListId)
         .then(() => this.pollWaitingList(waitingListId, (wl) => wl.actionStatus !== WAITING_LIST_ACTION_STATUS.CONFIRM));
     }
 
-    private pollWaitingList (
-        waitingListId,
-        condition: (wl: waitingListForFan.ExtendedWaitingList) => boolean
-    ): Promise<waitingListForFan.ExtendedWaitingList> {
-        return retryUntil<waitingListForFan.ExtendedWaitingList> (
-            () => this.getExtendedWaitingList(waitingListId),
+    private pollWaitingList (waitingListId: string, condition: (wl: fan.WaitingList) => boolean): Promise<fan.WaitingList> {
+        return retryUntil<fan.WaitingList> (
+            () => this.getWaitingList(waitingListId),
             condition,
             10,
             1000

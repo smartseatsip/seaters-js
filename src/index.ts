@@ -1,4 +1,5 @@
 export const version: string = "${package.version}"; 
-export { SeatersClient, SeatersClientOptions } from './seaters-client';
-export { fan, app, authentication } from './seaters-api';
-export { waitingListForFan, fanGroupForFan } from './services';
+export * from './seaters-client';
+export * from './shared-types';
+export { pub } from './services/public-service/public-types';
+export { fan } from './services/fan-service/fan-types';

@@ -1,5 +1,6 @@
-import { SeatersApi, app } from '../seaters-api';
+import { SeatersApi } from '../../seaters-api';
 import { Promise } from 'es6-promise';
+import { app } from './app-types';
 
 export class AppService {
 

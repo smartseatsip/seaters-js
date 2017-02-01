@@ -1,13 +1,11 @@
 import { Promise } from 'es6-promise';
 import { AppService } from './../app-service';
-import { FanGroup } from './fan-group';
-import { WaitingList } from './waiting-list';
 import { AlgoliaApi, SearchQuery, SearchResult } from '../../algolia-api';
 import { RequestDriver } from '../../api';
 
-export interface TypedSearchResult<T> extends SearchResult {
-    hits: T[]
-}
+import { FanGroup } from './fan-group';
+import { WaitingList } from './waiting-list';
+import { TypedSearchResult } from './typed-search-result';
 
 export class AlgoliaForSeatersService {
 
@@ -42,28 +40,38 @@ export class AlgoliaForSeatersService {
         };
     }
 
-    getFangroupById (fangroupId: string): Promise<FanGroup> {
-        var q = this.buildExactQuery(fangroupId, 'fanGroupId', 'FAN_GROUP');
-        return this.search(q)
+    private findExactlyOne<T> (searchQuery: SearchQuery, entityType: string, identifier: string): Promise<T> {
+        return this.search(searchQuery)
         .then(searchResult => {
             if (searchResult.nbHits === 1) {
-                return <FanGroup> searchResult.hits[0];
+                return <T> searchResult.hits[0];
             } else if (searchResult.nbHits === 0) {
-                throw new Error('404 - not found: FanGroup (' + fangroupId + ')');
+                throw new Error('404 - not found: ' + entityType + ' (' + identifier + ')');
             } else {
                 throw new Error('500 - unexpected nb hits from algolia on query: ' + searchResult.query);
             }
         })
         .then(r => this.stripAlgoliaFieldsFromObject(r));
+    }
+
+    getFanGroupById (fanGroupId: string): Promise<FanGroup> {
+        var q = this.buildExactQuery(fanGroupId, 'fanGroupId', 'FAN_GROUP');
+        return this.findExactlyOne<FanGroup>(q, 'FanGroup', fanGroupId);
         
     }
 
-    getWishlistsByFangroupId (fangroupId: string, hitsPerPage: number, page: number): Promise<TypedSearchResult<WaitingList>> {
+    getWaitingListsByFanGroupId (fangroupId: string, hitsPerPage: number, page: number): Promise<TypedSearchResult<WaitingList>> {
+        // TODO: sort by date ascending
         var q = this.buildExactQuery(fangroupId, 'groupId', 'WAITING_LIST');
         q.page = page;
         q.hitsPerPage = hitsPerPage;
         return this.search(q)
         .then(r => this.stripAlgoliaFieldsFromSearchResultHits(r));
+    }
+
+    getWaitingListById (waitingListId: string): Promise<WaitingList> {
+        var q = this.buildExactQuery(waitingListId, 'waitingListId', 'WAITING_LIST');
+        return this.findExactlyOne<WaitingList>(q, 'WaitingList', waitingListId);
     }
 
     search (searchQuery: SearchQuery): Promise<SearchResult> {

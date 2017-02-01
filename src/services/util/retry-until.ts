@@ -32,8 +32,8 @@ export function retryUntil<T> (
             try {
                 conditionIsMet = conditionFn(result);
             } catch (e) {
-                console.log('[retryUntil] - condition quit with an exception', e.message || e, e.stack);
-                deferred.reject(e);
+                console.log('[retryUntil] - condition quit with an exception', e.message || e, e.stack || '<no stacktrace>');
+                deferred.reject(e.toString && e.toString() || e);
                 return;
             }
 

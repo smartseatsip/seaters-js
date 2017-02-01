@@ -1,7 +1,7 @@
 import { ApiContext } from '../../api';
 import { PagedResult } from '../paged-result';
 import { PagingOptions } from '../paging-options';
-import { app } from './app-types';
+import { Env, Country } from './app-types';
 
 
 export class AppApi {
@@ -10,12 +10,12 @@ export class AppApi {
 
     }
 
-    env(): Promise<app.Env> {
-        return this.apiContext.get<app.Env>('/app/env');
+    env(): Promise<Env> {
+        return this.apiContext.get<Env>('/app/env');
     }
 
-    countries(pagingOptions?: PagingOptions): Promise<PagedResult<app.Country>> {
-        return this.apiContext.get<PagedResult<app.Country>>('/app/countries',
+    countries(pagingOptions?: PagingOptions): Promise<PagedResult<Country>> {
+        return this.apiContext.get<PagedResult<Country>>('/app/countries',
             null, PagingOptions.toQueryParams(pagingOptions));
     }
     

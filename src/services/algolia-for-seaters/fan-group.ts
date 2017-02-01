@@ -1,4 +1,4 @@
-export type ACCESS_MODE = 'PUBLIC' | 'PRIVATE' | 'CODE_PROTECTED';
+export type FG_ACCESS_MODE = 'PUBLIC' | 'PRIVATE' | 'CODE_PROTECTED';
 
 export interface FanGroup {
 
@@ -7,7 +7,7 @@ export interface FanGroup {
     description: Object,
     categories: Object,
     statistics: Object,
-    accessMode: ACCESS_MODE,
+    accessMode: FG_ACCESS_MODE,
     profileImageUrl: string,
     slug: string
     
