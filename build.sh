@@ -7,6 +7,7 @@ echo "building ${NAME} version ${VERSION}"
 npm install
 npm run typings install
 npm run gulp update-translations
+npm run gulp clean
 npm run gulp build:bundle
 #TODO run all tests
 rm -rf tmp
@@ -15,5 +16,7 @@ cp dist/seaters.bundle.* tmp/seaters-sdk/
 cp -r examples tmp/seaters-sdk/
 cp -r assets tmp/seaters-sdk/
 cd tmp
-tar -czf "${NAME}-${VERSION}.tgz" seaters-sdk
+#tar -czf "${NAME}-${VERSION}.tgz" seaters-sdk
+# fix version for now - too many redeploys
+tar -czf "${NAME}-1.0.0.tgz" seaters-sdk
 cd ..
