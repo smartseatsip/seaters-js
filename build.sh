@@ -13,7 +13,6 @@ rm -rf tmp
 mkdir -p tmp/seaters-sdk
 cp dist/seaters.bundle.* tmp/seaters-sdk/
 cp -r examples tmp/seaters-sdk/
-cp -r assets tmp/seaters-sdk/
 cd tmp
 #tar -czf "${NAME}-${VERSION}.tgz" seaters-sdk
 # fix version for now - too many redeploys
