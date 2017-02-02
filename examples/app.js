@@ -1,7 +1,11 @@
 angular.module('app', ['ngSanitize'])
 
 .controller('AppController', function($http) {
+
   var vm = this;
+  
+  var demoBlock = $('#app-demo');
+  
   vm.demos = [
       {
           file: 'node/fan-fail-to-unlock-fg.js',
@@ -35,13 +39,31 @@ angular.module('app', ['ngSanitize'])
   
   vm.showDemo = function(demo) {
       $http.get(demo.file).then(function(res) {
-          var demoBlock = $('#app-demo');
           demoBlock.html('<pre><code class="javascript">' + res.data + '</code></pre>');
           $(demoBlock).each(function(i, block) {
               hljs.highlightBlock(block);
           });
+          vm.activeDemo = demo.name;
       });
   };
+
+    vm.activeDemo = undefined;
+
+    vm.diagrams = [
+      {
+          file: 'images/fg-statemachine.png',
+          name: 'FanGroup actionStatus'
+      },
+      {
+          file: 'images/wl-statemachine.png',
+          name: 'WaitingList actionStatus'
+      }
+    ];
+
+    vm.showDiagram = function(diagram) {
+        demoBlock.html('<img src="' + diagram.file + '" />');
+        vm.activeDemo = diagram.name;
+    };
 
 });
 
