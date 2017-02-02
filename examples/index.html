@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+    <head>
+        <meta charset="utf-8">
+        <title>Seaters SDK Examples</title>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-sanitize.min.js"></script>
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/default.min.css">
+        <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+        <script src="app.js"></script>
+    </head>
+    <body>
+        <div class="content" ng-controller="AppController as app">
+            <h3>Seaters SDK Examples</h3>
+        
+            <div class="row">
+                <div class="col-md-3">
+                    <ul>
+                        <li ng-repeat="demo in app.demos">
+                            <a ng-click="app.showDemo(demo)">{{demo.name}}</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-9" id="app-demo"></div>
+            </div>
+        </div>
+    </body>
+</html>
