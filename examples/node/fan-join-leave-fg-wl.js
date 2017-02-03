@@ -24,7 +24,7 @@ shared.fanClient().then(client => {
     .then(() => console.log('FG joined'))
     .then(() => client.fanService.waitingListService.getWaitingList(wlId))
     .then(wl => {
-        if(wl.actionStatus === sdk.fan.WAITINGLIST_ACTION_STATUS.WAIT) {
+        if(wl.actionStatus === sdk.fan.WAITING_LIST_ACTION_STATUS.WAIT) {
             return wl.position;
         } else {
             return client.fanService.waitingListService.joinWaitingList(wlId, 1);

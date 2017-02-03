@@ -16,10 +16,7 @@ shared.fanClient().then(client => {
     return client.fanService.getWaitingListsInFanGroup(fgId, { page: 0, maxPageSize: 10})
     .then(wls => {
         console.log('WaitingLists in FanGroup', wls);
-    })
-    // .then(undefined, (err) => {
-    //     console.log(err.rawResponse.raw.res);
-    // });
+    });
 
 })
 .then(shared.exitOK, shared.exitFail);
