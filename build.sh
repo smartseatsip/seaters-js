@@ -8,10 +8,11 @@ npm install
 npm run typings install
 npm run gulp clean
 npm run gulp build:bundle
+npm run gulp build:mock-bundle
 #TODO run all tests
 rm -rf tmp
 mkdir -p tmp/seaters-sdk
-cp dist/seaters.bundle.* tmp/seaters-sdk/
+cp dist/seaters*.bundle.* tmp/seaters-sdk/
 cp -r examples tmp/seaters-sdk/
 cd tmp
 #tar -czf "${NAME}-${VERSION}.tgz" seaters-sdk
