@@ -31,7 +31,7 @@ export const data = {
 
     "POST /api/fan/groups/locked-fg/request-with-data": <MockDataGenerator> (options: RequestOptions) => {
         var body = JSON.parse(options.body);
-        var success = body.code === "invalid code";
+        var success = body.code !== "invalid code";
         return {
             "status": 200,
             "statusText": "OK",
@@ -41,7 +41,7 @@ export const data = {
     
     "PUT /api/fan/groups/locked-fg/request": <MockDataGenerator> (options: RequestOptions) => {
         var body = JSON.parse(options.body);
-        var success = body.code === "invalid code";
+        var success = body.code !== "invalid code";
         return {
             "status": 200,
             "statusText": "OK",

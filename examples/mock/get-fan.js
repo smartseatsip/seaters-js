@@ -1,4 +1,4 @@
-var shared = require('./shared');
+var shared = require('./_shared');
 
 shared.client.seatersApi.fan.fan()
 .then(fan => console.log(fan))
