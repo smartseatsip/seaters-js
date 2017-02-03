@@ -3,8 +3,9 @@ import { Promise } from 'es6-promise';
 
 import { NodeRequestDriver } from './node-request-driver';
 import { BrowserRequestDriver } from './browser-request-driver';
+import { buildMockRequestDriver } from './mock-request-driver';
 
-export type REQUEST_DRIVER_TYPE = 'BROWSER' | 'NODE';
+export type REQUEST_DRIVER_TYPE = 'BROWSER' | 'NODE' | 'MOCK';
 
 export interface ServerResponse {
     status: number,
@@ -33,10 +34,11 @@ export type RequestDriver = (options: RequestOptions) => Promise<ServerResponse>
 /**
  * Obtain the request driver for the given type
  */
-export function getRequestDriver (type: REQUEST_DRIVER_TYPE): RequestDriver {
+export function getRequestDriver (type: REQUEST_DRIVER_TYPE, mockData?: any): RequestDriver {
     switch(type) {
       case 'BROWSER': return BrowserRequestDriver;
       case 'NODE': return NodeRequestDriver;
+      case 'MOCK': return buildMockRequestDriver(mockData);
     }
     throw new Error('Unknown request driver type: ' + type);
 }

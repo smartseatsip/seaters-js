@@ -8,7 +8,8 @@ import { AlgoliaForSeatersService } from './services/algolia-for-seaters/algolia
 
 export interface SeatersClientOptions {
   apiPrefix: string,
-  requestDriver?: REQUEST_DRIVER_TYPE
+  requestDriver?: REQUEST_DRIVER_TYPE,
+  mockData?: any
 }
 
 export class SeatersClient {
@@ -30,7 +31,7 @@ export class SeatersClient {
 
   constructor (options?: SeatersClientOptions) {
     options = Object.assign({}, SeatersClient.DEFAULT_OPTIONS, options);
-    var requestDriver = getRequestDriver(options.requestDriver);
+    var requestDriver = getRequestDriver(options.requestDriver, options.mockData);
     
     this.seatersApi = new SeatersApi(options.apiPrefix, requestDriver);
     this.sessionService = new SessionService(this.seatersApi);
