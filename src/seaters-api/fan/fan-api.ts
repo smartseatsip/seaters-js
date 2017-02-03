@@ -9,10 +9,8 @@ export class FanApi {
 
     }
 
-    private rootEp = '/fan';
-
     fan (): Promise<Fan> {
-      return this.apiContext.get<Fan>(this.rootEp);
+      return this.apiContext.get<Fan>('/fan');
     }
 
     private fgEndpointParams (fanGroupId) {
@@ -56,8 +54,38 @@ export class FanApi {
         .then(() => undefined);
     }
 
-    private wlEndpointParams (waitingListId): Map<string, string> {
-        return ApiContext.buildEndpointParams({waitingListId: waitingListId});
+    waitingListsInFanGroup (fanGroupId: string, pagingOptions: PagingOptions): Promise<PagedResult<WaitingList>> {
+        var endpointParams = ApiContext.buildEndpointParams({fanGroupId: fanGroupId});
+        var queryParams = this.buildPagingQueryParams(pagingOptions);
+        return this.apiContext.get(
+            '/fan/groups/:fanGroupId/waiting-lists',
+            endpointParams,
+            queryParams
+        );
+    }
+
+    joinedFanGroups (pagingOptions: PagingOptions): Promise<PagedResult<FanGroup>> {
+        return this.apiContext.get(
+            '/fan/joined-groups',
+            null,
+            this.buildPagingQueryParams(pagingOptions)
+        );
+    }
+
+    joinedWaitingListsWithoutSeat (pagingOptions: PagingOptions): Promise<PagedResult<WaitingList>> {
+        return this.apiContext.get(
+            '/fan/joined-waiting-lists',
+            null,
+            this.buildPagingQueryParams(pagingOptions)
+        );
+    }
+
+    joinedWaitingListsWithSeat (pagingOptions: PagingOptions): Promise<PagedResult<WaitingList>> {
+        return this.apiContext.get(
+            '/fan/active-waiting-lists-with-seat',
+            null,
+            this.buildPagingQueryParams(pagingOptions)
+        );
     }
 
     waitingList (waitingListId: string): Promise<WaitingList> {
@@ -93,6 +121,17 @@ export class FanApi {
         var endpoint = '/fan/waiting-lists/:waitingListId/accept';
         var endpointParams = this.wlEndpointParams(waitingListId);
         return this.apiContext.post<WaitingList>(endpoint, null, endpointParams);
+    }
+
+    private buildPagingQueryParams(pagingOptions: PagingOptions): Map<string, string> {
+        return ApiContext.buildEndpointParams({
+            maxPageSize: pagingOptions.maxPageSize,
+            itemOffset: pagingOptions.itemOffset
+        });
+    }
+
+    private wlEndpointParams (waitingListId): Map<string, string> {
+        return ApiContext.buildEndpointParams({waitingListId: waitingListId});
     }
     
 }

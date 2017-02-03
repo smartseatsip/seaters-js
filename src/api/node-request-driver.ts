@@ -16,7 +16,7 @@ function buildHttpRequest(options: RequestOptions) {
         protocol: parsedUrl.protocol,
         hostname: parsedUrl.hostname,
         port: parsedUrl.port,
-        path: parsedUrl.path + (parsedUrl.search || ''),
+        path: parsedUrl.path,
         headers: options.headers
     }
 }

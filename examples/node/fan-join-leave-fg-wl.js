@@ -2,7 +2,7 @@
  * Join a FanGroup, then join a WaitingList of this FanGroup.
  * Then leave the WaitingList and finally leave the FanGroup.
  * 
- * minimum SDK version: 1.4.0
+ * minimum SDK version: 1.4.1
  */
 
 var shared = require('../shared');

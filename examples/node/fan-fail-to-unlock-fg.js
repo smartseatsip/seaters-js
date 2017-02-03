@@ -1,7 +1,7 @@
 /**
  * Try unlocking a FanGroup with a wrong code
  * 
- * minimum SDK version: 1.4.0
+ * minimum SDK version: 1.4.1
  */
 
 var shared = require('../shared');

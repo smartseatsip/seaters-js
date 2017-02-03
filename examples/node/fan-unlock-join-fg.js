@@ -1,7 +1,7 @@
 /**
  * Unlock and join a FanGroup. Then leave it again
  * 
- * minimum SDK version: 1.4.0
+ * minimum SDK version: 1.4.1
  */
 
 var shared = require('../shared');
@@ -13,7 +13,7 @@ var sdk = shared.sdk;
 
 shared.fanClient().then(client => {
 
-    return client.fanService.fanGroupService.getExtendedFanGroup(fgId)
+    return client.fanService.fanGroupService.getFanGroup(fgId)
     // ensure we can unlock it
     .then(fg => {
         if(fg.actionStatus === sdk.fan.FAN_GROUP_ACTION_STATUS.CAN_UNLOCK) {
