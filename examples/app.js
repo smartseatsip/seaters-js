@@ -3,7 +3,7 @@ angular.module('app', ['ngSanitize'])
 .controller('AppController', function($http) {
 
   var vm = this;
-  
+
   var demoBlock = $('#app-demo');
 
   function mkdemo(name, file) {
@@ -12,7 +12,7 @@ angular.module('app', ['ngSanitize'])
           file: file
       };
   }
-  
+
   vm.categories = [
       {
           name: 'Fan operations',
@@ -20,6 +20,7 @@ angular.module('app', ['ngSanitize'])
               mkdemo('Fail To Unlock a FanGroup', 'node/fan-fail-to-unlock-fg.js'),
               mkdemo('Unlock a FanGroup', 'node/fan-unlock-join-fg.js'),
               mkdemo('Join a FanGroup, Join a WaitingList, Leave both', 'node/fan-join-leave-fg-wl.js'),
+              mkdemo('Fetch WaitingLists by FanGroup ID', 'node/fan-wl-in-fg.js'),
           ]
       },
       {
@@ -32,7 +33,7 @@ angular.module('app', ['ngSanitize'])
           ]
       }
   ];
-  
+
   vm.showDemo = function(demo) {
       $http.get(demo.file).then(function(res) {
           demoBlock.html('<pre><code class="javascript">' + res.data + '</code></pre>');
