@@ -21,6 +21,7 @@ angular.module('app', ['ngSanitize'])
               mkdemo('Unlock a FanGroup', 'node/fan-unlock-join-fg.js'),
               mkdemo('Join a FanGroup, Join a WaitingList, Leave both', 'node/fan-join-leave-fg-wl.js'),
               mkdemo('Fetch WaitingLists by FanGroup ID', 'node/fan-wl-in-fg.js'),
+              mkdemo('Accep a seat for a waiting list', 'node/fan-accept-seat.js'),
           ]
       },
       {

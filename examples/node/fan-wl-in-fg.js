@@ -1,7 +1,7 @@
 /**
- * Join a FanGroup, then join a WaitingList of this FanGroup.
- * Then leave the WaitingList and finally leave the FanGroup.
- * 
+ * Get the waiting lists within a fan group
+ *
+ *
  * minimum SDK version: 1.4.1
  */
 
