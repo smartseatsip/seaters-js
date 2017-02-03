@@ -11,9 +11,6 @@ var fgId = fg.fanGroupId;
 var code = fg.code;
 var sdk = shared.sdk;
 
-var SeatersSDK = require('seaters');
-
-
 shared.fanClient().then(client => {
 
     return client.fanService.fanGroupService.getFanGroup(fgId)
