@@ -16,7 +16,7 @@ export class FanGroupService {
 
     }
 
-    private getFanGroup (fanGroupId: string): Promise<FanGroup> {
+    private getRawFanGroup (fanGroupId: string): Promise<FanGroup> {
         return this.api.fan.fanGroup(fanGroupId);
     }
 
@@ -45,8 +45,8 @@ export class FanGroupService {
         console.error('GroupService - unhandled group status', JSON.stringify(fanGroup));
     }
 
-    getExtendedFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
-        return this.getFanGroup(fanGroupId)
+    getFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
+        return this.getRawFanGroup(fanGroupId)
         .then(fg => coreObject.assign(fg, {
             actionStatus: this.getFanGroupActionStatus(fg)
         }));
@@ -56,7 +56,7 @@ export class FanGroupService {
         return this.api.fan.joinFanGroup(fanGroupId)
         .then(() => {
             return retryUntil(
-                () => this.getExtendedFanGroup(fanGroupId),
+                () => this.getFanGroup(fanGroupId),
                 (fg) => fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_LEAVE,
                 10,
                 1000
@@ -89,7 +89,7 @@ export class FanGroupService {
 
     joinProtectedFanGroup (fanGroupId: string, code: string): Promise<fan.FanGroup> {
 
-      return this.getExtendedFanGroup(fanGroupId)
+      return this.getFanGroup(fanGroupId)
         .then(fg => this.api.fan.joinProtectedFanGroup(fg, code))
         // wait for request to be ACCEPTED
         .then(() => this.pollFanGroup(fanGroupId, (fg) => this.checkUnlockStatus(fg)))
@@ -105,7 +105,7 @@ export class FanGroupService {
 
     private pollFanGroup (fanGroupId: string, condition: (fg: fan.FanGroup) => boolean): Promise<fan.FanGroup> {
         return retryUntil<fan.FanGroup> (
-            () => this.getExtendedFanGroup(fanGroupId),
+            () => this.getFanGroup(fanGroupId),
             condition,
             10,
             1000

@@ -19,7 +19,7 @@ export class SessionService {
     private sessionToken : string = "";
 
     constructor (
-        private api: SeatersApi,
+        private seatersApi: SeatersApi,
         sessionStrategy?: SESSION_STRATEGY
     ) {
         this.sessionStrategy = sessionStrategy || SESSION_STRATEGY.EXPIRE;
@@ -41,7 +41,7 @@ export class SessionService {
     }
 
     private finishLogin (session: session.SessionToken): Promise<session.Fan> {
-        this.api.setHeader(AUTH_HEADER, AUTH_BEARER + ' ' + session.token);
+        this.seatersApi.setHeader(AUTH_HEADER, AUTH_BEARER + ' ' + session.token);
         this.sessionToken = session.token;
         switch (this.sessionStrategy) {
             default: this.applyExpireSessionStrategy(session);
@@ -50,12 +50,12 @@ export class SessionService {
     }
 
     private setCurrentFan (): Promise<session.Fan> {
-        return this.api.fan.fan()
+        return this.seatersApi.fan.fan()
         .then(fan => this.currentFan = fan);
     }
 
     doEmailPasswordLogin (email: string, password: string, mfaToken?: string): Promise<session.Fan> {
-        return this.api.authentication.token({
+        return this.seatersApi.authentication.token({
             emailPasswordCredentials: {
                 email: email,
                 password: password,
@@ -66,7 +66,7 @@ export class SessionService {
 
     //TODO: handle error case
     doEmailPasswordSignUp (email:string, password: string, firstname: string, lastname: string, language?: string) : Promise<session.Fan> {
-        return this.api.authentication.signup({
+        return this.seatersApi.authentication.signup({
             email: email,
             password: password,
             firstName: firstname,
@@ -77,22 +77,26 @@ export class SessionService {
     }
 
     doEmailValidation (email: string, code: string): Promise<session.Fan> {
-        return this.api.authentication.validate({
+        return this.seatersApi.authentication.validate({
             email: email,
             code: code
         }).then(() => this.setCurrentFan());
     }
 
     doEmailReset (email: string): Promise<void> {
-      return this.api.authentication.resetEmail({
+      return this.seatersApi.authentication.resetEmail({
         email: email,
         token: this.sessionToken
       });
     }
 
+    doOAuthCodeLogin (oauthProvider: string, code: string) {
+        
+    }
+
     doLogout () {
         console.log('[SessionService] doLogout');//DEBUG
-        this.api.unsetHeader(AUTH_HEADER);
+        this.seatersApi.unsetHeader(AUTH_HEADER);
         this.currentFan = undefined;
         this.sessionToken = undefined;
     }

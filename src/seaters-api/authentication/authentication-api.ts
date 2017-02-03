@@ -44,4 +44,15 @@ export class AuthenticationApi {
       return this.apiContext.post<void>('/auth/signup/reset-email', input);
     }
 
+    /**
+     * Obtain a seaters ession by passing an oauth code for a given provider
+     * Examples that should work are github, facebook. For your specific provider name
+     * please refer to a seaters developer.
+     */
+    loginWithOAuthCode (oauthProvider: string, code: string) {
+      var endpointParams = ApiContext.buildEndpointParams({oauthProvider: oauthProvider});
+      var queryParams = ApiContext.buildEndpointParams({code: code});
+      return this.apiContext.get<void>('/login/:oauthProvider', endpointParams, queryParams);
+    }
+
 }

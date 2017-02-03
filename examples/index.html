@@ -21,13 +21,15 @@
         
             <div class="row">
                 <div class="col-md-3">
-                    <h4>Code Examples</h4>
-                    <ul>
-                        <li ng-repeat="demo in app.demos">
-                            <a ng-click="app.showDemo(demo)">{{demo.name}}</a>
-                        </li>
-                    </ul>
-                    <hr />
+                    <div ng-repeat="category in app.categories">
+                        <h4>{{category.name}}</h4>
+                        <ul>
+                            <li ng-repeat="demo in category.demos">
+                                <a ng-click="app.showDemo(demo)">{{demo.name}}</a>
+                            </li>
+                        </ul>
+                        <hr />
+                    </div>
 
                     <h4>Diagrams</h4>
                     <ul>

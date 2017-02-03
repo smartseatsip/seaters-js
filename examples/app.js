@@ -5,35 +5,31 @@ angular.module('app', ['ngSanitize'])
   var vm = this;
   
   var demoBlock = $('#app-demo');
+
+  function mkdemo(name, file) {
+      return {
+          name: name,
+          file: file
+      };
+  }
   
-  vm.demos = [
+  vm.categories = [
       {
-          file: 'node/fan-fail-to-unlock-fg.js',
-          name: 'Fail To Unlock a FanGroup'
+          name: 'Fan operations',
+          demos: [
+              mkdemo('Fail To Unlock a FanGroup', 'node/fan-fail-to-unlock-fg.js'),
+              mkdemo('Unlock a FanGroup', 'node/fan-unlock-join-fg.js'),
+              mkdemo('Join a FanGroup, Join a WaitingList, Leave both', 'node/fan-join-leave-fg-wl.js'),
+          ]
       },
       {
-          file: 'node/fan-unlock-join-fg.js',
-          name: 'Unlock a FanGroup'
-      },
-      {
-          file: 'node/fan-join-leave-fg-wl.js',
-          name: 'Join a FanGroup, Join a WaitingList, Leave both'
-      },
-      {
-          file: 'node/public-fg-by-id.js',
-          name: 'Fetch public FanGroup by ID'
-      },
-      {
-          file: 'node/public-wl-by-fg-id.js',
-          name: 'Fetch public WaitingLists by FanGroup ID'
-      },
-      {
-          file: 'node/public-wl-by-id.js',
-          name: 'Fetch public WaitingList by ID'
-      },
-      {
-          file: 'node/public-wl-get-price.js',
-          name: 'Fetch the price of a public WaitingList'
+          name: 'Public data',
+          demos: [
+              mkdemo('Fetch public FanGroup by ID', 'node/public-fg-by-id.js'),
+              mkdemo('Fetch public WaitingLists by FanGroup ID', 'node/public-wl-by-fg-id.js'),
+              mkdemo('Fetch public WaitingList by ID', 'node/public-wl-by-id.js'),
+              mkdemo('Fetch the price of a public WaitingList', 'node/public-wl-get-price.js'),
+          ]
       }
   ];
   

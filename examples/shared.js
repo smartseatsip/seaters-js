@@ -4,12 +4,12 @@ var config = require('./config.json');
 
 var clients = false;
 
-function buildClient() {
+function buildClient(endpoint) {
     if(!clients) {
         console.log('SeatersSDK v%s\n----------------\n', SeatersSDK.version);
         clients = [];
     }
-    var client = new SeatersSDK.SeatersClient({ requestDriver: 'NODE' });
+    var client = new SeatersSDK.SeatersClient({ apiPrefix: endpoint || 'https://api.dev-seaters.com/api', requestDriver: 'NODE' });
     clients.push(client);
     return client;
 }

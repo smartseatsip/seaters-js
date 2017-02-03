@@ -7,6 +7,7 @@
 
 var shared = require('../shared');
 
+var sdk = shared.sdk;
 var fgId = shared.fgId;
 var wlId = shared.wlId;
 
@@ -14,7 +15,7 @@ shared.fanClient().then(client => {
 
     return client.fanService.fanGroupService.getFanGroup(fgId)
     .then(fg => {
-        if(fg.membership.member) {
+        if(fg.actionStatus === sdk.fan.FAN_GROUP_ACTION_STATUS.CAN_LEAVE) {
             return fg;
         } else {
             return client.fanService.fanGroupService.joinFanGroup(fgId);
@@ -23,7 +24,7 @@ shared.fanClient().then(client => {
     .then(() => console.log('FG joined'))
     .then(() => client.fanService.waitingListService.getWaitingList(wlId))
     .then(wl => {
-        if(wl.position) {
+        if(wl.actionStatus === sdk.fan.WAITINGLIST_ACTION_STATUS.WAIT) {
             return wl.position;
         } else {
             return client.fanService.waitingListService.joinWaitingList(wlId, 1);

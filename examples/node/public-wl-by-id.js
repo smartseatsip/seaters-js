@@ -7,7 +7,8 @@
 var shared = require('../shared');
 
 var client = shared.client();
-var fgId = shared.fgId;
+var wlId = shared.wlId;
 
-client.publicService.getFanGroup(fgId)
-.then(res => console.log('Public FG data', res));
+client.publicService.getWaitingList(wlId)
+.then(res => console.log('Public WL data', res))
+.then(shared.exitOK, shared.exitFail);
