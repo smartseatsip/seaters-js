@@ -14,21 +14,24 @@ export function buildMockRequestDriver (mockData: any) {
     }
 
     return function (options: RequestOptions): Promise<ServerResponse> {
-        var explicitKey = options.method + ' ' + options.url;
-        var key = options.method + ' /' + getPathFromUrl(options.url);
+        var key = options.method + ' ' + options.url;
+        if(!mockData.hasOwnProperty(key)) {
+            key = options.method + ' /' + getPathFromUrl(options.url);
+        }
+        
         var mock;
-        if(mockData.hasOwnProperty(explicitKey)) {
-            mock = mockData[explicitKey];
-        } else if(mockData.hasOwnProperty(key)) {
+        if(mockData.hasOwnProperty(key)) {
             mock = mockData[key];
         } else {
-            console.log(mockData, key);
             return Promise.reject('[MockRequestDriver] Not Implemented: ' + key);
         }
+
         var response: ServerResponse;
         if(typeof(mock) === 'function') {
+            console.log('[MockRequestDriver] (fn) %s', key);
             response = mock(options);
         } else if(typeof(mock) === 'object') {
+            console.log('[MockRequestDriver] %s', key);
             response = mock;
         } else {
             return Promise.reject('[MockRequestDriver] Invalid Mock: ' + key);

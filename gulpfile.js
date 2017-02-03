@@ -41,6 +41,18 @@ gulp.task('build:module', [], function() {
     .pipe(gulp.dest('.'));
 });
 
+gulp.task('build:mock-bundle', [], function() {
+  return gulp.src('mock-data/index.ts')
+    .pipe(webpack(require('./conf/webpack-mock-bundle.config.js')))
+    .pipe(gulp.dest('.'));
+});
+
+gulp.task('build:mock-module', [], function() {
+  return gulp.src('mock-data/index.ts')
+    .pipe(webpack(require('./conf/webpack-mock-module.config.js')))
+    .pipe(gulp.dest('.'));
+});
+
 var tsconfig = require('./tsconfig.json');
 gulp.task('build:typings', [], function() {
   return gulp.src(tsconfig.files.concat('src/**/*.ts','!**/*.spec.ts'))
@@ -86,6 +98,8 @@ gulp.task('build', [], cb => {
     'build:bundle-min',
     'build:module',
     'build:typings',
+    'build:mock-bundle',
+    'build:mock-module',
     cb
   );
 });
