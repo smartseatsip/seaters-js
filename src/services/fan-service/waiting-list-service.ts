@@ -3,7 +3,7 @@ import { Promise } from 'es6-promise';
 
 import { SeatersApi } from '../../seaters-api';
 import { WaitingList } from '../../seaters-api/fan';
-import { fan } from './fan-types'; 
+import { fan } from './fan-types';
 import { retryUntil } from './../util';
 
 var WAITING_LIST_ACTION_STATUS = fan.WAITING_LIST_ACTION_STATUS;
@@ -143,6 +143,12 @@ export class WaitingListService {
         .then(() => this.pollWaitingList(waitingListId, (wl) => wl.actionStatus !== WAITING_LIST_ACTION_STATUS.CONFIRM));
     }
 
+    exportSeats (waitingListId: string): Promise<fan.WaitingList> {
+        return this.api.fan.exportSeats(waitingListId)
+          .then(() => this.pollWaitingList(waitingListId, (wl) => (wl && wl.seat && wl.seat.exportedVoucherUrl && wl.seat.exportedVoucherUrl.length > 0) ));
+    }
+
+
     private pollWaitingList (waitingListId: string, condition: (wl: fan.WaitingList) => boolean): Promise<fan.WaitingList> {
         return retryUntil<fan.WaitingList> (
             () => this.getWaitingList(waitingListId),
@@ -151,5 +157,7 @@ export class WaitingListService {
             1000
         );
     }
+
+
 
 }

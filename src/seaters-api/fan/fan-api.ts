@@ -35,7 +35,7 @@ export class FanApi {
       var data = {
         code: code
       };
-      
+
       if (!fg.membership.request) {
         var endpoint1 = '/fan/groups/:fanGroupId/request-with-data';
         return this.apiContext.post<FanGroupRequest>(endpoint1, data, this.fgEndpointParams(fg.id));
@@ -123,6 +123,12 @@ export class FanApi {
         return this.apiContext.post<WaitingList>(endpoint, null, endpointParams);
     }
 
+    exportSeats (waitingListId: string): Promise<void> {
+      var endpoint = '/fan/waiting-lists/:waitingListId/export-seat';
+      var endpointParams = this.wlEndpointParams(waitingListId);
+      return this.apiContext.put<void>(endpoint, null, endpointParams);
+    }
+
     private buildPagingQueryParams(pagingOptions: PagingOptions): Map<string, string> {
         return ApiContext.buildEndpointParams({
             maxPageSize: pagingOptions.maxPageSize,
@@ -133,5 +139,5 @@ export class FanApi {
     private wlEndpointParams (waitingListId): Map<string, string> {
         return ApiContext.buildEndpointParams({waitingListId: waitingListId});
     }
-    
+
 }
