@@ -20,8 +20,9 @@ angular.module('app', ['ngSanitize'])
               mkdemo('Fail To Unlock a FanGroup', 'node/fan-fail-to-unlock-fg.js'),
               mkdemo('Unlock a FanGroup', 'node/fan-unlock-join-fg.js'),
               mkdemo('Join a FanGroup, Join a WaitingList, Leave both', 'node/fan-join-leave-fg-wl.js'),
-              mkdemo('Fetch WaitingLists by FanGroup ID', 'node/fan-wl-in-fg.js'),
-              mkdemo('Accep a seat for a waiting list', 'node/fan-accept-seat.js'),
+              mkdemo('Fetch single WaitingList by WaitingList ID', 'node/fan-wl-by-id.js'),
+              mkdemo('Fetch list of WaitingLists by FanGroup ID', 'node/fan-wl-in-fg.js'),
+              mkdemo('Accep a seat for a WaitingList', 'node/fan-accept-seat.js'),
           ]
       },
       {
