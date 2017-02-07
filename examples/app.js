@@ -15,6 +15,12 @@ angular.module('app', ['ngSanitize'])
 
   vm.categories = [
       {
+          name: 'Session',
+          demos: [
+            mkdemo('Login with WAT oAuth', 'node/auth-wat-login.js'),
+          ]
+      },
+      {
           name: 'Fan operations',
           demos: [
               mkdemo('Fail To Unlock a FanGroup', 'node/fan-fail-to-unlock-fg.js'),

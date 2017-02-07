@@ -49,10 +49,16 @@ export class AuthenticationApi {
      * Examples that should work are github, facebook. For your specific provider name
      * please refer to a seaters developer.
      */
-    loginWithOAuthCode (oauthProvider: string, code: string) {
+    loginWithOAuthCode (oauthProvider: string, code: string) : Promise<SessionToken> {
       var endpointParams = ApiContext.buildEndpointParams({oauthProvider: oauthProvider});
       var queryParams = ApiContext.buildEndpointParams({code: code});
-      return this.apiContext.get<void>('/login/:oauthProvider', endpointParams, queryParams);
+      return this.apiContext.get<any>('/login/:oauthProvider', endpointParams, queryParams)
+        .then(data => {
+          return {
+            expirationDate: data.token.expirationDate,
+            token: data.token.value
+          };
+        });
     }
 
 }

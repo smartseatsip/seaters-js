@@ -90,8 +90,9 @@ export class SessionService {
       });
     }
 
-    doOAuthCodeLogin (oauthProvider: string, code: string) {
-        
+    doOAuthCodeLogin (oauthProvider: string, code: string) : Promise<session.Fan> {
+      return this.seatersApi.authentication.loginWithOAuthCode(oauthProvider, code)
+        .then((r) => this.finishLogin(r));
     }
 
     doLogout () {
