@@ -22,7 +22,7 @@ export class SeatersClient {
   public seatersApi: SeatersApi;
 
   public sessionService : SessionService;
-  
+
   public appService: AppService;
 
   public publicService: PublicService;
@@ -32,12 +32,12 @@ export class SeatersClient {
   constructor (options?: SeatersClientOptions) {
     options = Object.assign({}, SeatersClient.DEFAULT_OPTIONS, options);
     var requestDriver = getRequestDriver(options.requestDriver, options.mockData);
-    
+
     this.seatersApi = new SeatersApi(options.apiPrefix, requestDriver);
     this.sessionService = new SessionService(this.seatersApi);
     this.appService = new AppService(this.seatersApi);
     this.publicService = new PublicService(this.appService, requestDriver, this.seatersApi);
-    this.fanService = new FanService(this.seatersApi);
+    this.fanService = new FanService(this.seatersApi, this.sessionService);
   }
 
 }

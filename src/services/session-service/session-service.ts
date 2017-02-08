@@ -54,6 +54,11 @@ export class SessionService {
         .then(fan => this.currentFan = fan);
     }
 
+    public updateCurrentFan (fan : session.Fan): Promise<session.Fan> {
+        this.currentFan = fan;
+        return Promise.resolve<session.Fan>(this.currentFan);
+    }
+
     doEmailPasswordLogin (email: string, password: string, mfaToken?: string): Promise<session.Fan> {
         return this.seatersApi.authentication.token({
             emailPasswordCredentials: {

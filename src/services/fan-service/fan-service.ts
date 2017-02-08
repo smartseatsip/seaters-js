@@ -5,18 +5,26 @@ import { Promise } from 'es6-promise';
 import { fan } from './fan-types';
 
 import { PagedResult, PagingOptions } from '../../shared-types';
+import { SessionService } from "../session-service/session-service";
+import { Fan } from "../../seaters-api/fan/fan-types";
 
 export class FanService {
 
     public waitingListService: WaitingListService;
-
     public fanGroupService: FanGroupService;
 
-    constructor (private seatersApi: SeatersApi) {
+
+    constructor (private seatersApi: SeatersApi, private sessionService: SessionService) {
         this.waitingListService = new WaitingListService(seatersApi);
         this.fanGroupService = new FanGroupService(seatersApi);
+        this.sessionService = sessionService;
     }
-    
+
+    updateFan (fan: Fan) : Promise<Fan>{
+      return this.seatersApi.fan.updateFan(fan)
+        .then(fan => this.sessionService.updateCurrentFan(fan));
+    }
+
     getWaitingListsInFanGroup (fanGroupId: string, pagingOptions: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
         return this.seatersApi.fan.waitingListsInFanGroup(fanGroupId, this.convertPagingOptions(pagingOptions))
         .then(r => this.convertPagedResult(r));

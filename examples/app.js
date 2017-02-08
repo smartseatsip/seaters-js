@@ -30,6 +30,7 @@ angular.module('app', ['ngSanitize'])
               mkdemo('Fetch list of WaitingLists by FanGroup ID', 'node/fan-wl-in-fg.js'),
               mkdemo('Accept a seat for a WaitingList', 'node/fan-accept-seat.js'),
               mkdemo('Export a seat for a WaitingList (generate PDF)', 'node/fan-export-seat.js'),
+              mkdemo('Update details of a Fan', 'node/fan-update-details.js'),
           ]
       },
       {

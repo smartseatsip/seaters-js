@@ -13,6 +13,10 @@ export class FanApi {
       return this.apiContext.get<Fan>('/fan');
     }
 
+    updateFan (fan: Fan): Promise<Fan> {
+      return this.apiContext.put<Fan>('/fan', fan);
+    }
+
     private fgEndpointParams (fanGroupId) {
         return ApiContext.buildEndpointParams({fanGroupId: fanGroupId});
     }
