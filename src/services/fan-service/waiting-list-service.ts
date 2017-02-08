@@ -143,6 +143,11 @@ export class WaitingListService {
         .then(() => this.pollWaitingList(waitingListId, (wl) => wl.actionStatus !== WAITING_LIST_ACTION_STATUS.CONFIRM));
     }
 
+    rejectSeats (waitingListId: string): Promise<fan.WaitingList> {
+      return this.api.fan.rejectSeats(waitingListId)
+      .then(() => this.pollWaitingList(waitingListId, (wl) => (wl.actionStatus === WAITING_LIST_ACTION_STATUS.BOOK || wl.actionStatus === WAITING_LIST_ACTION_STATUS.UNLOCK) ));
+    }
+
     exportSeats (waitingListId: string): Promise<fan.WaitingList> {
         return this.api.fan.exportSeats(waitingListId)
           .then(() => this.pollWaitingList(waitingListId, (wl) => (wl && wl.seat && wl.seat.exportedVoucherUrl && wl.seat.exportedVoucherUrl.length > 0) ));

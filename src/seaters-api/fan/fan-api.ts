@@ -127,6 +127,12 @@ export class FanApi {
         return this.apiContext.post<WaitingList>(endpoint, null, endpointParams);
     }
 
+    rejectSeats (waitingListId: string): Promise<WaitingList> {
+      var endpoint = '/fan/waiting-lists/:waitingListId/reject';
+      var endpointParams = this.wlEndpointParams(waitingListId);
+      return this.apiContext.post<WaitingList>(endpoint, null, endpointParams);
+    }
+
     exportSeats (waitingListId: string): Promise<void> {
       var endpoint = '/fan/waiting-lists/:waitingListId/export-seat';
       var endpointParams = this.wlEndpointParams(waitingListId);

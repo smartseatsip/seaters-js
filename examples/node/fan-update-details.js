@@ -22,7 +22,6 @@ shared.fanClient().then(client => {
         line1: 'Seaters Street 007',
         line2: 'optional',
         line3: 'optional',
-        number: 7,
         countryCode: 'BE',
         zipCode: '0007',
         city: 'London',
