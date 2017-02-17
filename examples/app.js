@@ -32,6 +32,7 @@ angular.module('app', ['ngSanitize'])
               mkdemo('Reject a seat for a WaitingList', 'node/fan-reject-seat.js'),
               mkdemo('Export a seat for a WaitingList (generate PDF)', 'node/fan-export-seat.js'),
               mkdemo('Update details of a Fan', 'node/fan-update-details.js'),
+              mkdemo('Get braintree info', 'mock/braintree-payment.js'),
           ]
       },
       {

@@ -1,5 +1,5 @@
 import { RequestOptions } from '../src/api';
-import { fan, lockedFg, unlockFg } from './fan';
+import { fan, lockedFg, unlockFg, braintreePaymentInfo, braintreeToken } from './fan';
 
 interface MockData {
     status: number,
@@ -47,6 +47,18 @@ export const data = {
             "statusText": "OK",
             "body": unlockFg(success),
         };
-    }
+    },
+
+    "GET /api/fan/waiting-lists/braintree-wlid/position/payment-info": <MockData> {
+        "status": 200,
+        "statusText": "OK",
+        "body": braintreePaymentInfo
+    },
+
+    "GET /api/fan/waiting-lists/braintree-wlid/position/braintree-token": <MockData> {
+        "status": 200,
+        "statusText": "OK",
+        "body": braintreeToken
+    },
 
 };

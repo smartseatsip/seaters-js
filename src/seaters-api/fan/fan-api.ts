@@ -1,7 +1,7 @@
 import { ApiContext } from '../../api';
 import { PagedResult } from '../paged-result';
 import { PagingOptions } from '../paging-options';
-import { Fan, FanGroup, WaitingList, FanGroupRequest, Price } from './fan-types';
+import { Fan, FanGroup, WaitingList, FanGroupRequest, Price, PaymentInfo, BraintreeToken } from './fan-types';
 
 export class FanApi {
 
@@ -137,6 +137,18 @@ export class FanApi {
       var endpoint = '/fan/waiting-lists/:waitingListId/export-seat';
       var endpointParams = this.wlEndpointParams(waitingListId);
       return this.apiContext.put<void>(endpoint, null, endpointParams);
+    }
+
+    positionPaymentInfo (waitingListId: string): Promise<PaymentInfo> {
+      var endpoint = '/fan/waiting-lists/:waitingListId/position/payment-info';
+      var endpointParams = this.wlEndpointParams(waitingListId);
+      return this.apiContext.get<PaymentInfo>(endpoint, endpointParams);
+    }
+
+    positionBraintreeToken (waitingListId: string): Promise<BraintreeToken> {
+        var endpoint = '/fan/waiting-lists/:waitingListId/position/braintree-token';
+        var endpointParams = this.wlEndpointParams(waitingListId);
+        return this.apiContext.get<BraintreeToken>(endpoint, endpointParams);
     }
 
     private buildPagingQueryParams(pagingOptions: PagingOptions): Map<string, string> {
