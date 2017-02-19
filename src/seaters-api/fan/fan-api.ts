@@ -1,7 +1,7 @@
 import { ApiContext } from '../../api';
 import { PagedResult } from '../paged-result';
 import { PagingOptions } from '../paging-options';
-import { Fan, FanGroup, WaitingList, FanGroupRequest, Price, PaymentInfo, BraintreeToken } from './fan-types';
+import { Fan, FanGroup, WaitingList, FanGroupRequest, Price, PaymentInfo, BraintreeToken, FanGroupLook } from './fan-types';
 
 export class FanApi {
 
@@ -25,6 +25,13 @@ export class FanApi {
         return this.apiContext.get<FanGroup>(
             '/fan/groups/:fanGroupId',
             this.fgEndpointParams(fanGroupId)
+        );
+    }
+
+    fanGroupLook (slug: string): Promise<FanGroupLook> {
+        return this.apiContext.get<FanGroupLook>(
+            '/fan/fangroups-by-slug/:slug/look',
+            ApiContext.buildEndpointParams({slug: slug})
         );
     }
 

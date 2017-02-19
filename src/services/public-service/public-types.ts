@@ -1,5 +1,5 @@
 import { FanGroup as _FanGroup, WaitingList as _WaitingList } from '../algolia-for-seaters';
-import { Price as _Price } from '../../seaters-api/fan';
+import { Price as _Price, FanGroupLook as _FanGroupLook } from '../../seaters-api/fan';
 
 /**
  * The namespace of resources in the context of publicly available data
@@ -13,5 +13,7 @@ export namespace pub {
     export interface WaitingList extends _WaitingList {};
 
     export interface Price extends _Price {};
+
+    export interface FanGroupLook extends _FanGroupLook {};
 
 }

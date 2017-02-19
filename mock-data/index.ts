@@ -1,5 +1,5 @@
 import { RequestOptions } from '../src/api';
-import { fan, lockedFg, unlockFg, braintreePaymentInfo, braintreeToken } from './fan';
+import { fan, lockedFg, unlockFg, braintreePaymentInfo, braintreeToken, fanGroupLook } from './fan';
 
 interface MockData {
     status: number,
@@ -59,6 +59,12 @@ export const data = {
         "status": 200,
         "statusText": "OK",
         "body": braintreeToken
+    },
+
+    "GET /api/fan/fangroups-by-slug/a-public-fg/look": <MockData> {
+        "status": 200,
+        "statusText": "OK",
+        "body": fanGroupLook
     },
 
 };

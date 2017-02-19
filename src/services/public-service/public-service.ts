@@ -18,6 +18,10 @@ export class PublicService {
         return this.algoliaForSeatersService.getFanGroupById(fanGroupId);
     }
 
+    getFanGroupLookBySlug (slug: string): Promise<pub.FanGroupLook> {
+        return this.seatersApi.fan.fanGroupLook(slug);
+    }
+
     getWaitingList (waitingListId: string): Promise<pub.WaitingList> {
         return this.algoliaForSeatersService.getWaitingListById(waitingListId);
     }

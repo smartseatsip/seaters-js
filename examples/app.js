@@ -39,6 +39,7 @@ angular.module('app', ['ngSanitize'])
           name: 'Public data',
           demos: [
               mkdemo('Fetch public FanGroup by ID', 'node/public-fg-by-id.js'),
+              mkdemo('Fetch public FanGroup look by slug', 'mock/get-fangroup-look.js'),
               mkdemo('Fetch public WaitingLists by FanGroup ID', 'node/public-wl-by-fg-id.js'),
               mkdemo('Fetch public WaitingList by ID', 'node/public-wl-by-id.js'),
               mkdemo('Fetch the price of a public WaitingList', 'node/public-wl-get-price.js'),
