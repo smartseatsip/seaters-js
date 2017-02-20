@@ -1,14 +1,7 @@
-import { RequestOptions } from '../src/api';
 import { fan, lockedFg, unlockFg, braintreePaymentInfo, braintreeToken, fanGroupLook } from './fan';
-
-interface MockData {
-    status: number,
-    statusText: string,
-    body: any
-}
-
-declare type MockDataGenerator = (requestOptions: RequestOptions) => MockData;
-declare type Mock = MockData | MockDataGenerator;
+import { MockData, MockDataGenerator, Mock } from './types';
+import { RequestOptions } from '../src/api';
+import { adminMocks } from './admin';
 
 var unlockedFg = false;
 var unlockedFgSuccess = false;
@@ -68,3 +61,7 @@ export const data = {
     },
 
 };
+
+adminMocks.forEach(mock => {
+    data[mock.endpoint] = mock.data
+});
