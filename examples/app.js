@@ -73,6 +73,10 @@ angular.module('app', ['ngSanitize'])
       {
           file: 'images/wl-statemachine.png',
           name: 'WaitingList actionStatus'
+      },
+      {
+          file: 'images/wl-join-pay-print.png',
+          name: 'WaitingList Join Pay Print'
       }
     ];
 
