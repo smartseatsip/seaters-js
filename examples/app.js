@@ -44,6 +44,12 @@ angular.module('app', ['ngSanitize'])
               mkdemo('Fetch public WaitingList by ID', 'node/public-wl-by-id.js'),
               mkdemo('Fetch the price of a public WaitingList', 'node/public-wl-get-price.js'),
           ]
+      },
+      {
+          name: 'Admin',
+          demos: [
+              mkdemo('User operations', 'mock/admin-user-operations.js'),
+          ]
       }
   ];
 

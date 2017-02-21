@@ -1,4 +1,5 @@
 import { User } from '../../src/seaters-api/admin';
+import { PagedResult, PagingOptions } from '../../src/seaters-api';
 
 export const user: User = {
     id: 'user-id',
@@ -18,3 +19,21 @@ export const user: User = {
     confirmedEmail: false,
     confirmedMobilePhoneNumber: false
 };
+
+var _user2: User = Object.assign({}, user);
+_user2.firstName = 'Sven';
+_user2.lastName = 'Schippers';
+_user2.email = 'fake-email2@seaters.com';
+export const user2 = _user2;
+
+export function pagedUsers (page: PagingOptions): PagedResult<User> {
+    return {
+        itemOffset: page.itemOffset,
+        maxPageSize: page.maxPageSize,
+        totalSize: 2,
+        items: [
+            user,
+            user2
+        ]
+    };
+}
