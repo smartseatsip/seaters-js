@@ -1,4 +1,5 @@
 import { FanGroup, Membership, FanGroupRequest } from '../../src/seaters-api/fan';
+import { RequestOptions } from '../types';
 
 var data: FanGroup = {
     "id": "locked-fg",
@@ -62,7 +63,9 @@ export function lockedFg(): FanGroup {
   return data;
 }
 
-export function unlockFg(success: boolean) {
+export function unlockFg(options: RequestOptions) {
+  var body = JSON.parse(options.body);
+  var success = body.code !== 'invalid code';
   data.fanMember = success;
   data.membership.member = true;
   var request: FanGroupRequest = {
