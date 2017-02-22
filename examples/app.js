@@ -1,92 +1,153 @@
-angular.module('app', ['ngSanitize'])
+angular.module('app', ['ngSanitize', 'ui.router'])
+.config(function($urlRouterProvider, $stateProvider) {
+    
+    $stateProvider
+    .state('app', {
+        url: '/',
+        templateUrl: 'app.html',
+        controller: 'AppController',
+        controllerAs: 'app',
+        resolve: {
+            _init_: (DemoService) => DemoService.initialize()
+        }
+    })
+    .state('app.demo', {
+        url: 'demo/:slug',
+        templateUrl: 'demo.html',
+        controller: 'DemoController',
+        controllerAs: 'demo',
+        resolve: {
+            demo: ($stateParams, DemoService) => DemoService.loadDemo($stateParams.slug)
+        }
+    })
+    .state('app.diagram', {
+        url: 'diagram/:slug',
+        templateUrl: 'diagram.html',
+        controller: 'DiagramController',
+        controllerAs: 'diagram',
+        resolve: {
+            diagram: ($stateParams, DemoService) => DemoService.loadDiagram($stateParams.slug)
+        }
+    });
 
-.controller('AppController', function($http) {
+    $urlRouterProvider.when('', '/');
+
+})
+.run(function($rootScope) {
+    $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
+        console.log('stateChangeError: %s(%s) => %s(%s)', fromState||'<root>', JSON.stringify(fromParams||{}), toState||'<??>', JSON.stringify(toParams||{}));
+        console.log(error);
+    });
+})
+.service('DemoService', function($http, $q) {
+
+    var vm = {};
+
+    function slugify(name) {
+        return name
+            .toLowerCase()
+            .replace(/\s/g, '-')
+            .replace(/[^a-zA-Z0-9-]/g, '');
+    }
+
+    function mkdemo(category, name, file) {
+        if(categories.indexOf(category) < 0) { throw new Error('Category for demo not defined'); }
+        var slug = slugify(category) + '_' + slugify(name);
+        return {
+            category: category,
+            name: name,
+            file: file,
+            slug: slug
+        };
+    };
+
+    var categories = [];
+
+    var demos = [];
+
+    var diagrams = vm.diagrams = [];
+    
+    var initializeP = false;
+    vm.initialize = () => {
+        if(!initializeP) { initializeP = initialize(); }
+        return initializeP;
+    };
+
+    function initialize () {
+        return $q.all([
+            initializeDemos(),
+            initializeDiagrams()
+        ]);
+    }
+    
+    function initializeDemos() {
+        return $http.get('demos.json')
+        .then(res => {
+            res.data.forEach(demoSet => {
+                if(categories.indexOf(demoSet.category) < 0) {
+                    categories.push(demoSet.category);
+                }
+                demoSet.demos.forEach(demo => demos.push(mkdemo(demoSet.category, demo.name, demo.file)))
+            });
+        });
+    }
+
+    function initializeDiagrams() {
+        return $http.get('diagrams.json')
+        .then(res => {
+            res.data.forEach(diagram => {
+                diagrams.push(angular.extend({
+                    slug: slugify(diagram.file)
+                }, diagram));
+            });
+        });
+    }
+
+    vm.loadDemo = (slug) => {
+        return vm.initialize().then(() => {
+            var demo = demos.find(demo => demo.slug === slug);
+            if(!demo) { throw new Error('Demo not found:' + slug); }
+            return $http.get(demo.file).then((res) => {
+                demo.code = res.data;
+                demo.codeblock = '<pre><code class="javascript">' + demo.code + '</code></pre>';
+                return demo;
+            });
+        });
+    };
+
+    vm.loadDiagram = (slug) => {
+        return vm.initialize().then(() => {
+            var diagram = diagrams.find(diagram => diagram.slug === slug);
+            if(!diagram) { throw new Error('Diagram not found: ' + slug); }
+            return $q.resolve(diagram);
+        });
+    };
+
+    vm.getDemosGroupedByCategory = () => categories.map(cat => { return { name: cat, demos: demos.filter(demo => demo.category === cat) }; });
+
+    return vm;
+
+})
+.controller('AppController', function($http,DemoService,$state) {
 
   var vm = this;
 
-  var demoBlock = $('#app-demo');
+  vm.categories = DemoService.getDemosGroupedByCategory();
+  vm.diagrams = DemoService.diagrams;
 
-  function mkdemo(name, file) {
-      return {
-          name: name,
-          file: file
-      };
-  }
+})
+.controller('DemoController', function(DemoService, demo) {
+    
+    var vm = this;
+    angular.extend(vm, demo);
 
-  vm.categories = [
-      {
-          name: 'Session',
-          demos: [
-            mkdemo('Login with WAT oAuth', 'node/auth-wat-login.js'),
-          ]
-      },
-      {
-          name: 'Fan operations',
-          demos: [
-              mkdemo('Fail To Unlock a FanGroup', 'node/fan-fail-to-unlock-fg.js'),
-              mkdemo('Unlock a FanGroup', 'node/fan-unlock-join-fg.js'),
-              mkdemo('Join a FanGroup, Join a WaitingList, Leave both', 'node/fan-join-leave-fg-wl.js'),
-              mkdemo('Fetch single WaitingList by WaitingList ID', 'node/fan-wl-by-id.js'),
-              mkdemo('Fetch list of WaitingLists by FanGroup ID', 'node/fan-wl-in-fg.js'),
-              mkdemo('Accept a seat for a WaitingList', 'node/fan-accept-seat.js'),
-              mkdemo('Reject a seat for a WaitingList', 'node/fan-reject-seat.js'),
-              mkdemo('Export a seat for a WaitingList (generate PDF)', 'node/fan-export-seat.js'),
-              mkdemo('Update details of a Fan', 'node/fan-update-details.js'),
-              mkdemo('Get braintree info', 'mock/braintree-payment.js'),
-          ]
-      },
-      {
-          name: 'Public data',
-          demos: [
-              mkdemo('Fetch public FanGroup by ID', 'node/public-fg-by-id.js'),
-              mkdemo('Fetch public FanGroup look by slug', 'mock/get-fangroup-look.js'),
-              mkdemo('Fetch public WaitingLists by FanGroup ID', 'node/public-wl-by-fg-id.js'),
-              mkdemo('Fetch public WaitingList by ID', 'node/public-wl-by-id.js'),
-              mkdemo('Fetch the price of a public WaitingList', 'node/public-wl-get-price.js'),
-          ]
-      },
-      {
-          name: 'Admin',
-          demos: [
-              mkdemo('User operations', 'mock/admin-user-operations.js'),
-          ]
-      }
-  ];
+    $('#app-demo')
+        .html(demo.codeblock)
+        .each((i, block) => hljs.highlightBlock(block));
+    
 
-  vm.showDemo = function(demo) {
-      $http.get(demo.file).then(function(res) {
-          demoBlock.html('<pre><code class="javascript">' + res.data + '</code></pre>');
-          $(demoBlock).each(function(i, block) {
-              hljs.highlightBlock(block);
-          });
-          vm.activeDemo = demo.name;
-      });
-  };
-
-    vm.activeDemo = undefined;
-
-    vm.diagrams = [
-      {
-          file: 'images/fg-statemachine.png',
-          name: 'FanGroup actionStatus'
-      },
-      {
-          file: 'images/wl-statemachine.png',
-          name: 'WaitingList actionStatus'
-      },
-      {
-          file: 'images/wl-join-pay-print.png',
-          name: 'WaitingList Join Pay Print'
-      }
-    ];
-
-    vm.showDiagram = function(diagram) {
-        demoBlock.html('<img src="' + diagram.file + '" />');
-        vm.activeDemo = diagram.name;
-    };
-
-});
-
-setTimeout(function() {
-  angular.bootstrap(document.getElementById('body'), ['app']);
-});
+})
+.controller('DiagramController', function(DemoService, diagram) {
+    var vm = this;
+    angular.extend(vm, diagram);
+})
