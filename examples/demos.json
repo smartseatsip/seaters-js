@@ -36,6 +36,9 @@
 	}, {
 		"name": "Get braintree info",
 		"file": "mock/braintree-payment.js"
+	}, {
+		"name": "Get WLs for fan with and without seat",
+		"file": "mock/fan-waiting-list.js"
 	}]
 }, {
 	"category": "Public Data",
