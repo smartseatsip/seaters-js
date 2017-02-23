@@ -1,5 +1,6 @@
 import { Object } from 'core-js/library';
 import { Promise } from 'es6-promise';
+import { PagedResult, PagingOptions } from '../../shared-types';
 
 import { SeatersApi } from '../../seaters-api';
 import { WaitingList } from '../../seaters-api/fan';
@@ -114,13 +115,22 @@ export class WaitingListService {
         }
 
     }
+    
+    extendRawWaitingList(wl: WaitingList): fan.WaitingList {
+        return Object.assign(wl, {
+            actionStatus: this.getWaitingListActionStatus(wl)
+            //TODO: pending status
+        });
+    }
+
+    extendRawWaitingLists(wls: PagedResult<WaitingList>): PagedResult<fan.WaitingList> {
+        wls.items = wls.items.map(wl => this.extendRawWaitingList(wl));
+        return <PagedResult<fan.WaitingList>> wls;
+    }
 
     getWaitingList (waitingListId: string): Promise<fan.WaitingList> {
         return this.getRawWaitingList(waitingListId)
-        .then((wl) => Object.assign(wl, {
-            actionStatus: this.getWaitingListActionStatus(wl)
-            //TODO: pending status
-        }));
+        .then((wl) => this.extendRawWaitingList(wl));
     }
 
     joinWaitingList (waitingListId: string, numberOfSeats: number): Promise<fan.WaitingList> {

@@ -333,63 +333,69 @@ export interface Price {
 
     /**
      * Seat's facial price
+     * double precision
      */
-    facialPrice: number,
+    facialPrice: string,
 
     /**
      * Total facial price of requested seats
+     * double precision
      */
-    totalFacialPrice: number,
+    totalFacialPrice: string,
 
     /**
      * numberTotal fee
+     * double precision
      */
-    fee: number,
+    fee: string,
 
     /**
      * Fee on total facial price excluding VAT
+     * double precision
      */
-    feeExcVat: number,
+    feeExcVat: string,
 
     /**
-     * VAT computed on fee 
+     * VAT computed on fee
+     * double precision
      */
-    feeVat: number,
+    feeVat: string,
 
     /**
-     * 
+     * Facial price formatted with currency
      */
     formattedFacialPrice: string,
 
     /**
-     * 
+     * Total Facial price formatted with currency
      */
     formattedTotalFacialPrice: string,
     
     /**
-     * 
+     * Fee excluding taxes formatted with currency
      */
     formattedFeeExcVat: string,
 
     /**
-     * 
+     * Taxes on the fee formatted with currency
      */
     formattedFeeVat: string,
 
     /**
-     * 
+     * Seaters Fee formatted with currency
      */
     formattedFee: string,
 
     /**
-     *
+     * Total price formatted with currency
      */
     formattedTotal: string,
 
     /**
      * Total price for the requested seats
+     * double pricision
      */
-    total: number,
+    total: string,
 }
 
 export type WL_REQUEST_STATUS =
@@ -476,23 +482,27 @@ export interface FanGroupCategory {
 export interface FeeCalculationParameters {
     /**
      * % added to cover distribution costs
+     * double precision
      */
-    distributionRate: number,
+    distributionRate: string,
 
     /**
      * Minimum distribution cost
+     * double precision
      */
-    minDistributionFee: number,
+    minDistributionFee: string,
 
     /**
      * Maximum distribution cost
+     * double precision
      */
-    maxDistributionFee: number,
+    maxDistributionFee: string,
 
     /**
      * VAT rate that is applied (depends on venue country)
+     * double precision
      */
-    vatRate: number
+    vatRate: string
 }
 
 export interface Currency {
@@ -540,8 +550,9 @@ export interface Position {
 
     /**
      * The likelihood of the fan to get tickets (percentage)
+     * double precision
      */
-    likelihood: number,
+    likelihood: string,
 
     /**
      * Position status
@@ -560,46 +571,55 @@ export interface Position {
 
     /**
      * Total price or null if Waiting List is free
+     * double precision
      */
-    total: number,
+    total: string,
 
     /**
      * Total facial price (unit facial price times number of Seats)
+     * double precision
      */
-    facialPrice: number,
+    facialPrice: string,
 
     /**
      * Total fee
+     * double precision
      */
-    fee: number,
+    fee: string,
 
     /**
      * Fee excluding VAT
+     * double precision
      */
-    feeExcVat: number,
+    feeExcVat: string,
 
     /**
      * Fee VAT
+     * double precision
      */
-    feeVat:number,
+    feeVat: string,
 
     /**
      * Facial price, formatted with currency
+     * double precision
      */
     formattedFacialPrice: string,
 
     /**
      * Fee excluding VAT, formatted with currency
+     * double precision
      */
     formattedFeeExcVat: string,
 
     /**
      * Fee VAT, formatted with currency
+     * double precision
      */
     formattedFeeVat: string,
 
     /**
      * Fee incl VAT, formatted with currency
+     * double precision
      */
     formattedFee: string,
 }

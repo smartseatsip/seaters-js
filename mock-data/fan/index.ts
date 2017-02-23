@@ -4,6 +4,7 @@ import { fan } from './fan';
 import { lockedFg, unlockFg } from './locked-fg';
 import { braintreePaymentInfo, braintreeToken } from './payment-info';
 import { fanGroupLook } from './fan-group-look';
+import { waitingListWithoutSeat, waitingListWithSeat, waitingListsWithSeat, waitingListsWithoutSeat } from './waiting-list';
 
 export const fanMocks: Mock[] = [
 
@@ -53,6 +54,18 @@ export const fanMocks: Mock[] = [
         'status': 200,
         'statusText': 'OK',
         'body': fanGroupLook
+    }),
+
+    mkMock('GET', '/api/fan/joined-waiting-lists?maxPageSize=10&itemOffset=0', {
+        status: 200,
+        statusText: 'OK',
+        body: waitingListsWithoutSeat 
+    }),
+
+    mkMock('GET', '/api/fan/active-waiting-lists-with-seat?maxPageSize=10&itemOffset=0', {
+        status: 200,
+        statusText: 'OK',
+        body: waitingListsWithSeat 
     }),
 
 ];

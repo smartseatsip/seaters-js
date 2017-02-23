@@ -93,3 +93,5 @@ exports.playbooks = {
     }
 
 };
+
+exports.defaultPaging = {itemOffset: 0, maxPageSize: 10};

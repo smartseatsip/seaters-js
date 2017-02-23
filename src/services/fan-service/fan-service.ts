@@ -60,6 +60,16 @@ export class FanService {
         });
     }
 
+    getMyWaitingListsWithoutSeat (page: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
+        return this.seatersApi.fan.joinedWaitingListsWithoutSeat(page)
+        .then(res => this.waitingListService.extendRawWaitingLists(<any>res));
+    }
+
+    getMyWaitingListsWithSeat (page: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
+        return this.seatersApi.fan.joinedWaitingListsWithSeat(page)
+        .then(res => this.waitingListService.extendRawWaitingLists(<any>res));
+    }
+
     private convertPagingOptions(pagingOptions: PagingOptions): any {
         return {
             itemOffset: pagingOptions.page * pagingOptions.maxPageSize,
