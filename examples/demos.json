@@ -39,6 +39,9 @@
 	}, {
 		"name": "Get WLs for fan with and without seat",
 		"file": "mock/fan-waiting-list.js"
+	}, {
+		"name": "Pay for assigned seats",
+		"file": "mock/pay-seats.js"
 	}]
 }, {
 	"category": "Public Data",

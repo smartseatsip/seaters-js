@@ -6,13 +6,12 @@ import { fan } from './fan-types';
 
 import { PagedResult, PagingOptions } from '../../shared-types';
 import { SessionService } from "../session-service/session-service";
-import { Fan } from "../../seaters-api/fan/fan-types";
+import { Fan, PositionSalesTransactionInput } from "../../seaters-api/fan/fan-types";
 
 export class FanService {
 
     public waitingListService: WaitingListService;
     public fanGroupService: FanGroupService;
-
 
     constructor (private seatersApi: SeatersApi, private sessionService: SessionService) {
         this.waitingListService = new WaitingListService(seatersApi);
@@ -25,6 +24,10 @@ export class FanService {
         .then(fan => this.sessionService.updateCurrentFan(fan));
     }
 
+    getWaitingList (waitingListId: string): Promise<fan.WaitingList> {
+        return this.waitingListService.getWaitingList(waitingListId);
+    }
+
     getWaitingListsInFanGroup (fanGroupId: string, pagingOptions: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
         return this.seatersApi.fan.waitingListsInFanGroup(fanGroupId, this.convertPagingOptions(pagingOptions))
         .then(r => this.convertPagedResult(r));
@@ -32,7 +35,6 @@ export class FanService {
 
     getPositionPaymentInfo (waitingListId: string): Promise<fan.PaymentInfo> {
         return this.seatersApi.fan.positionPaymentInfo(waitingListId);
-
     }
 
     getPositionBraintreePaymentInfo (waitingListId: string): Promise<fan.BraintreePaymentInfo> {
@@ -68,6 +70,14 @@ export class FanService {
     getMyWaitingListsWithSeat (page: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
         return this.seatersApi.fan.joinedWaitingListsWithSeat(page)
         .then(res => this.waitingListService.extendRawWaitingLists(<any>res));
+    }
+
+    payPosition (waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
+        return this.waitingListService.payPosition(waitingListId, transaction);
+    }
+
+    preauthorizePosition (waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
+        return this.waitingListService.preauthorizePosition(waitingListId, transaction);
     }
 
     private convertPagingOptions(pagingOptions: PagingOptions): any {

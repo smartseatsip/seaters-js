@@ -5,16 +5,12 @@ var data: FanGroup = {
     "id": "locked-fg",
     "name": {
       "en": "SDK - CODEPROTECTED",
-      "fr": "SDK - CODEPROTECTED",
-      "es": "SDK - CODEPROTECTED",
-      "nl": "SDK - CODEPROTECTED"
+      "nl": "SDK - CODEPROTECTED nl"
     },
     "translatedName": "SDK - CODEPROTECTED",
     "shortName": {
       "en": "SDK - CODEPROTECTED",
-      "fr": "SDK - CODEPROTECTED",
-      "es": "SDK - CODEPROTECTED",
-      "nl": "SDK - CODEPROTECTED"
+      "nl": "SDK - CODEPROTECTED nl"
     },
     "translatedShortName": "SDK - CODEPROTECTED",
     "slug": "sdk-codeprotected",
@@ -25,9 +21,7 @@ var data: FanGroup = {
     "color2": "0645AD",
     "welcomeText": {
       "en": "sdk-codeprotected",
-      "fr": "sdk-codeprotected",
-      "es": "sdk-codeprotected",
-      "nl": "sdk-codeprotected"
+      "nl": "sdk-codeprotected nl"
     },
     "translatedWelcomeText": "sdk-codeprotected",
     "accessMode": "CODE_PROTECTED",
@@ -37,9 +31,7 @@ var data: FanGroup = {
         "id": "477710ea-17ff-4219-beff-378ccfd9e053",
         "name": {
           "en": "Belgium",
-          "fr": "Belgium",
-          "es": "Belgium",
-          "nl": "Belgium"
+          "nl": "Belgium nl"
         },
         "translatedName": "Belgium"
       }

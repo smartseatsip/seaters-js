@@ -3,7 +3,7 @@ import { Promise } from 'es6-promise';
 import { PagedResult, PagingOptions } from '../../shared-types';
 
 import { SeatersApi } from '../../seaters-api';
-import { WaitingList } from '../../seaters-api/fan';
+import { WaitingList, TRANSACTION_STATUS, PositionSalesTransactionInput } from '../../seaters-api/fan';
 import { fan } from './fan-types';
 import { retryUntil } from './../util';
 
@@ -19,6 +19,20 @@ export class WaitingListService {
 
     private getRawWaitingList (waitingListId: string): Promise<WaitingList> {
         return this.api.fan.waitingList(waitingListId);
+    }
+
+    private pollWaitingList (
+        waitingListId: string,
+        condition: (wl: fan.WaitingList) => boolean,
+        limit?: number,
+        delayInMs?: number
+    ): Promise<fan.WaitingList> {
+        return retryUntil<fan.WaitingList> (
+            () => this.getWaitingList(waitingListId),
+            condition,
+            limit || 10,
+            delayInMs || 1000,
+        );
     }
 
     private getWaitingListActionStatus (waitingList: WaitingList): fan.WAITING_LIST_ACTION_STATUS {
@@ -115,6 +129,30 @@ export class WaitingListService {
         }
 
     }
+
+    canPay (wl: fan.WaitingList): boolean {
+        if (WAITING_LIST_ACTION_STATUS.WAIT === wl.actionStatus) {
+            return !!wl.position.expirationDate;
+        } else if (WAITING_LIST_ACTION_STATUS.CONFIRM === wl.actionStatus) {
+            return !wl.position.transactionStatus || wl.position.transactionStatus === 'FAILURE';
+        } else {
+            return false;
+        }
+    }
+
+    hasPaymentInProgress (wl: fan.WaitingList): boolean {
+        if (!wl.position) {
+            return false;
+        } else {
+            return [
+                'CREATING', 'CREATED', 'APPROVED', 'CANCELLED', 'REFUNDING'
+            ].indexOf(wl.position.transactionStatus) >= 0;
+        }
+    }
+
+    hasPreviousPayment (wl: fan.WaitingList): boolean {
+        return wl.position && wl.position.transactionStatus ? true : false;
+    }
     
     extendRawWaitingList(wl: WaitingList): fan.WaitingList {
         return Object.assign(wl, {
@@ -163,16 +201,79 @@ export class WaitingListService {
           .then(() => this.pollWaitingList(waitingListId, (wl) => (wl && wl.seat && wl.seat.exportedVoucherUrl && wl.seat.exportedVoucherUrl.length > 0) ));
     }
 
-
-    private pollWaitingList (waitingListId: string, condition: (wl: fan.WaitingList) => boolean): Promise<fan.WaitingList> {
-        return retryUntil<fan.WaitingList> (
-            () => this.getWaitingList(waitingListId),
-            condition,
-            10,
-            1000
-        );
+    payPosition (waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
+        return this.submitTransaction(waitingListId, transaction)
+        // wait for WL state to be 'GO_LIVE'
+        .then(() => {
+            return this.pollWaitingList(
+                waitingListId,
+                wl => wl.actionStatus === WAITING_LIST_ACTION_STATUS.GO_LIVE
+            );
+        });
     }
 
+    preauthorizePosition (waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
+        return this.submitTransaction(waitingListId, transaction)
+        // wait for preauthorization timer to be removed
+        .then(() => {
+            return this.pollWaitingList(
+                waitingListId,
+                wl => wl.position.expirationDate === null
+            );
+        });
+    }
+
+    private submitTransaction (waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
+        return this.getWaitingList(waitingListId)
+        .then(wl => this.ensureFanCanPayPosition(wl))
+        .then(wl => this.removePreviousTransactionIfAny(wl))
+        .then(wl => this.createTransaction(waitingListId, transaction))
+        .then(undefined, err => {
+            console.error('[WaitingListService] submitTransaction failed: %s', err, transaction);
+            throw err;
+        });
+    }
+
+    private ensureFanCanPayPosition (wl: fan.WaitingList): Promise<fan.WaitingList> {
+        if (!this.canPay(wl)) {
+            throw new Error('Trying to submit transaction for WL that is not in a state that requires payment');
+        } else if (this.hasPaymentInProgress(wl)) {
+            throw new Error('Trying to submit transaction for WL which has a payment in progress');
+        } else {
+            return Promise.resolve(wl);
+        }
+    }
+
+    private removePreviousTransactionIfAny (wl: fan.WaitingList): Promise<fan.WaitingList> {
+        if(!this.hasPreviousPayment(wl)) {
+            return Promise.resolve(wl);
+        }
+        return this.api.fan.deletePositionSalesTransaction(wl.waitingListId)
+        .then(() => {
+            return this.pollWaitingList(
+                wl.waitingListId,
+                (wl) => this.hasPreviousPayment(wl),
+                60,
+                1000
+            );
+        });
+    }
+
+    private createTransaction (waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
+        return this.api.fan.createPositionSalesTransaction(waitingListId, transaction)
+        .then(() => {
+            return this.pollWaitingList(
+                waitingListId,
+                wl => this.hasProcessedPayment(wl),
+                60,
+                1000
+            );
+        });
+    }
+    
+    private hasProcessedPayment (wl: fan.WaitingList): boolean {
+        return wl.position && ['FAILURE', 'COMPLETED'].indexOf(wl.position.transactionStatus) >= 0;
+    }
 
 
 }

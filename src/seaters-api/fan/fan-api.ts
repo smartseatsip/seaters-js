@@ -1,7 +1,9 @@
 import { ApiContext } from '../../api';
 import { PagedResult } from '../paged-result';
 import { PagingOptions } from '../paging-options';
-import { Fan, FanGroup, WaitingList, FanGroupRequest, Price, PaymentInfo, BraintreeToken, FanGroupLook } from './fan-types';
+import { Fan, FanGroup, WaitingList, FanGroupRequest,
+    Price, PaymentInfo, BraintreeToken, FanGroupLook,
+    PositionSalesTransactionInput, PositionSalesTransaction } from './fan-types';
 
 export class FanApi {
 
@@ -156,6 +158,24 @@ export class FanApi {
         var endpoint = '/fan/waiting-lists/:waitingListId/position/braintree-token';
         var endpointParams = this.wlEndpointParams(waitingListId);
         return this.apiContext.get<BraintreeToken>(endpoint, endpointParams);
+    }
+
+    getPositionSalesTransaction (waitingListId: string): Promise<PositionSalesTransaction> {
+        var endpoint = '/fan/waiting-lists/:waitingListId/transaction';
+        var endpointParams = ApiContext.buildEndpointParams({waitingListId: waitingListId});
+        return this.apiContext.get<PositionSalesTransaction>(endpoint, endpointParams); 
+    }
+
+    createPositionSalesTransaction (waitingListId: string, transaction: PositionSalesTransactionInput): Promise<PositionSalesTransaction> {
+        var endpoint = '/fan/waiting-lists/:waitingListId/transaction';
+        var endpointParams = ApiContext.buildEndpointParams({waitingListId: waitingListId});
+        return this.apiContext.post<PositionSalesTransaction>(endpoint, transaction, endpointParams);
+    }
+
+    deletePositionSalesTransaction (waitingListId: string): Promise<any> {
+        var endpoint = '/fan/waiting-lists/:waitingListId/transaction';
+        var endpointParams = ApiContext.buildEndpointParams({waitingListId: waitingListId});
+        return this.apiContext.delete(endpoint, endpointParams);
     }
 
     private buildPagingQueryParams(pagingOptions: PagingOptions): Map<string, string> {
