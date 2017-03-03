@@ -1,6 +1,6 @@
 {
   "name": "seaters",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "Seaters functionality in a box!",
   "main": "./dist/seaters.module.js",
   "typings": "./dist/index",
@@ -20,7 +20,6 @@
     "es6-promise": "^4.0.5",
     "moment": "2.17.1",
     "node-noop": "1.0.0",
-    "rxjs": "5.0.0-rc.1",
     "source-map-support": "0.4.3"
   },
   "devDependencies": {
