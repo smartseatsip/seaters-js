@@ -12,3 +12,5 @@ translations.json
 examples/config.json
 dist/
 lib/
+src/**/*.d.ts
+mock-data/**/*.d.ts

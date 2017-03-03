@@ -5,7 +5,8 @@
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "outDir": "lib",
-    "declaration": true
+    "declaration": true,
+    "declarationDir": "dist"
   },
   "files": [
     "src/index.ts",
