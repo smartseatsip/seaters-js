@@ -157,6 +157,14 @@ export class ApiContext {
         );
     }
 
+    public doStringRequest (requestDefinition: ApiRequestDefinition) : Promise<string> {
+        return this.doRawRequest(requestDefinition)
+        .then(
+            (response) => response.body,
+            (error) => this.handleUnexpectedResponse(error)
+        );
+    }
+
     public get<T> (
         abstractEndpoint: string,
         endpointParams?: Map<string, string>,

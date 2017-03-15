@@ -1,5 +1,8 @@
 var SeatersSDK = require('../../dist/seaters.module');
-var mockData = require('../../dist/seaters-mock-data.module').data;
+var mocks = require('../../dist/seaters-mock-data.module');
+var mockData = mocks.data;
+
+exports.scenarios = mocks.scenarios;
 
 console.log('SeatersSDK - v%s\n--------------', SeatersSDK.version);
 

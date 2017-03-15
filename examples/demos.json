@@ -61,4 +61,10 @@
 		"name": "Fetch the price of a public WaitingList",
 		"file": "node/public-wl-get-price.js"
 	}]
+}, {
+	"category": "Seaters Application",
+	"demos": [{
+		"name": "Check maintenance status",
+		"file": "mock/check-maintenance-status.js"
+	}]
 }]

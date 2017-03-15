@@ -1,18 +1,19 @@
-import { MockData, MockDataGenerator, Mock } from './types';
-import { RequestOptions } from '../src/api';
 import { fanMocks } from './fan';
 import { adminMocks } from './admin';
-
-var unlockedFg = false;
-var unlockedFgSuccess = false;
+import { healthScenarios, healthMocks } from './health';
 
 export const data = {};
 
 [
     fanMocks,
-    adminMocks
+    adminMocks,
+    healthMocks
 ].forEach(mockSet => {
     mockSet.forEach(mock => {
         data[mock.endpoint] = mock.data
     });
 });
+
+export const scenarios = {
+    health: healthScenarios,
+};
