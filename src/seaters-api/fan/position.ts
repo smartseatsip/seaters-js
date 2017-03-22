@@ -1,9 +1,4 @@
 export interface Position {
-    /**
-     * When the position will expire
-     * @format ISO_8601
-     */
-    expirationDate: string,
 
     /**
      * Number of Seats
@@ -11,14 +6,20 @@ export interface Position {
     numberOfSeats: number,
 
     /**
+     * Is personal info required to be able to accept the seats?
+     */
+    personalInfoRequired: boolean,
+    
+    /**
+     * When the position will expire
+     * @format ISO_8601
+     */
+    expirationDate: string,
+
+    /**
      * A description of the error that lead to FAILURE status
      */
     paymentFailureMessage: string,
-
-    /**
-     * Is personal info required to be able to accept the seats?
-     */
-    personalInfoRequired:boolean,
 
     /**
      * The payment status
@@ -56,54 +57,7 @@ export interface Position {
      * double precision
      */
     total: string,
-
-    /**
-     * Total facial price (unit facial price times number of Seats)
-     * double precision
-     */
-    facialPrice: string,
-
-    /**
-     * Total fee
-     * double precision
-     */
-    fee: string,
-
-    /**
-     * Fee excluding VAT
-     * double precision
-     */
-    feeExcVat: string,
-
-    /**
-     * Fee VAT
-     * double precision
-     */
-    feeVat: string,
-
-    /**
-     * Facial price, formatted with currency
-     * double precision
-     */
-    formattedFacialPrice: string,
-
-    /**
-     * Fee excluding VAT, formatted with currency
-     * double precision
-     */
-    formattedFeeExcVat: string,
-
-    /**
-     * Fee VAT, formatted with currency
-     * double precision
-     */
-    formattedFeeVat: string,
-
-    /**
-     * Fee incl VAT, formatted with currency
-     * double precision
-     */
-    formattedFee: string,
+    
 }
 
 export type TRANSACTION_STATUS = 'CREATING' | 'FAILURE' | 'CREATED' | 'APPROVED' | 'CANCELLED' | 'COMPLETED' | 'REFUNDING' | 'REFUNDED';

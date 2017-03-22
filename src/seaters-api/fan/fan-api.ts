@@ -1,9 +1,10 @@
 import { ApiContext } from '../../api';
 import { PagedResult } from '../paged-result';
 import { PagingOptions } from '../paging-options';
-import { Fan, FanGroup, WaitingList, FanGroupRequest,
+import { Fan, FanGroup, WaitingList, FanGroupRequest, Position,
     Price, PaymentInfo, BraintreeToken, FanGroupLook,
-    PositionSalesTransactionInput, PositionSalesTransaction } from './fan-types';
+    PositionSalesTransactionInput, PositionSalesTransaction,
+    AttendeesInfo } from './fan-types';
 
 export class FanApi {
 
@@ -176,6 +177,12 @@ export class FanApi {
         var endpoint = '/fan/waiting-lists/:waitingListId/transaction';
         var endpointParams = ApiContext.buildEndpointParams({waitingListId: waitingListId});
         return this.apiContext.delete(endpoint, endpointParams);
+    }
+
+    updateAttendeesInfo (waitingListId: string, attendeesInfo: AttendeesInfo): Promise<Position> {
+        var endpoint = '/fan/waiting-lists/:waitingListId/position/attendees-info';
+        var endpointParams = ApiContext.buildEndpointParams({waitingListId: waitingListId});
+        return this.apiContext.put(endpoint, attendeesInfo, endpointParams);
     }
 
     private buildPagingQueryParams(pagingOptions: PagingOptions): Map<string, string> {

@@ -1,4 +1,4 @@
-import { WaitingList, Position, Seat } from '../../src/seaters-api/fan';
+import { WaitingList, ExtendedPosition, Seat } from '../../src/seaters-api/fan';
 import { mkPagedResult } from '../types';
 
 export const waitingList: WaitingList = {
@@ -28,6 +28,7 @@ export const waitingList: WaitingList = {
 	"translatedEventShortName": "RD vs PB",
 	"eventStartDate": "2020-01-31T00:00:00.000+01:00",
 	"eventImageUrl": "https://static.dev-seaters.com/file-2ae0e85c-cc83-4821-a6f0-4bb90df43c05.png",
+	"eventRequiredAttendeeInfo": [],
 	"venueName": {
 		"en": "King Baudouin Stadium",
 		"nl": "King Baudouin Stadium nl",
@@ -94,7 +95,7 @@ export const waitingList: WaitingList = {
 	"seat": null,
 };
 
-export function generateWl (waitingListId: string, position?: Position, seat?: Seat): WaitingList {
+export function generateWl (waitingListId: string, position?: ExtendedPosition, seat?: Seat): WaitingList {
 	return Object.assign({}, waitingList, {
 		waitingListId: waitingListId,
 		position: position,
@@ -102,7 +103,8 @@ export function generateWl (waitingListId: string, position?: Position, seat?: S
 	});
 }
 
-export const positionPayedWithSeat: Position = {
+export const positionPayedWithSeat: ExtendedPosition = {
+	"attendeesInfo": { "attendees": [] },
 	"status": "HAS_SEAT",
 	"rank": 1,
 	"likelihood": "25.00",
@@ -139,7 +141,8 @@ var seat: Seat = {
 
 export const waitingListWithSeat = generateWl("waiting-list-with-seat", positionPayedWithSeat, seat);
 
-export const preauthorizedPosition: Position = {
+export const preauthorizedPosition: ExtendedPosition = {
+	"attendeesInfo": { "attendees": [] },
 	"status": "WAITING_SEAT",
 	"rank": 2,
 	"likelihood": "24.99",

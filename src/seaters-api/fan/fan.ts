@@ -22,7 +22,7 @@ export interface Fan {
     /**
      * Fan's mobile phone number
      */
-    mobilePhoneNumber: MobilePhoneNumber,
+    mobilePhoneNumber: PhoneNumber,
     
     /**
      * Fan's username
@@ -71,7 +71,7 @@ export interface DirectMarketingSettings {
     allowDirectMarketingFromPartners:boolean
 }
 
-export interface MobilePhoneNumber {
+export interface PhoneNumber {
     countryCallingCode:string
     localNumber:string
 }

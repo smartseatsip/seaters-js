@@ -6,7 +6,7 @@ import { fan } from './fan-types';
 
 import { PagedResult, PagingOptions } from '../../shared-types';
 import { SessionService } from "../session-service/session-service";
-import { Fan, PositionSalesTransactionInput } from "../../seaters-api/fan/fan-types";
+import { Fan, PositionSalesTransactionInput, AttendeesInfo } from "../../seaters-api/fan/fan-types";
 
 export class FanService {
 
@@ -78,6 +78,10 @@ export class FanService {
 
     preauthorizePosition (waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
         return this.waitingListService.preauthorizePosition(waitingListId, transaction);
+    }
+    
+    saveAttendeesInfo (waitingListId: string, attendeesInfo: AttendeesInfo): Promise<fan.WaitingList> {
+        return this.waitingListService.saveAttendeesInfo(waitingListId, attendeesInfo);
     }
 
     private convertPagingOptions(pagingOptions: PagingOptions): any {

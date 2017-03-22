@@ -1,4 +1,11 @@
-import { WaitingList as _WaitingList, FanGroup as _FanGroup, Price as _Price, PaymentInfo as _PaymentInfo } from '../../seaters-api/fan';
+import {
+    WaitingList as _WaitingList,
+    FanGroup as _FanGroup,
+    Price as _Price,
+    PaymentInfo as _PaymentInfo,
+    AttendeesInfo as _AttendeesInfo,
+    AttendeeInfo as _AttendeeInfo
+} from '../../seaters-api/fan';
 
 export namespace fan {
 
@@ -15,12 +22,15 @@ export namespace fan {
         /**
          * Is seaters currently processing your request?
          */
-        processing: boolean
+        processing: boolean,
+
+        /**
+         * If required, does the attendee info needs to be provided still?
+         */
+        shouldProvideAttendeesInfo: boolean
     }
 
-    export interface Price extends _Price {
-        
-    }
+    export interface Price extends _Price {}
 
     export enum FAN_GROUP_ACTION_STATUS {
         CAN_JOIN, CAN_LEAVE, CAN_UNLOCK, CAN_REQUEST, WAITING_FOR_APPROVAL
@@ -66,5 +76,9 @@ export namespace fan {
         total: string
 
     }
+
+    export interface AttendeeInfo extends _AttendeeInfo {}
+
+    export interface AttendeesInfo extends _AttendeesInfo {}
 
 }

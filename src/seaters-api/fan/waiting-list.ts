@@ -1,5 +1,6 @@
 import { FanGroupCategory } from './fan-group';
-import { Position } from './position';
+import { ExtendedPosition } from './extended-position';
+import { EVENT_REQUIRED_ATTENDEE_INFO } from './attendee-info';
 
 export interface WaitingList {
 
@@ -191,7 +192,7 @@ export interface WaitingList {
     /**
      * Position data or null if Waiting List is not yet joined
      */
-    position: Position,
+    position: ExtendedPosition,
 
     /**
      * Maximum number of Seats a Fan can reserve when joining a Waiting List
@@ -228,6 +229,12 @@ export interface WaitingList {
      * Event description, translated in the fan's locale
      */
     translatedEventDescription:string
+
+    /**
+     * The information that all attendees should provide to obtain
+     * tickets for this WL
+     */
+    eventRequiredAttendeeInfo: EVENT_REQUIRED_ATTENDEE_INFO[]
 }
 
 export type WL_ACCESS_MODE = 'PUBLIC' | 'CODE_PROTECTED';

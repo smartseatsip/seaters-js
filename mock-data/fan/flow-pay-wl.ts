@@ -4,10 +4,11 @@
  */
 import { generateWl } from './waiting-list';
 import { oneHourFromNow, mkMock, Mock, RequestOptions } from './../types';
-import { WaitingList, Position, Seat, PositionSalesTransaction, PositionSalesTransactionInput, BraintreeToken } from '../../src/seaters-api/fan';
+import { WaitingList, ExtendedPosition, Seat, PositionSalesTransaction, PositionSalesTransactionInput, BraintreeToken } from '../../src/seaters-api/fan';
 import { braintreePaymentInfo, realBraintreeToken } from './payment-info';
 
-var position: Position = {
+var position: ExtendedPosition = {
+    attendeesInfo: { attendees: [] },
     rank: 42,
     likelihood: '90.00',
     lowLikelihood: false,

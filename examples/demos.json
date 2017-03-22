@@ -42,6 +42,9 @@
 	}, {
 		"name": "Pay for assigned seats",
 		"file": "mock/pay-seats.js"
+	}, {
+		"name": "Checkout: supply attendee info",
+		"file": "mock/checkout-flow.js"
 	}]
 }, {
 	"category": "Public Data",

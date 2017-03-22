@@ -3,7 +3,7 @@ import { Promise } from 'es6-promise';
 import { PagedResult, PagingOptions } from '../../shared-types';
 
 import { SeatersApi } from '../../seaters-api';
-import { WaitingList, TRANSACTION_STATUS, PositionSalesTransactionInput } from '../../seaters-api/fan';
+import { WaitingList, TRANSACTION_STATUS, PositionSalesTransactionInput, AttendeesInfo, AttendeeInfo, EVENT_REQUIRED_ATTENDEE_INFO } from '../../seaters-api/fan';
 import { fan } from './fan-types';
 import { retryUntil } from './../util';
 
@@ -156,8 +156,9 @@ export class WaitingListService {
     
     extendRawWaitingList(wl: WaitingList): fan.WaitingList {
         return Object.assign(wl, {
-            actionStatus: this.getWaitingListActionStatus(wl)
+            actionStatus: this.getWaitingListActionStatus(wl),
             //TODO: pending status
+            shouldProvideAttendeesInfo: this.shouldProvideAttendeesInfo(wl),
         });
     }
 
@@ -221,6 +222,31 @@ export class WaitingListService {
                 wl => wl.position.expirationDate === null
             );
         });
+    }
+    
+    private shouldProvideAttendeesInfo (wl: WaitingList): boolean {
+        if (wl.eventRequiredAttendeeInfo.length === 0) {
+            // if no info is asked, we don't need to ask for attendee info
+            return false;
+        } else {
+            // check that all attendee info was stored; if it's stored it
+            // must has passed the serverside validations.
+            return wl.position && wl.position.attendeesInfo && wl.position.attendeesInfo.attendees &&
+                wl.position.attendeesInfo.attendees.length !== wl.position.numberOfSeats;
+        }
+    }
+
+    saveAttendeesInfo (waitingListId: string, attendeesInfo: AttendeesInfo): Promise<fan.WaitingList> {
+        return this.api.fan.updateAttendeesInfo(waitingListId, attendeesInfo)
+        // wait for attendeeInfo to be updated in CQRS
+        .then(() => this.pollWaitingList(waitingListId, wl => {
+            // JSON serialization for the same object without an array should be the same
+            var storedAttendees = (wl.position.attendeesInfo || { attendees: []}).attendees
+                .map(attendee => JSON.stringify(attendee));
+            // so check that each serialized attendee appears in the serialized stored attendees
+            return attendeesInfo.attendees.map(attendee => JSON.stringify(attendee))
+                .every(attendee => storedAttendees.indexOf(attendee) >= 0);
+        }));
     }
 
     private submitTransaction (waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
