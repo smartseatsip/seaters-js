@@ -189,7 +189,12 @@ export class WaitingListService {
 
     acceptSeats (waitingListId: string): Promise<fan.WaitingList> {
         return this.api.fan.acceptSeats(waitingListId)
-        .then(() => this.pollWaitingList(waitingListId, (wl) => wl.actionStatus !== WAITING_LIST_ACTION_STATUS.CONFIRM));
+        .then(() => this.pollWaitingList(waitingListId, (wl) => {
+            return wl.actionStatus !== WAITING_LIST_ACTION_STATUS.CONFIRM
+                // must have either a voucher or a ticketing transaction
+                // Backend: position.hasVoucher() || position.hasTicketingTransaction()
+                && wl.seat && <any> (wl.seat.voucherNumber || wl.seat.ticketingSystemType)
+        }));
     }
 
     rejectSeats (waitingListId: string): Promise<fan.WaitingList> {
@@ -225,7 +230,7 @@ export class WaitingListService {
     }
     
     private shouldProvideAttendeesInfo (wl: WaitingList): boolean {
-        if (wl.eventRequiredAttendeeInfo.length === 0) {
+        if (!wl.eventRequiredAttendeeInfo || wl.eventRequiredAttendeeInfo.length === 0) {
             // if no info is asked, we don't need to ask for attendee info
             return false;
         } else {

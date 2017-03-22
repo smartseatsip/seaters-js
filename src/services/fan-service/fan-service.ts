@@ -84,6 +84,14 @@ export class FanService {
         return this.waitingListService.saveAttendeesInfo(waitingListId, attendeesInfo);
     }
 
+    acceptSeats (waitingListId: string) {
+        return this.waitingListService.acceptSeats(waitingListId);
+    }
+
+    exportSeats (waitingListId: string) {
+        return this.waitingListService.exportSeats(waitingListId);
+    }
+
     private convertPagingOptions(pagingOptions: PagingOptions): any {
         return {
             itemOffset: pagingOptions.page * pagingOptions.maxPageSize,
