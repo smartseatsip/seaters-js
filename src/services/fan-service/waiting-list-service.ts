@@ -3,11 +3,13 @@ import { Promise } from 'es6-promise';
 import { PagedResult, PagingOptions } from '../../shared-types';
 
 import { SeatersApi } from '../../seaters-api';
-import { WaitingList, TRANSACTION_STATUS, PositionSalesTransactionInput, AttendeesInfo, AttendeeInfo, EVENT_REQUIRED_ATTENDEE_INFO } from '../../seaters-api/fan';
+import { WaitingList, TRANSACTION_STATUS, PositionSalesTransactionInput, AttendeesInfo, AttendeeInfo, EVENT_REQUIRED_ATTENDEE_INFO, TICKETING_SYSTEM_TYPE } from '../../seaters-api/fan';
 import { fan } from './fan-types';
 import { retryUntil } from './../util';
 
 var WAITING_LIST_ACTION_STATUS = fan.WAITING_LIST_ACTION_STATUS;
+
+var EXPORTABLE_TICKETING_SYSTEMS: TICKETING_SYSTEM_TYPE[] = ['UPLOAD', 'DIGITICK'];
 
 export class WaitingListService {
 
@@ -187,46 +189,74 @@ export class WaitingListService {
         return this.api.fan.waitingListPrice(waitingListId, numberOfSeats);
     }
 
+    private hasVoucher(wl: fan.WaitingList): boolean {
+        return wl.seatDistributionMode === 'VOUCHER'
+            && wl.seat
+            && wl.seat.voucherNumber
+            && wl.seat.voucherNumber !== '';
+    }
+
+    private hasTicket(wl: fan.WaitingList): boolean {
+        return wl.seatDistributionMode === 'TICKET'
+            && wl.seat
+            && !!wl.seat.ticketingSystemType;
+    }
+
+    private seatsCanBeExported(wl: fan.WaitingList): boolean {
+        if(!(this.hasVoucher(wl) || this.hasTicket(wl))) {
+            return false;
+        }
+        switch(wl.seatDistributionMode) {
+            case 'VOUCHER': return true;
+            case 'TICKET':
+                var ts = wl.seat.ticketingSystemType;
+                if (EXPORTABLE_TICKETING_SYSTEMS.indexOf(ts) < 0) {
+                    throw 'Ticketing system type "' + ts + '" does not support exporting tickets';
+                }
+                return true;
+            default:
+                throw 'Unknown WL seatDistributionMode ' + JSON.stringify(wl.seatDistributionMode);
+        }
+    }
+
+    private waitUntilCanGoLive(waitingListId: string): Promise<fan.WaitingList> {
+        return this.pollWaitingList(waitingListId, wl => {
+            return wl.actionStatus === WAITING_LIST_ACTION_STATUS.GO_LIVE;
+        });
+    }
+
+    private waitUntilSeatsCanBeExported(waitingListId: string): Promise<fan.WaitingList> {
+        return this.pollWaitingList(waitingListId, (wl) => this.seatsCanBeExported(wl), 60, 1000);
+    }
+
     acceptSeats (waitingListId: string): Promise<fan.WaitingList> {
         return this.api.fan.acceptSeats(waitingListId)
-        .then(() => this.pollWaitingList(waitingListId, (wl) => {
-            return wl.actionStatus !== WAITING_LIST_ACTION_STATUS.CONFIRM
-                // must have either a voucher or a ticketing transaction
-                // Backend: position.hasVoucher() || position.hasTicketingTransaction()
-                && wl.seat && <any> (wl.seat.voucherNumber || wl.seat.ticketingSystemType)
-        }));
+        .then(() => this.waitUntilCanGoLive(waitingListId));
     }
 
     rejectSeats (waitingListId: string): Promise<fan.WaitingList> {
-      return this.api.fan.rejectSeats(waitingListId)
-      .then(() => this.pollWaitingList(waitingListId, (wl) => (wl.actionStatus === WAITING_LIST_ACTION_STATUS.BOOK || wl.actionStatus === WAITING_LIST_ACTION_STATUS.UNLOCK) ));
+        return this.api.fan.rejectSeats(waitingListId)
+        .then(() => this.pollWaitingList(waitingListId, (wl) => (wl.actionStatus === WAITING_LIST_ACTION_STATUS.BOOK || wl.actionStatus === WAITING_LIST_ACTION_STATUS.UNLOCK) ));
     }
 
     exportSeats (waitingListId: string): Promise<fan.WaitingList> {
-        return this.api.fan.exportSeats(waitingListId)
-          .then(() => this.pollWaitingList(waitingListId, (wl) => (wl && wl.seat && wl.seat.exportedVoucherUrl && wl.seat.exportedVoucherUrl.length > 0) ));
+        return this.waitUntilSeatsCanBeExported(waitingListId)
+        .then(() => this.api.fan.exportSeats(waitingListId))
+        .then(() => this.pollWaitingList(waitingListId, (wl) => (wl && wl.seat && wl.seat.exportedVoucherUrl && wl.seat.exportedVoucherUrl.length > 0)));
     }
 
     payPosition (waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
         return this.submitTransaction(waitingListId, transaction)
         // wait for WL state to be 'GO_LIVE'
-        .then(() => {
-            return this.pollWaitingList(
-                waitingListId,
-                wl => wl.actionStatus === WAITING_LIST_ACTION_STATUS.GO_LIVE
-            );
-        });
+        .then(() => this.waitUntilCanGoLive(waitingListId));
     }
 
     preauthorizePosition (waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
         return this.submitTransaction(waitingListId, transaction)
         // wait for preauthorization timer to be removed
-        .then(() => {
-            return this.pollWaitingList(
-                waitingListId,
-                wl => wl.position.expirationDate === null
-            );
-        });
+        .then(() => this.pollWaitingList(waitingListId, wl => {
+            return wl.position.expirationDate === null;
+        }));
     }
     
     private shouldProvideAttendeesInfo (wl: WaitingList): boolean {

@@ -24,7 +24,8 @@ export function retryUntil<T> (
 
     function retry (attempt) {
         if(attempt > limit) {
-            return Promise.reject(new RetryUntilTimeoutError(limit));
+            console.log('[retryUntil] - polling timeout');
+            return deferred.reject(new RetryUntilTimeoutError(limit));
         }
         console.log('[retryUntil] - polling ... (%s/%s)', attempt, limit);
         promiseFn().then(result => {
