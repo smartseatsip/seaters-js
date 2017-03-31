@@ -1,10 +1,11 @@
 import { SeatersApiContext } from '../../seaters-api';
 import { PagedResult } from '../paged-result';
 import { PagingOptions } from '../paging-options';
+import { TranslationMap } from '../translation-map';
 import { Fan, FanGroup, WaitingList, FanGroupRequest, Position,
     Price, PaymentInfo, BraintreeToken, FanGroupLook,
     PositionSalesTransactionInput, PositionSalesTransaction,
-    AttendeesInfo, EventDescription } from './fan-types';
+    AttendeesInfo } from './fan-types';
 
 export class FanApi {
 
@@ -183,9 +184,16 @@ export class FanApi {
         return this.apiContext.put(endpoint, attendeesInfo, endpointParams);
     }
 
-    getEventDescription (waitingListId: string): Promise<EventDescription> {
+    getEventDescription (waitingListId: string): Promise<TranslationMap> {
         return this.apiContext.get(
             '/fan/waiting-lists/:waitingListId/event-description',
+            { waitingListId: waitingListId }
+        );
+    }
+
+    getVenueConditions (waitingListId: string): Promise<TranslationMap> {
+        return this.apiContext.get(
+            '/fan/waiting-lists/:waitingListId/venue-conditions',
             { waitingListId: waitingListId }
         );
     }

@@ -1,4 +1,3 @@
-import { EventDescription } from '../../src/seaters-api/fan';
 import { mkMock, Mock } from '../types';
 
 export const mocks: Mock[] = [
@@ -12,6 +11,18 @@ export const mocks: Mock[] = [
             "fr": "test event description FR",
             "es": "test event description ES",
             "nl": "test event description NL"
+        }
+    }),
+
+    mkMock('GET', '/api/fan/waiting-lists/a-wlid/venue-conditions', {
+        status: 200,
+        statusText: 'OK',
+        body: {
+            "ru": "test venue conditions RU",
+            "en": "test venue conditions EN",
+            "fr": "test venue conditions FR",
+            "es": "test venue conditions ES",
+            "nl": "test venue conditions NL"
         }
     })
 

@@ -3,6 +3,7 @@ import { WaitingListService } from './waiting-list-service';
 import { FanGroupService } from './fan-group-service';
 import { Promise } from 'es6-promise';
 import { fan } from './fan-types';
+import { LocalizableText } from '../util';
 
 import { PagedResult, PagingOptions } from '../../shared-types';
 import { SessionService } from "../session-service/session-service";
@@ -92,8 +93,14 @@ export class FanService {
         return this.waitingListService.exportSeats(waitingListId);
     }
     
-    getEventDescriptionForWaitingList (waitingListId: string): Promise<fan.EventDescription> {
-        return this.seatersApi.fan.getEventDescription(waitingListId);
+    getEventDescriptionForWaitingList (waitingListId: string): Promise<LocalizableText> {
+        return this.seatersApi.fan.getEventDescription(waitingListId)
+        .then(translationMap => new LocalizableText(translationMap));
+    }
+
+    getVenueConditionsForWaitingList (waitingListId: string): Promise<LocalizableText> {
+        return this.seatersApi.fan.getVenueConditions(waitingListId)
+        .then(translationMap => new LocalizableText(translationMap));
     }
 
     private convertPagingOptions(pagingOptions: PagingOptions): any {
