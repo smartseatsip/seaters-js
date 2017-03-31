@@ -5,3 +5,5 @@ export * from './api-request';
 export * from './api-request-definition';
 export * from './http-method';
 export * from './request-driver';
+export * from './simple-json-primitive';
+export * from './string-map';

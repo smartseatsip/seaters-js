@@ -1,4 +1,4 @@
-import { ApiContext } from '../../api';
+import { SeatersApiContext } from '../seaters-api-context';
 import { PagedResult } from '../paged-result';
 import { PagingOptions } from '../paging-options';
 import { Env, Country } from './app-types';
@@ -6,7 +6,7 @@ import { Env, Country } from './app-types';
 
 export class AppApi {
 
-    constructor (private apiContext: ApiContext) {
+    constructor (private apiContext: SeatersApiContext) {
 
     }
 
@@ -15,8 +15,8 @@ export class AppApi {
     }
 
     countries(pagingOptions?: PagingOptions): Promise<PagedResult<Country>> {
-        return this.apiContext.get<PagedResult<Country>>('/app/countries',
-            null, PagingOptions.toQueryParams(pagingOptions));
+        var queryParams = SeatersApiContext.buildPagingQueryParams(pagingOptions);
+        return this.apiContext.get<PagedResult<Country>>('/app/countries', null, queryParams);
     }
     
 

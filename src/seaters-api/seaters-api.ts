@@ -1,11 +1,16 @@
-import * as api from '../api';
+import { RequestDriver } from '../api';
 import { AppApi } from './app/app-api';
 import { FanApi } from './fan/fan-api';
-import { AuthenticationApi } from './authentication/authentication-api';
 import { AdminApi } from './admin';
 import { HealthApi } from './health';
+import { AuthenticationApi } from './authentication/authentication-api';
 
-export class SeatersApi extends api.ApiContext {
+import { SeatersApiException } from './seaters-api-exception';
+import { SeatersApiContext } from './seaters-api-context';
+
+export class SeatersApi {
+
+    public apiContext: SeatersApiContext;
 
     public app: AppApi;
     public fan: FanApi;
@@ -13,13 +18,14 @@ export class SeatersApi extends api.ApiContext {
     public admin: AdminApi;
     public health: HealthApi;
 
-    constructor (prefix: string, requestDriver: api.RequestDriver) {
-        super(prefix, requestDriver);
-        this.app = new AppApi(this);
-        this.fan = new FanApi(this);
-        this.authentication = new AuthenticationApi(this);
-        this.admin = new AdminApi(this);
-        this.health = new HealthApi(this);
+    constructor (prefix: string, requestDriver: RequestDriver) {
+        this.apiContext = new SeatersApiContext(prefix, requestDriver);
+
+        this.app = new AppApi(this.apiContext);
+        this.fan = new FanApi(this.apiContext);
+        this.admin = new AdminApi(this.apiContext);
+        this.health = new HealthApi(this.apiContext);
+        this.authentication = new AuthenticationApi(this.apiContext);
     }
 
 }

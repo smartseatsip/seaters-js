@@ -1,12 +1,12 @@
 import { HTTP_METHOD } from './http-method';
+import { StringMap } from './string-map';
 
 export interface ApiRequestDefinition {
 
     abstractEndpoint: string,
     method?: HTTP_METHOD,
-    endpointParams?: any,//TODO: Map<string, string>
-    queryParams?: any//TODO: Map<string, string>
+    endpointParams?: StringMap,
+    queryParams?: StringMap,
     body?: string,
-    headers?: any//TODO: Map<string, string>
-
+    headers?: {[key: string]:string},
 }

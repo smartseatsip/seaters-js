@@ -1,4 +1,4 @@
-import { Map, Array } from 'core-js/library';
+import { StringMap } from './string-map';
 
 export class ApiEndpoint {
 
@@ -12,8 +12,8 @@ export class ApiEndpoint {
 
     constructor (
         abstractEndpoint: string,
-        private endpointParams: Map<string, string>,
-        private queryParams: Map<string, string>,
+        private endpointParams: StringMap,
+        private queryParams: StringMap,
         private prefix: string
     ) {
         this.abstractEndpoint = this.normalizeAbstractEndpoint(abstractEndpoint);
@@ -28,11 +28,12 @@ export class ApiEndpoint {
             .replace(/\/$/, ''); // no trailing '/'
     }
 
-    private renderEndpointParam (paramName: string) {
-        if (!this.endpointParams.has(paramName)) {
-            throw 'Unable to render endpoint param: ' + paramName;
+    private renderEndpointParam (parameter: string) {
+        if (!this.endpointParams.hasOwnProperty(parameter)) {
+            throw 'Unable to render endpoint param: ' + parameter;
         }
-        return encodeURIComponent(this.endpointParams.get(paramName));
+        // SimpleJSONPrimitive can always be cast to string
+        return encodeURIComponent(<string>this.endpointParams[parameter]);
     }
 
     private renderConcreteEndpoint () : string {
@@ -43,13 +44,14 @@ export class ApiEndpoint {
     }
 
     private renderQueryParams() : string {
-        return Array.from(this.queryParams).map(entry => {
-            return encodeURIComponent(entry[0]) + '=' + encodeURIComponent(entry[1])
+        return Object.keys(this.queryParams).map(parameter => {
+            var value = <string>this.queryParams[parameter];
+            return encodeURIComponent(parameter) + '=' + encodeURIComponent(value);
         }).join('&');
     }
 
     private renderConcreteEndpointWithQueryParams () : string {
-        if (this.queryParams.size === 0) {
+        if (Object.keys(this.queryParams).length === 0) {
             return this.concreteEndpoint;
         }
         var res = this.concreteEndpoint;

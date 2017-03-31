@@ -1,9 +1,9 @@
-import { ApiContext } from '../../api';
+import { SeatersApiContext } from '../../seaters-api';
 import { UserData, SessionToken, ResetEmailData, SignupData, ValidationData, AuthenticationTokenInput } from './authentication-types';
 
 export class AuthenticationApi {
 
-    constructor (private apiContext: ApiContext) {
+    constructor (private apiContext: SeatersApiContext) {
 
     }
 
@@ -50,15 +50,16 @@ export class AuthenticationApi {
      * please refer to a seaters developer.
      */
     loginWithOAuthCode (oauthProvider: string, code: string) : Promise<SessionToken> {
-      var endpointParams = ApiContext.buildEndpointParams({oauthProvider: oauthProvider});
-      var queryParams = ApiContext.buildEndpointParams({code: code});
-      return this.apiContext.get<any>('/login/:oauthProvider', endpointParams, queryParams)
-        .then(data => {
-          return {
-            expirationDate: data.token.expirationDate,
-            token: data.token.value
-          };
-        });
+      var endpoint = '/login/:oauthProvider';
+      var endpointParams = {oauthProvider: oauthProvider};
+      var queryParams = {code: code};
+      return this.apiContext.get<any>(endpoint, endpointParams, queryParams)
+      .then(data => {
+        return {
+          expirationDate: data.token.expirationDate,
+          token: data.token.value
+        };
+      });
     }
 
 }

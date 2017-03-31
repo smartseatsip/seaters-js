@@ -91,4 +91,4 @@ export type AttendeesInfo = {
  * AttendeeInfo field names that have builtin validations by seaters.
  * Other attendee info can be stored but these have no server-side validation.
  */
-export type EVENT_REQUIRED_ATTENDEE_INFO = 'title' | 'firstName' | 'lastName' | 'email' | 'phoneNumber' | 'dateOfBirth' | 'address' | 'zipCode' | 'city' | 'state' | 'country' | 'citizenshipCountryCode' | 'idNumber';
+export type EVENT_REQUIRED_ATTENDEE_INFO = 'title' | 'firstName' | 'lastName' | 'email' | 'phoneNumber' | 'birthDate' | 'address' | 'zipCode' | 'city' | 'state' | 'country' | 'citizenshipCountryCode' | 'idNumber';

@@ -41,10 +41,31 @@ export class IndicesApi {
     }
 
     searchIndex (index: string, searchQuery: SearchQuery): Promise<SearchResult> {
-        var endpoint = '/indexes/:index/query';
-        var body = { params: this.serializeSearchQuery(searchQuery) };
-        var params = ApiContext.buildEndpointParams({ index: index });
-        return this.apiContext.post<SearchResult>(endpoint, body, params);
+        var abstractEndpoint = '/indexes/:index/query';
+        var endpointParams = { index: index };
+        var body = JSON.stringify({ params: this.serializeSearchQuery(searchQuery) });
+        return this.apiContext.doRequest({
+            method: 'POST',
+            abstractEndpoint: abstractEndpoint,
+            endpointParams: endpointParams,
+            body: body
+        }).then(response => {
+            if(response.status !== 200) {
+                return Promise.reject({
+                    error: 'Unexpected response status code',
+                    response: response
+                });
+            }
+            try {
+                return <SearchResult> JSON.parse(response.body);
+            } catch (exception) {
+                return Promise.reject({
+                    error: 'Unable to parse algolia response',
+                    parseException: exception,
+                    response: response
+                });
+            }
+        });
     }
 
 }

@@ -5,7 +5,7 @@ import { PagedResult, PagingOptions } from '../../shared-types';
 import { SeatersApi } from '../../seaters-api';
 import { WaitingList, TRANSACTION_STATUS, PositionSalesTransactionInput, AttendeesInfo, AttendeeInfo, EVENT_REQUIRED_ATTENDEE_INFO, TICKETING_SYSTEM_TYPE } from '../../seaters-api/fan';
 import { fan } from './fan-types';
-import { retryUntil } from './../util';
+import { retryUntil, compareObjects } from './../util';
 
 var WAITING_LIST_ACTION_STATUS = fan.WAITING_LIST_ACTION_STATUS;
 
@@ -275,12 +275,17 @@ export class WaitingListService {
         return this.api.fan.updateAttendeesInfo(waitingListId, attendeesInfo)
         // wait for attendeeInfo to be updated in CQRS
         .then(() => this.pollWaitingList(waitingListId, wl => {
-            // JSON serialization for the same object without an array should be the same
-            var storedAttendees = (wl.position.attendeesInfo || { attendees: []}).attendees
-                .map(attendee => JSON.stringify(attendee));
-            // so check that each serialized attendee appears in the serialized stored attendees
-            return attendeesInfo.attendees.map(attendee => JSON.stringify(attendee))
-                .every(attendee => storedAttendees.indexOf(attendee) >= 0);
+            var storedAttendees = (wl.position.attendeesInfo && wl.position.attendeesInfo.attendees) || [];
+            // every attendee must be found in the stored attendees
+            // console.log('storedAttendees', storedAttendees);
+            // console.log('input attendees', attendeesInfo.attendees);
+            return attendeesInfo.attendees.every(attendee => !!storedAttendees.find(storedAttendee => {
+                return compareObjects(attendee, storedAttendee, {
+                    ignoreNullFields: true,
+                    ignoreUndefinedFields: true,
+                    looseComparison: false
+                });
+            }));
         }));
     }
 

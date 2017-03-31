@@ -41,7 +41,7 @@ export class SessionService {
     }
 
     private finishLogin (session: session.SessionToken): Promise<session.Fan> {
-        this.seatersApi.setHeader(AUTH_HEADER, AUTH_BEARER + ' ' + session.token);
+        this.seatersApi.apiContext.setHeader(AUTH_HEADER, AUTH_BEARER + ' ' + session.token);
         this.sessionToken = session.token;
         switch (this.sessionStrategy) {
             default: this.applyExpireSessionStrategy(session);
@@ -102,7 +102,7 @@ export class SessionService {
 
     doLogout () {
         console.log('[SessionService] doLogout');//DEBUG
-        this.seatersApi.unsetHeader(AUTH_HEADER);
+        this.seatersApi.apiContext.unsetHeader(AUTH_HEADER);
         this.currentFan = undefined;
         this.sessionToken = undefined;
     }
