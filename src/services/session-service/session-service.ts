@@ -88,6 +88,13 @@ export class SessionService {
         }).then(() => this.setCurrentFan());
     }
 
+    doMobilePhoneNumberValidation (phone: session.PhoneNumber, code: string): Promise<session.Fan> {
+        return this.seatersApi.authentication.validate({
+            phoneNumber
+        })
+        //TODO
+    }
+
     doEmailReset (email: string): Promise<void> {
       return this.seatersApi.authentication.resetEmail({
         email: email,

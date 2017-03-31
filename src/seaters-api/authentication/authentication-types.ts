@@ -1,3 +1,4 @@
+import { PhoneNumber } from ''
 export interface SignupData {
     language:string,
     email:string,
@@ -6,10 +7,15 @@ export interface SignupData {
     password:string
 }
 
-
-export interface ValidationData {
+export type ValidationData = EmailValidationData | MobilePhoneValidationData
+export interface EmailValidationData {
     code:string,
     email:string
+}
+
+export interface MobilePhoneValidationData {
+    code: string,
+    mobile: PhoneNumber
 }
 
 export interface ResetEmailData {
