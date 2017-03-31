@@ -43,7 +43,7 @@ export class IndicesApi {
     searchIndex (index: string, searchQuery: SearchQuery): Promise<SearchResult> {
         var abstractEndpoint = '/indexes/:index/query';
         var endpointParams = { index: index };
-        var body = JSON.stringify({ params: this.serializeSearchQuery(searchQuery) });
+        var body = { params: this.serializeSearchQuery(searchQuery) };
         return this.apiContext.doRequest({
             method: 'POST',
             abstractEndpoint: abstractEndpoint,

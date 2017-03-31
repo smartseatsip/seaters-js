@@ -7,6 +7,6 @@ export interface ApiRequestDefinition {
     method?: HTTP_METHOD,
     endpointParams?: StringMap,
     queryParams?: StringMap,
-    body?: string,
+    body?: string | Object,
     headers?: {[key: string]:string},
 }
