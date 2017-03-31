@@ -4,7 +4,7 @@ import { PagingOptions } from '../paging-options';
 import { Fan, FanGroup, WaitingList, FanGroupRequest, Position,
     Price, PaymentInfo, BraintreeToken, FanGroupLook,
     PositionSalesTransactionInput, PositionSalesTransaction,
-    AttendeesInfo } from './fan-types';
+    AttendeesInfo, EventDescription } from './fan-types';
 
 export class FanApi {
 
@@ -181,6 +181,13 @@ export class FanApi {
         var endpoint = '/v2/fan/waiting-lists/:waitingListId/position/attendees-info';
         var endpointParams = { waitingListId: waitingListId };
         return this.apiContext.put(endpoint, attendeesInfo, endpointParams);
+    }
+
+    getEventDescription (waitingListId: string): Promise<EventDescription> {
+        return this.apiContext.get(
+            '/fan/waiting-lists/:waitingListId/event-description',
+            { waitingListId: waitingListId }
+        );
     }
 
 }

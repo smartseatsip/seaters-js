@@ -7,6 +7,7 @@ import { fanGroupLook } from './fan-group-look';
 import { waitingListWithoutSeat, waitingListWithSeat, waitingListsWithSeat, waitingListsWithoutSeat } from './waiting-list';
 import * as flowPayWl from './flow-pay-wl';
 import * as flowCheckout from './flow-checkout';
+import * as eventDescription from './event-description';
 
 export const fanMocks: Mock[] = [].concat([
 
@@ -70,5 +71,5 @@ export const fanMocks: Mock[] = [].concat([
         body: waitingListsWithSeat 
     }),
 
-], flowPayWl.mocks, flowCheckout.mocks);
+], flowPayWl.mocks, flowCheckout.mocks, eventDescription.mocks);
 

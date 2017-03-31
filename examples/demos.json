@@ -45,6 +45,9 @@
 	}, {
 		"name": "Checkout: supply attendee info",
 		"file": "mock/checkout-flow.js"
+	}, {
+		"name": "Fetch additional WL data",
+		"file": "mock/waiting-list-data.js"
 	}]
 }, {
 	"category": "Public Data",

@@ -84,12 +84,16 @@ export class FanService {
         return this.waitingListService.saveAttendeesInfo(waitingListId, attendeesInfo);
     }
 
-    acceptSeats (waitingListId: string) {
+    acceptSeats (waitingListId: string): Promise<fan.WaitingList> {
         return this.waitingListService.acceptSeats(waitingListId);
     }
 
-    exportSeats (waitingListId: string) {
+    exportSeats (waitingListId: string): Promise<fan.WaitingList> {
         return this.waitingListService.exportSeats(waitingListId);
+    }
+    
+    getEventDescriptionForWaitingList (waitingListId: string): Promise<fan.EventDescription> {
+        return this.seatersApi.fan.getEventDescription(waitingListId);
     }
 
     private convertPagingOptions(pagingOptions: PagingOptions): any {
