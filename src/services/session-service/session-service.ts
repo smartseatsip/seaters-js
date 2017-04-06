@@ -45,17 +45,33 @@ export class SessionService {
     }
 
     private finishLogin (session: session.SessionToken): Promise<session.Fan> {
+        this.setSession(session);
+        return this.setCurrentFan();
+    }
+
+    private setSession (session: session.SessionToken): void {
         this.seatersApi.apiContext.setHeader(AUTH_HEADER, AUTH_BEARER + ' ' + session.token);
         this.sessionToken = session.token;
         switch (this.sessionStrategy) {
             default: this.applyExpireSessionStrategy(session);
         }
-        return this.setCurrentFan();
     }
 
     private setCurrentFan (): Promise<session.Fan> {
         return this.seatersApi.fan.fan()
         .then(fan => this.currentFan = fan);
+    }
+    
+    /**
+     * Configure the given session to be used. This method is intended for transitional
+     * phase where the SDK is not the one doing the login process (Seaters FanWebApp)
+     * 
+     * @param session a valid session that is not expired
+     * @param fan a valid fan object
+     */
+    public configureSession (session: session.SessionToken, fan: session.Fan) {
+        this.setSession(session);
+        this.currentFan = fan;
     }
 
     public updateCurrentFan (fan : session.Fan): Promise<session.Fan> {
