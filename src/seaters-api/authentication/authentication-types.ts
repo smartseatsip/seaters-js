@@ -1,4 +1,5 @@
-import { PhoneNumber } from ''
+import { PhoneNumber } from '../fan';
+
 export interface SignupData {
     language:string,
     email:string,
@@ -117,10 +118,7 @@ export interface SessionToken {
 export interface UserData {
 
     facebookId?: string,
-    mobilePhoneNumber?: {
-        countryCallingCode: string,
-        localNumber: string
-    },
+    mobilePhoneNumber?: PhoneNumber,
     email: string,
     roles: string[],
     locale: string,

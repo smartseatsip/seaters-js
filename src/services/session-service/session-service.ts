@@ -1,11 +1,15 @@
-import { SeatersApi } from '../../seaters-api';
+import { SeatersApi, SeatersApiException, seatersExceptionV1MessageMapper } from '../../seaters-api';
 import { session } from './session-types';
 import { Promise } from 'es6-promise';
 import * as moment from 'moment';
-import {fail} from "assert";
+import { MobilePhoneValidationData } from '../../seaters-api/authentication';
 
 const AUTH_HEADER = 'Authorization';
 const AUTH_BEARER = 'SeatersBearer';
+
+export enum VALIDATION_ERRORS {
+    WRONG_VALIDATION_CODE
+}
 
 export enum SESSION_STRATEGY {
     EXPIRE
@@ -81,18 +85,40 @@ export class SessionService {
         .then(() => this.doEmailPasswordLogin(email, password));
     }
 
+    private validationMessageMapper = seatersExceptionV1MessageMapper({
+        'Wrong validation code': VALIDATION_ERRORS.WRONG_VALIDATION_CODE
+    });
+
+    /**
+     * Validate an email by providing a confirmation code
+     * 
+     * @param email The email that you want to validate
+     * @param code The code that validates the email
+     * @returns a Promise that resolves with an updated fan or rejects with a VALIDATION_ERRORS
+     * @see VALIDATION_ERRORS
+     */
     doEmailValidation (email: string, code: string): Promise<session.Fan> {
         return this.seatersApi.authentication.validate({
             email: email,
             code: code
-        }).then(() => this.setCurrentFan());
+        })
+        .then(() => this.setCurrentFan())
+        .catch(this.validationMessageMapper);
     }
 
+    /**
+     * Validate a phone number by providing a confirmation code
+     * 
+     * @param phone The phone number that you want to validate
+     * @param code The code that validates the email
+     * @returns a Promise that resolves with an updated fan or rejects with a VALIDATION_ERRORS
+     * @see VALIDATION_ERRORS
+     */
     doMobilePhoneNumberValidation (phone: session.PhoneNumber, code: string): Promise<session.Fan> {
-        return this.seatersApi.authentication.validate({
-            phoneNumber
-        })
-        //TODO
+        return this.seatersApi.authentication.validate(<MobilePhoneValidationData> {
+            mobile: phone,
+            code: code
+        }).catch(this.validationMessageMapper);
     }
 
     doEmailReset (email: string): Promise<void> {

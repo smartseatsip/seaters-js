@@ -1,5 +1,6 @@
-import { SeatersApiContext } from '../../seaters-api';
-import { UserData, SessionToken, ResetEmailData, SignupData, ValidationData, AuthenticationTokenInput } from './authentication-types';
+import { SeatersApiContext, SeatersApiException } from '../../seaters-api';
+import { Fan } from '../fan';
+import { UserData, SessionToken, ResetEmailData, SignupData, ValidationData, EmailValidationData, MobilePhoneValidationData, AuthenticationTokenInput } from './authentication-types';
 
 export class AuthenticationApi {
 
@@ -26,13 +27,15 @@ export class AuthenticationApi {
       return this.apiContext.post<UserData>('/v2/authentication/signup', input);
     }
 
-  /**
-   * Validates a newly created user
-   * @param input
-   * @returns {any}
+    /**
+     * Validates an email or phone number and marks it as confirmed
+     * 
+     * @param input Either the email or the phone and the confirmation code
+     * @returns Promise that resolves with the validated user or rejects with a SeatersApiException
+     * @see SeatersApiException
      */
-    validate(input: ValidationData) : Promise<void> {
-      return this.apiContext.put<void>('/auth/validate', input);
+    validate(input: ValidationData) : Promise<Fan> {
+      return this.apiContext.put('/auth/validate', input);
     }
 
     /**
@@ -40,7 +43,7 @@ export class AuthenticationApi {
      * @param input
      * @returns {any}
      */
-    resetEmail(input: ResetEmailData) : Promise <void> {
+    resetEmail(input: ResetEmailData) : Promise<void> {
       return this.apiContext.post<void>('/auth/signup/reset-email', input);
     }
 
