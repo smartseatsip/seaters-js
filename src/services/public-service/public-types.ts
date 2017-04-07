@@ -16,4 +16,6 @@ export namespace pub {
 
     export interface FanGroupLook extends _FanGroupLook {};
 
+    export type SeatersContent = FanGroup | WaitingList;
+
 }

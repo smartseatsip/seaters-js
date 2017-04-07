@@ -66,6 +66,9 @@
 	}, {
 		"name": "Fetch the price of a public WaitingList",
 		"file": "node/public-wl-get-price.js"
+	}, {
+		"name": "Search public seaters content",
+		"file": "node/public-search-content.js"
 	}]
 }, {
 	"category": "Seaters Application",

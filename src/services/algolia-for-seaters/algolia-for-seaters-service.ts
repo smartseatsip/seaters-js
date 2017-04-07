@@ -7,6 +7,8 @@ import { FanGroup } from './fan-group';
 import { WaitingList } from './waiting-list';
 import { TypedSearchResult } from './typed-search-result';
 
+const DEFAULT_LOCALE = 'en';
+
 export class AlgoliaForSeatersService {
 
     private _apiP: Promise<AlgoliaApi>;
@@ -77,6 +79,38 @@ export class AlgoliaForSeatersService {
     search (searchQuery: SearchQuery): Promise<SearchResult> {
         return this.api()
         .then(api => api.indices.searchIndex(this.searchIndex, searchQuery));
+    }
+
+    searchSeatersContent (query: string, locale: string, hitsPerPage: number, page: number): Promise<SearchResult> {
+        return this.getSearchableAttributes(locale).then(searchableAttributes => {
+            var q: SearchQuery = {
+                query: query,
+                facetFilters: [],
+                restrictSearchableAttributes: searchableAttributes,
+                hitsPerPage: hitsPerPage,
+                page: page
+            };
+            return this.search(q)
+            .then(r => this.stripAlgoliaFieldsFromSearchResultHits(r));
+        });
+    }
+
+    private getSearchableAttributes(locale: string): Promise<string[]> {
+        if(!locale) { locale = DEFAULT_LOCALE; }
+        return this.appService.getEnv().then(env => {
+            var cfg = env.algoliaConfiguration;
+            if (!cfg.attributes.hasOwnProperty(locale)) {
+                if (locale === DEFAULT_LOCALE || !cfg.attributes.hasOwnProperty(DEFAULT_LOCALE)) {
+                    var err = '[AlgoliaForSeatersService] seaters misconfiguration - searchable attributes for default locale undefined';
+                    console.error(err);
+                    throw err;
+                } else {
+                    console.warn('[AlgoliaForSeatersService] locale is not supported for search - falling back to %s', DEFAULT_LOCALE);
+                    locale = DEFAULT_LOCALE;
+                }
+            }
+            return cfg.attributes[locale];
+        });
     }
 
     private stripAlgoliaFieldsFromObject<T> (result: any): T {

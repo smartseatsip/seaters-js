@@ -7,6 +7,8 @@ export interface WaitingList {
 
     waitingListId: string,
 
+    type: 'WAITING_LIST',
+
     groupId: string,
     groupSlug: string,
     groupName: string,

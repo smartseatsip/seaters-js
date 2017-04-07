@@ -35,6 +35,25 @@ export class PublicService {
         return <Promise<pub.Price>>this.seatersApi.fan.waitingListPrice(waitingListId, numberOfSeats);
     }
 
+    searchSeatersContent (query: string, locale: string, page?: PagingOptions): Promise<PagedResult<pub.SeatersContent>> {
+        page = this.defaultPage(page);
+        return this.algoliaForSeatersService.searchSeatersContent(
+            query, locale, page.maxPageSize, page.page
+        )
+        .then(result => this.convertAlgoliaResultSet<pub.SeatersContent>(result));
+    }
+
+    private defaultPage(page: PagingOptions): PagingOptions {
+        if (typeof(page) === 'object') { 
+            return page;
+        } else {
+            return {
+                maxPageSize: 10,
+                page: 0
+            };
+        }
+    }
+
     private convertAlgoliaResultSet<T> (searchResult: TypedSearchResult<T>): PagedResult<T> {
         return {
             items: <T[]> searchResult.hits,
