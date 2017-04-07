@@ -37,7 +37,7 @@ export class SeatersClient {
     this.sessionService = new SessionService(this.seatersApi);
     this.appService = new AppService(this.seatersApi);
     this.publicService = new PublicService(this.appService, requestDriver, this.seatersApi);
-    this.fanService = new FanService(this.seatersApi, this.sessionService);
+    this.fanService = new FanService(this.seatersApi, this.sessionService, this.publicService);
   }
 
 }

@@ -174,6 +174,11 @@ export class WaitingListService {
         .then((wl) => this.extendRawWaitingList(wl));
     }
 
+    getWaitingLists (waitingListIds: string[]): Promise<fan.WaitingList[]> {
+        return this.api.fan.waitingLists(waitingListIds)
+        .then(wls => wls.map(wl => this.extendRawWaitingList(wl)));
+    }
+
     joinWaitingList (waitingListId: string, numberOfSeats: number): Promise<fan.WaitingList> {
         return this.api.fan.joinWaitingList(waitingListId, numberOfSeats)
         .then(() => this.pollWaitingList(waitingListId, (wl) => wl.actionStatus !== WAITING_LIST_ACTION_STATUS.BOOK));

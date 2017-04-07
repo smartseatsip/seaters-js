@@ -6,7 +6,8 @@ import { fan } from './fan-types';
 import { LocalizableText } from '../util';
 
 import { PagedResult, PagingOptions } from '../../shared-types';
-import { SessionService } from "../session-service/session-service";
+import { SessionService } from '../session-service';
+import { PublicService } from '../public-service';
 import { Fan, PositionSalesTransactionInput, AttendeesInfo } from "../../seaters-api/fan/fan-types";
 
 export class FanService {
@@ -14,10 +15,13 @@ export class FanService {
     public waitingListService: WaitingListService;
     public fanGroupService: FanGroupService;
 
-    constructor (private seatersApi: SeatersApi, private sessionService: SessionService) {
+    constructor (
+        private seatersApi: SeatersApi,
+        private sessionService: SessionService,
+        private publicService: PublicService
+    ) {
         this.waitingListService = new WaitingListService(seatersApi);
         this.fanGroupService = new FanGroupService(seatersApi);
-        this.sessionService = sessionService;
     }
 
     updateFan (fan: Fan) : Promise<Fan>{
@@ -27,6 +31,27 @@ export class FanService {
 
     getWaitingList (waitingListId: string): Promise<fan.WaitingList> {
         return this.waitingListService.getWaitingList(waitingListId);
+    }
+
+    getWaitingLists (waitingListIds: string[]): Promise<fan.WaitingList[]> {
+        return this.waitingListService.getWaitingLists(waitingListIds);
+    }
+
+    getWaitingListsByKeywords (keywords: string[], page: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
+        return this.publicService.getWaitingListsByKeywords(keywords, page)
+        .then(pagedPublicWls => {
+            var waitingListIds = pagedPublicWls.items.map(wl => wl.waitingListId);
+            return this.getWaitingLists(waitingListIds)
+            .then(wls => {
+                return <PagedResult<fan.WaitingList>> {
+                    items: wls,
+                    itemOffset: pagedPublicWls.itemOffset,
+                    maxPageSize: pagedPublicWls.maxPageSize,
+                    page: pagedPublicWls.page,
+                    totalSize: pagedPublicWls.totalSize
+                };
+            });
+        });
     }
 
     getWaitingListsInFanGroup (fanGroupId: string, pagingOptions: PagingOptions): Promise<PagedResult<fan.WaitingList>> {

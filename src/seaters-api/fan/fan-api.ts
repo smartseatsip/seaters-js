@@ -107,6 +107,13 @@ export class FanApi {
         return this.apiContext.get<WaitingList>(endpoint, endpointParams);
     }
 
+    waitingLists (waitingListIds: string[]): Promise<WaitingList[]> {
+        var endpoint = '/fan/waiting-lists';
+        return this.apiContext.put<WaitingList[]>(endpoint, {
+            waitingListIds: waitingListIds
+        });
+    }
+
     waitingListPrice (waitingListId: string, numberOfSeats: number): Promise<Price> {
         var endpoint = '/fan/waiting-lists/:waitingListId/price/:numberOfSeats';
         var endpointParams = {
