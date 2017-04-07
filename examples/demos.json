@@ -48,6 +48,9 @@
 	}, {
 		"name": "Fetch additional WL data",
 		"file": "mock/waiting-list-data.js"
+	}, {
+		"name": "Get WLs and actionStatus by keywords",
+		"file": "node/fan-wls-by-keywords.js"
 	}]
 }, {
 	"category": "Public Data",
