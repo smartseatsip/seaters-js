@@ -31,9 +31,15 @@ export interface WaitingList {
 
     maxNumberOfSeats: number
     freeWaitingList: boolean,
-    displayName: string,
     waitingListStatus: WAITING_LIST_STATUS,
     accessMode: WL_ACCESS_MODE,
-    directSalesEnabled: boolean
+    directSalesEnabled: boolean,
+
+    displayName: string,
+    
+    /**
+     * Map of language -> comma separated list of keywords
+     */
+    keywords: {[key:string]:string}
 
 }
