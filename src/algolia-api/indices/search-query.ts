@@ -38,6 +38,11 @@ export interface SearchQuery {
      */
     maxValuesPerFacet?: number
 
+    /**
+     * https://www.algolia.com/doc/guides/search/filtering-faceting/#filter-by-tags-values
+     */
+    tagFilters?: string[]
+
 }
 
 export interface FacetFilter {

@@ -43,6 +43,14 @@ export class PublicService {
         .then(result => this.convertAlgoliaResultSet<pub.SeatersContent>(result));
     }
 
+    getWaitingListsByKeywords (keywords: string[], page?: PagingOptions): Promise<PagedResult<pub.WaitingList>> {
+        page = this.defaultPage(page);
+        return this.algoliaForSeatersService.getWaitingListsByKeywords(
+            keywords, page.maxPageSize, page.page
+        )
+        .then(result => this.convertAlgoliaResultSet<pub.WaitingList>(result));
+    }
+
     private defaultPage(page: PagingOptions): PagingOptions {
         if (typeof(page) === 'object') { 
             return page;

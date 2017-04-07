@@ -29,7 +29,8 @@ export class IndicesApi {
                 ));
             },
             typoTolerance: <any>defaultSerializer,
-            maxValuesPerFacet: <any>defaultSerializer
+            maxValuesPerFacet: <any>defaultSerializer,
+            tagFilters: <any>defaultArraySerializer
         }
         Object.keys(searchQuery).forEach(key => {
             if(!serializers.hasOwnProperty(key)) {

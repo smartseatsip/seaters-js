@@ -6,10 +6,9 @@
 
 var shared = require('../shared');
 
-var client = shared.client();
-var wlId = shared.wlId;
+var client = shared.client('https://api.dev-seaters.com/api');
 
-client.publicService.searchSeatersContent('justin', 'en')
+client.publicService.searchSeatersContent('WHOLOLO', 'en')
 .then(res => {
     console.log(
         'found %s results, showing results %s to %s',

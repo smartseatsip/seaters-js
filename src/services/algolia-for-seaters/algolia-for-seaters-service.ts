@@ -95,6 +95,18 @@ export class AlgoliaForSeatersService {
         });
     }
 
+    getWaitingListsByKeywords (keywords: string[], hitsPerPage: number, page: number): Promise<SearchResult> {
+        var q: SearchQuery = {
+            query: '',
+            facetFilters: [{facet:'type',value:'WAITING_LIST'}],
+            hitsPerPage: hitsPerPage,
+            page: page,
+            tagFilters: keywords
+        };
+        return this.search(q)
+        .then(r => this.stripAlgoliaFieldsFromSearchResultHits(r));
+    }
+
     private getSearchableAttributes(locale: string): Promise<string[]> {
         if(!locale) { locale = DEFAULT_LOCALE; }
         return this.appService.getEnv().then(env => {
@@ -115,6 +127,7 @@ export class AlgoliaForSeatersService {
 
     private stripAlgoliaFieldsFromObject<T> (result: any): T {
         delete result._geoloc;
+        delete result._tags;
         delete result._highlightResult;
         delete result.objectID;
         return <T> result;
