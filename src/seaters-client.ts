@@ -17,11 +17,11 @@ export class SeatersClient {
   private static DEFAULT_OPTIONS = <SeatersClientOptions> {
     apiPrefix: '${api.location}',
     requestDriver: 'BROWSER'
-  }
+  };
 
   public seatersApi: SeatersApi;
 
-  public sessionService : SessionService;
+  public sessionService: SessionService;
 
   public appService: AppService;
 
@@ -45,7 +45,7 @@ export class SeatersClient {
 export var getSeatersClient = (() => {
   var client: SeatersClient = undefined;
   return (options?: SeatersClientOptions) => {
-    if(client === undefined) {
+    if (client === undefined) {
       client = new SeatersClient(options);
     }
     return client;

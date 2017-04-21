@@ -1,65 +1,73 @@
 export interface Position {
 
-    /**
-     * Number of Seats
-     */
-    numberOfSeats: number,
+  /**
+   * Number of Seats
+   */
+  numberOfSeats: number,
 
-    /**
-     * Is personal info required to be able to accept the seats?
-     */
-    personalInfoRequired: boolean,
-    
-    /**
-     * When the position will expire
-     * @format ISO_8601
-     */
-    expirationDate: string,
+  /**
+   * Is personal info required to be able to accept the seats?
+   */
+  personalInfoRequired: boolean,
 
-    /**
-     * A description of the error that lead to FAILURE status
-     */
-    paymentFailureMessage: string,
+  /**
+   * When the position will expire
+   * @format ISO_8601
+   */
+  expirationDate: string,
 
-    /**
-     * The payment status
-     */
-    transactionStatus: TRANSACTION_STATUS,
+  /**
+   * A description of the error that lead to FAILURE status
+   */
+  paymentFailureMessage: string,
 
-    /**
-     * Is the likelihood of the fan to get his tickets considered low?
-     */
-    lowLikelihood: boolean,
+  /**
+   * The payment status
+   */
+  transactionStatus: TRANSACTION_STATUS,
 
-    /**
-     * The likelihood of the fan to get tickets (percentage)
-     * double precision
-     */
-    likelihood: string,
+  /**
+   * Is the likelihood of the fan to get his tickets considered low?
+   */
+  lowLikelihood: boolean,
 
-    /**
-     * Position status
-     */
-    status: POSITION_STATUS,
+  /**
+   * The likelihood of the fan to get tickets (percentage)
+   * double precision
+   */
+  likelihood: string,
 
-    /**
-     * Position rank
-     */
-    rank: number,
+  /**
+   * Position status
+   */
+  status: POSITION_STATUS,
 
-    /**
-     * Currency formatted total price for the requested # of tickets
-     */
-    formattedTotal: string,
+  /**
+   * Position rank
+   */
+  rank: number,
 
-    /**
-     * Total price or null if Waiting List is free
-     * double precision
-     */
-    total: string,
-    
+  /**
+   * Currency formatted total price for the requested # of tickets
+   */
+  formattedTotal: string,
+
+  /**
+   * Total price or null if Waiting List is free
+   * double precision
+   */
+  total: string,
+
 }
 
-export type TRANSACTION_STATUS = 'CREATING' | 'FAILURE' | 'CREATED' | 'APPROVED' | 'CANCELLED' | 'COMPLETED' | 'REFUNDING' | 'REFUNDED';
+export type TRANSACTION_STATUS =
+  'CREATING'
+  | 'FAILURE'
+  | 'CREATED'
+  | 'APPROVED'
+  | 'CANCELLED'
+  | 'COMPLETED'
+  | 'REFUNDING'
+  | 'REFUNDED';
 
 export type POSITION_STATUS = 'BEING_PROCESSED' | 'WAITING_SEAT' | 'HAS_SEAT' | 'ARCHIVED';

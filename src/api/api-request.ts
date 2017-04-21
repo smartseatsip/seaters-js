@@ -5,11 +5,11 @@ import { Promise } from 'es6-promise';
 
 export interface ApiRequest {
 
-    requestDefinition: ApiRequestDefinition,
-    endpoint: ApiEndpoint,
-    rawRequest: {
-        options: RequestOptions,
-        promise: Promise<ServerResponse>
-    }
+  requestDefinition: ApiRequestDefinition,
+  endpoint: ApiEndpoint,
+  rawRequest: {
+    options: RequestOptions,
+    promise: Promise<ServerResponse>
+  }
 
 }

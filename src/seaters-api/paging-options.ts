@@ -1,23 +1,23 @@
 import { Map } from 'core-js/library';
 
 export class PagingOptions {
-    constructor (public itemOffset?: number, public maxPageSize?: number) {
-    }
+  constructor (public itemOffset?: number, public maxPageSize?: number) {
+  }
 
-    static toQueryParams (pagingOptions: PagingOptions, queryParams?: Map<string, string>): Map<string, string> {
-        if (!queryParams) {
-            queryParams = new core.Map<string, string>();
-        }
-        if (!pagingOptions) {
-            return queryParams;
-        }
-        if (pagingOptions.itemOffset) {
-            queryParams.set('itemOffset', pagingOptions.itemOffset.toString());
-        }
-        if (pagingOptions.maxPageSize) {
-            queryParams.set('maxPageSize', pagingOptions.maxPageSize.toString());
-        }
-        return queryParams;
+  static toQueryParams (pagingOptions: PagingOptions, queryParams?: Map<string, string>): Map<string, string> {
+    if (!queryParams) {
+      queryParams = new core.Map<string, string>();
     }
+    if (!pagingOptions) {
+      return queryParams;
+    }
+    if (pagingOptions.itemOffset) {
+      queryParams.set('itemOffset', pagingOptions.itemOffset.toString());
+    }
+    if (pagingOptions.maxPageSize) {
+      queryParams.set('maxPageSize', pagingOptions.maxPageSize.toString());
+    }
+    return queryParams;
+  }
 
 }

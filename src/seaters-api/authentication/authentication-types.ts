@@ -1,27 +1,27 @@
 import { PhoneNumber } from '../fan';
 
 export interface SignupData {
-    language:string,
-    email:string,
-    lastName:string,
-    firstName:string,
-    password:string
+  language: string,
+  email: string,
+  lastName: string,
+  firstName: string,
+  password: string
 }
 
 export type ValidationData = EmailValidationData | MobilePhoneValidationData
 export interface EmailValidationData {
-    code:string,
-    email:string
+  code: string,
+  email: string
 }
 
 export interface MobilePhoneValidationData {
-    code: string,
-    mobile: PhoneNumber
+  code: string,
+  mobile: PhoneNumber
 }
 
 export interface ResetEmailData {
-    email:string,
-    token:string
+  email: string,
+  token: string
 }
 
 /**
@@ -29,11 +29,11 @@ export interface ResetEmailData {
  */
 export interface AuthenticationTokenInput {
 
-    emailPasswordCredentials?: EmailPasswordCredentials,
-    facebookCredentials?: FacebookCredentials,
-    sessionTokenCredentials?: SessionTokenCredentials,
-    clientInfo?: ClientInfo,
-    storedTokenCredentials?: StoredTokenCredentials
+  emailPasswordCredentials?: EmailPasswordCredentials,
+  facebookCredentials?: FacebookCredentials,
+  sessionTokenCredentials?: SessionTokenCredentials,
+  clientInfo?: ClientInfo,
+  storedTokenCredentials?: StoredTokenCredentials
 
 }
 
@@ -42,9 +42,9 @@ export interface AuthenticationTokenInput {
  */
 export interface EmailPasswordCredentials {
 
-    mfaToken?: string,
-    password: string,
-    email: string
+  mfaToken?: string,
+  password: string,
+  email: string
 
 }
 
@@ -53,8 +53,8 @@ export interface EmailPasswordCredentials {
  */
 export interface FacebookCredentials {
 
-    mfaToken?: string,
-    accessToken: string
+  mfaToken?: string,
+  accessToken: string
 
 }
 
@@ -63,8 +63,8 @@ export interface FacebookCredentials {
  */
 export interface SessionTokenCredentials {
 
-    mfaToken?: string,
-    accessToken: string
+  mfaToken?: string,
+  accessToken: string
 
 }
 
@@ -73,15 +73,15 @@ export interface SessionTokenCredentials {
  */
 export interface ClientInfo {
 
-    /**
-     * Seaters application
-     */
-    type: string,
+  /**
+   * Seaters application
+   */
+  type: string,
 
-    /**
-     * Version of the application
-     */
-    version: string
+  /**
+   * Version of the application
+   */
+  version: string
 
 }
 
@@ -90,8 +90,8 @@ export interface ClientInfo {
  */
 export interface StoredTokenCredentials {
 
-    mfaToken: string,
-    token: string
+  mfaToken: string,
+  token: string
 
 }
 
@@ -100,15 +100,15 @@ export interface StoredTokenCredentials {
  */
 export interface SessionToken {
 
-    /**
-     * date when the token expires, ISO date format
-     */
-    expirationDate: string,
+  /**
+   * date when the token expires, ISO date format
+   */
+  expirationDate: string,
 
-    /**
-     * session token value to be used in Seaters authentication header
-     */
-    token: string
+  /**
+   * session token value to be used in Seaters authentication header
+   */
+  token: string
 
 }
 
@@ -117,14 +117,14 @@ export interface SessionToken {
  */
 export interface UserData {
 
-    facebookId?: string,
-    mobilePhoneNumber?: PhoneNumber,
-    email: string,
-    roles: string[],
-    locale: string,
-    name: {
-        firstName: string,
-        lastName: string
-    }
+  facebookId?: string,
+  mobilePhoneNumber?: PhoneNumber,
+  email: string,
+  roles: string[],
+  locale: string,
+  name: {
+    firstName: string,
+    lastName: string
+  }
 
 }

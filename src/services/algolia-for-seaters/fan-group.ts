@@ -2,16 +2,16 @@ export type FG_ACCESS_MODE = 'PUBLIC' | 'PRIVATE' | 'CODE_PROTECTED';
 
 export interface FanGroup {
 
-    fanGroupId: string,
+  fanGroupId: string,
 
-    type: 'FAN_GROUP',
+  type: 'FAN_GROUP',
 
-    name: Object,
-    description: Object,
-    categories: Object,
-    statistics: Object,
-    accessMode: FG_ACCESS_MODE,
-    profileImageUrl: string,
-    slug: string
-    
+  name: Object,
+  description: Object,
+  categories: Object,
+  statistics: Object,
+  accessMode: FG_ACCESS_MODE,
+  profileImageUrl: string,
+  slug: string
+
 }

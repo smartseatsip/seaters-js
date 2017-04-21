@@ -1,3 +1,3 @@
 export interface BraintreeToken {
-    token: string
+  token: string
 }

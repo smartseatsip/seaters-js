@@ -4,22 +4,22 @@ export type ObserverHandle = number;
 
 export class Subject<T> {
 
-    private observers: Observer<T>[];
-    
-    constructor () {
-        this.observers = [];
-    }
-    
-    next (evt: T) {
-        this.observers.forEach(observer => observer(evt));
-    }
+  private observers: Observer<T>[];
 
-    subscribe (observer: Observer<T>): ObserverHandle {
-        this.observers.push(observer);
-        return this.observers.length - 1;
-    }
+  constructor () {
+    this.observers = [];
+  }
 
-    unsubscribe (observerHandle: ObserverHandle) {
-        this.observers.splice(observerHandle, 1);
-    }
+  next (evt: T) {
+    this.observers.forEach(observer => observer(evt));
+  }
+
+  subscribe (observer: Observer<T>): ObserverHandle {
+    this.observers.push(observer);
+    return this.observers.length - 1;
+  }
+
+  unsubscribe (observerHandle: ObserverHandle) {
+    this.observers.splice(observerHandle, 1);
+  }
 }
