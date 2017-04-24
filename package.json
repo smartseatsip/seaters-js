@@ -10,8 +10,8 @@
     "jasmine": "node_modules/jasmine/bin/jasmine.js",
     "tsc": "node_modules/typescript/bin/tsc",
     "setup": "npm i && npm run typings i && npm run gulp",
-    "lint": "./node_modules/tslint/bin/tslint --force --project tsconfig.json --fix",
-    "lint-types": "./node_modules/tslint/bin/tslint --force --project tsconfig.json --type-check --fix"
+    "tslint": "./node_modules/tslint/bin/tslint --force --project tsconfig.json --fix",
+    "tslint-types": "./node_modules/tslint/bin/tslint --force --project tsconfig.json --type-check --fix"
   },
   "author": "Ben Corne",
   "license": "ISC",
@@ -34,6 +34,8 @@
     "gulp-jasmine": "^2.4.2",
     "gulp-rename": "^1.2.2",
     "gulp-replace": "^0.5.4",
+    "gulp-tslint": "^8.0.0",
+    "gulp-tslint-stylish": "^1.1.1",
     "gulp-typescript": "^3.0.2",
     "gulp-webdriver": "^2.0.2",
     "html-loader": "^0.4.4",
