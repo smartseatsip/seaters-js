@@ -15,7 +15,5 @@ app
     $urlRouterProvider.otherwise('/app');
   })
   .controller('AppController', function (SeatersSDK) {
-
     this.sdkVersion = SeatersSDK.version;
-
   });
