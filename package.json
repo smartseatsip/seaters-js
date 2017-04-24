@@ -12,7 +12,8 @@
     "setup": "npm i && npm run typings i && npm run gulp",
     "tslint": "./node_modules/tslint/bin/tslint --force --project tsconfig.json --fix",
     "tslint-types": "./node_modules/tslint/bin/tslint --force --project tsconfig.json --type-check --fix",
-    "eslint": "node ./node_modules/eslint/bin/eslint.js . --fix"
+    "eslint": "node ./node_modules/eslint/bin/eslint.js . --fix",
+    "eslint-watch": "node ./node_modules/eslint-watch/bin/esw . -w --fix"
   },
   "author": "Ben Corne",
   "license": "ISC",
@@ -33,6 +34,7 @@
     "eslint-config-google": "^0.7.1",
     "eslint-config-strict": "^13.0.0",
     "eslint-plugin-angular": "^2.3.0",
+    "eslint-watch": "^3.1.0",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
     "gulp-debug": "^2.1.2",
