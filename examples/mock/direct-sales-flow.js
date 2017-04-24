@@ -11,13 +11,13 @@ var shared = require('./_shared');
 
 Promise.resolve();
 
-// join a waiting-list
-// direct sales immediately assigns a seat
-// update the fan billing information
-// accept the seat
-// export the voucher
+// Join a waiting-list
+// Direct sales immediately assigns a seat
+// Update the fan billing information
+// Accept the seat
+// Export the voucher
 
-//TODO
-// shared.client.seatersApi.fan.fan()
+// TODO
+// Shared.client.seatersApi.fan.fan()
 // .then(fan => console.log(fan))
 // .then(shared.exitOK, shared.exitFail);

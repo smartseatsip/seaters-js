@@ -1,3 +1,5 @@
+'use strict';
+
 var webpackHelpers = require('./webpack-helpers');
 
 module.exports = {

@@ -121,7 +121,7 @@ gulp.task('test:e2e-node', ['build:module'], function () {
     .pipe(jasmine());
 });
 
-gulp.task('build', [], cb => {
+gulp.task('build', [], function (cb) {
   runSequence(
     'clean',
     'tslint',
@@ -138,7 +138,8 @@ gulp.task('build', [], cb => {
 
 gulp.task('test:e2e', ['test:e2e-browser', 'test:e2e-node']);
 
-gulp.task('test:unit', []);//TODO
+// TODO
+gulp.task('test:unit', []);
 
 gulp.task('test', ['test:e2e', 'test:unit']);
 

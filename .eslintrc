@@ -11,6 +11,9 @@
   "globals": {
     "angular": true
   },
+  "env": {
+    "jasmine": true
+  },
   "rules": {
     // Rules we don't need
     "no-var": 0,

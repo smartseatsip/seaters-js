@@ -1,3 +1,5 @@
+'use strict';
+
 var bundleConfig = require('./webpack-bundle.config');
 var webpackHelpers = require('./webpack-helpers');
 bundleConfig.plugins = [webpackHelpers.minifyPlugin];

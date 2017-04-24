@@ -1,3 +1,5 @@
+'use strict';
+
 describe('when index is loaded', function () {
   it('should show the version specified in package.json', function () {
     browser.url('/');

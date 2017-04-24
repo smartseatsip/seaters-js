@@ -15,12 +15,12 @@ angular.module('app', ['ngMessages'])
     };
 
     $scope.doValidate = function (form, code) {
-      //Test if form is considered valid
+      // Test if form is considered valid
       if (!form.$valid) {
         return;
       }
 
-      //Start signup processing
+      // Start signup processing
       $scope.formProcessing = true;
       Seaters.sessionService.doValidation($scope.userData.email, code)
         .then(
@@ -28,7 +28,7 @@ angular.module('app', ['ngMessages'])
             $scope.formProcessing = false;
             $scope.error = undefined;
             $scope.result = res;
-            $scope.$apply(); //need to apply here, otherwise doesn't seem to work
+            $scope.$apply(); // Need to apply here, otherwise doesn't seem to work
 
             alert('you have been confirmed');
           },
@@ -37,12 +37,11 @@ angular.module('app', ['ngMessages'])
             $scope.result = undefined;
             if (err instanceof Error) {
               $scope.error = err.stack;
-            }
-            else {
-              //TODO: fix server side validaion msg, which is currently not json
+            } else {
+              // TODO: fix server side validaion msg, which is currently not json
               $scope.error = err;
             }
-            $scope.$apply(); //need to apply here, otherwise doesn't seem to work
+            $scope.$apply(); // Need to apply here, otherwise doesn't seem to work
           });
     };
 

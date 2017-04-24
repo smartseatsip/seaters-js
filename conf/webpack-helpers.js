@@ -1,10 +1,13 @@
+'use strict';
+
 var webpack = require('webpack');
 
 exports.allPreLoaders = [];
 
 exports.minifyPlugin = new webpack.optimize.UglifyJsPlugin({
   mangle: {
-    except: []//['$super', '$', 'exports', 'require']
+    // ['$super', '$', 'exports', 'require']
+    except: []
   }
 });
 
@@ -12,6 +15,7 @@ exports.replacePackageVersionLoader = {
   test: /index\.ts$/,
   loader: 'string-replace',
   query: {
+    // eslint-disable-next-line no-template-curly-in-string
     search: '${package.version}',
     replace: require('../package.json').version
   }
@@ -22,8 +26,10 @@ exports.replaceApiLocationLoader = {
   test: /seaters-client\.ts$/,
   loader: 'string-replace',
   query: {
+    // eslint-disable-next-line no-template-curly-in-string
     search: '${api.location}',
-    replace: process.env['STRS_API_LOCATION'] || defaultApiPrefix
+    // eslint-disable-next-line no-process-env
+    replace: process.env.STRS_API_LOCATION || defaultApiPrefix
   }
 };
 

@@ -9,12 +9,12 @@ angular.module('app', ['ngMessages'])
   .controller('LoginController', function ($scope, Seaters) {
 
     $scope.doLogin = function (form, email, password) {
-      //Test if form is considered valid
+      // Test if form is considered valid
       if (!form.$valid) {
         return;
       }
 
-      //Start form processing
+      // Start form processing
       $scope.formProcessing = true;
       Seaters.sessionService.doEmailPasswordLogin(email, password)
         .then(function (res) {
@@ -22,7 +22,7 @@ angular.module('app', ['ngMessages'])
           $scope.error = undefined;
           $scope.result = res;
 
-          $scope.$apply(); //need to apply here, otherwise doesn't seem to work
+          $scope.$apply(); // Need to apply here, otherwise doesn't seem to work
 
           alert('You have sucessfully logged in');
         }, function (err) {
@@ -33,7 +33,7 @@ angular.module('app', ['ngMessages'])
           } else {
             $scope.error = err;
           }
-          $scope.$apply(); //need to apply here, otherwise doesn't seem to work
+          $scope.$apply(); // Need to apply here, otherwise doesn't seem to work
         });
     };
 

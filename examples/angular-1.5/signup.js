@@ -14,12 +14,12 @@ angular.module('app', ['ngMessages'])
     $scope.lastname = '';
 
     $scope.doSignup = function (form, email, password, firstname, lastname) {
-      //Test if form is considered valid
+      // Test if form is considered valid
       if (!form.$valid) {
         return;
       }
 
-      //Start signup processing
+      // Start signup processing
       $scope.signupProcessing = true;
       Seaters.sessionService.doEmailPasswordSignUp(email, password, firstname, lastname)
         .then(
@@ -28,7 +28,7 @@ angular.module('app', ['ngMessages'])
             $scope.error = undefined;
             $scope.result = res;
 
-            $scope.$apply(); //need to apply here, otherwise doesn't seem to work
+            $scope.$apply(); // Need to apply here, otherwise doesn't seem to work
 
             alert('You have been signed up');
           },
@@ -37,11 +37,10 @@ angular.module('app', ['ngMessages'])
             $scope.result = undefined;
             if (err instanceof Error) {
               $scope.error = err.stack;
-            }
-            else {
+            } else {
               $scope.error = err;
             }
-            $scope.$apply(); //need to apply here, otherwise doesn't seem to work
+            $scope.$apply(); // Need to apply here, otherwise doesn't seem to work
           });
     };
 
