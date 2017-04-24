@@ -6,6 +6,7 @@ var clean = require('gulp-clean');
 var tslint = require('tslint');
 var gulpTsLint = require('gulp-tslint');
 var stylish = require('gulp-tslint-stylish');
+var eslint = require('gulp-eslint');
 var typescript = require('gulp-typescript');
 var jasmine = require('gulp-jasmine');
 var replace = require('gulp-replace');
@@ -43,6 +44,13 @@ gulp.task('tslint', function () {
       summarizeFailureOutput: false
     }));
 
+});
+
+gulp.task('eslint', function () {
+  return gulp.src(['**/*.js','!node_modules/**'])
+    .pipe(eslint())
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError());
 });
 
 gulp.task('build:bundle', [], function () {
@@ -117,6 +125,7 @@ gulp.task('build', [], cb => {
   runSequence(
     'clean',
     'tslint',
+    'eslint',
     'build:bundle',
     'build:bundle-min',
     'build:module',
