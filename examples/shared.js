@@ -54,13 +54,11 @@ exports.clients = function () {
     exports.adminClient(),
     exports.fanClient(),
     exports.fgoClient()
-  ]).then((clients) => {
-    return {
-      admin: clients[0],
-      fan: clients[1],
-      fgo: clients[2]
-    };
-  });
+  ]).then((clients) => ({
+    admin: clients[0],
+    fan: clients[1],
+    fgo: clients[2]
+  }));
 };
 
 exports.exitOK = () => process.exit(0);
@@ -82,22 +80,22 @@ exports.playbooks = {
   /**
    * For a fan client, join a fg if needed and then join a wl in this fg
    */
-  joinWl: function (client, fgId, wlId, numberOfSeats) {
+  joinWl(client, fgId, wlId, numberOfSeats) {
     return client.fanGroupService.getFanGroup(fgId)
-      .then(fg => {
+      .then((fg) => {
         if (fg.membership.member) {
           return fg;
-        } else {
-          return client.fanGroupService.joinFanGroup(fgId);
-        }
+        } 
+        return client.fanGroupService.joinFanGroup(fgId);
+        
       })
       .then(() => client.waitingListService.getWaitingList(wlId))
-      .then(wl => {
+      .then((wl) => {
         if (wl.position) {
           return wl.position;
-        } else {
-          return client.waitingListService.joinWaitingList(wlId, numberOfSeats);
-        }
+        } 
+        return client.waitingListService.joinWaitingList(wlId, numberOfSeats);
+        
       });
   }
 

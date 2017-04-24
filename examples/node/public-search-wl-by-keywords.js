@@ -10,10 +10,10 @@ var shared = require('../shared');
 
 var client = shared.client('https://api.dev-seaters.com/api');
 
-var page = undefined;//you can specify maxPageSize and itemOffset
+var page = undefined;// You can specify maxPageSize and itemOffset
 
 client.publicService.getWaitingListsByKeywords(['Sprite12'], page)
-  .then(res => {
+  .then((res) => {
     console.log(
       'found %s results, showing results %s to %s',
       res.totalSize,
@@ -29,9 +29,9 @@ client.publicService.getWaitingListsByKeywords(['Sprite12'], page)
       console.log('[%s] WaitingList: %s - %s (%s) @ %s - %s',
         i + 1,
         content.groupSlug,
-        content.eventName['en'],
+        content.eventName.en,
         content.eventStartDate,
-        content.venueName['en'],
+        content.venueName.en,
         content.displayName
       );
 

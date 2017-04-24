@@ -13,25 +13,21 @@ var fgId = shared.fgId;
 var wlId = shared.wlId;
 var numberOfSeats = 1;
 
-shared.fanClient().then(client => {
+shared.fanClient().then((client) => shared.playbooks.joinWl(client, fgId, wlId, numberOfSeats)
+  // Prerequisite checks - fan has been assigned seats
+  .then((wl) => {
+    var position = wl.position;
+    if (!position) {
+      throw new Error('Fan is not in WL');
+    } else if (position.status !== 'HAS_SEAT') {
+      throw new Error('Fan seats are not assigned');
+    } else if (!position.expirationDate) {
+      throw new Error('Fan already has accepted');
+    }
+  })
+  .then(() => {
 
-  return shared.playbooks.joinWl(client, fgId, wlId, numberOfSeats)
-  // prerequisite checks - fan has been assigned seats
-    .then((wl) => {
-      var position = wl.position;
-      if (!position) {
-        throw new Error('Fan is not in WL');
-      } else if (position.status !== 'HAS_SEAT') {
-        throw new Error('Fan seats are not assigned');
-      } else if (!position.expirationDate) {
-        throw new Error('Fan already has accepted');
-      }
-    })
-    .then(() => {
+      // TODO - accept seats
 
-      //TODO - accept seats
-
-    });
-
-})
+  }))
   .then(shared.exitOK, shared.exitFailMsg('Failed numberOfSeats'));

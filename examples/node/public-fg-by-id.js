@@ -10,5 +10,5 @@ var client = shared.client();
 var fgId = shared.fgId;
 
 client.publicService.getFanGroup(fgId)
-  .then(res => console.log('Public FG data', res))
+  .then((res) => console.log('Public FG data', res))
   .then(shared.exitOK, shared.exitFail);

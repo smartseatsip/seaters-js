@@ -11,14 +11,14 @@ var typescript = require('gulp-typescript');
 var jasmine = require('gulp-jasmine');
 var replace = require('gulp-replace');
 
-// var through = require('through2');
+// Var through = require('through2');
 var http = require('http');
-// var proxy = require('http-proxy-middleware');
+// Var proxy = require('http-proxy-middleware');
 var connect = require('connect');
 var serveStatic = require('serve-static');
-// var rp = require('request-promise');
-// var fs = require('fs');
-var runSequence = require('run-sequence');//needed pre gulp4.0
+// Var rp = require('request-promise');
+// Var fs = require('fs');
+var runSequence = require('run-sequence');// Needed pre gulp4.0
 
 var server = undefined;
 
@@ -28,7 +28,7 @@ gulp.task('clean', function () {
 });
 
 gulp.task('tslint', function () {
-  var config = tslint.Linter.createProgram("./tsconfig.json");
+  var config = tslint.Linter.createProgram('./tsconfig.json');
 
   return gulp.src(config.getRootFileNames())
     .pipe(gulpTsLint({
@@ -47,7 +47,7 @@ gulp.task('tslint', function () {
 });
 
 gulp.task('eslint', function () {
-  return gulp.src(['**/*.js','!node_modules/**'])
+  return gulp.src(['**/*.js', '!node_modules/**'])
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
@@ -93,9 +93,9 @@ gulp.task('build:typings', [], function () {
 function replaceVersion(src) {
   var packageVersion = require('./package.json').version;
   return gulp.src(src || [
-      'src/index.ts',
-      'typings/index.d.ts'
-    ])
+    'src/index.ts',
+    'typings/index.d.ts'
+  ])
     .pipe(replace('${package.version}', packageVersion));
 }
 
