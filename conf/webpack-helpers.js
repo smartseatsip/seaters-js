@@ -1,9 +1,6 @@
 var webpack = require('webpack');
 
-exports.allPreLoaders = [{
-  test: '/\.ts$/',
-  loader: 'tslint-loader'
-}];
+exports.allPreLoaders = [];
 
 exports.minifyPlugin = new webpack.optimize.UglifyJsPlugin({
   mangle: {

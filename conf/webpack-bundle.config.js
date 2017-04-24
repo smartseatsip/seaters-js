@@ -15,10 +15,5 @@ module.exports = {
   module: {
     preLoaders: webpackHelpers.allPreLoaders,
     loaders: webpackHelpers.allLoaders
-  },
-  tslint: {
-    failOnHint: true,
-    emitErrors: true,
-    formatter: 'verbose'
   }
 };
