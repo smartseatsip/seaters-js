@@ -7,9 +7,15 @@
   </head>
   <body>
     <script>
-        var client = new SeatersSDK.SeatersClient();
-        function log (msg) { return function(details) { console.log(msg, details); }}
-        function thenLog (p) { return p.then(log('res'), log('err')); }
+      var client = new SeatersSDK.SeatersClient();
+      function log(msg) {
+        return function (details) {
+          console.log(msg, details);
+        };
+      }
+      function thenLog(p) {
+        return p.then(log('res'), log('err'));
+      }
     </script>
   </body>
 </html>

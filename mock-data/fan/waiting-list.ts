@@ -5,10 +5,10 @@ import { PagedResult } from '../../src/seaters-api/paged-result';
 export const waitingList: WaitingList = {
   'groupId': 'fan-group',
   'groupName': {
-    'en': "Ben's Fangroup",
-    'nl': "Ben's Fangroup nl"
+    'en': 'Ben\'s Fangroup',
+    'nl': 'Ben\'s Fangroup nl'
   },
-  'translatedGroupName': "Ben's Fangroup",
+  'translatedGroupName': 'Ben\'s Fangroup',
   'groupShortName': {
     'en': 'Ben FG',
     'nl': 'Ben FG nl'
@@ -165,8 +165,10 @@ export const preauthorizedPosition: ExtendedPosition = {
   'formattedFee': '€1.82'
 };
 
-export const waitingListWithoutSeat: WaitingList|PagedResult<WaitingList> = generateWl('waiting-list-without-seat', preauthorizedPosition, null);
+export const waitingListWithoutSeat:
+  WaitingList
+  | PagedResult<WaitingList> = generateWl('waiting-list-without-seat', preauthorizedPosition, null);
 
-export const waitingListsWithSeat: WaitingList|PagedResult<WaitingList> = mkPagedResult([waitingListWithSeat]);
+export const waitingListsWithSeat: WaitingList | PagedResult<WaitingList> = mkPagedResult([waitingListWithSeat]);
 
-export const waitingListsWithoutSeat: WaitingList|PagedResult<WaitingList> = mkPagedResult([waitingListWithoutSeat]);
+export const waitingListsWithoutSeat: WaitingList | PagedResult<WaitingList> = mkPagedResult([waitingListWithoutSeat]);

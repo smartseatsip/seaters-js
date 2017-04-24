@@ -13,10 +13,10 @@ var wlId = shared.wlId;
 
 shared.fanClient().then(client => {
 
-    return client.fanService.getWaitingListsInFanGroup(fgId, { page: 0, maxPageSize: 10})
+  return client.fanService.getWaitingListsInFanGroup(fgId, { page: 0, maxPageSize: 10 })
     .then(wls => {
-        console.log('WaitingLists in FanGroup', wls);
+      console.log('WaitingLists in FanGroup', wls);
     });
 
 })
-.then(shared.exitOK, shared.exitFail);
+  .then(shared.exitOK, shared.exitFail);

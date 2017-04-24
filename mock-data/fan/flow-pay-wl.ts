@@ -4,7 +4,13 @@
  */
 import { generateWl } from './waiting-list';
 import { oneHourFromNow, mkMock, Mock, RequestOptions } from '../types';
-import { WaitingList, ExtendedPosition, Seat, PositionSalesTransaction, PositionSalesTransactionInput } from '../../src/seaters-api/fan';
+import {
+  WaitingList,
+  ExtendedPosition,
+  Seat,
+  PositionSalesTransaction,
+  PositionSalesTransactionInput
+} from '../../src/seaters-api/fan';
 import { braintreePaymentInfo, realBraintreeToken } from './payment-info';
 
 let position: ExtendedPosition = {
@@ -53,7 +59,9 @@ let payed = false;
 
 function payForWl (req: RequestOptions): PositionSalesTransaction {
 
-  if (payed) { throw new Error('[MockData] WL already payed for, please reload your page'); }
+  if (payed) {
+    throw new Error('[MockData] WL already payed for, please reload your page');
+  }
   payed = true;
 
   let input: PositionSalesTransactionInput = JSON.parse(req.body);

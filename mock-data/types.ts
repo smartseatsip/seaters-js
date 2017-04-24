@@ -1,7 +1,8 @@
 import { RequestOptions as _RequestOptions } from '../src/api';
 import { PagedResult } from '../src/seaters-api';
 
-export interface RequestOptions extends _RequestOptions {}
+export interface RequestOptions extends _RequestOptions {
+}
 
 export type HttpMethod = 'GET' | 'PUT' | 'POST' | 'DELETE';
 
@@ -25,7 +26,10 @@ export function mkMock (method: HttpMethod, url: string, data: MockData | MockDa
   };
 }
 
-export function mkPagedResult<T> (items: T[], itemOffset?: number, maxPageSize?: number, totalSize?: number): PagedResult<T> {
+export function mkPagedResult<T> (
+  items: T[], itemOffset?: number, maxPageSize?: number,
+  totalSize?: number
+): PagedResult<T> {
   return {
     items: items,
     itemOffset: itemOffset || 0,

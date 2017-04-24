@@ -6,16 +6,20 @@
 .sl-flex {
   display: flex;
 }
+
 .sl-flex-row {
   flex-direction: row;
 }
+
 .sl-flex-column {
   flex-direction: column;
 }
-.sl-flex-column.sl-flex-center-h, .sl-flex-row.sl-flex-center-v{
+
+.sl-flex-column.sl-flex-center-h, .sl-flex-row.sl-flex-center-v {
   align-items: center;
 }
-.sl-flex-column.sl-flex-center-v, .sl-flex-row.sl-flex-center-h{
+
+.sl-flex-column.sl-flex-center-v, .sl-flex-row.sl-flex-center-h {
   justify-content: center;
 }
 
@@ -25,37 +29,38 @@
 
 @media only screen and (min-width: 64.0625em) {
   .l-rpadding {
-    padding-right: .9375rem!important;
+    padding-right: .9375rem !important;
   }
 }
 
 .sl-content {
   padding: 1.875rem 0;
-  background-color: #F2F2F2;
+  background-color: #f2f2f2;
   height: 100%;
   margin: 0;
   text-shadow: none;
   color: #000;
-  padding: 1rem 2rem!important;
+  padding: 1rem 2rem !important;
 }
 
 .sl-input-error {
-  color: #D16F6F;
+  color: #d16f6f;
   font-size: .75rem;
   font-style: italic;
   display: none;
 }
 
 .sl-general-error {
-  color: #D16F6F;
+  color: #d16f6f;
   font-size: 1rem;
 }
 
 .sl-login-agree-to-terms {
   color: grey;
 }
-.sl-login-agree-to-terms a, .sl-login-agree-to-terms a:active, .sl-login-agree-to-terms a:visited  {
-  color:#10CCC2 !important;
+
+.sl-login-agree-to-terms a, .sl-login-agree-to-terms a:active, .sl-login-agree-to-terms a:visited {
+  color: #10ccc2 !important;
   font-weight: bold;
 }
 
@@ -68,7 +73,7 @@ button[disabled]:focus,
 .button.disabled:focus,
 .button[disabled]:hover,
 .button[disabled]:focus {
-  background-color: #10CCC2;
+  background-color: #10ccc2;
 }
 
 button.success:hover, button.success:focus, .button.success:hover, .button.success:focus,
@@ -81,7 +86,7 @@ button[disabled].success:focus,
 .button.disabled.success:focus,
 .button[disabled].success:hover,
 .button[disabled].success:focus {
-  background-color: #10CCC2;
+  background-color: #10ccc2;
 }
 
 .sl-button.success {
@@ -99,7 +104,7 @@ button[disabled].success:focus,
   text-decoration: none;
   transition: background-color .3s ease-out;
   cursor: pointer;
-  background-color: #10CCC2;
+  background-color: #10ccc2;
   border-radius: 1000px;
 }
 

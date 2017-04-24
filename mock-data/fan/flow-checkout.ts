@@ -55,7 +55,9 @@ let stored = false;
 
 function storeAttendeesInfo (req: RequestOptions): Position {
 
-  if (stored) { throw new Error('[MockData] WL already payed for, please reload your page'); }
+  if (stored) {
+    throw new Error('[MockData] WL already payed for, please reload your page');
+  }
   stored = true;
   position.attendeesInfo = JSON.parse(req.body);
   return position as Position;

@@ -13,12 +13,12 @@ var wlId = shared.wlId;
 
 shared.fanClient().then(client => {
 
-    return client.fanService.waitingListService.rejectSeats(wlId)
-      .then (wl => {
-        console.log('Seat rejected from WaitingList',wl);
+  return client.fanService.waitingListService.rejectSeats(wlId)
+    .then(wl => {
+        console.log('Seat rejected from WaitingList', wl);
       },
       error => {
-        console.log("Returned error:", error);
+        console.log('Returned error:', error);
       });
 })
-.then(shared.exitOK, shared.exitFail);
+  .then(shared.exitOK, shared.exitFail);

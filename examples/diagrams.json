@@ -1,10 +1,14 @@
-[{
-	"file": "images/fg-statemachine.png",
-	"name": "FanGroup actionStatus"
-}, {
-	"file": "images/wl-statemachine.png",
-	"name": "WaitingList actionStatus"
-}, {
-	"file": "images/wl-join-pay-print.png",
-	"name": "WaitingList Join Pay Print"
-}]
+[
+  {
+    "file": "images/fg-statemachine.png",
+    "name": "FanGroup actionStatus"
+  },
+  {
+    "file": "images/wl-statemachine.png",
+    "name": "WaitingList actionStatus"
+  },
+  {
+    "file": "images/wl-join-pay-print.png",
+    "name": "WaitingList Join Pay Print"
+  }
+]

@@ -27,7 +27,7 @@ let transaction: PaymentInfoTransaction = {
 };
 
 export const braintreePaymentInfo: PaymentInfo = {
-  transactions: [ transaction ],
+  transactions: [transaction],
   paymentSystemType: 'BRAINTREE',
   braintreeConfig: {
     threeDSEnabled: true

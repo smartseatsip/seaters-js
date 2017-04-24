@@ -5,11 +5,9 @@ module.exports = {
   output: {
     filename: 'dist/seaters-mock-data.bundle.js',
     libraryTarget: 'var',
-    library: 'SeatersSDKMockData',
+    library: 'SeatersSDKMockData'
   },
-  externals: {
-
-  },
+  externals: {},
   resolve: {
     extensions: ['', '.ts', '.js']
   },
@@ -21,4 +19,4 @@ module.exports = {
     emitErrors: true,
     formatter: 'verbose'
   }
-}
+};

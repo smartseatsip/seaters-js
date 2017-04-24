@@ -17,7 +17,7 @@ export const adminMocks: Mock[] = [
     data: {
       status: 200,
       statusText: 'OK',
-      body: pagedUsers({itemOffset: 0, maxPageSize: 0})
+      body: pagedUsers({ itemOffset: 0, maxPageSize: 0 })
     }
   },
 
@@ -26,7 +26,7 @@ export const adminMocks: Mock[] = [
     data: {
       status: 200,
       statusText: 'OK',
-      body: pagedUsers({itemOffset: 0, maxPageSize: 0})
+      body: pagedUsers({ itemOffset: 0, maxPageSize: 0 })
     }
   }
 

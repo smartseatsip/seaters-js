@@ -23,11 +23,11 @@ module.exports = {
     new webpack.BannerPlugin(
       'require("source-map-support").install();',
       { raw: true, entryOnly: false }
-    ),
+    )
     // webpackHelpers.noopStaticResources
   ],
   module: {
     preLoaders: webpackHelpers.allPreLoaders,
     loaders: webpackHelpers.allLoaders
   }
-}
+};

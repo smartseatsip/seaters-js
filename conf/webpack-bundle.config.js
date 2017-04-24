@@ -5,11 +5,9 @@ module.exports = {
   output: {
     filename: 'dist/seaters.bundle.js',
     libraryTarget: 'var',
-    library: 'SeatersSDK',
+    library: 'SeatersSDK'
   },
-  externals: {
-
-  },
+  externals: {},
   resolve: {
     extensions: ['', '.ts', '.js']
   },
@@ -23,4 +21,4 @@ module.exports = {
     emitErrors: true,
     formatter: 'verbose'
   }
-}
+};

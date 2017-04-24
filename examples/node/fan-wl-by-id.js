@@ -13,10 +13,10 @@ var wlId = shared.wlId;
 
 shared.fanClient().then(client => {
 
-    return client.fanService.waitingListService.getWaitingList(wlId)
-      .then(wl => {
-        console.log('WaitingList', wl);
+  return client.fanService.waitingListService.getWaitingList(wlId)
+    .then(wl => {
+      console.log('WaitingList', wl);
     });
 
 })
-.then(shared.exitOK, shared.exitFail);
+  .then(shared.exitOK, shared.exitFail);
