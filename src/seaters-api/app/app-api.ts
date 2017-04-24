@@ -14,7 +14,7 @@ export class AppApi {
   }
 
   countries (pagingOptions?: PagingOptions): Promise<PagedResult<Country>> {
-    var queryParams = SeatersApiContext.buildPagingQueryParams(pagingOptions);
+    let queryParams = SeatersApiContext.buildPagingQueryParams(pagingOptions);
     return this.apiContext.get<PagedResult<Country>>('/app/countries', null, queryParams);
   }
 

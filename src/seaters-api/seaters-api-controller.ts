@@ -4,7 +4,7 @@ export abstract class SeatersApiController {
 
   protected buildParams (obj: Object): Map<string, string> {
 
-    var map = new Map<string, string>();
+    let map = new Map<string, string>();
     Object.keys(obj).forEach(k => map.set(k, obj[k]));
     return map;
 

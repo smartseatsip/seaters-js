@@ -1,16 +1,15 @@
-import { HTTP_METHOD } from './http-method';
 import { Promise } from 'es6-promise';
 import { ServerResponse, RequestOptions } from './request-driver';
 import { DeferredPromise } from './../services/util';
 
-declare function require (string): any;
+declare function require (str: string): any;
 
-var http = require('http');
-var https = require('https');
-var url = require('url');
+let http = require('http');
+let https = require('https');
+let url = require('url');
 
 function buildHttpRequest (options: RequestOptions) {
-  var parsedUrl = url.parse(options.url);
+  let parsedUrl = url.parse(options.url);
   return {
     method: options.method || 'GET',
     protocol: parsedUrl.protocol,
@@ -34,13 +33,13 @@ function buildServerResponse (req, res, body: string): ServerResponse {
 
 export function NodeRequestDriver (options: RequestOptions): Promise<ServerResponse> {
 
-  var deferred = new DeferredPromise<ServerResponse>();
+  let deferred = new DeferredPromise<ServerResponse>();
 
-  var rawRequest = buildHttpRequest(options);
-  var requestProvider = rawRequest.protocol === 'https:' ? https : http;
+  let rawRequest = buildHttpRequest(options);
+  let requestProvider = rawRequest.protocol === 'https:' ? https : http;
   console.log('%s %s', options.method || 'GET', options.url);
-  var req = requestProvider.request(rawRequest, (res) => {
-    var body = '';
+  let req = requestProvider.request(rawRequest, (res) => {
+    let body = '';
     res.on('data', chunk => body += chunk);
     res.on('end', () => deferred.resolve(buildServerResponse(req, res, body)));
   });

@@ -5,10 +5,10 @@ export enum ERROR_TYPE {
 }
 
 export interface ApiError {
-  rawResponse: ServerResponse,
-  type: ERROR_TYPE,
-  error: string,
-  errorMsg: string,
+  rawResponse: ServerResponse;
+  type: ERROR_TYPE;
+  error: string;
+  errorMsg: string;
   fields?: [{
     field: string,
     error: string,

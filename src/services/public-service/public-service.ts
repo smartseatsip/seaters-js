@@ -32,7 +32,7 @@ export class PublicService {
   }
 
   getWaitingListPrice (waitingListId: string, numberOfSeats: number): Promise<pub.Price> {
-    return <Promise<pub.Price>>this.seatersApi.fan.waitingListPrice(waitingListId, numberOfSeats);
+    return this.seatersApi.fan.waitingListPrice(waitingListId, numberOfSeats) as Promise<pub.Price>;
   }
 
   searchSeatersContent (query: string, locale: string, page?: PagingOptions): Promise<PagedResult<pub.SeatersContent>> {
@@ -52,7 +52,7 @@ export class PublicService {
   }
 
   private defaultPage (page: PagingOptions): PagingOptions {
-    if (typeof(page) === 'object') {
+    if (typeof(page as any) === 'object') {
       return page;
     } else {
       return {
@@ -64,7 +64,7 @@ export class PublicService {
 
   private convertAlgoliaResultSet<T> (searchResult: TypedSearchResult<T>): PagedResult<T> {
     return {
-      items: <T[]> searchResult.hits,
+      items: searchResult.hits as T[],
       itemOffset: searchResult.page * searchResult.hitsPerPage,
       page: searchResult.page,
       maxPageSize: searchResult.hitsPerPage,

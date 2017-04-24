@@ -6,8 +6,6 @@ import {
   ResetEmailData,
   SignupData,
   ValidationData,
-  EmailValidationData,
-  MobilePhoneValidationData,
   AuthenticationTokenInput
 } from './authentication-types';
 
@@ -23,7 +21,7 @@ export class AuthenticationApi {
         return {
           expirationDate: data.token.expirationDate,
           token: data.token.value
-        };//TODO: remove this code when API is adapted
+        };// (T)ODO: remove this code when API is adapted
       });
   }
 
@@ -62,9 +60,9 @@ export class AuthenticationApi {
    * please refer to a seaters developer.
    */
   loginWithOAuthCode (oauthProvider: string, code: string): Promise<SessionToken> {
-    var endpoint = '/login/:oauthProvider';
-    var endpointParams = { oauthProvider: oauthProvider };
-    var queryParams = { code: code };
+    let endpoint = '/login/:oauthProvider';
+    let endpointParams = { oauthProvider: oauthProvider };
+    let queryParams = { code: code };
     return this.apiContext.get<any>(endpoint, endpointParams, queryParams)
       .then(data => {
         return {

@@ -10,19 +10,15 @@ export namespace pub {
 
   export interface FanGroup extends _FanGroup {
   }
-  ;
 
   export interface WaitingList extends _WaitingList {
   }
-  ;
 
   export interface Price extends _Price {
   }
-  ;
 
   export interface FanGroupLook extends _FanGroupLook {
   }
-  ;
 
   export type SeatersContent = FanGroup | WaitingList;
 

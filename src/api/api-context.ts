@@ -5,7 +5,6 @@ import { Promise } from 'es6-promise';
 import { ApiRequestDefinition } from './api-request-definition';
 import { ApiRequest } from './api-request';
 import { ApiEndpoint } from './api-endpoint';
-import { ApiError, ERROR_TYPE } from './api-error';
 
 import { RequestDriver, RequestOptions, ServerResponse } from './request-driver';
 
@@ -36,12 +35,6 @@ export class ApiContext {
     this.headers.delete(header);
   }
 
-  private mergeHeaders (otherHeaders: any) {
-    var merged = {};
-    this.headers.forEach((v, k) => merged[k] = v);
-    return Object.assign(merged, otherHeaders);
-  }
-
   createEndpoint (requestDefinition: ApiRequestDefinition): ApiEndpoint {
     return new ApiEndpoint(
       requestDefinition.abstractEndpoint,
@@ -52,8 +45,8 @@ export class ApiContext {
   }
 
   createRequestOptions (requestDefinition: ApiRequestDefinition, endpoint: ApiEndpoint): RequestOptions {
-    var headers = this.mergeHeaders(requestDefinition.headers);
-    var body = requestDefinition.body !== undefined ? JSON.stringify(requestDefinition.body) : null;
+    let headers = this.mergeHeaders(requestDefinition.headers);
+    let body = (requestDefinition.body as any) !== undefined ? JSON.stringify(requestDefinition.body) : null;
     return {
       url: endpoint.absoluteEndpoint,
       method: requestDefinition.method || 'GET',
@@ -63,10 +56,10 @@ export class ApiContext {
   }
 
   doRequest (requestDefinition: ApiRequestDefinition): Promise<ServerResponse> {
-    var endpoint = this.createEndpoint(requestDefinition);
-    var requestOptions = this.createRequestOptions(requestDefinition, endpoint);
-    var request = this.requestDriver(requestOptions);
-    var apiRequest: ApiRequest = {
+    let endpoint = this.createEndpoint(requestDefinition);
+    let requestOptions = this.createRequestOptions(requestDefinition, endpoint);
+    let request = this.requestDriver(requestOptions);
+    let apiRequest: ApiRequest = {
       requestDefinition: requestDefinition,
       endpoint: endpoint,
       rawRequest: {
@@ -77,6 +70,12 @@ export class ApiContext {
     // notify all request listeners about the request that was just started
     this.requestsSubject.next(apiRequest);
     return request;
+  }
+
+  private mergeHeaders (otherHeaders: any) {
+    let merged = {};
+    this.headers.forEach((v, k) => merged[k] = v);
+    return Object.assign(merged, otherHeaders);
   }
 
 }

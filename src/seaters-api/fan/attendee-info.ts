@@ -15,17 +15,17 @@ export interface AttendeeInfo {
   /**
    * Attendee's title
    */
-  title: TITLE,
+  title: TITLE;
 
   /**
    * Attendee's first name
    */
-  firstName: string,
+  firstName: string;
 
   /**
    * Attendee's last name/surname/family name
    */
-  lastName: string,
+  lastName: string;
 
   /**
    * Attendee's well-structured email
@@ -33,7 +33,7 @@ export interface AttendeeInfo {
    * Possible validation errors:
    * - invalid formatting (TODO)
    */
-  email: string,
+  email: string;
 
   /**
    * Attendee's phone number.
@@ -45,7 +45,7 @@ export interface AttendeeInfo {
    *
    * @see PhoneNumber
    */
-  phoneNumber: PhoneNumber,
+  phoneNumber: PhoneNumber;
 
   /**
    * Attendee's date of birth. Should be supplied in the attendee's proper timezone.
@@ -55,23 +55,23 @@ export interface AttendeeInfo {
    * Possible validation errors:
    * - in the future (TODO)
    */
-  dateOfBirth: string,
+  dateOfBirth: string;
 
   /**
    * Attendee's address
    */
-  address: Address,
+  address: Address;
 
   /**
    * Attendee's citizenship country
    * @format alpha-2 country code
    */
-  citizenshipCountryCode: string,
+  citizenshipCountryCode: string;
 
   /**
    * Attendee's passport / ID-card number - free text field
    */
-  idNumber: string
+  idNumber: string;
 
 }
 
@@ -85,7 +85,7 @@ export type AttendeesInfo = {
    */
   attendees: AttendeeInfo[]
 
-}
+};
 
 /**
  * AttendeeInfo field names that have builtin validations by seaters.

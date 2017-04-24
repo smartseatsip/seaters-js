@@ -7,12 +7,12 @@ export interface ValidationError {
   /**
    * A key you can use to identify the actual error
    */
-  errorCode: VALIDATION_ERROR_CODE,
+  errorCode: VALIDATION_ERROR_CODE;
 
   /**
    * A message that explains the error code in the context of the request
    */
-  defaultMessage: string,
+  defaultMessage: string;
 
   /**
    * Reference contains the JSON paths for the fields related to this error
@@ -22,7 +22,7 @@ export interface ValidationError {
    * cause a specific error. For example a list of attendees, each one has a field 'email'; to identify
    * which attendee's email is invalid.
    */
-  reference: string[]
+  reference: string[];
 
 }
 
@@ -36,4 +36,3 @@ export type VALIDATION_ERROR_CODE =
   'required_field_missing' | 'invalid_email' | 'invalid_title' |
   'invalid_phone_number' | 'invalid_country_code' | 'invalid_date' |
   'empty_field' | 'future_date' | 'unmapped';
-

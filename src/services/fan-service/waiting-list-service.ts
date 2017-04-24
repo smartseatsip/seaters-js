@@ -1,6 +1,6 @@
 import { Object } from 'core-js/library';
 import { Promise } from 'es6-promise';
-import { PagedResult, PagingOptions } from '../../shared-types';
+import { PagedResult } from '../../shared-types';
 
 import { SeatersApi } from '../../seaters-api';
 import {
@@ -15,126 +15,13 @@ import {
 import { fan } from './fan-types';
 import { retryUntil, compareObjects } from './../util';
 
-var WAITING_LIST_ACTION_STATUS = fan.WAITING_LIST_ACTION_STATUS;
+let WAITING_LIST_ACTION_STATUS = fan.WAITING_LIST_ACTION_STATUS;
 
-var EXPORTABLE_TICKETING_SYSTEMS: TICKETING_SYSTEM_TYPE[] = ['UPLOAD', 'DIGITICK'];
+let EXPORTABLE_TICKETING_SYSTEMS: TICKETING_SYSTEM_TYPE[] = ['UPLOAD', 'DIGITICK'];
 
 export class WaitingListService {
 
   constructor (private api: SeatersApi) {
-
-  }
-
-  private getRawWaitingList (waitingListId: string): Promise<WaitingList> {
-    return this.api.fan.waitingList(waitingListId);
-  }
-
-  private pollWaitingList (
-    waitingListId: string,
-    condition: (wl: fan.WaitingList) => boolean,
-    limit?: number,
-    delayInMs?: number
-  ): Promise<fan.WaitingList> {
-    return retryUntil<fan.WaitingList>(
-      () => this.getWaitingList(waitingListId),
-      condition,
-      limit || 10,
-      delayInMs || 1000
-    );
-  }
-
-  private getWaitingListActionStatus (waitingList: WaitingList): fan.WAITING_LIST_ACTION_STATUS {
-    var seat = waitingList.seat;
-    var position = waitingList.position;
-    var request = waitingList.request;
-
-    // Comming soon
-    if (waitingList.waitingListStatus === 'PUBLISHED') {
-      return WAITING_LIST_ACTION_STATUS.SOON;
-    }
-
-    // Not in WL
-    if (!position) {
-      // Code protected WL
-      if (waitingList.accessMode === 'CODE_PROTECTED') {
-        if (!request) {
-          return WAITING_LIST_ACTION_STATUS.UNLOCK;
-        } else if (request.status === 'PENDING') {
-          return WAITING_LIST_ACTION_STATUS.UNLOCK;//-PENDING
-        } else if (request.status === 'REJECTED') {
-          return WAITING_LIST_ACTION_STATUS.UNLOCK;
-        } else if (request.status === 'ACCEPTED') {
-          return WAITING_LIST_ACTION_STATUS.BOOK;
-        } else {
-          console.error('[WaitingListService] - unexpected request status: %s', request.status);
-          return WAITING_LIST_ACTION_STATUS.ERROR;
-        }
-      }
-      // Public WL
-      else if (waitingList.accessMode === 'PUBLIC') {
-        return WAITING_LIST_ACTION_STATUS.BOOK;
-      } else {
-        console.error('[WaitingListService] - unexpected accessMode: %s', waitingList.accessMode);
-        return WAITING_LIST_ACTION_STATUS.ERROR;
-      }
-    }
-
-    // In WL
-    if (position.status === 'WAITING_SEAT') {
-      return WAITING_LIST_ACTION_STATUS.WAIT;
-    }
-
-    // In WL with seat
-    if (position.status === 'HAS_SEAT') {
-      if (seat) {
-        if (seat.status === 'ASSIGNED') {
-          // free WL
-          if (waitingList.freeWaitingList) {
-            return WAITING_LIST_ACTION_STATUS.CONFIRM;
-          }
-          // non free WL
-          // no payment yet
-          else if (!position.transactionStatus) {
-            return WAITING_LIST_ACTION_STATUS.CONFIRM;
-          }
-          // failed payment
-          else if (['FAILURE', 'CANCELLED', 'REFUNDED'].indexOf(position.transactionStatus) >= 0) {
-            return WAITING_LIST_ACTION_STATUS.CONFIRM;
-          }
-          // payment in progress
-          else if (['CREATING', 'CREATED', 'APPROVED', 'REFUNDING'].indexOf(position.transactionStatus) >= 0) {
-            return WAITING_LIST_ACTION_STATUS.CONFIRM;//-PENDING
-          }
-          else {
-            console.error('[WaitingListService] - unexpected transactionStatus: %s', position.transactionStatus);
-            return WAITING_LIST_ACTION_STATUS.ERROR;
-          }
-        }
-        // non-voucher - tickets are being requested
-        else if (waitingList.seatDistributionMode === 'TICKET' && seat.ticketingSystemType) {
-          return WAITING_LIST_ACTION_STATUS.CONFIRM;//-PENDING
-        }
-        // go live
-        else if (seat.status === 'ACCEPTED') {
-          return WAITING_LIST_ACTION_STATUS.GO_LIVE;
-        }
-        else {
-          console.error('[WaitingListService] unexpected seat status: %s', seat.status);
-          return WAITING_LIST_ACTION_STATUS.ERROR;
-        }
-      }
-      else {
-        console.error('[WaitingListService] has seat without actual seat');
-        return WAITING_LIST_ACTION_STATUS.ERROR;
-      }
-    }
-    else if (position.status === 'BEING_PROCESSED') {
-      return WAITING_LIST_ACTION_STATUS.WAIT;//-PENDING
-    }
-    else {
-      console.error('[WaitinglistService] unexpected position status: %s', position.status);
-      return WAITING_LIST_ACTION_STATUS.ERROR;
-    }
 
   }
 
@@ -152,27 +39,26 @@ export class WaitingListService {
     if (!wl.position) {
       return false;
     } else {
-      return [
-          'CREATING', 'CREATED', 'APPROVED', 'CANCELLED', 'REFUNDING'
-        ].indexOf(wl.position.transactionStatus) >= 0;
+      return ['CREATING', 'CREATED', 'APPROVED', 'CANCELLED', 'REFUNDING']
+          .indexOf(wl.position.transactionStatus) >= 0;
     }
   }
 
   hasPreviousPayment (wl: fan.WaitingList): boolean {
-    return wl.position && wl.position.transactionStatus ? true : false;
+    return !!(wl.position && wl.position.transactionStatus);
   }
 
   extendRawWaitingList (wl: WaitingList): fan.WaitingList {
     return Object.assign(wl, {
       actionStatus: this.getWaitingListActionStatus(wl),
-      //TODO: pending status
+      // (T)ODO: pending status
       shouldProvideAttendeesInfo: this.shouldProvideAttendeesInfo(wl)
     });
   }
 
   extendRawWaitingLists (wls: PagedResult<WaitingList>): PagedResult<fan.WaitingList> {
     wls.items = wls.items.map(wl => this.extendRawWaitingList(wl));
-    return <PagedResult<fan.WaitingList>> wls;
+    return wls as PagedResult<fan.WaitingList>;
   }
 
   getWaitingList (waitingListId: string): Promise<fan.WaitingList> {
@@ -198,47 +84,6 @@ export class WaitingListService {
 
   getWaitingListPrice (waitingListId: string, numberOfSeats: number): Promise<fan.Price> {
     return this.api.fan.waitingListPrice(waitingListId, numberOfSeats);
-  }
-
-  private hasVoucher (wl: fan.WaitingList): boolean {
-    return wl.seatDistributionMode === 'VOUCHER'
-      && wl.seat
-      && wl.seat.voucherNumber
-      && wl.seat.voucherNumber !== '';
-  }
-
-  private hasTicket (wl: fan.WaitingList): boolean {
-    return wl.seatDistributionMode === 'TICKET'
-      && wl.seat
-      && !!wl.seat.ticketingSystemType;
-  }
-
-  private seatsCanBeExported (wl: fan.WaitingList): boolean {
-    if (!(this.hasVoucher(wl) || this.hasTicket(wl))) {
-      return false;
-    }
-    switch (wl.seatDistributionMode) {
-      case 'VOUCHER':
-        return true;
-      case 'TICKET':
-        var ts = wl.seat.ticketingSystemType;
-        if (EXPORTABLE_TICKETING_SYSTEMS.indexOf(ts) < 0) {
-          throw 'Ticketing system type "' + ts + '" does not support exporting tickets';
-        }
-        return true;
-      default:
-        throw 'Unknown WL seatDistributionMode ' + JSON.stringify(wl.seatDistributionMode);
-    }
-  }
-
-  private waitUntilCanGoLive (waitingListId: string): Promise<fan.WaitingList> {
-    return this.pollWaitingList(waitingListId, wl => {
-      return wl.actionStatus === WAITING_LIST_ACTION_STATUS.GO_LIVE;
-    });
-  }
-
-  private waitUntilSeatsCanBeExported (waitingListId: string): Promise<fan.WaitingList> {
-    return this.pollWaitingList(waitingListId, (wl) => this.seatsCanBeExported(wl), 60, 1000);
   }
 
   acceptSeats (waitingListId: string): Promise<fan.WaitingList> {
@@ -267,8 +112,169 @@ export class WaitingListService {
     return this.submitTransaction(waitingListId, transaction)
     // wait for preauthorization timer to be removed
       .then(() => this.pollWaitingList(waitingListId, wl => {
-        return wl.position.expirationDate === null;
+        return (wl.position.expirationDate as any) === null;
       }));
+  }
+
+  saveAttendeesInfo (waitingListId: string, attendeesInfo: AttendeesInfo): Promise<fan.WaitingList> {
+    return this.api.fan.updateAttendeesInfo(waitingListId, attendeesInfo)
+    // wait for attendeeInfo to be updated in CQRS
+      .then(() => this.pollWaitingList(waitingListId, wl => {
+        let storedAttendees = (wl.position.attendeesInfo && wl.position.attendeesInfo.attendees) || [];
+        // every attendee must be found in the stored attendees
+        // console.log('storedAttendees', storedAttendees);
+        // console.log('input attendees', attendeesInfo.attendees);
+        return attendeesInfo.attendees.every(attendee => !!storedAttendees.find(storedAttendee => {
+          return compareObjects(attendee, storedAttendee, {
+            ignoreNullFields: true,
+            ignoreUndefinedFields: true,
+            looseComparison: false
+          });
+        }));
+      }));
+  }
+
+  private getRawWaitingList (waitingListId: string): Promise<WaitingList> {
+    return this.api.fan.waitingList(waitingListId);
+  }
+
+  private pollWaitingList (
+    waitingListId: string,
+    condition: (wl: fan.WaitingList) => boolean,
+    limit?: number,
+    delayInMs?: number
+  ): Promise<fan.WaitingList> {
+    return retryUntil<fan.WaitingList>(
+      () => this.getWaitingList(waitingListId),
+      condition,
+      limit || 10,
+      delayInMs || 1000
+    );
+  }
+
+  private getWaitingListActionStatus (waitingList: WaitingList): fan.WAITING_LIST_ACTION_STATUS {
+    let seat = waitingList.seat;
+    let position = waitingList.position;
+    let request = waitingList.request;
+
+    // Comming soon
+    if (waitingList.waitingListStatus === 'PUBLISHED') {
+      return WAITING_LIST_ACTION_STATUS.SOON;
+    }
+
+    // Not in WL
+    if (!position) {
+      // Code protected WL
+      if (waitingList.accessMode === 'CODE_PROTECTED') {
+        if (!request) {
+          return WAITING_LIST_ACTION_STATUS.UNLOCK;
+        } else if (request.status === 'PENDING') {
+          return WAITING_LIST_ACTION_STATUS.UNLOCK;// (-)PENDING
+        } else if (request.status === 'REJECTED') {
+          return WAITING_LIST_ACTION_STATUS.UNLOCK;
+        } else if (request.status === 'ACCEPTED') {
+          return WAITING_LIST_ACTION_STATUS.BOOK;
+        } else {
+          console.error('[WaitingListService] - unexpected request status: %s', request.status);
+          return WAITING_LIST_ACTION_STATUS.ERROR;
+        }
+      } else if (waitingList.accessMode === 'PUBLIC') {
+        // Public WL
+        return WAITING_LIST_ACTION_STATUS.BOOK;
+      } else {
+        console.error('[WaitingListService] - unexpected accessMode: %s', waitingList.accessMode);
+        return WAITING_LIST_ACTION_STATUS.ERROR;
+      }
+    }
+
+    // In WL
+    if (position.status === 'WAITING_SEAT') {
+      return WAITING_LIST_ACTION_STATUS.WAIT;
+    }
+
+    // In WL with seat
+    if (position.status === 'HAS_SEAT') {
+      if (seat) {
+        if (seat.status === 'ASSIGNED') {
+          // free WL
+          if (waitingList.freeWaitingList) {
+            return WAITING_LIST_ACTION_STATUS.CONFIRM;
+          } else if (!position.transactionStatus) {
+            // non free WL
+            // no payment yet
+            return WAITING_LIST_ACTION_STATUS.CONFIRM;
+          } else if (['FAILURE', 'CANCELLED', 'REFUNDED'].indexOf(position.transactionStatus) >= 0) {
+            // failed payment
+            return WAITING_LIST_ACTION_STATUS.CONFIRM;
+          } else if (['CREATING', 'CREATED', 'APPROVED', 'REFUNDING'].indexOf(position.transactionStatus) >= 0) {
+            // payment in progress
+            return WAITING_LIST_ACTION_STATUS.CONFIRM;// (-)PENDING
+          } else {
+            console.error('[WaitingListService] - unexpected transactionStatus: %s', position.transactionStatus);
+            return WAITING_LIST_ACTION_STATUS.ERROR;
+          }
+        } else if (waitingList.seatDistributionMode === 'TICKET' && seat.ticketingSystemType) {
+          // non-voucher - tickets are being requested
+          return WAITING_LIST_ACTION_STATUS.CONFIRM;// (-)PENDING
+        } else if (seat.status === 'ACCEPTED') {
+          // go live
+          return WAITING_LIST_ACTION_STATUS.GO_LIVE;
+        } else {
+          console.error('[WaitingListService] unexpected seat status: %s', seat.status);
+          return WAITING_LIST_ACTION_STATUS.ERROR;
+        }
+      } else {
+        console.error('[WaitingListService] has seat without actual seat');
+        return WAITING_LIST_ACTION_STATUS.ERROR;
+      }
+    } else if (position.status === 'BEING_PROCESSED') {
+      return WAITING_LIST_ACTION_STATUS.WAIT;// (-)PENDING
+    } else {
+      console.error('[WaitinglistService] unexpected position status: %s', position.status);
+      return WAITING_LIST_ACTION_STATUS.ERROR;
+    }
+
+  }
+
+  private hasVoucher (wl: fan.WaitingList): boolean {
+    return wl.seatDistributionMode === 'VOUCHER'
+      && wl.seat
+      && wl.seat.voucherNumber
+      && wl.seat.voucherNumber !== '';
+  }
+
+  private hasTicket (wl: fan.WaitingList): boolean {
+    return wl.seatDistributionMode === 'TICKET'
+      && wl.seat
+      && !!wl.seat.ticketingSystemType;
+  }
+
+  private seatsCanBeExported (wl: fan.WaitingList): boolean {
+    if (!(this.hasVoucher(wl) || this.hasTicket(wl))) {
+      return false;
+    }
+    switch (wl.seatDistributionMode) {
+      case 'VOUCHER':
+        return true;
+      case 'TICKET':
+        let ts = wl.seat.ticketingSystemType;
+        if (EXPORTABLE_TICKETING_SYSTEMS.indexOf(ts) < 0) {
+          throw new Error('Ticketing system type "' + ts + '" does not support exporting tickets');
+        }
+        return true;
+      default:
+        throw new Error('Unknown WL seatDistributionMode ' + JSON.stringify(wl.seatDistributionMode));
+    }
+  }
+
+  private waitUntilCanGoLive (waitingListId: string): Promise<fan.WaitingList> {
+    return this.pollWaitingList(waitingListId, wl => {
+      return wl.actionStatus === WAITING_LIST_ACTION_STATUS.GO_LIVE;
+    });
+  }
+
+  private waitUntilSeatsCanBeExported (waitingListId: string): Promise<fan.WaitingList> {
+    return this.pollWaitingList(waitingListId, (wl) => this.seatsCanBeExported(wl), 60, 1000);
   }
 
   private shouldProvideAttendeesInfo (wl: WaitingList): boolean {
@@ -281,24 +287,6 @@ export class WaitingListService {
       return wl.position && wl.position.attendeesInfo && wl.position.attendeesInfo.attendees &&
         wl.position.attendeesInfo.attendees.length !== wl.position.numberOfSeats;
     }
-  }
-
-  saveAttendeesInfo (waitingListId: string, attendeesInfo: AttendeesInfo): Promise<fan.WaitingList> {
-    return this.api.fan.updateAttendeesInfo(waitingListId, attendeesInfo)
-    // wait for attendeeInfo to be updated in CQRS
-      .then(() => this.pollWaitingList(waitingListId, wl => {
-        var storedAttendees = (wl.position.attendeesInfo && wl.position.attendeesInfo.attendees) || [];
-        // every attendee must be found in the stored attendees
-        // console.log('storedAttendees', storedAttendees);
-        // console.log('input attendees', attendeesInfo.attendees);
-        return attendeesInfo.attendees.every(attendee => !!storedAttendees.find(storedAttendee => {
-          return compareObjects(attendee, storedAttendee, {
-            ignoreNullFields: true,
-            ignoreUndefinedFields: true,
-            looseComparison: false
-          });
-        }));
-      }));
   }
 
   private submitTransaction (

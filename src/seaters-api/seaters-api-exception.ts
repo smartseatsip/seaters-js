@@ -13,21 +13,21 @@ export interface SeatersApiException {
   /**
    * UUID of the error - can be used to lookup the error in seaters' logs
    */
-  uuid: string,
+  uuid: string;
 
   /**
    * This field contains a summary of the errors that occurred.
    */
-  message: string,
+  message: string;
 
   /**
    * Use this to identify the type of SeatersApiException.errors
    */
-  type: SeatersErrorType,
+  type: SeatersErrorType;
 
   /**
    * Lists all validation errors encountered on the input
    */
-  errors: SeatersError[]
+  errors: SeatersError[];
 
 }

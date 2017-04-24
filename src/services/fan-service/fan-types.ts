@@ -17,17 +17,17 @@ export namespace fan {
     /**
      * What action can be taken next?
      */
-    actionStatus: WAITING_LIST_ACTION_STATUS,
+    actionStatus: WAITING_LIST_ACTION_STATUS;
 
     /**
      * Is seaters currently processing your request?
      */
-    processing: boolean,
+    processing: boolean;
 
     /**
      * If required, does the attendee info needs to be provided still?
      */
-    shouldProvideAttendeesInfo: boolean
+    shouldProvideAttendeesInfo: boolean;
   }
 
   export interface Price extends _Price {
@@ -41,7 +41,7 @@ export namespace fan {
     /**
      * FanGroup Fan's action status
      */
-    actionStatus: FAN_GROUP_ACTION_STATUS,
+    actionStatus: FAN_GROUP_ACTION_STATUS;
   }
 
   export interface PaymentInfo extends _PaymentInfo {
@@ -55,26 +55,26 @@ export namespace fan {
      * It identifies the fan to braintree and allows seaters to
      * link incoming payment nonces to the correct fan.
      */
-    token: string,
+    token: string;
 
     /**
      * Can 3Ds be enabled in the SDK for this payment?
      * If true, you may enable it if you wish in the braintree SDK.
      * If it's false you should never enable it in the braintree SDK.
      */
-    threeDSEnabled: boolean,
+    threeDSEnabled: boolean;
 
     /**
      * Currency codes according to the ISO 4217 (3 uppercase characters)
      * e.g. EUR, USD, CAD
      * @see SeatersClient.appService.getCurrencies
      */
-    currency: string,
+    currency: string;
 
     /**
      * The total amount to pay (with double precision)
      */
-    total: string
+    total: string;
 
   }
 

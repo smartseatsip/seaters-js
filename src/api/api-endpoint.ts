@@ -30,14 +30,14 @@ export class ApiEndpoint {
 
   private renderEndpointParam (parameter: string) {
     if (!this.endpointParams.hasOwnProperty(parameter)) {
-      throw 'Unable to render endpoint param: ' + parameter;
+      throw new Error('Unable to render endpoint param: ' + parameter);
     }
     // SimpleJSONPrimitive can always be cast to string
-    return encodeURIComponent(<string>this.endpointParams[parameter]);
+    return encodeURIComponent(this.endpointParams[parameter] as string);
   }
 
   private renderConcreteEndpoint (): string {
-    var endpointParamRx = /:([a-zA-Z][a-zA-Z0-9]*)/g;
+    let endpointParamRx = /:([a-zA-Z][a-zA-Z0-9]*)/g;
     return this.abstractEndpoint.replace(endpointParamRx, (match) => {
       return this.renderEndpointParam(match.substr(1));
     });
@@ -45,7 +45,7 @@ export class ApiEndpoint {
 
   private renderQueryParams (): string {
     return Object.keys(this.queryParams).map(parameter => {
-      var value = <string>this.queryParams[parameter];
+      let value = this.queryParams[parameter] as string;
       return encodeURIComponent(parameter) + '=' + encodeURIComponent(value);
     }).join('&');
   }
@@ -54,7 +54,7 @@ export class ApiEndpoint {
     if (Object.keys(this.queryParams).length === 0) {
       return this.concreteEndpoint;
     }
-    var res = this.concreteEndpoint;
+    let res = this.concreteEndpoint;
     // if there is already a query part
     if (res.lastIndexOf('?') >= 0) {
       // append '&' there is none yet
@@ -69,7 +69,7 @@ export class ApiEndpoint {
 
   private renderAbsoluteEndpoint () {
     // remove trailing '/' from the prefix
-    var normalizedPrefix = this.prefix.replace(/\/$/, '');
+    let normalizedPrefix = this.prefix.replace(/\/$/, '');
     return normalizedPrefix + '/' + this.concreteEndpointWithQueryParams;
   }
 

@@ -1,6 +1,5 @@
 import { Promise } from 'es6-promise';
 
-import { HTTP_METHOD } from './http-method';
 import { ServerResponse, RequestOptions } from './request-driver';
 import { DeferredPromise } from './../services/util';
 
@@ -20,12 +19,12 @@ function buildServerResponse (xhr: XMLHttpRequest): ServerResponse {
 }
 
 function buildXhr (options: RequestOptions): XMLHttpRequest {
-  var xhr = new XMLHttpRequest();
+  let xhr = new XMLHttpRequest();
   xhr.open(options.method, options.url);
-  var headers = options.headers;
+  let headers = options.headers;
   if (headers) {
     Object.keys(headers).forEach(header => {
-      var value = headers[header];
+      let value = headers[header];
       xhr.setRequestHeader(header, value);
     });
   }
@@ -35,9 +34,9 @@ function buildXhr (options: RequestOptions): XMLHttpRequest {
 
 export function BrowserRequestDriver (options: RequestOptions): Promise<ServerResponse> {
 
-  var xhr = buildXhr(options);
+  let xhr = buildXhr(options);
 
-  var deferred = new DeferredPromise<ServerResponse>();
+  let deferred = new DeferredPromise<ServerResponse>();
 
   xhr.onreadystatechange = function () {
     if (xhr.readyState === READY_STATE_DONE) {

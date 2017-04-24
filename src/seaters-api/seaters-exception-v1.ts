@@ -1,8 +1,8 @@
 import { SeatersApiException } from './seaters-api-exception';
 
 export interface SeatersExceptionV1 {
-  uuid: string,
-  message: string
+  uuid: string;
+  message: string;
 }
 
 /**
@@ -13,7 +13,7 @@ export interface SeatersExceptionV1 {
  */
 export function seatersExceptionV1MessageMapper<T> (mapping: { [key: string]: T }): (err: any) => Promise<any> {
   return function (err: SeatersApiException): Promise<any> {
-    if (typeof(err) !== 'object') {
+    if (typeof(err as any) !== 'object') {
       console.error('[seatersExceptionV1MessageMapper] Uncaught Exception', err);
       throw err;
     } else if (err.type !== 'validation_error_v1') {

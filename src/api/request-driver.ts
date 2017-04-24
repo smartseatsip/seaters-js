@@ -8,18 +8,18 @@ import { buildMockRequestDriver } from './mock-request-driver';
 export type REQUEST_DRIVER_TYPE = 'BROWSER' | 'NODE' | 'MOCK';
 
 export interface ServerResponse {
-  status: number,
-  statusText: string,
-  body: string,
-  headers: Object,
-  driver: REQUEST_DRIVER_TYPE,
-  raw: any
+  status: number;
+  statusText: string;
+  body: string;
+  headers: Object;
+  driver: REQUEST_DRIVER_TYPE;
+  raw: any;
 }
 
 export interface RequestOptions {
-  url: string,
-  method: HTTP_METHOD,
-  body?: string,
+  url: string;
+  method: HTTP_METHOD;
+  body?: string;
   headers?: Object;
 }
 

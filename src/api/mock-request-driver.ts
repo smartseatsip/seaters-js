@@ -1,7 +1,5 @@
-import { HTTP_METHOD } from './http-method';
 import { Promise } from 'es6-promise';
 import { ServerResponse, RequestOptions } from './request-driver';
-import { DeferredPromise } from './../services/util';
 
 function getPathFromUrl (url) {
   return /(http[s]?:\/\/)?([^\/\s]+\/)(.*)/.exec(url)[3];
@@ -14,19 +12,19 @@ export function buildMockRequestDriver (mockData: any) {
   }
 
   return function (options: RequestOptions): Promise<ServerResponse> {
-    var key = options.method + ' ' + options.url;
+    let key = options.method + ' ' + options.url;
     if (!mockData.hasOwnProperty(key)) {
       key = options.method + ' /' + getPathFromUrl(options.url);
     }
 
-    var mock;
+    let mock;
     if (mockData.hasOwnProperty(key)) {
       mock = mockData[key];
     } else {
       return Promise.reject('[MockRequestDriver] Not Implemented: ' + key);
     }
 
-    var response: ServerResponse;
+    let response: ServerResponse;
     if (typeof(mock) === 'function') {
       console.log('[MockRequestDriver] (fn) %s', key);
       response = mock(options);
@@ -37,7 +35,7 @@ export function buildMockRequestDriver (mockData: any) {
       return Promise.reject('[MockRequestDriver] Invalid Mock: ' + key);
     }
     // serialize body if needed
-    if (typeof(response.body) === 'object') {
+    if (typeof(response.body as any) === 'object') {
       response.body = JSON.stringify(response.body);
     }
     response.driver = 'MOCK';

@@ -8,22 +8,22 @@ export interface ServerError {
   /**
    * The technical error message
    */
-  message: string,
+  message: string;
 
   /**
    * The response status code
    */
-  statusCode: number,
+  statusCode: number;
 
   /**
    * The response status text
    */
-  statusText: string,
+  statusText: string;
 
   /**
    * The raw response, for debugging purposes only.
    */
-  _rawResponse: any
+  _rawResponse: any;
 
 }
 
@@ -37,4 +37,3 @@ export type VALIDATION_ERROR_CODE =
   'required_field_missing' | 'invalid_email' | 'invalid_title' |
   'invalid_phone_number' | 'invalid_country_code' | 'invalid_date' |
   'empty_field' | 'future_date' | 'unmapped';
-

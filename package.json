@@ -9,7 +9,9 @@
     "typings": "node_modules/typings/dist/bin.js",
     "jasmine": "node_modules/jasmine/bin/jasmine.js",
     "tsc": "node_modules/typescript/bin/tsc",
-    "setup": "npm i && npm run typings i && npm run gulp"
+    "setup": "npm i && npm run typings i && npm run gulp",
+    "lint": "./node_modules/tslint/bin/tslint --force --project tsconfig.json --fix",
+    "lint-types": "./node_modules/tslint/bin/tslint --force --project tsconfig.json --type-check --fix"
   },
   "author": "Ben Corne",
   "license": "ISC",
@@ -23,6 +25,7 @@
     "source-map-support": "0.4.3"
   },
   "devDependencies": {
+    "@types/jasmine": "^2.5.47",
     "awesome-typescript-loader": "^3.0.0-beta.17",
     "chance": "1.0.4",
     "connect": "^3.5.0",

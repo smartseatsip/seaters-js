@@ -2,38 +2,38 @@ export interface PositionSalesTransaction {
   /**
    * Identifier for this position sales transaction
    */
-  id: string,
+  id: string;
 
   /**
    * When the transaction was created
    * @format datestring
    */
-  createdDate: string,
+  createdDate: string;
 
   /**
    * When the transaction was last modified
    * @format datestring
    */
-  lastModifiedDate: string,
+  lastModifiedDate: string;
 
   /**
    * If transaction has failed, the reason will be here.
    * This field should not be used to determine cause of failure,
    * but can only serve as an indication to find the cause
    */
-  paymentFailureMessage: string,
+  paymentFailureMessage: string;
 
   /**
    * For some payment systems this URL will need to be followed to
    * approve the payment.
    * @format URL
    */
-  approvalUrl: string,
+  approvalUrl: string;
 
   /**
    * Transaction status, not that not every status is used for every system.
    */
-  status: POSITION_TRANSACTION_STATUS
+  status: POSITION_TRANSACTION_STATUS;
 }
 
 export type POSITION_TRANSACTION_STATUS =

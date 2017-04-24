@@ -40,16 +40,16 @@ export class FanService {
   getWaitingListsByKeywords (keywords: string[], page: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
     return this.publicService.getWaitingListsByKeywords(keywords, page)
       .then(pagedPublicWls => {
-        var waitingListIds = pagedPublicWls.items.map(wl => wl.waitingListId);
+        let waitingListIds = pagedPublicWls.items.map(wl => wl.waitingListId);
         return this.getWaitingLists(waitingListIds)
           .then(wls => {
-            return <PagedResult<fan.WaitingList>> {
+            return {
               items: wls,
               itemOffset: pagedPublicWls.itemOffset,
               maxPageSize: pagedPublicWls.maxPageSize,
               page: pagedPublicWls.page,
               totalSize: pagedPublicWls.totalSize
-            };
+            } as PagedResult<fan.WaitingList>;
           });
       });
   }
@@ -78,24 +78,24 @@ export class FanService {
         return this.seatersApi.fan.positionBraintreeToken(waitingListId)
           .then(braintreeToken => {
             // combine the settings with the token
-            return <fan.BraintreePaymentInfo> {
+            return {
               total: paymentInfo.transactions[0].total,
               currency: paymentInfo.transactions[0].currency,
               threeDSEnabled: paymentInfo.braintreeConfig.threeDSEnabled,
               token: braintreeToken.token
-            };
+            } as fan.BraintreePaymentInfo;
           });
       });
   }
 
   getMyWaitingListsWithoutSeat (page: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
     return this.seatersApi.fan.joinedWaitingListsWithoutSeat(page)
-      .then(res => this.waitingListService.extendRawWaitingLists(<any>res));
+      .then(res => this.waitingListService.extendRawWaitingLists(res as any));
   }
 
   getMyWaitingListsWithSeat (page: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
     return this.seatersApi.fan.joinedWaitingListsWithSeat(page)
-      .then(res => this.waitingListService.extendRawWaitingLists(<any>res));
+      .then(res => this.waitingListService.extendRawWaitingLists(res as any));
   }
 
   payPosition (waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {

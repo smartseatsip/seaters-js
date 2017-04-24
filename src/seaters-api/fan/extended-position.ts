@@ -12,54 +12,54 @@ export interface ExtendedPosition extends Position {
   /**
    * The information stored about the attendees
    */
-  attendeesInfo: AttendeesInfo,
+  attendeesInfo: AttendeesInfo;
 
   /**
    * Total facial price (unit facial price times number of Seats)
    * double precision
    */
-  facialPrice: string,
+  facialPrice: string;
 
   /**
    * Total fee
    * double precision
    */
-  fee: string,
+  fee: string;
 
   /**
    * Fee excluding VAT
    * double precision
    */
-  feeExcVat: string,
+  feeExcVat: string;
 
   /**
    * Fee VAT
    * double precision
    */
-  feeVat: string,
+  feeVat: string;
 
   /**
    * Facial price, formatted with currency
    * double precision
    */
-  formattedFacialPrice: string,
+  formattedFacialPrice: string;
 
   /**
    * Fee excluding VAT, formatted with currency
    * double precision
    */
-  formattedFeeExcVat: string,
+  formattedFeeExcVat: string;
 
   /**
    * Fee VAT, formatted with currency
    * double precision
    */
-  formattedFeeVat: string,
+  formattedFeeVat: string;
 
   /**
    * Fee incl VAT, formatted with currency
    * double precision
    */
-  formattedFee: string,
+  formattedFee: string;
 
 }

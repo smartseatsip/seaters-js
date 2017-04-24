@@ -11,7 +11,7 @@ export class AppService {
   }
 
   getEnv (): Promise<app.Env> {
-    if (this.envP === undefined) {
+    if (!this.envP) {
       this.envP = this.seatersApi.app.env();
     }
     return this.envP;

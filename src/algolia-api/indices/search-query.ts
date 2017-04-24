@@ -3,49 +3,49 @@ export interface SearchQuery {
   /**
    * https://www.algolia.com/doc/rest-api/search/#query
    */
-  query?: string,
+  query?: string;
 
   /**
    * https://www.algolia.com/doc/rest-api/search/#hitsperpage
    * default: 20
    */
-  hitsPerPage?: number,
+  hitsPerPage?: number;
 
   /**
    * https://www.algolia.com/doc/rest-api/search/#page
    * default: 0
    */
-  page?: number
+  page?: number;
 
   /**
    * https://www.algolia.com/doc/rest-api/search/#restrictsearchableattributes
    */
-  restrictSearchableAttributes?: string[],
+  restrictSearchableAttributes?: string[];
 
   /**
    * https://www.algolia.com/doc/rest-api/search/#filters
    */
-  facetFilters?: FacetFilter[]
+  facetFilters?: FacetFilter[];
 
   /**
    * https://www.algolia.com/doc/rest-api/search/#typotolerance
    */
-  typoTolerance?: 'true' | 'false' | 'strict' | 'min',
+  typoTolerance?: 'true' | 'false' | 'strict' | 'min';
 
   /**
    * https://www.algolia.com/doc/rest-api/search/#maxvaluesperfacet
    * default: 100
    */
-  maxValuesPerFacet?: number
+  maxValuesPerFacet?: number;
 
   /**
    * https://www.algolia.com/doc/guides/search/filtering-faceting/#filter-by-tags-values
    */
-  tagFilters?: string[]
+  tagFilters?: string[];
 
 }
 
 export interface FacetFilter {
-  facet: string,
-  value: string
+  facet: string;
+  value: string;
 }

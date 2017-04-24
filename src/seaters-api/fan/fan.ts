@@ -2,121 +2,121 @@ export interface Fan {
   /**
    * Fan's notification preferences
    */
-  notificationChannels: NotificationChannels
+  notificationChannels: NotificationChannels;
 
   /**
    * Fan's marketing preferences
    */
-  directMarketingSettings: DirectMarketingSettings
+  directMarketingSettings: DirectMarketingSettings;
 
   /**
    * Fan's first name
    */
-  firstName: string,
+  firstName: string;
 
   /**
    * Fan's last name.
    */
-  lastName: string,
+  lastName: string;
 
   /**
    * Fan's mobile phone number
    */
-  mobilePhoneNumber: PhoneNumber,
+  mobilePhoneNumber: PhoneNumber;
 
   /**
    * Fan's username
    */
-  username: string,
+  username: string;
 
   /**
    * Fan's email
    */
-  email: string,
+  email: string;
 
   /**
    * Fan's roles
    */
-  roles: ROLE[],
+  roles: ROLE[];
 
   /**
    * Fan's invoice data
    */
-  invoiceInfo: InvoiceInfo,
+  invoiceInfo: InvoiceInfo;
 
-  validatedEmail: boolean,
+  validatedEmail: boolean;
 
-  validatedMobilePhone: boolean,
+  validatedMobilePhone: boolean;
 
-  personalInfo: PersonalInfo,
+  personalInfo: PersonalInfo;
 
   /**
    * Fan's full name
    */
-  name: string,
+  name: string;
 
   /**
    * Fan's language
    */
-  language: string,
+  language: string;
 }
 
 export interface NotificationChannels {
-  byMail: boolean
-  bySms: boolean
+  byMail: boolean;
+  bySms: boolean;
 }
 
 export interface DirectMarketingSettings {
-  allowDirectMarketingFromSeaters: boolean
-  allowDirectMarketingFromPartners: boolean
+  allowDirectMarketingFromSeaters: boolean;
+  allowDirectMarketingFromPartners: boolean;
 }
 
 export interface PhoneNumber {
-  countryCallingCode: string
-  localNumber: string
+  countryCallingCode: string;
+  localNumber: string;
 }
 
-export type ROLE = 'FAN' | 'ADMIN' | 'TRANSLATOR' | 'FAN_GROUP_OWNER'
+export type ROLE = 'FAN' | 'ADMIN' | 'TRANSLATOR' | 'FAN_GROUP_OWNER';
 
 export interface InvoiceInfo {
   /**
    * VAT number
    */
-  vatNumber: string,
+  vatNumber: string;
 
   /**
    * Invoice address
    */
-  address: Address,
+  address: Address;
 
   /**
    * Name on the invoice
    */
-  name: string,
+  name: string;
 }
 
 export interface Address {
   /**
    * @format alpha-2 country code
    */
-  countryCode: string,
-  street: string,
-  zipCode: string,
-  city: string,
-  line1: string
-  line2: string
-  line3: string
-  state: string
-  number: string,
-  country: string,
+  countryCode: string;
+  street: string;
+  zipCode: string;
+  city: string;
+  line1: string;
+  line2: string;
+  line3: string;
+  state: string;
+  number: string;
+  country: string;
 }
 
 export interface PersonalInfo {
-  birthDate: string,
-  idNumber: string,
-  title: TITLE,
-  citizenshipCountryCode: string,
-  address: Address,
+  birthDate: string;
+  idNumber: string;
+  title: TITLE;
+  citizenshipCountryCode: string;
+  address: Address;
 }
 
-export type TITLE = 'MR' | 'MS'
+export type TITLE = 'MR' | 'MS';

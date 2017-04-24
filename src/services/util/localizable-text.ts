@@ -4,7 +4,7 @@ const SEATERS_DEFAULT_LOCALE = 'en';
 
 export class LocalizableText implements TranslationMap {
 
-  [key: string]: string | any,
+  [key: string]: string | any;
 
   constructor (translationMap: TranslationMap) {
     Object.keys(translationMap).forEach(k => this[k] = translationMap[k]);
@@ -24,7 +24,7 @@ export class LocalizableText implements TranslationMap {
     } else if (this.hasOwnProperty(SEATERS_DEFAULT_LOCALE)) {
       return this[fallbackLocale];
     } else {
-      var err = 'LocalizableText - translation map is missing SEATERS_DEFAULT_LOCALE: ' + JSON.stringify(this);
+      let err = 'LocalizableText - translation map is missing SEATERS_DEFAULT_LOCALE: ' + JSON.stringify(this);
       console.error(err);
       throw err;
     }

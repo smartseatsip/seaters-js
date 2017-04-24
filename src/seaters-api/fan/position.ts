@@ -3,60 +3,60 @@ export interface Position {
   /**
    * Number of Seats
    */
-  numberOfSeats: number,
+  numberOfSeats: number;
 
   /**
    * Is personal info required to be able to accept the seats?
    */
-  personalInfoRequired: boolean,
+  personalInfoRequired: boolean;
 
   /**
    * When the position will expire
    * @format ISO_8601
    */
-  expirationDate: string,
+  expirationDate: string;
 
   /**
    * A description of the error that lead to FAILURE status
    */
-  paymentFailureMessage: string,
+  paymentFailureMessage: string;
 
   /**
    * The payment status
    */
-  transactionStatus: TRANSACTION_STATUS,
+  transactionStatus: TRANSACTION_STATUS;
 
   /**
    * Is the likelihood of the fan to get his tickets considered low?
    */
-  lowLikelihood: boolean,
+  lowLikelihood: boolean;
 
   /**
    * The likelihood of the fan to get tickets (percentage)
    * double precision
    */
-  likelihood: string,
+  likelihood: string;
 
   /**
    * Position status
    */
-  status: POSITION_STATUS,
+  status: POSITION_STATUS;
 
   /**
    * Position rank
    */
-  rank: number,
+  rank: number;
 
   /**
    * Currency formatted total price for the requested # of tickets
    */
-  formattedTotal: string,
+  formattedTotal: string;
 
   /**
    * Total price or null if Waiting List is free
    * double precision
    */
-  total: string,
+  total: string;
 
 }
 

@@ -3,38 +3,38 @@ export interface PositionSalesTransactionInput {
    * The URL the payment service should redirect to in case of success
    * @format URL
    */
-  successUrl: string,
+  successUrl: string;
 
   /**
    * The URL the payment service should redirect to in case the user cancelled the transaction
    * @format URL
    */
-  cancelUrl: string,
+  cancelUrl: string;
 
   /**
    * The Adyen payment info for the server to create the transaction
    */
-  adyenPayment: AdyenPaymentInput,
+  adyenPayment: AdyenPaymentInput;
 
   /**
    * The Braintree payment info for the server to create the transaction
    */
-  braintreePayment: BraintreePaymentInput,
+  braintreePayment: BraintreePaymentInput;
 
   /**
    * Paypal Payment ID (retrieved on Payment creation)
    */
-  paypalPaymentId: string,
+  paypalPaymentId: string;
 
 }
 
 export interface AdyenPaymentInput {
 
-  skinCode: string,
-  merchantReference: string,
-  merchantSig: string,
-  pspReference: string,
-  authResult: string
+  skinCode: string;
+  merchantReference: string;
+  merchantSig: string;
+  pspReference: string;
+  authResult: string;
 
 }
 
@@ -46,6 +46,6 @@ export interface BraintreePaymentInput {
    * obtained from seaters for a specific position sales transaction
    * and completing the checkout process.
    */
-  paymentMethodNonce: string
+  paymentMethodNonce: string;
 
 }

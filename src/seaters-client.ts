@@ -1,23 +1,21 @@
-import { Promise } from 'es6-promise';
 import { Object } from 'core-js/library';
 
-import { RequestDriver, REQUEST_DRIVER_TYPE, getRequestDriver } from './api';
+import { REQUEST_DRIVER_TYPE, getRequestDriver } from './api';
 import { SeatersApi } from './seaters-api';
 import { FanService, PublicService, SessionService, AppService } from './services';
-import { AlgoliaForSeatersService } from './services/algolia-for-seaters/algolia-for-seaters-service';
 
 export interface SeatersClientOptions {
-  apiPrefix: string,
-  requestDriver?: REQUEST_DRIVER_TYPE,
-  mockData?: any
+  apiPrefix: string;
+  requestDriver?: REQUEST_DRIVER_TYPE;
+  mockData?: any;
 }
 
 export class SeatersClient {
 
-  private static DEFAULT_OPTIONS = <SeatersClientOptions> {
+  private static DEFAULT_OPTIONS = {
     apiPrefix: '${api.location}',
     requestDriver: 'BROWSER'
-  };
+  } as SeatersClientOptions;
 
   public seatersApi: SeatersApi;
 
@@ -31,7 +29,7 @@ export class SeatersClient {
 
   constructor (options?: SeatersClientOptions) {
     options = Object.assign({}, SeatersClient.DEFAULT_OPTIONS, options);
-    var requestDriver = getRequestDriver(options.requestDriver, options.mockData);
+    let requestDriver = getRequestDriver(options.requestDriver, options.mockData);
 
     this.seatersApi = new SeatersApi(options.apiPrefix, requestDriver);
     this.sessionService = new SessionService(this.seatersApi);
@@ -42,10 +40,10 @@ export class SeatersClient {
 
 }
 
-export var getSeatersClient = (() => {
-  var client: SeatersClient = undefined;
+export let getSeatersClient = (() => {
+  let client: SeatersClient = undefined;
   return (options?: SeatersClientOptions) => {
-    if (client === undefined) {
+    if (!client) {
       client = new SeatersClient(options);
     }
     return client;

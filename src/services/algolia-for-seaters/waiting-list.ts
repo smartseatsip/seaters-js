@@ -5,41 +5,41 @@ export type WL_ACCESS_MODE = 'PUBLIC' | 'PRIVATE' | 'CODE_PROTECTED';
 
 export interface WaitingList {
 
-  waitingListId: string,
+  waitingListId: string;
 
-  type: 'WAITING_LIST',
+  type: 'WAITING_LIST';
 
-  groupId: string,
-  groupSlug: string,
-  groupName: string,
-  groupProfileImageUrl: string,
+  groupId: string;
+  groupSlug: string;
+  groupName: string;
+  groupProfileImageUrl: string;
 
-  eventName: Object,
-  eventShortName: Object,
-  eventStartDate: string,
-  eventEndDate: string,
-  utcEventStartDate: string,
-  utcEventEndDate: string,
-  eventDescription: Object,
-  eventImageUrl: string,
+  eventName: Object;
+  eventShortName: Object;
+  eventStartDate: string;
+  eventEndDate: string;
+  utcEventStartDate: string;
+  utcEventEndDate: string;
+  eventDescription: Object;
+  eventImageUrl: string;
 
-  venueName: Object,
-  venueCity: Object,
-  venueCountry: Object,
-  venueCurrencyCode: string,
-  venueImageUrl: string,
+  venueName: Object;
+  venueCity: Object;
+  venueCountry: Object;
+  venueCurrencyCode: string;
+  venueImageUrl: string;
 
-  maxNumberOfSeats: number
-  freeWaitingList: boolean,
-  waitingListStatus: WAITING_LIST_STATUS,
-  accessMode: WL_ACCESS_MODE,
-  directSalesEnabled: boolean,
+  maxNumberOfSeats: number;
+  freeWaitingList: boolean;
+  waitingListStatus: WAITING_LIST_STATUS;
+  accessMode: WL_ACCESS_MODE;
+  directSalesEnabled: boolean;
 
-  displayName: string,
+  displayName: string;
 
   /**
    * Map of language -> comma separated list of keywords
    */
-  keywords: { [key: string]: string }
+  keywords: { [key: string]: string };
 
 }
