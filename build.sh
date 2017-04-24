@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 VERSION=`node -e "console.log(require('./package.json').version)"`
 NAME="seaters-sdk";
 TMP_DIST="tmp/deploy";

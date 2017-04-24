@@ -6,7 +6,8 @@
     "experimentalDecorators": true,
     "outDir": "lib",
     "declaration": true,
-    "declarationDir": "dist"
+    "declarationDir": "dist",
+    "lib": ["es2015", "es2017", "dom"]
   },
   "include": [
     "src/**/*.ts",
