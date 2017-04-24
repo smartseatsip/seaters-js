@@ -1,4 +1,5 @@
 {
+  "format": "stylish",
   "extends": "tslint-config-standard",
   "rules": {
     "semicolon": true
