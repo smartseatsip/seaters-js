@@ -14,7 +14,7 @@
     "tslint-watch": "node ./node_modules/chokidar-cli **/*.ts -c \"npm run tslint\" --initial",
     "tslint-types": "./node_modules/tslint/bin/tslint --force --project tsconfig.json --type-check -t stylish --fix",
     "tslint-types-watch": "node ./node_modules/chokidar-cli **/*.ts -c \"npm run tslint-types\" --initial",
-    "eslint": "node ./node_modules/eslint/bin/eslint.js . --fix",
+    "eslint": "node ./node_modules/eslint/bin/eslint.js e2e*/**/* --fix",
     "eslint-watch": "node ./node_modules/eslint-watch/bin/esw . -w --fix"
   },
   "author": "Ben Corne",
