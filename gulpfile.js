@@ -1,6 +1,9 @@
+'use strict';
+
+var DEFAULT_PORT = 3000;
+
 var gulp = require('gulp');
 var webdriver = require('gulp-webdriver');
-var debug = require('gulp-debug');
 var webpack = require('webpack-stream');
 var clean = require('gulp-clean');
 var tslint = require('tslint');
@@ -9,16 +12,12 @@ var stylish = require('gulp-tslint-stylish');
 var eslint = require('gulp-eslint');
 var typescript = require('gulp-typescript');
 var jasmine = require('gulp-jasmine');
-var replace = require('gulp-replace');
 
-// Var through = require('through2');
 var http = require('http');
-// Var proxy = require('http-proxy-middleware');
 var connect = require('connect');
 var serveStatic = require('serve-static');
-// Var rp = require('request-promise');
-// Var fs = require('fs');
-var runSequence = require('run-sequence');// Needed pre gulp4.0
+// We need runSequence until gulp4.0 is released
+var runSequence = require('run-sequence');
 
 var server = undefined;
 
@@ -85,19 +84,10 @@ gulp.task('build:mock-module', [], function () {
 
 var tsconfig = require('./tsconfig.json');
 gulp.task('build:typings', [], function () {
-  return gulp.src(tsconfig.files.concat('src/**/*.ts', '!**/*.spec.ts'))
+  return gulp.src(['src/**/*.ts', '!**/*.spec.ts'])
     .pipe(typescript(tsconfig.compilerOptions))
     .dts.pipe(gulp.dest('./dist/'));
 });
-
-function replaceVersion(src) {
-  var packageVersion = require('./package.json').version;
-  return gulp.src(src || [
-    'src/index.ts',
-    'typings/index.d.ts'
-  ])
-    .pipe(replace('${package.version}', packageVersion));
-}
 
 gulp.task('http', function (done) {
   var app = connect()
@@ -105,7 +95,7 @@ gulp.task('http', function (done) {
     .use(serveStatic('./dist'))
     .use('/examples', serveStatic('./examples'));
 
-  server = http.createServer(app).listen(3000, done);
+  server = http.createServer(app).listen(DEFAULT_PORT, done);
 });
 
 gulp.task('test:e2e-browser', ['build:bundle', 'http'], function () {
@@ -125,7 +115,6 @@ gulp.task('build', [], function (cb) {
   runSequence(
     'clean',
     'tslint',
-    'eslint',
     'build:bundle',
     'build:bundle-min',
     'build:module',

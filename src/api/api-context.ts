@@ -1,6 +1,5 @@
 import { Subject } from '../services/util/subject';
 import { Map, Object } from 'core-js/library';
-import { Promise } from 'es6-promise';
 
 import { ApiRequestDefinition } from './api-request-definition';
 import { ApiRequest } from './api-request';
@@ -69,7 +68,7 @@ export class ApiContext {
     };
     // notify all request listeners about the request that was just started
     this.requestsSubject.next(apiRequest);
-    return request;
+    return request as Promise<ServerResponse>;
   }
 
   private mergeHeaders (otherHeaders: any) {

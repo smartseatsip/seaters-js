@@ -1,3 +1,4 @@
+/* tslint:disable:no-floating-promises */
 import { SeatersApiContext } from '../seaters-api-context';
 import { PagedResult } from '../paged-result';
 import { PagingOptions } from '../paging-options';
@@ -10,12 +11,14 @@ export class AppApi {
   }
 
   env (): Promise<Env> {
-    return this.apiContext.get<Env>('/app/env');
+    return this.apiContext.get('/app/env');
   }
 
   countries (pagingOptions?: PagingOptions): Promise<PagedResult<Country>> {
     let queryParams = SeatersApiContext.buildPagingQueryParams(pagingOptions);
-    return this.apiContext.get<PagedResult<Country>>('/app/countries', null, queryParams);
+    return this.apiContext.get('/app/countries', null, queryParams);
   }
 
 }
+
+/* tslint:enable:no-floating-promises */

@@ -1,3 +1,5 @@
+/* tslint:disable:no-floating-promises */
+
 import { SeatersApiContext } from '../../seaters-api';
 import { PagedResult } from '../paged-result';
 import { PagingOptions } from '../paging-options';
@@ -16,29 +18,29 @@ export class FanApi {
   }
 
   fan (): Promise<Fan> {
-    return this.apiContext.get<Fan>('/fan');
+    return this.apiContext.get('/fan');
   }
 
   updateFan (fan: Fan): Promise<Fan> {
-    return this.apiContext.put<Fan>('/fan', fan);
+    return this.apiContext.put('/fan', fan);
   }
 
   fanGroup (fanGroupId: string): Promise<FanGroup> {
-    return this.apiContext.get<FanGroup>(
+    return this.apiContext.get(
       '/fan/groups/:fanGroupId',
       { fanGroupId: fanGroupId }
     );
   }
 
   fanGroupLook (slug: string): Promise<FanGroupLook> {
-    return this.apiContext.get<FanGroupLook>(
+    return this.apiContext.get(
       '/fan/fangroups-by-slug/:slug/look',
       { slug: slug }
     );
   }
 
   joinFanGroup (fanGroupId: string): Promise<FanGroup> {
-    return this.apiContext.post<FanGroup>(
+    return this.apiContext.post(
       '/fan/groups/:fanGroupId',
       null,
       { fanGroupId: fanGroupId }
@@ -53,10 +55,10 @@ export class FanApi {
 
     if (!fg.membership.request) {
       let endpoint1 = '/fan/groups/:fanGroupId/request-with-data';
-      return this.apiContext.post<FanGroupRequest>(endpoint1, data, endpointParams);
+      return this.apiContext.post(endpoint1, data, endpointParams);
     } else {
       let endpoint2 = '/fan/groups/:fanGroupId/request';
-      return this.apiContext.put<FanGroupRequest>(endpoint2, data, endpointParams);
+      return this.apiContext.put(endpoint2, data, endpointParams);
     }
   }
 
@@ -105,12 +107,12 @@ export class FanApi {
   waitingList (waitingListId: string): Promise<WaitingList> {
     let endpoint = '/fan/waiting-lists/:waitingListId';
     let endpointParams = { waitingListId: waitingListId };
-    return this.apiContext.get<WaitingList>(endpoint, endpointParams);
+    return this.apiContext.get(endpoint, endpointParams);
   }
 
   waitingLists (waitingListIds: string[]): Promise<WaitingList[]> {
     let endpoint = '/fan/waiting-lists';
-    return this.apiContext.put<WaitingList[]>(endpoint, {
+    return this.apiContext.put(endpoint, {
       waitingListIds: waitingListIds
     });
   }
@@ -121,57 +123,57 @@ export class FanApi {
       waitingListId: waitingListId,
       numberOfSeats: numberOfSeats
     };
-    return this.apiContext.get<Price>(endpoint, endpointParams);
+    return this.apiContext.get(endpoint, endpointParams);
   }
 
   joinWaitingList (waitingListId: string, numberOfSeats: number): Promise<WaitingList> {
     let endpoint = '/fan/waiting-lists/:waitingListId/position';
     let endpointParams = { waitingListId: waitingListId };
     let data = { numberOfSeats: numberOfSeats };
-    return this.apiContext.post<WaitingList>(endpoint, data, endpointParams);
+    return this.apiContext.post(endpoint, data, endpointParams);
   }
 
   leaveWaitingList (waitingListId: string): Promise<void> {
     let endpoint = '/fan/waiting-lists/:waitingListId/position';
     let endpointParams = { waitingListId: waitingListId };
-    return this.apiContext.delete<void>(endpoint, endpointParams)
+    return this.apiContext.delete(endpoint, endpointParams)
       .then(() => undefined);
   }
 
   acceptSeats (waitingListId: string): Promise<WaitingList> {
     let endpoint = '/fan/waiting-lists/:waitingListId/accept';
     let endpointParams = { waitingListId: waitingListId };
-    return this.apiContext.post<WaitingList>(endpoint, null, endpointParams);
+    return this.apiContext.post(endpoint, null, endpointParams);
   }
 
   rejectSeats (waitingListId: string): Promise<WaitingList> {
     let endpoint = '/fan/waiting-lists/:waitingListId/reject';
     let endpointParams = { waitingListId: waitingListId };
-    return this.apiContext.post<WaitingList>(endpoint, null, endpointParams);
+    return this.apiContext.post(endpoint, null, endpointParams);
   }
 
   exportSeats (waitingListId: string): Promise<void> {
     let endpoint = '/fan/waiting-lists/:waitingListId/export-seat';
     let endpointParams = { waitingListId: waitingListId };
-    return this.apiContext.put<void>(endpoint, null, endpointParams);
+    return this.apiContext.put(endpoint, null, endpointParams);
   }
 
   positionPaymentInfo (waitingListId: string): Promise<PaymentInfo> {
     let endpoint = '/fan/waiting-lists/:waitingListId/position/payment-info';
     let endpointParams = { waitingListId: waitingListId };
-    return this.apiContext.get<PaymentInfo>(endpoint, endpointParams);
+    return this.apiContext.get(endpoint, endpointParams);
   }
 
   positionBraintreeToken (waitingListId: string): Promise<BraintreeToken> {
     let endpoint = '/fan/waiting-lists/:waitingListId/position/braintree-token';
     let endpointParams = { waitingListId: waitingListId };
-    return this.apiContext.get<BraintreeToken>(endpoint, endpointParams);
+    return this.apiContext.get(endpoint, endpointParams);
   }
 
   getPositionSalesTransaction (waitingListId: string): Promise<PositionSalesTransaction> {
     let endpoint = '/fan/waiting-lists/:waitingListId/transaction';
     let endpointParams = { waitingListId: waitingListId };
-    return this.apiContext.get<PositionSalesTransaction>(endpoint, endpointParams);
+    return this.apiContext.get(endpoint, endpointParams);
   }
 
   createPositionSalesTransaction (
@@ -180,7 +182,7 @@ export class FanApi {
   ): Promise<PositionSalesTransaction> {
     let endpoint = '/fan/waiting-lists/:waitingListId/transaction';
     let endpointParams = { waitingListId: waitingListId };
-    return this.apiContext.post<PositionSalesTransaction>(endpoint, transaction, endpointParams);
+    return this.apiContext.post(endpoint, transaction, endpointParams);
   }
 
   deletePositionSalesTransaction (waitingListId: string): Promise<any> {
@@ -210,3 +212,5 @@ export class FanApi {
   }
 
 }
+
+/* tslint:enable:no-floating-promises */

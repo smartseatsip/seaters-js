@@ -1,3 +1,4 @@
+/* tslint:disable:no-floating-promises */
 import { SeatersApiContext, SeatersApiException } from '../../seaters-api';
 import { Fan } from '../fan';
 import {
@@ -16,7 +17,7 @@ export class AuthenticationApi {
   }
 
   token (input: AuthenticationTokenInput): Promise<SessionToken> {
-    return this.apiContext.put<any>('/v2/authentication/token', input)
+    return this.apiContext.put('/v2/authentication/token', input)
       .then(data => {
         return {
           expirationDate: data.token.expirationDate,
@@ -31,7 +32,7 @@ export class AuthenticationApi {
    * @returns {any}
    */
   signup (input: SignupData): Promise<UserData> {
-    return this.apiContext.post<UserData>('/v2/authentication/signup', input);
+    return this.apiContext.post('/v2/authentication/signup', input);
   }
 
   /**
@@ -51,7 +52,7 @@ export class AuthenticationApi {
    * @returns {any}
    */
   resetEmail (input: ResetEmailData): Promise<void> {
-    return this.apiContext.post<void>('/auth/signup/reset-email', input);
+    return this.apiContext.post('/auth/signup/reset-email', input);
   }
 
   /**
@@ -63,7 +64,7 @@ export class AuthenticationApi {
     let endpoint = '/login/:oauthProvider';
     let endpointParams = { oauthProvider: oauthProvider };
     let queryParams = { code: code };
-    return this.apiContext.get<any>(endpoint, endpointParams, queryParams)
+    return this.apiContext.get(endpoint, endpointParams, queryParams)
       .then(data => {
         return {
           expirationDate: data.token.expirationDate,
@@ -73,3 +74,5 @@ export class AuthenticationApi {
   }
 
 }
+
+/* tslint:enable:no-floating-promises */
