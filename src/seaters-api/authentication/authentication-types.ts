@@ -25,73 +25,12 @@ export interface ResetEmailData {
 }
 
 /**
- * Input for `PUT /api/v2/authentication/token`
- */
-export interface AuthenticationTokenInput {
-
-    emailPasswordCredentials?: EmailPasswordCredentials,
-    facebookCredentials?: FacebookCredentials,
-    sessionTokenCredentials?: SessionTokenCredentials,
-    clientInfo?: ClientInfo,
-    storedTokenCredentials?: StoredTokenCredentials
-
-}
-
-/**
- * Login via email-password combination
- */
-export interface EmailPasswordCredentials {
-
-    mfaToken?: string,
-    password: string,
-    email: string
-
-}
-
-/**
- * Login via facebook oauth token
- */
-export interface FacebookCredentials {
-
-    mfaToken?: string,
-    accessToken: string
-
-}
-
-/**
  * Relogin using a valid session token
  */
 export interface SessionTokenCredentials {
 
     mfaToken?: string,
     accessToken: string
-
-}
-
-/**
- * Information about the connecting client
- */
-export interface ClientInfo {
-
-    /**
-     * Seaters application
-     */
-    type: string,
-
-    /**
-     * Version of the application
-     */
-    version: string
-
-}
-
-/**
- * Login using a stored long term token
- */
-export interface StoredTokenCredentials {
-
-    mfaToken: string,
-    token: string
 
 }
 
@@ -127,4 +66,40 @@ export interface UserData {
         lastName: string
     }
 
+}
+
+/**
+ * Email-Password login credentials
+ */
+export interface EmailPasswordCredentials {
+    email: string,
+    password: string,
+    mfaToken?: string
+}
+
+/**
+ * Refresh token login credentials
+ */
+export interface RefreshTokenCredentials {
+    token: string,
+    mfaToken?: string
+}
+
+/**
+ * Long-Term token login credentials
+ */
+export interface StoredTokenCredentials {
+    token: string,
+    mfaToken?: string
+}
+
+/**
+ * The result from a successful authentication
+ */
+export interface AuthenticationSuccess {
+    token: {
+        value: string,
+        expirationDate: string
+    },
+    userData: UserData
 }

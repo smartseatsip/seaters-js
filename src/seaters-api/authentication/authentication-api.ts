@@ -1,6 +1,9 @@
 import { SeatersApiContext, SeatersApiException } from '../../seaters-api';
 import { Fan } from '../fan';
-import { UserData, SessionToken, ResetEmailData, SignupData, ValidationData, EmailValidationData, MobilePhoneValidationData, AuthenticationTokenInput } from './authentication-types';
+import { UserData, SessionToken, ResetEmailData, SignupData,
+  ValidationData, EmailValidationData, MobilePhoneValidationData,
+  EmailPasswordCredentials, StoredTokenCredentials, RefreshTokenCredentials,
+  AuthenticationSuccess } from './authentication-types';
 
 export class AuthenticationApi {
 
@@ -8,23 +11,37 @@ export class AuthenticationApi {
 
     }
 
-    token(input: AuthenticationTokenInput): Promise<SessionToken> {
-        return this.apiContext.put<any>('/v2/authentication/token', input)
-        .then(data => {
-          return {
-            expirationDate: data.token.expirationDate,
-            token: data.token.value
-          };//TODO: remove this code when API is adapted
-        });
+    /**
+     * Login using email-password credentials
+     * @param credentials email, password and optionally MFA token
+     */
+    emailPasswordLogin(credentials: EmailPasswordCredentials): Promise<AuthenticationSuccess> {
+      return this.apiContext.put('/v2/authentication/login', credentials);
     }
 
-  /**
-   * Signs up a new user
-   * @param input
-   * @returns {any}
+    /**
+     * Login using long-term stored token
+     * @param credentials long term stored token and optionally MFA token
+     */
+    storedTokenLogin(credentials: StoredTokenCredentials): Promise<AuthenticationSuccess> {
+      return this.apiContext.put('/v2/authentication/stored-token', credentials);
+    }
+
+    /**
+     * Extend your session with a refresh token
+     * @param credentials Refresh token
+     */
+    refreshTokenLogin(credentials: RefreshTokenCredentials): Promise<AuthenticationSuccess> {
+      return this.apiContext.put('/v2/authentication/refresh-token', credentials);
+    }
+
+    /**
+     * Signs up a new user
+     * @param input
+     * @returns {any}
      */
     signup(input: SignupData): Promise<UserData> {
-      return this.apiContext.post<UserData>('/v2/authentication/signup', input);
+      return this.apiContext.post('/v2/authentication/signup', input);
     }
 
     /**
@@ -52,17 +69,11 @@ export class AuthenticationApi {
      * Examples that should work are github, facebook. For your specific provider name
      * please refer to a seaters developer.
      */
-    loginWithOAuthCode (oauthProvider: string, code: string) : Promise<SessionToken> {
+    loginWithOAuthCode (oauthProvider: string, code: string) : Promise<AuthenticationSuccess> {
       var endpoint = '/login/:oauthProvider';
       var endpointParams = {oauthProvider: oauthProvider};
       var queryParams = {code: code};
-      return this.apiContext.get<any>(endpoint, endpointParams, queryParams)
-      .then(data => {
-        return {
-          expirationDate: data.token.expirationDate,
-          token: data.token.value
-        };
-      });
+      return this.apiContext.get<any>(endpoint, endpointParams, queryParams);
     }
 
 }

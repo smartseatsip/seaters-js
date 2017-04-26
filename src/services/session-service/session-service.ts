@@ -2,7 +2,7 @@ import { SeatersApi, SeatersApiException, seatersExceptionV1MessageMapper } from
 import { session } from './session-types';
 import { Promise } from 'es6-promise';
 import * as moment from 'moment';
-import { MobilePhoneValidationData } from '../../seaters-api/authentication';
+import { MobilePhoneValidationData, AuthenticationSuccess } from '../../seaters-api/authentication';
 
 const AUTH_HEADER = 'Authorization';
 const AUTH_BEARER = 'SeatersBearer';
@@ -44,8 +44,11 @@ export class SessionService {
         );
     }
 
-    private finishLogin (session: session.SessionToken): Promise<session.Fan> {
-        this.setSession(session);
+    private finishLogin (authSuccess: AuthenticationSuccess): Promise<session.Fan> {
+        this.setSession({
+            expirationDate: authSuccess.token.expirationDate,
+            token: authSuccess.token.value
+        });
         return this.setCurrentFan();
     }
 
@@ -80,13 +83,37 @@ export class SessionService {
     }
 
     doEmailPasswordLogin (email: string, password: string, mfaToken?: string): Promise<session.Fan> {
-        return this.seatersApi.authentication.token({
-            emailPasswordCredentials: {
-                email: email,
-                password: password,
-                mfaToken: mfaToken
-            }
+        return this.seatersApi.authentication.emailPasswordLogin({
+            email: email,
+            password: password,
+            mfaToken: mfaToken
         }).then((r) => this.finishLogin(r));
+    }
+
+    doStoredTokenLogin (storedToken: string, mfaToken?: string): Promise<session.Fan> {
+        return this.seatersApi.authentication.storedTokenLogin({
+            token: storedToken,
+            mfaToken: mfaToken
+        }).then((r) => this.finishLogin(r));
+    }
+
+    private doRefreshTokenLogin (refreshToken: string, mfaToken?: string): Promise<session.Fan> {
+        return this.seatersApi.authentication.refreshTokenLogin({
+            token: refreshToken,
+            mfaToken: mfaToken
+        }).then((r) => this.finishLogin(r));
+    }
+
+    doOAuthCodeLogin (oauthProvider: string, code: string) : Promise<session.Fan> {
+      return this.seatersApi.authentication.loginWithOAuthCode(oauthProvider, code)
+        .then((r) => this.finishLogin(r));
+    }
+
+    doLogout () {
+        console.log('[SessionService] doLogout');//DEBUG
+        this.seatersApi.apiContext.unsetHeader(AUTH_HEADER);
+        this.currentFan = undefined;
+        this.sessionToken = undefined;
     }
 
     //TODO: handle error case
@@ -142,18 +169,6 @@ export class SessionService {
         email: email,
         token: this.sessionToken
       });
-    }
-
-    doOAuthCodeLogin (oauthProvider: string, code: string) : Promise<session.Fan> {
-      return this.seatersApi.authentication.loginWithOAuthCode(oauthProvider, code)
-        .then((r) => this.finishLogin(r));
-    }
-
-    doLogout () {
-        console.log('[SessionService] doLogout');//DEBUG
-        this.seatersApi.apiContext.unsetHeader(AUTH_HEADER);
-        this.currentFan = undefined;
-        this.sessionToken = undefined;
     }
 
     whoami () {
