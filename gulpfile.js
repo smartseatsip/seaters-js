@@ -27,14 +27,11 @@ gulp.task('clean', function () {
 });
 
 gulp.task('tslint', function () {
-  var config = tslint.Linter.createProgram('./tsconfig.json');
-
   return gulp.src([
     'src/**/*.ts',
     'mock-data/**/*.ts'
-  ])
+  ], { base: '.' })
     .pipe(gulpTsLint({
-      program: config,
       formatter: 'stylish'
     }))
     .pipe(gulpTsLint.report(stylish, {
