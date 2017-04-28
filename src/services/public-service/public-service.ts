@@ -26,7 +26,10 @@ export class PublicService {
     return this.algoliaForSeatersService.getWaitingListById(waitingListId);
   }
 
-  getWaitingListsInFanGroup (fanGroupId: string, pagingOptions: PagingOptions): Promise<PagedResult<pub.WaitingList>> {
+  getWaitingListsInFanGroup (
+    fanGroupId: string,
+    pagingOptions: PagingOptions
+  ): Promise<PagedResult<pub.WaitingList>> {
     return this.algoliaForSeatersService.getWaitingListsByFanGroupId(fanGroupId, pagingOptions.maxPageSize, pagingOptions.page)
       .then(result => this.convertAlgoliaResultSet(result));
   }
@@ -35,7 +38,11 @@ export class PublicService {
     return this.seatersApi.fan.waitingListPrice(waitingListId, numberOfSeats) as Promise<pub.Price>;
   }
 
-  searchSeatersContent (query: string, locale: string, page?: PagingOptions): Promise<PagedResult<pub.SeatersContent>> {
+  searchSeatersContent (
+    query: string,
+    locale: string,
+    page?: PagingOptions
+  ): Promise<PagedResult<pub.SeatersContent>> {
     page = this.defaultPage(page);
     return this.algoliaForSeatersService.searchSeatersContent(
       query, locale, page.maxPageSize, page.page

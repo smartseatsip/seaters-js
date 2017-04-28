@@ -6,11 +6,9 @@
     "experimentalDecorators": true,
     "outDir": "lib",
     "declaration": true,
-    "declarationDir": "dist",
-    "lib": ["es2015", "es2017", "dom"]
+    "declarationDir": "dist"
   },
-  "include": [
-    "src/**/*.ts",
-    "mock-data/**/*.ts"
+  "files": [
+    "src/index.ts"
   ]
 }

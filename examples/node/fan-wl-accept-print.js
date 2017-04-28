@@ -14,7 +14,7 @@ var wlId = shared.wlId;
 var numberOfSeats = 1;
 
 shared.fanClient().then((client) => shared.playbooks.joinWl(client, fgId, wlId, numberOfSeats)
-  // Prerequisite checks - fan has been assigned seats
+// Prerequisite checks - fan has been assigned seats
   .then((wl) => {
     var position = wl.position;
     if (!position) {
@@ -27,7 +27,7 @@ shared.fanClient().then((client) => shared.playbooks.joinWl(client, fgId, wlId, 
   })
   .then(() => {
 
-      // TODO - accept seats
+    // TODO - accept seats
 
   }))
   .then(shared.exitOK, shared.exitFailMsg('Failed numberOfSeats'));

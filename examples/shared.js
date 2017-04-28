@@ -85,17 +85,17 @@ exports.playbooks = {
       .then((fg) => {
         if (fg.membership.member) {
           return fg;
-        } 
+        }
         return client.fanGroupService.joinFanGroup(fgId);
-        
+
       })
       .then(() => client.waitingListService.getWaitingList(wlId))
       .then((wl) => {
         if (wl.position) {
           return wl.position;
-        } 
+        }
         return client.waitingListService.joinWaitingList(wlId, numberOfSeats);
-        
+
       });
   }
 

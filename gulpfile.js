@@ -29,7 +29,10 @@ gulp.task('clean', function () {
 gulp.task('tslint', function () {
   var config = tslint.Linter.createProgram('./tsconfig.json');
 
-  return gulp.src(config.getRootFileNames())
+  return gulp.src([
+    'src/**/*.ts',
+    'mock-data/**/*.ts'
+  ])
     .pipe(gulpTsLint({
       program: config,
       formatter: 'stylish'
@@ -84,7 +87,7 @@ gulp.task('build:mock-module', [], function () {
 
 var tsconfig = require('./tsconfig.json');
 gulp.task('build:typings', [], function () {
-  return gulp.src(['src/**/*.ts', '!**/*.spec.ts'])
+  return gulp.src(tsconfig.files.concat('src/**/*.ts', '!**/*.spec.ts'))
     .pipe(typescript(tsconfig.compilerOptions))
     .dts.pipe(gulp.dest('./dist/'));
 });

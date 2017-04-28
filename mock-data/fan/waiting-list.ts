@@ -165,8 +165,7 @@ export const preauthorizedPosition: ExtendedPosition = {
   'formattedFee': '€1.82'
 };
 
-export const waitingListWithoutSeat:
-  WaitingList
+export const waitingListWithoutSeat: WaitingList
   | PagedResult<WaitingList> = generateWl('waiting-list-without-seat', preauthorizedPosition, null);
 
 export const waitingListsWithSeat: WaitingList | PagedResult<WaitingList> = mkPagedResult([waitingListWithSeat]);
