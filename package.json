@@ -47,6 +47,7 @@
     "gulp-tslint": "^8.0.0",
     "gulp-tslint-stylish": "^1.1.1",
     "gulp-typescript": "^3.0.2",
+    "gulp-uglify": "^2.1.2",
     "gulp-webdriver": "^2.0.2",
     "html-loader": "^0.4.4",
     "http-proxy-middleware": "^0.17.2",
