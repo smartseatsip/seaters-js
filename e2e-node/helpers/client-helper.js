@@ -3,7 +3,7 @@ var testConfig = require(process.env.TEST_CONFIG || process.cwd() + '/test-confi
 var client = new SeatersSDK.SeatersClient(testConfig.apiLocation);
 
 module.exports = {
-    SeatersSDK: SeatersSDK,
-    client: client,
-    testConfig: testConfig
+  SeatersSDK: SeatersSDK,
+  client: client,
+  testConfig: testConfig
 };

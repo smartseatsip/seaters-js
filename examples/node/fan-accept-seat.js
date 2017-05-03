@@ -13,19 +13,19 @@ var wlId = shared.wlId;
 
 shared.fanClient().then(client => {
 
-    return client.fanService.waitingListService.acceptSeats(wlId)
-      .then (wl => {
+  return client.fanService.waitingListService.acceptSeats(wlId)
+    .then(wl => {
         var position = wl.position;
-        if(!position) {
+        if (!position) {
           throw new Error('Fan is not in WL');
         } else if (position.status !== 'HAS_SEAT') {
           throw new Error('Fan seats are not assigned');
         }
 
-        console.log('Seat accepted in WaitingList',wl);
+        console.log('Seat accepted in WaitingList', wl);
       },
       error => {
-        console.log("Returned error:", error);
+        console.log('Returned error:', error);
       });
 })
-.then(shared.exitOK, shared.exitFail);
+  .then(shared.exitOK, shared.exitFail);

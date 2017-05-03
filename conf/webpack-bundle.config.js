@@ -1,3 +1,5 @@
+'use strict';
+
 var webpackHelpers = require('./webpack-helpers');
 
 module.exports = {
@@ -5,11 +7,9 @@ module.exports = {
   output: {
     filename: 'dist/seaters.bundle.js',
     libraryTarget: 'var',
-    library: 'SeatersSDK',
+    library: 'SeatersSDK'
   },
-  externals: {
-
-  },
+  externals: {},
   resolve: {
     extensions: ['', '.ts', '.js']
   },
@@ -17,10 +17,5 @@ module.exports = {
   module: {
     preLoaders: webpackHelpers.allPreLoaders,
     loaders: webpackHelpers.allLoaders
-  },
-  tslint: {
-    failOnHint: true,
-    emitErrors: true,
-    formatter: 'verbose'
   }
-}
+};

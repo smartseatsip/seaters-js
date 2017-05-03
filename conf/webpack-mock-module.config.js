@@ -1,3 +1,5 @@
+'use strict';
+
 var fs = require('fs');
 var webpack = require('webpack');
 var webpackHelpers = require('./webpack-helpers');
@@ -23,10 +25,10 @@ module.exports = {
     new webpack.BannerPlugin(
       'require("source-map-support").install();',
       { raw: true, entryOnly: false }
-    ),
+    )
     // webpackHelpers.noopStaticResources
   ],
   module: {
     loaders: [webpackHelpers.tsLoader]
   }
-}
+};

@@ -1,3 +1,5 @@
+'use strict';
+
 var webpackHelpers = require('./webpack-helpers');
 
 module.exports = {
@@ -5,20 +7,13 @@ module.exports = {
   output: {
     filename: 'dist/seaters-mock-data.bundle.js',
     libraryTarget: 'var',
-    library: 'SeatersSDKMockData',
+    library: 'SeatersSDKMockData'
   },
-  externals: {
-
-  },
+  externals: {},
   resolve: {
     extensions: ['', '.ts', '.js']
   },
   module: {
     loaders: [webpackHelpers.tsLoader]
-  },
-  tslint: {
-    failOnHint: true,
-    emitErrors: true,
-    formatter: 'verbose'
   }
-}
+};

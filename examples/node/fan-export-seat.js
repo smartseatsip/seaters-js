@@ -17,12 +17,12 @@ var wlId = shared.wlId;
 
 shared.fanClient().then(client => {
 
-    return client.fanService.waitingListService.exportSeats(wlId)
-      .then (wl => {
-        console.log('Seat exported in WaitingList - PDF is available',wl);
+  return client.fanService.waitingListService.exportSeats(wlId)
+    .then(wl => {
+        console.log('Seat exported in WaitingList - PDF is available', wl);
       },
       error => {
-        console.log("Returned error:", error);
+        console.log('Returned error:', error);
       });
 })
-.then(shared.exitOK, shared.exitFail);
+  .then(shared.exitOK, shared.exitFail);

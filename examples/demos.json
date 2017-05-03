@@ -1,85 +1,118 @@
-[{
-	"category": "Session",
-	"demos": [{
-		"name": "Login with WAT oAuth",
-		"file": "node/auth-wat-login.js"
-	}]
-}, {
-	"category": "Fan Operations",
-	"demos": [{
-		"name": "Fail To Unlock a FanGroup",
-		"file": "node/fan-fail-to-unlock-fg.js"
-	}, {
-		"name": "Unlock a FanGroup",
-		"file": "node/fan-unlock-join-fg.js"
-	}, {
-		"name": "Join a FanGroup, Join a WaitingList, Leave both",
-		"file": "node/fan-join-leave-fg-wl.js"
-	}, {
-		"name": "Fetch single WaitingList by WaitingList ID",
-		"file": "node/fan-wl-by-id.js"
-	}, {
-		"name": "Fetch list of WaitingLists by FanGroup ID",
-		"file": "node/fan-wl-in-fg.js"
-	}, {
-		"name": "Accept a seat for a WaitingList",
-		"file": "node/fan-accept-seat.js"
-	}, {
-		"name": "Reject a seat for a WaitingList",
-		"file": "node/fan-reject-seat.js"
-	}, {
-		"name": "Export a seat for a WaitingList (generate PDF)",
-		"file": "node/fan-export-seat.js"
-	}, {
-		"name": "Update details of a Fan",
-		"file": "node/fan-update-details.js"
-	}, {
-		"name": "Get braintree info",
-		"file": "mock/braintree-payment.js"
-	}, {
-		"name": "Get WLs for fan with and without seat",
-		"file": "mock/fan-waiting-list.js"
-	}, {
-		"name": "Pay for assigned seats",
-		"file": "mock/pay-seats.js"
-	}, {
-		"name": "Checkout: supply attendee info",
-		"file": "mock/checkout-flow.js"
-	}, {
-		"name": "Fetch additional WL data",
-		"file": "mock/waiting-list-data.js"
-	}, {
-		"name": "Get WLs and actionStatus by keywords",
-		"file": "node/fan-wls-by-keywords.js"
-	}]
-}, {
-	"category": "Public Data",
-	"demos": [{
-		"name": "Fetch public FanGroup by ID",
-		"file": "node/public-fg-by-id.js"
-	}, {
-		"name": "Fetch public FanGroup look by slug",
-		"file": "mock/get-fangroup-look.js"
-	}, {
-		"name": "Fetch public WaitingLists by FanGroup ID",
-		"file": "node/public-wl-by-fg-id.js"
-	}, {
-		"name": "Fetch public WaitingList by ID",
-		"file": "node/public-wl-by-id.js"
-	}, {
-		"name": "Fetch the price of a public WaitingList",
-		"file": "node/public-wl-get-price.js"
-	}, {
-		"name": "Search public seaters content",
-		"file": "node/public-search-content.js"
-	}, {
-		"name": "Search public seaters WL by keywords",
-		"file": "node/public-search-wl-by-keywords.js"
-	}]
-}, {
-	"category": "Seaters Application",
-	"demos": [{
-		"name": "Check maintenance status",
-		"file": "mock/check-maintenance-status.js"
-	}]
-}]
+[
+  {
+    "category": "Session",
+    "demos": [
+      {
+        "name": "Login with WAT oAuth",
+        "file": "node/auth-wat-login.js"
+      }
+    ]
+  },
+  {
+    "category": "Fan Operations",
+    "demos": [
+      {
+        "name": "Fail To Unlock a FanGroup",
+        "file": "node/fan-fail-to-unlock-fg.js"
+      },
+      {
+        "name": "Unlock a FanGroup",
+        "file": "node/fan-unlock-join-fg.js"
+      },
+      {
+        "name": "Join a FanGroup, Join a WaitingList, Leave both",
+        "file": "node/fan-join-leave-fg-wl.js"
+      },
+      {
+        "name": "Fetch single WaitingList by WaitingList ID",
+        "file": "node/fan-wl-by-id.js"
+      },
+      {
+        "name": "Fetch list of WaitingLists by FanGroup ID",
+        "file": "node/fan-wl-in-fg.js"
+      },
+      {
+        "name": "Accept a seat for a WaitingList",
+        "file": "node/fan-accept-seat.js"
+      },
+      {
+        "name": "Reject a seat for a WaitingList",
+        "file": "node/fan-reject-seat.js"
+      },
+      {
+        "name": "Export a seat for a WaitingList (generate PDF)",
+        "file": "node/fan-export-seat.js"
+      },
+      {
+        "name": "Update details of a Fan",
+        "file": "node/fan-update-details.js"
+      },
+      {
+        "name": "Get braintree info",
+        "file": "mock/braintree-payment.js"
+      },
+      {
+        "name": "Get WLs for fan with and without seat",
+        "file": "mock/fan-waiting-list.js"
+      },
+      {
+        "name": "Pay for assigned seats",
+        "file": "mock/pay-seats.js"
+      },
+      {
+        "name": "Checkout: supply attendee info",
+        "file": "mock/checkout-flow.js"
+      },
+      {
+        "name": "Fetch additional WL data",
+        "file": "mock/waiting-list-data.js"
+      },
+      {
+        "name": "Get WLs and actionStatus by keywords",
+        "file": "node/fan-wls-by-keywords.js"
+      }
+    ]
+  },
+  {
+    "category": "Public Data",
+    "demos": [
+      {
+        "name": "Fetch public FanGroup by ID",
+        "file": "node/public-fg-by-id.js"
+      },
+      {
+        "name": "Fetch public FanGroup look by slug",
+        "file": "mock/get-fangroup-look.js"
+      },
+      {
+        "name": "Fetch public WaitingLists by FanGroup ID",
+        "file": "node/public-wl-by-fg-id.js"
+      },
+      {
+        "name": "Fetch public WaitingList by ID",
+        "file": "node/public-wl-by-id.js"
+      },
+      {
+        "name": "Fetch the price of a public WaitingList",
+        "file": "node/public-wl-get-price.js"
+      },
+      {
+        "name": "Search public seaters content",
+        "file": "node/public-search-content.js"
+      },
+      {
+        "name": "Search public seaters WL by keywords",
+        "file": "node/public-search-wl-by-keywords.js"
+      }
+    ]
+  },
+  {
+    "category": "Seaters Application",
+    "demos": [
+      {
+        "name": "Check maintenance status",
+        "file": "mock/check-maintenance-status.js"
+      }
+    ]
+  }
+]

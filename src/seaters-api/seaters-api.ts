@@ -10,22 +10,22 @@ import { SeatersApiContext } from './seaters-api-context';
 
 export class SeatersApi {
 
-    public apiContext: SeatersApiContext;
+  public apiContext: SeatersApiContext;
 
-    public app: AppApi;
-    public fan: FanApi;
-    public authentication: AuthenticationApi;
-    public admin: AdminApi;
-    public health: HealthApi;
+  public app: AppApi;
+  public fan: FanApi;
+  public authentication: AuthenticationApi;
+  public admin: AdminApi;
+  public health: HealthApi;
 
-    constructor (prefix: string, requestDriver: RequestDriver) {
-        this.apiContext = new SeatersApiContext(prefix, requestDriver);
+  constructor (prefix: string, requestDriver: RequestDriver) {
+    this.apiContext = new SeatersApiContext(prefix, requestDriver);
 
-        this.app = new AppApi(this.apiContext);
-        this.fan = new FanApi(this.apiContext);
-        this.admin = new AdminApi(this.apiContext);
-        this.health = new HealthApi(this.apiContext);
-        this.authentication = new AuthenticationApi(this.apiContext);
-    }
+    this.app = new AppApi(this.apiContext);
+    this.fan = new FanApi(this.apiContext);
+    this.admin = new AdminApi(this.apiContext);
+    this.health = new HealthApi(this.apiContext);
+    this.authentication = new AuthenticationApi(this.apiContext);
+  }
 
 }

@@ -1,15 +1,13 @@
 <!doctype html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <title>Seaters Library E2E</title>
-  <script type="text/javascript" src="/seaters.bundle.js"></script>
-  <link rel="stylesheet" type="text/css" href="foundation-mini.css">
-  <link rel="stylesheet" type="text/css" href="app.css">
-</head>
-<body>
-
-
+  <head>
+    <meta charset="utf-8">
+    <title>Seaters Library E2E</title>
+    <script type="text/javascript" src="/seaters.bundle.js"></script>
+    <link rel="stylesheet" type="text/css" href="foundation-mini.css">
+    <link rel="stylesheet" type="text/css" href="app.css">
+  </head>
+  <body>
 
     <div class="sl-content sl-input-form">
 
@@ -53,7 +51,8 @@
 
           <!-- T&C -->
           <div class="row sl-login-agree-to-terms collapse">
-            <span><p>By signing up, you agree to Seaters' <a href="http://getseaters.com/user-agreement/">Terms &amp; Conditions</a>
+            <span><p>By signing up, you agree to Seaters' <a
+              href="http://getseaters.com/user-agreement/">Terms &amp; Conditions</a>
             and <a href="http://getseaters.com/privacy/">Privacy Policy</a></p>
             </span>
           </div>
@@ -72,138 +71,136 @@
     </div>
 
 
-</body>
+  </body>
 
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
 
-    var sdk = window.SeatersSDK;
-    var slClient = new sdk.SeatersClient();
+      var sdk = window.SeatersSDK;
+      var slClient = new sdk.SeatersClient();
 
-    /**
-     * Check for required field
-     * @param value
-     * @returns {boolean}
-     */
-    function validateRequired(value) {
-      return value!=undefined && value.trim().length > 0;
-    }
-
-    /**
-     * Hide all form field errors
-     */
-    function resetFormErrors() {
-      //Reset all errors
-      var errorFields = document.getElementsByClassName('sl-input-error');
-      for (var i=0;i<errorFields.length;i++){
-        errorFields[i].style.display = 'none';
-      }
-    }
-
-    /**
-     * Display a form field error
-     * @param field
-     * @param error
-     */
-    function showFieldError(field, error) {
-      var el = document.getElementById(field);
-      el.innerHTML = error;
-      el.style.display = 'block';
-    }
-
-    /**
-     * Client side form validation
-     * @param validationErrors
-     */
-    function showFormErrors(validationErrors) {
-      //set errors that apply
-      for (var i=0; i < validationErrors.length; i++) {
-        var field = validationErrors[i].field+'-error';
-        var error = validationErrors[i].error;
-        showFieldError(field,error);
-      }
-    }
-
-
-    /**
-     * Show client side signup form errors
-     * @param email
-     * @param password
-     * @param firstname
-     * @param lastname
-     * @returns {Array}
-     */
-    function validateSignupForm(email, password, firstname, lastname) {
-      var validationErrors = [];
-
-      //Test email
-      if(!validateRequired(email)) {
-        //validationErrors.push({field:'sl-email', error:'sl_input_err_required'});
-        validationErrors.push({field:'sl-email', error:'Mandatory'});
+      /**
+       * Check for required field
+       * @param value
+       * @returns {boolean}
+       */
+      function validateRequired(value) {
+        return value != undefined && value.trim().length > 0;
       }
 
-      //Test password
-      if(!validateRequired(password)) {
-        //validationErrors.push({field:'sl-password', error:'sl_input_err_required'});
-        validationErrors.push({field:'sl-password', error:'Mandatory'});
+      /**
+       * Hide all form field errors
+       */
+      function resetFormErrors() {
+        //Reset all errors
+        var errorFields = document.getElementsByClassName('sl-input-error');
+        for (var i = 0; i < errorFields.length; i++) {
+          errorFields[i].style.display = 'none';
+        }
       }
 
-      //Test firstname
-      if(!validateRequired(firstname)) {
-        //validationErrors.push({field:'sl-firstname', error:'sl_input_err_required'});
-        validationErrors.push({field:'sl-firstname', error:'Mandatory'});
+      /**
+       * Display a form field error
+       * @param field
+       * @param error
+       */
+      function showFieldError(field, error) {
+        var el = document.getElementById(field);
+        el.innerHTML = error;
+        el.style.display = 'block';
       }
 
-      //Test lastname
-      if(!validateRequired(lastname)) {
-        //validationErrors.push({field:'sl-lastname', error:'sl_input_err_required'});
-        validationErrors.push({field:'sl-lastname', error:'Mandatory'});
+      /**
+       * Client side form validation
+       * @param validationErrors
+       */
+      function showFormErrors(validationErrors) {
+        //set errors that apply
+        for (var i = 0; i < validationErrors.length; i++) {
+          var field = validationErrors[i].field + '-error';
+          var error = validationErrors[i].error;
+          showFieldError(field, error);
+        }
       }
-      return validationErrors;
-    }
 
-    
-    /**
-     * Perfor login
-     */
-    function signup() {
-      //Reset form errors
-      resetFormErrors();
+      /**
+       * Show client side signup form errors
+       * @param email
+       * @param password
+       * @param firstname
+       * @param lastname
+       * @returns {Array}
+       */
+      function validateSignupForm(email, password, firstname, lastname) {
+        var validationErrors = [];
 
-      //Get fields
-      var email = document.getElementById("sl-email").value;
-      var password = document.getElementById("sl-password").value;
-      var firstname = document.getElementById("sl-firstname").value;
-      var lastname = document.getElementById("sl-lastname").value;
+        //Test email
+        if (!validateRequired(email)) {
+          //validationErrors.push({field:'sl-email', error:'sl_input_err_required'});
+          validationErrors.push({ field: 'sl-email', error: 'Mandatory' });
+        }
 
-      //..and do client validation first
-      var validationErrors = validateSignupForm(email, password, firstname, lastname);
-      if (validationErrors.length > 0)
-        showFormErrors(validationErrors);
-      else {
-        //Login
-        slClient.sessionService.doEmailPasswordSignUp(email, password, firstname, lastname)
-          .then(function(res) {
-            alert("You have sucessfully signed up");
-          }, function(err) {
+        //Test password
+        if (!validateRequired(password)) {
+          //validationErrors.push({field:'sl-password', error:'sl_input_err_required'});
+          validationErrors.push({ field: 'sl-password', error: 'Mandatory' });
+        }
 
-            if(err instanceof Error) {
-              //$scope.error = err.stack;
-            } else {
-              //$scope.error = err;
-            }
+        //Test firstname
+        if (!validateRequired(firstname)) {
+          //validationErrors.push({field:'sl-firstname', error:'sl_input_err_required'});
+          validationErrors.push({ field: 'sl-firstname', error: 'Mandatory' });
+        }
 
-            showFieldError('sl-email-error',err.message);
-          });
-
+        //Test lastname
+        if (!validateRequired(lastname)) {
+          //validationErrors.push({field:'sl-lastname', error:'sl_input_err_required'});
+          validationErrors.push({ field: 'sl-lastname', error: 'Mandatory' });
+        }
+        return validationErrors;
       }
-    }
 
-    var signupButton = document.getElementById("sl-btn-signup");
-    signupButton.onclick = signup;
-  });
+      /**
+       * Perfor login
+       */
+      function signup() {
+        //Reset form errors
+        resetFormErrors();
+
+        //Get fields
+        var email = document.getElementById('sl-email').value;
+        var password = document.getElementById('sl-password').value;
+        var firstname = document.getElementById('sl-firstname').value;
+        var lastname = document.getElementById('sl-lastname').value;
+
+        //..and do client validation first
+        var validationErrors = validateSignupForm(email, password, firstname, lastname);
+        if (validationErrors.length > 0) {
+          showFormErrors(validationErrors);
+        } else {
+          //Login
+          slClient.sessionService.doEmailPasswordSignUp(email, password, firstname, lastname)
+            .then(function (res) {
+              alert('You have sucessfully signed up');
+            }, function (err) {
+
+              if (err instanceof Error) {
+                //$scope.error = err.stack;
+              } else {
+                //$scope.error = err;
+              }
+
+              showFieldError('sl-email-error', err.message);
+            });
+
+        }
+      }
+
+      var signupButton = document.getElementById('sl-btn-signup');
+      signupButton.onclick = signup;
+    });
 
 
-</script>
+  </script>
 </html>
 

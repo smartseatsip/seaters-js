@@ -1,9 +1,9 @@
 {
-    "apiLocation": "https://api.dev-seaters.com/api",
-    "users": {
-        "fan1": {
-            "email": "test@test.com",
-            "password": "test"
-        }
+  "apiLocation": "https://api.dev-seaters.com/api",
+  "users": {
+    "fan1": {
+      "email": "test@test.com",
+      "password": "test"
     }
+  }
 }

@@ -4,237 +4,237 @@ import { EVENT_REQUIRED_ATTENDEE_INFO } from './attendee-info';
 
 export interface WaitingList {
 
-    /**
-     * Waiting List ID
-     */
-    waitingListId: string,
+  /**
+   * Waiting List ID
+   */
+  waitingListId: string;
 
-    /**
-     * Event name: { string => string }
-     * @deprecated use translatedEventName instead
-     */
-    eventName: any,
+  /**
+   * Event name: { string => string }
+   * @deprecated use translatedEventName instead
+   */
+  eventName: any;
 
-    /**
-     * Seat category
-     */
-    seatCategory: string,
+  /**
+   * Seat category
+   */
+  seatCategory: string;
 
-    /**
-     * Translated text explaining how to obtain the code protecting this WL
-     */
-    protectionCodeExplanation: string,
-    
-    /**
-     * The way to access this WL
-     */
-    accessMode: WL_ACCESS_MODE,
+  /**
+   * Translated text explaining how to obtain the code protecting this WL
+   */
+  protectionCodeExplanation: string;
 
-    /**
-     * What kind of tickets are distributed
-     */
-    seatDistributionMode: SEAT_DISTRIBUTION_MODE,
+  /**
+   * The way to access this WL
+   */
+  accessMode: WL_ACCESS_MODE;
 
-    /**
-     * When the event for this WL starts
-     * @format ISO_8601
-     */
-    eventStartDate: string,
+  /**
+   * What kind of tickets are distributed
+   */
+  seatDistributionMode: SEAT_DISTRIBUTION_MODE;
 
-    /**
-     * Price breakdown for the # of ordered ticket(s) or for one single ticket 
-     */
-    price: Price,
+  /**
+   * When the event for this WL starts
+   * @format ISO_8601
+   */
+  eventStartDate: string;
 
-    /**
-     * Wether direct sales is enabled for this WL, meaning the fan can receive his
-     * seats immediately if available, without the need for manual distribution.
-     */
-    directSalesEnabled: boolean,
+  /**
+   * Price breakdown for the # of ordered ticket(s) or for one single ticket
+   */
+  price: Price;
 
-    /**
-     * Waiting List status
-     */
-    waitingListStatus: WL_STATUS,
+  /**
+   * Wether direct sales is enabled for this WL, meaning the fan can receive his
+   * seats immediately if available, without the need for manual distribution.
+   */
+  directSalesEnabled: boolean;
 
-    /**
-     * slug of the group (e.g. https://seaters.com/my-slug) 
-     */
-    groupSlug:string
+  /**
+   * Waiting List status
+   */
+  waitingListStatus: WL_STATUS;
 
-    /**
-     * Group short name: { string => string } 
-     * @deprecated use translatedGroupShortName
-     */    
-    groupShortName: any,
-    
-    /**
-     * Event short name: { string => string }
-     * @deprecated use translatedEventShortName
-     */
-    eventShortName: any,
+  /**
+   * slug of the group (e.g. https://seaters.com/my-slug)
+   */
+  groupSlug: string;
 
-    /**
-     * Venue name: { string => string }
-     * @deprecated use translatedVenueName
-     */
-    venueName: any,
-    
-    /**
-     * Venue short name: { string => string }
-     * @deprecated use translatedVenueShortName
-     */
-    venueShortName: any,
+  /**
+   * Group short name: { string => string }
+   * @deprecated use translatedGroupShortName
+   */
+  groupShortName: any;
 
-    /**
-     * Venue city: { string => string }
-     * @deprecated use translatedVenueCity
-     */
-    venueCity: any,
+  /**
+   * Event short name: { string => string }
+   * @deprecated use translatedEventShortName
+   */
+  eventShortName: any;
 
-    /**
-     * Fan Group ID
-     * @format UUID
-     */
-    groupId: string,
+  /**
+   * Venue name: { string => string }
+   * @deprecated use translatedVenueName
+   */
+  venueName: any;
 
-    /**
-     * Join request status
-     */
-    request: WaitingListRequest,
+  /**
+   * Venue short name: { string => string }
+   * @deprecated use translatedVenueShortName
+   */
+  venueShortName: any;
 
-    /**
-     * Fan Group name: { string => string }
-     * @deprecated use translatedGroupName
-     */
-    groupName: any,
-    
-    /**
-     * Event image URL
-     */
-    eventImageUrl: string,
+  /**
+   * Venue city: { string => string }
+   * @deprecated use translatedVenueCity
+   */
+  venueCity: any;
 
-    /**
-     * True if Waiting List is free, false otherwise.
-     */
-    freeWaitingList: boolean,
-    
-    /**
-     * Seat data or null if Waiting List has no seat yet
-     */
-    seat: Seat,
+  /**
+   * Fan Group ID
+   * @format UUID
+   */
+  groupId: string;
 
-    /**
-     * FanGroup categories
-     */
-    groupCategories: FanGroupCategory[],
+  /**
+   * Join request status
+   */
+  request: WaitingListRequest;
 
-    /**
-     * Fee calculation parameters
-     */
-    feeCalculationParameters: FeeCalculationParameters,
-    
-    /**
-     * Fan Group profile image URL
-     */
-    groupProfileImageUrl: string,
+  /**
+   * Fan Group name: { string => string }
+   * @deprecated use translatedGroupName
+   */
+  groupName: any;
 
-    /**
-     * Fan Group name, translated in fan's locale
-     */
-    translatedGroupName: string,
+  /**
+   * Event image URL
+   */
+  eventImageUrl: string;
 
-    /**
-     * Group short name, translated in fan's locale
-     */
-    translatedShortGroupName: string,
+  /**
+   * True if Waiting List is free, false otherwise.
+   */
+  freeWaitingList: boolean;
 
-    /**
-     * Event name, translated in fan's locale
-     */
-    translatedEventName: string,
+  /**
+   * Seat data or null if Waiting List has no seat yet
+   */
+  seat: Seat;
 
-    /**
-     * Event short name, translated in fan's locale
-     */
-    translatedEventShortName: string,
+  /**
+   * FanGroup categories
+   */
+  groupCategories: FanGroupCategory[];
 
-    /**
-     * Venue name, translated in fan's locale
-     */
-    translatedVenueName: string,
+  /**
+   * Fee calculation parameters
+   */
+  feeCalculationParameters: FeeCalculationParameters;
 
-    /**
-     * Venue short name, translated in fan's locale
-     */
-    translatedVenueShortName: string,
+  /**
+   * Fan Group profile image URL
+   */
+  groupProfileImageUrl: string;
 
-    /**
-     * Venue city, translated in fan's locale
-     */
-    translatedVenueCity: string,
-    
-    /**
-     * Venue image URL
-     */
-    venueImageUrl: string,
+  /**
+   * Fan Group name, translated in fan's locale
+   */
+  translatedGroupName: string;
 
-    /**
-     * Currency
-     */
-    currency: Currency,
+  /**
+   * Group short name, translated in fan's locale
+   */
+  translatedShortGroupName: string;
 
-    /**
-     * Display name (wl name if available, otherwise venue category name)
-     */
-    displayName: string,
+  /**
+   * Event name, translated in fan's locale
+   */
+  translatedEventName: string;
 
-    /**
-     * Position data or null if Waiting List is not yet joined
-     */
-    position: ExtendedPosition,
+  /**
+   * Event short name, translated in fan's locale
+   */
+  translatedEventShortName: string;
 
-    /**
-     * Maximum number of Seats a Fan can reserve when joining a Waiting List
-     */
-    maxNumberOfSeatsPerPosition: number,
+  /**
+   * Venue name, translated in fan's locale
+   */
+  translatedVenueName: string;
 
-    /**
-     * Event end date
-     */
-    eventEndDate: string,
-    
-    /**
-     * Venue country: {string =>string}
-     * @deprecated use translatedVenueCountry
-     */
-    venueCountry: any,
+  /**
+   * Venue short name, translated in fan's locale
+   */
+  translatedVenueShortName: string;
 
-    /**
-     * Fan Group cover image URL
-     */
-    groupCoverImageUrl: string,
+  /**
+   * Venue city, translated in fan's locale
+   */
+  translatedVenueCity: string;
 
-    /**
-     * Fan Group background image URL
-     */
-    groupBackgroundImageUrl: string,
-    
-    /**
-     * Venue country, translated in the fan's locale
-     */
-    translatedVenueCountry:string
+  /**
+   * Venue image URL
+   */
+  venueImageUrl: string;
 
-    /**
-     * Event description, translated in the fan's locale
-     */
-    translatedEventDescription:string
+  /**
+   * Currency
+   */
+  currency: Currency;
 
-    /**
-     * The information that all attendees should provide to obtain
-     * tickets for this WL
-     */
-    eventRequiredAttendeeInfo: EVENT_REQUIRED_ATTENDEE_INFO[]
+  /**
+   * Display name (wl name if available, otherwise venue category name)
+   */
+  displayName: string;
+
+  /**
+   * Position data or null if Waiting List is not yet joined
+   */
+  position: ExtendedPosition;
+
+  /**
+   * Maximum number of Seats a Fan can reserve when joining a Waiting List
+   */
+  maxNumberOfSeatsPerPosition: number;
+
+  /**
+   * Event end date
+   */
+  eventEndDate: string;
+
+  /**
+   * Venue country: {string =>string}
+   * @deprecated use translatedVenueCountry
+   */
+  venueCountry: any;
+
+  /**
+   * Fan Group cover image URL
+   */
+  groupCoverImageUrl: string;
+
+  /**
+   * Fan Group background image URL
+   */
+  groupBackgroundImageUrl: string;
+
+  /**
+   * Venue country, translated in the fan's locale
+   */
+  translatedVenueCountry: string;
+
+  /**
+   * Event description, translated in the fan's locale
+   */
+  translatedEventDescription: string;
+
+  /**
+   * The information that all attendees should provide to obtain
+   * tickets for this WL
+   */
+  eventRequiredAttendeeInfo: EVENT_REQUIRED_ATTENDEE_INFO[];
 }
 
 export type WL_ACCESS_MODE = 'PUBLIC' | 'CODE_PROTECTED';
@@ -242,130 +242,130 @@ export type WL_ACCESS_MODE = 'PUBLIC' | 'CODE_PROTECTED';
 export type SEAT_DISTRIBUTION_MODE = 'VOUCHER' | 'TICKET';
 
 export interface Price {
-    /**
-     * Number of seats requested by the fan
-     */
-    numberOfSeats: number,
+  /**
+   * Number of seats requested by the fan
+   */
+  numberOfSeats: number;
 
-    /**
-     * Seat's facial price
-     * double precision
-     */
-    facialPrice: string,
+  /**
+   * Seat's facial price
+   * double precision
+   */
+  facialPrice: string;
 
-    /**
-     * Total facial price of requested seats
-     * double precision
-     */
-    totalFacialPrice: string,
+  /**
+   * Total facial price of requested seats
+   * double precision
+   */
+  totalFacialPrice: string;
 
-    /**
-     * numberTotal fee
-     * double precision
-     */
-    fee: string,
+  /**
+   * numberTotal fee
+   * double precision
+   */
+  fee: string;
 
-    /**
-     * Fee on total facial price excluding VAT
-     * double precision
-     */
-    feeExcVat: string,
+  /**
+   * Fee on total facial price excluding VAT
+   * double precision
+   */
+  feeExcVat: string;
 
-    /**
-     * VAT computed on fee
-     * double precision
-     */
-    feeVat: string,
+  /**
+   * VAT computed on fee
+   * double precision
+   */
+  feeVat: string;
 
-    /**
-     * Facial price formatted with currency
-     */
-    formattedFacialPrice: string,
+  /**
+   * Facial price formatted with currency
+   */
+  formattedFacialPrice: string;
 
-    /**
-     * Total Facial price formatted with currency
-     */
-    formattedTotalFacialPrice: string,
-    
-    /**
-     * Fee excluding taxes formatted with currency
-     */
-    formattedFeeExcVat: string,
+  /**
+   * Total Facial price formatted with currency
+   */
+  formattedTotalFacialPrice: string;
 
-    /**
-     * Taxes on the fee formatted with currency
-     */
-    formattedFeeVat: string,
+  /**
+   * Fee excluding taxes formatted with currency
+   */
+  formattedFeeExcVat: string;
 
-    /**
-     * Seaters Fee formatted with currency
-     */
-    formattedFee: string,
+  /**
+   * Taxes on the fee formatted with currency
+   */
+  formattedFeeVat: string;
 
-    /**
-     * Total price formatted with currency
-     */
-    formattedTotal: string,
+  /**
+   * Seaters Fee formatted with currency
+   */
+  formattedFee: string;
 
-    /**
-     * Total price for the requested seats
-     * double pricision
-     */
-    total: string,
+  /**
+   * Total price formatted with currency
+   */
+  formattedTotal: string;
+
+  /**
+   * Total price for the requested seats
+   * double pricision
+   */
+  total: string;
 }
 
 export type WL_STATUS = 'SETUP' | 'DRAFT' | 'PUBLISHED' | 'OPEN' | 'CLOSED' | 'ARCHIVED';
 
 export interface WaitingListRequest {
-    /**
-     * The reason of rejection
-     */
-    rejectionReason: string,
+  /**
+   * The reason of rejection
+   */
+  rejectionReason: string;
 
-    /**
-     * Request's status
-     */
-    status: WL_REQUEST_STATUS,
+  /**
+   * Request's status
+   */
+  status: WL_REQUEST_STATUS;
 }
 
 export type WL_REQUEST_STATUS = 'PENDING' | 'ACCEPTED' | 'REJECTED';
 
 export interface Seat {
-    /**
-     * Seat number
-     */
-    voucherNumber: string
-    
-    /**
-     * Ticketing System Type
-     */
-    ticketingSystemType: TICKETING_SYSTEM_TYPE,
+  /**
+   * Seat number
+   */
+  voucherNumber: string;
 
-    /**
-     * Ticket delivery method
-     */
-    deliveryMethod: DELIVERY_METHOD,
+  /**
+   * Ticketing System Type
+   */
+  ticketingSystemType: TICKETING_SYSTEM_TYPE;
 
-    /**
-     * Assignment expiration date 
-     * @format ISO_8601
-     */
-    assignmentExpirationDate: string,
+  /**
+   * Ticket delivery method
+   */
+  deliveryMethod: DELIVERY_METHOD;
 
-    /**
-     * Where to download the exported voucher, if any
-     */
-    exportedVoucherUrl: string,
+  /**
+   * Assignment expiration date
+   * @format ISO_8601
+   */
+  assignmentExpirationDate: string;
 
-    /**
-     * Seat status
-     */
-    status: SEAT_STATUS,
-    
-    /**
-     * Seat text: {string =>string}
-     */
-    seatText: any
+  /**
+   * Where to download the exported voucher, if any
+   */
+  exportedVoucherUrl: string;
+
+  /**
+   * Seat status
+   */
+  status: SEAT_STATUS;
+
+  /**
+   * Seat text: {string =>string}
+   */
+  seatText: any;
 }
 
 export type TICKETING_SYSTEM_TYPE = 'DIGITICK' | 'VERITIX' | 'UPLOAD';
@@ -375,32 +375,32 @@ export type DELIVERY_METHOD = 'DOWNLOAD' | 'EMAIL';
 export type SEAT_STATUS = 'ASSIGNED' | 'ACCEPTED' | 'REJECTED' | 'ARCHIVED';
 
 export interface FeeCalculationParameters {
-    /**
-     * % added to cover distribution costs
-     * double precision
-     */
-    distributionRate: string,
+  /**
+   * % added to cover distribution costs
+   * double precision
+   */
+  distributionRate: string;
 
-    /**
-     * Minimum distribution cost
-     * double precision
-     */
-    minDistributionFee: string,
+  /**
+   * Minimum distribution cost
+   * double precision
+   */
+  minDistributionFee: string;
 
-    /**
-     * Maximum distribution cost
-     * double precision
-     */
-    maxDistributionFee: string,
+  /**
+   * Maximum distribution cost
+   * double precision
+   */
+  maxDistributionFee: string;
 
-    /**
-     * VAT rate that is applied (depends on venue country)
-     * double precision
-     */
-    vatRate: string
+  /**
+   * VAT rate that is applied (depends on venue country)
+   * double precision
+   */
+  vatRate: string;
 }
 
 export interface Currency {
-    symbol: string,
-    code: string
+  symbol: string;
+  code: string;
 }

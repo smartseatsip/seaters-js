@@ -8,14 +8,18 @@ import { Price as _Price, FanGroupLook as _FanGroupLook } from '../../seaters-ap
  */
 export namespace pub {
 
-    export interface FanGroup extends _FanGroup {};
+  export interface FanGroup extends _FanGroup {
+  }
 
-    export interface WaitingList extends _WaitingList {};
+  export interface WaitingList extends _WaitingList {
+  }
 
-    export interface Price extends _Price {};
+  export interface Price extends _Price {
+  }
 
-    export interface FanGroupLook extends _FanGroupLook {};
+  export interface FanGroupLook extends _FanGroupLook {
+  }
 
-    export type SeatersContent = FanGroup | WaitingList;
+  export type SeatersContent = FanGroup | WaitingList;
 
 }

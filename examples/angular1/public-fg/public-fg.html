@@ -1,14 +1,14 @@
 <h2>Public Fan Group Data</h2>
 <h3>Enter fan group ID</h3>
 <div class="row">
-    <div class="columns small-8">
-        <input type="text" ng-model="publicFg.fgId" placeholder="fan group ID" />
-    </div>
-    <div class="columns small-4">
-        <button type="submit" ng-click="publicFg.load(publicFg.fgId)">Load</button>
-    </div>
+  <div class="columns small-8">
+    <input type="text" ng-model="publicFg.fgId" placeholder="fan group ID" />
+  </div>
+  <div class="columns small-4">
+    <button type="submit" ng-click="publicFg.load(publicFg.fgId)">Load</button>
+  </div>
 </div>
 <div ng-if="publicFg.fangroup">
-    <h3>Data for {{publicFg.fangroup}}</h3>
-    <pre>{{publicFg.data|json}}</pre>
+  <h3>Data for {{publicFg.fangroup}}</h3>
+  <pre>{{publicFg.data|json}}</pre>
 </div>
