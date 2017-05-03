@@ -1,5 +1,4 @@
 var util = require('util');
-var core = require('core-js/library');
 
 function curlifyRequest(request) {
   var headers = request.popsicleRequest.rawHeaders.map(h => h[0] + ': ' + h[1]);

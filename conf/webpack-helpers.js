@@ -4,13 +4,6 @@ var webpack = require('webpack');
 
 exports.allPreLoaders = [];
 
-exports.minifyPlugin = new webpack.optimize.UglifyJsPlugin({
-  mangle: {
-    // ['$super', '$', 'exports', 'require']
-    except: []
-  }
-});
-
 exports.replacePackageVersionLoader = {
   test: /index\.ts$/,
   loader: 'string-replace',
@@ -32,11 +25,6 @@ exports.replaceApiLocationLoader = {
     replace: process.env.STRS_API_LOCATION || defaultApiPrefix
   }
 };
-
-exports.noopStaticResources = new webpack.NormalModuleReplacementPlugin(
-  /(\.s?css)|(\.html)$/,
-  'node-noop'
-);
 
 exports.htmlLoader = {
   test: /\.html$/,

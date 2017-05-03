@@ -13,21 +13,14 @@ module.exports = {
   entry: './mock-data/index.ts',
   target: 'node',
   output: {
-    filename: './dist/seaters-mock-data.module.js',
+    filename: 'tmp/seaters-mock-data.module.js',
     libraryTarget: 'commonjs'
   },
   externals: nodeModules,
   resolve: {
     extensions: ['', '.ts', '.js']
   },
-  devtool: 'source-map',
-  plugins: [
-    new webpack.BannerPlugin(
-      'require("source-map-support").install();',
-      { raw: true, entryOnly: false }
-    )
-    // webpackHelpers.noopStaticResources
-  ],
+  plugins: [],
   module: {
     loaders: [webpackHelpers.tsLoader]
   }

@@ -13,21 +13,14 @@ module.exports = {
   entry: './src/index.ts',
   target: 'node',
   output: {
-    filename: './dist/seaters.module.js',
+    filename: 'tmp/seaters.module.js',
     libraryTarget: 'commonjs'
   },
   externals: nodeModules,
   resolve: {
     extensions: ['', '.ts', '.js']
   },
-  devtool: 'source-map',
-  plugins: [
-    new webpack.BannerPlugin(
-      'require("source-map-support").install();',
-      { raw: true, entryOnly: false }
-    )
-    // webpackHelpers.noopStaticResources
-  ],
+  plugins: [],
   module: {
     preLoaders: webpackHelpers.allPreLoaders,
     loaders: webpackHelpers.allLoaders
