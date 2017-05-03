@@ -29,7 +29,8 @@ gulp.task('clean', function () {
 gulp.task('tslint', function () {
   return gulp.src([
     'src/**/*.ts',
-    'mock-data/**/*.ts'
+    'mock-data/**/*.ts',
+    '!mock-data/**/*.d.ts'
   ], { base: '.' })
     .pipe(gulpTsLint({
       formatter: 'stylish'
