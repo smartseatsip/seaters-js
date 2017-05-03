@@ -1,5 +1,3 @@
-import { Promise } from 'es6-promise';
-
 import { SeatersApi } from '../../seaters-api';
 import { FanGroup } from '../../seaters-api/fan';
 import { retryUntil } from './../util';

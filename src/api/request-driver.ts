@@ -1,5 +1,4 @@
 import { HTTP_METHOD } from './http-method';
-import { Promise } from 'es6-promise';
 
 import { NodeRequestDriver } from './node-request-driver';
 import { BrowserRequestDriver } from './browser-request-driver';

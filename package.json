@@ -6,10 +6,9 @@
   "typings": "./dist/index",
   "scripts": {
     "gulp": "node_modules/gulp/bin/gulp.js",
-    "typings": "node_modules/typings/dist/bin.js",
     "jasmine": "node_modules/jasmine/bin/jasmine.js",
     "tsc": "node_modules/typescript/bin/tsc",
-    "setup": "npm i && npm run typings i && npm run gulp",
+    "setup": "npm i && npm run gulp",
     "tslint": "./node_modules/tslint/bin/tslint --force --project tsconfig.json -t stylish --fix",
     "tslint-watch": "node ./node_modules/chokidar-cli **/*.ts -c \"npm run tslint\" --initial",
     "tslint-types": "./node_modules/tslint/bin/tslint --force --project tsconfig.json --type-check -t stylish --fix",
@@ -20,8 +19,7 @@
   "author": "Ben Corne",
   "license": "ISC",
   "dependencies": {
-    "@types/node": "6.0.56",
-    "es6-promise": "^4.0.5"
+    "@types/node": "6.0.56"
   },
   "devDependencies": {
     "@types/jasmine": "^2.5.47",
@@ -65,7 +63,6 @@
     "tslint": "^5.1.0",
     "tslint-config-standard": "^5.0.2",
     "typescript": "^2.1.0",
-    "typings": "^1.4.0",
     "wdio-concise-reporter": "0.0.2",
     "wdio-dot-reporter": "0.0.6",
     "wdio-jasmine-framework": "^0.2.6",

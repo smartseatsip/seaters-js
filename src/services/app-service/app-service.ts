@@ -1,5 +1,4 @@
 import { SeatersApi } from '../../seaters-api';
-import { Promise } from 'es6-promise';
 import { app } from './app-types';
 import { HEALTH_NODE_OK } from '../../seaters-api/health/health-types';
 

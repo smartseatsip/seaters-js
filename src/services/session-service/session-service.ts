@@ -1,6 +1,5 @@
 import { SeatersApi, SeatersApiException, seatersExceptionV1MessageMapper } from '../../seaters-api';
 import { session } from './session-types';
-import { Promise } from 'es6-promise';
 import { MobilePhoneValidationData, AuthenticationSuccess } from '../../seaters-api/authentication';
 
 const AUTH_HEADER = 'Authorization';

@@ -1,5 +1,3 @@
-import { Promise } from 'es6-promise';
-
 import { ServerResponse, RequestOptions } from './request-driver';
 import { DeferredPromise } from './../services/util';
 

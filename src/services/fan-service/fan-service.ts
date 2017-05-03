@@ -1,7 +1,6 @@
 import { SeatersApi } from '../../seaters-api';
 import { WaitingListService } from './waiting-list-service';
 import { FanGroupService } from './fan-group-service';
-import { Promise } from 'es6-promise';
 import { fan } from './fan-types';
 import { LocalizableText } from '../util';
 

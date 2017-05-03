@@ -1,4 +1,3 @@
-import { Promise } from 'es6-promise';
 import { ServerResponse, RequestOptions } from './request-driver';
 
 function getPathFromUrl (url) {
