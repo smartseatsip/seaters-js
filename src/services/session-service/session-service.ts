@@ -1,7 +1,6 @@
 import { SeatersApi, SeatersApiException, seatersExceptionV1MessageMapper } from '../../seaters-api';
 import { session } from './session-types';
 import { Promise } from 'es6-promise';
-import * as moment from 'moment';
 import { MobilePhoneValidationData, AuthenticationSuccess } from '../../seaters-api/authentication';
 
 const AUTH_HEADER = 'Authorization';
@@ -139,17 +138,15 @@ export class SessionService {
   }
 
   private applyExpireSessionStrategy (session: session.SessionToken): void {
-    // TODO: replace moment with smaller lib or embed needed functionality
-    let expiration = moment.utc(session.expirationDate);
-    let now = moment();
+    let diff = new Date(session.expirationDate).getTime() - new Date().getTime();
     console.log(
       'session expires on %s (in %s minutes)',
       session.expirationDate,
-      expiration.diff(now, 'minutes')
+      Math.round(diff / (1000 * 60))
     );
     setTimeout(
       () => this.doLogout(),
-      expiration.diff(now, 'milliseconds')
+      diff
     );
   }
 
