@@ -1,5 +1,3 @@
-import { Object } from 'core-js/library';
-
 import { REQUEST_DRIVER_TYPE, getRequestDriver } from './api';
 import { SeatersApi } from './seaters-api';
 import { FanService, PublicService, SessionService, AppService } from './services';

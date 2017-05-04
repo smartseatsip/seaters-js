@@ -1,12 +1,10 @@
-import { Map } from 'core-js/library';
-
 export class PagingOptions {
   constructor (public itemOffset?: number, public maxPageSize?: number) {
   }
 
   static toQueryParams (pagingOptions: PagingOptions, queryParams?: Map<string, string>): Map<string, string> {
     if (!queryParams) {
-      queryParams = new core.Map<string, string>();
+      queryParams = new Map<string, string>();
     }
     if (!pagingOptions) {
       return queryParams;

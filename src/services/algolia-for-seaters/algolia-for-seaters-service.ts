@@ -1,4 +1,3 @@
-import { Promise } from 'es6-promise';
 import { AppService } from './../app-service';
 import { AlgoliaApi, SearchQuery, SearchResult } from '../../algolia-api';
 import { RequestDriver } from '../../api';

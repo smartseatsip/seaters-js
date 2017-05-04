@@ -6,10 +6,15 @@
     "experimentalDecorators": true,
     "outDir": "lib",
     "declaration": true,
-    "declarationDir": "dist"
+    "declarationDir": "dist",
+    "lib": [
+      "es6"
+    ],
+    "types": [
+      "node"
+    ]
   },
   "files": [
-    "src/index.ts",
-    "typings/index.d.ts"
+    "src/index.ts"
   ]
 }

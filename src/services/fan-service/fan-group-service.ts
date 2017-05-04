@@ -1,6 +1,3 @@
-import { Promise } from 'es6-promise';
-import { Object as coreObject } from 'core-js/library';
-
 import { SeatersApi } from '../../seaters-api';
 import { FanGroup } from '../../seaters-api/fan';
 import { retryUntil } from './../util';
@@ -16,7 +13,7 @@ export class FanGroupService {
 
   getFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
     return this.getRawFanGroup(fanGroupId)
-      .then(fg => coreObject.assign(fg, {
+      .then(fg => Object.assign(fg, {
         actionStatus: this.getFanGroupActionStatus(fg)
       }));
   }

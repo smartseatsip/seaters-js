@@ -1,5 +1,3 @@
-import { Promise } from 'es6-promise';
-
 import { DeferredPromise } from './deferred-promise';
 
 export type PromiseFn<T> = () => Promise<T>;

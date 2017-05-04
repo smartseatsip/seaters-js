@@ -6,12 +6,15 @@ var gulp = require('gulp');
 var webdriver = require('gulp-webdriver');
 var webpack = require('webpack-stream');
 var clean = require('gulp-clean');
-var tslint = require('tslint');
 var gulpTsLint = require('gulp-tslint');
 var stylish = require('gulp-tslint-stylish');
 var eslint = require('gulp-eslint');
 var typescript = require('gulp-typescript');
 var jasmine = require('gulp-jasmine');
+var sourcemaps = require('gulp-sourcemaps');
+var babel = require('gulp-babel');
+var uglify = require('gulp-uglify');
+var rename = require('gulp-rename');
 
 var http = require('http');
 var connect = require('connect');
@@ -21,8 +24,13 @@ var runSequence = require('run-sequence');
 
 var server = undefined;
 
-gulp.task('clean', function () {
+gulp.task('clean:precompile', function (cb) {
   return gulp.src(['lib', 'dist', 'errorShots', 'tmp'], { read: false })
+    .pipe(clean());
+});
+
+gulp.task('clean:postcompile', function () {
+  return gulp.src(['tmp'], { read: false })
     .pipe(clean());
 });
 
@@ -46,7 +54,7 @@ gulp.task('tslint', function () {
 
 });
 
-gulp.task('eslint', function () {
+gulp.task('eslint', [], function () {
   return gulp.src(['**/*.js', '!node_modules/**'])
     .pipe(eslint())
     .pipe(eslint.format())
@@ -56,12 +64,6 @@ gulp.task('eslint', function () {
 gulp.task('build:bundle', [], function () {
   return gulp.src('src/index.ts')
     .pipe(webpack(require('./conf/webpack-bundle.config.js')))
-    .pipe(gulp.dest('.'));
-});
-
-gulp.task('build:bundle-min', [], function () {
-  return gulp.src('src/index.ts')
-    .pipe(webpack(require('./conf/webpack-bundle-min.config.js')))
     .pipe(gulp.dest('.'));
 });
 
@@ -90,7 +92,7 @@ gulp.task('build:typings', [], function () {
     .dts.pipe(gulp.dest('./dist/'));
 });
 
-gulp.task('http', function (done) {
+gulp.task('http', [], function (done) {
   var app = connect()
     .use(serveStatic('./e2e-browser/fixtures'))
     .use(serveStatic('./dist'))
@@ -112,16 +114,37 @@ gulp.task('test:e2e-node', ['build:module'], function () {
     .pipe(jasmine());
 });
 
+gulp.task('build:babel', [], function () {
+  return gulp.src('tmp/**/*.js')
+    .pipe(sourcemaps.init())
+    .pipe(babel({
+      presets: ['es2015'],
+      compact: false,
+      sourceMaps: true
+    }))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest('dist'));
+});
+
+gulp.task('build:uglify', [], function () {
+  return gulp.src('dist/*.bundle.js')
+    .pipe(uglify())
+    .pipe(rename({ suffix: '.min' }))
+    .pipe(gulp.dest('dist'));
+});
+
 gulp.task('build', [], function (cb) {
   runSequence(
-    'clean',
+    'clean:precompile',
     'tslint',
     'build:bundle',
-    'build:bundle-min',
     'build:module',
     'build:typings',
     'build:mock-bundle',
     'build:mock-module',
+    'build:babel',
+    'build:uglify',
+    'clean:postcompile',
     cb
   );
 });

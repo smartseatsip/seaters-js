@@ -4,7 +4,6 @@ import { PagedResult } from '../paged-result';
 import { PagingOptions } from '../paging-options';
 import { SeatersApiController } from '../seaters-api-controller';
 import { User, UserSearchQuery, FanGroupOwnership } from './admin-types';
-import { Promise } from 'es6-promise';
 
 export class AdminApi extends SeatersApiController {
 

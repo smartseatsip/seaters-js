@@ -1,5 +1,4 @@
 import { ApiContext } from '../../api';
-import { Promise } from 'es6-promise';
 import { SearchQuery, FacetFilter } from './search-query';
 import { SearchResult } from './search-result';
 
@@ -18,12 +17,12 @@ export class IndicesApi {
       abstractEndpoint: abstractEndpoint,
       endpointParams: endpointParams,
       body: body
-    }).then(response => {
+    }).then((response) => {
       if (response.status !== 200) {
         return Promise.reject({
           error: 'Unexpected response status code',
           response: response
-        });
+        }) as any;
       }
       try {
         return JSON.parse(response.body) as SearchResult;

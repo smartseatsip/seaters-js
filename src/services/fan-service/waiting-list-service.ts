@@ -1,5 +1,3 @@
-import { Object } from 'core-js/library';
-import { Promise } from 'es6-promise';
 import { PagedResult } from '../../shared-types';
 
 import { SeatersApi } from '../../seaters-api';
@@ -52,7 +50,8 @@ export class WaitingListService {
     return Object.assign(wl, {
       actionStatus: this.getWaitingListActionStatus(wl),
       // (T)ODO: pending status
-      shouldProvideAttendeesInfo: this.shouldProvideAttendeesInfo(wl)
+      shouldProvideAttendeesInfo: this.shouldProvideAttendeesInfo(wl),
+      processing: undefined
     });
   }
 

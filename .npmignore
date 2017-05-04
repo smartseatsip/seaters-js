@@ -6,6 +6,6 @@ test-configs
 build.sh
 gulpfile.js
 tsconfig.json
-typings.json
 assets
 conf
+tmp

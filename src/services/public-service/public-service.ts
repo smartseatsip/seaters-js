@@ -1,4 +1,3 @@
-import { Promise } from 'es6-promise';
 import { RequestDriver } from '../../api';
 import { PagedResult, PagingOptions } from '../../shared-types';
 import { SeatersApi } from '../../seaters-api';
