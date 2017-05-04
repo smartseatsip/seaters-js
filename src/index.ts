@@ -1,5 +1,3 @@
-declare const console: any;
-
 export const version: string = '${package.version}';
 export * from './seaters-client';
 export * from './shared-types';
