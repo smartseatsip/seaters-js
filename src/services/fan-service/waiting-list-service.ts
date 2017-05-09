@@ -283,8 +283,12 @@ export class WaitingListService {
     } else {
       // check that all attendee info was stored; if it's stored it
       // must has passed the serverside validations.
-      return wl.position && wl.position.attendeesInfo && wl.position.attendeesInfo.attendees &&
-        wl.position.attendeesInfo.attendees.length !== wl.position.numberOfSeats;
+      return !! (
+        wl.position &&
+        wl.position.attendeesInfo &&
+        wl.position.attendeesInfo.attendees &&
+        wl.position.attendeesInfo.attendees.length !== wl.position.numberOfSeats
+      );
     }
   }
 
