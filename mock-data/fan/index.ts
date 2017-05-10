@@ -17,6 +17,14 @@ export const fanMocks: Mock[] = [].concat([
     body: fan
   }),
 
+  mkMock('GET', '/api/fan/groups?groupIds=locked-fg&groupIds=unlocked-fg', () => {
+    return {
+      'status': 200,
+      'statusText': 'OK',
+      'body': {}
+    };
+  }),
+
   mkMock('GET', '/api/fan/groups/locked-fg', () => {
     return {
       'status': 200,

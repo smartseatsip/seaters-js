@@ -25,6 +25,14 @@ export class SeatersApiContext extends ApiContext {
     };
   }
 
+  public static convertArrayToQueryParams (paramName: string, array: string[]): { [key: string]: any } {
+    let queryParams = {};
+    array.forEach((value) => {
+      queryParams[paramName] = value;
+    });
+    return queryParams;
+  }
+
   /**
    * Returns a promise that either resolves with the requested resource
    * or rejects on error with a SeatersApiException.

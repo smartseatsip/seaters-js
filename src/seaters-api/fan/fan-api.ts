@@ -32,6 +32,10 @@ export class FanApi {
     );
   }
 
+  fanGroups (groupIds: string[]): Promise<FanGroup[]> {
+    return this.apiContext.get('/fan/groups', {}, SeatersApiContext.convertArrayToQueryParams('groupIds', groupIds));
+  }
+
   fanGroupLook (slug: string): Promise<FanGroupLook> {
     return this.apiContext.get(
       '/fan/fangroups-by-slug/:slug/look',

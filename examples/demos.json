@@ -12,6 +12,10 @@
     "category": "Fan Operations",
     "demos": [
       {
+        "name": "Get a list of fan groups",
+        "file": "node/get-fangroups.js"
+      },
+      {
         "name": "Fail To Unlock a FanGroup",
         "file": "node/fan-fail-to-unlock-fg.js"
       },

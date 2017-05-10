@@ -11,6 +11,10 @@ export class FanGroupService {
 
   }
 
+  getFanGroups (fanGroupIds: string[]): Promise<fan.FanGroup[]> {
+    return this.api.fan.fanGroups(fanGroupIds);
+  }
+
   getFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
     return this.getRawFanGroup(fanGroupId)
       .then(fg => Object.assign(fg, {

@@ -23,6 +23,10 @@ export class FanService {
     this.fanGroupService = new FanGroupService(seatersApi);
   }
 
+  getFanGroups (fanGroupIds: string[]): Promise<fan.FanGroup[]> {
+    return this.fanGroupService.getFanGroups(fanGroupIds);
+  }
+
   updateFan (fan: Fan): Promise<Fan> {
     return this.seatersApi.fan.updateFan(fan)
       .then(fan => this.sessionService.updateCurrentFan(fan));
