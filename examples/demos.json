@@ -12,7 +12,7 @@
     "category": "Fan Operations",
     "demos": [
       {
-        "name": "Get a list of fan groups",
+        "name": "Get a list of fan groups by ids",
         "file": "node/get-fangroups.js"
       },
       {
