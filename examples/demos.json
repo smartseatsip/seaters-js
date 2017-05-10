@@ -20,6 +20,10 @@
         "file": "node/fan-unlock-join-fg.js"
       },
       {
+        "name": "Unlock a WaitingList",
+        "file": "mock/unlock-wl.js"
+      },
+      {
         "name": "Join a FanGroup, Join a WaitingList, Leave both",
         "file": "node/fan-join-leave-fg-wl.js"
       },
