@@ -12,7 +12,8 @@ export class FanGroupService {
   }
 
   getFanGroups (fanGroupIds: string[]): Promise<fan.FanGroup[]> {
-    return this.api.fan.fanGroups(fanGroupIds);
+    return this.api.fan.fanGroups(fanGroupIds)
+      .then(fgs => fgs.map(fg => this.extendRawWaitingList(fg)));
   }
 
   getFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
@@ -65,6 +66,12 @@ export class FanGroupService {
   leaveFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
     return this.api.fan.leaveFanGroup(fanGroupId)
       .then(() => this.pollFanGroup(fanGroupId, (fg) => fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_JOIN));
+  }
+
+  private extendRawWaitingList (fg: FanGroup): fan.FanGroup {
+    return Object.assign(fg, {
+      actionStatus: this.getFanGroupActionStatus(fg)
+    });
   }
 
   private getRawFanGroup (fanGroupId: string): Promise<FanGroup> {
