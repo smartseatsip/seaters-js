@@ -37,7 +37,7 @@ export class ApiContext {
     return new ApiEndpoint(
       requestDefinition.abstractEndpoint,
       requestDefinition.endpointParams || {},
-      requestDefinition.queryParams || {},
+      requestDefinition.queryParams || ({} as any),
       this.apiPrefix
     );
   }

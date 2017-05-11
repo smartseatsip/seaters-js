@@ -7,3 +7,4 @@ export * from './http-method';
 export * from './request-driver';
 export * from './simple-json-primitive';
 export * from './string-map';
+export * from './array-map';

@@ -1,6 +1,6 @@
 import {
   ServerResponse, ApiContext, ApiRequestDefinition,
-  RequestDriver, StringMap
+  RequestDriver, StringMap, ArrayMap
 } from '../api';
 
 import { SeatersApiException } from './seaters-api-exception';
@@ -23,14 +23,6 @@ export class SeatersApiContext extends ApiContext {
       maxPageSize: pagingOptions.maxPageSize,
       itemOffset: pagingOptions.itemOffset
     };
-  }
-
-  public static convertArrayToQueryParams (paramName: string, array: string[]): { [key: string]: any } {
-    let queryParams = {};
-    array.forEach((value) => {
-      queryParams[paramName] = value;
-    });
-    return queryParams;
   }
 
   /**
@@ -58,7 +50,7 @@ export class SeatersApiContext extends ApiContext {
   get (
     abstractEndpoint: string,
     endpointParams?: StringMap,
-    queryParams?: StringMap
+    queryParams?: StringMap | ArrayMap
   ): Promise<any> {
     return this.doTypedSeatersRequest({
       abstractEndpoint: abstractEndpoint,
@@ -71,7 +63,7 @@ export class SeatersApiContext extends ApiContext {
     abstractEndpoint: string,
     body?: any,
     endpointParams?: StringMap,
-    queryParams?: StringMap
+    queryParams?: StringMap | ArrayMap
   ): Promise<any> {
     return this.doTypedSeatersRequest({
       method: 'PUT',
@@ -86,7 +78,7 @@ export class SeatersApiContext extends ApiContext {
     abstractEndpoint: string,
     body?: any,
     endpointParams?: StringMap,
-    queryParams?: StringMap
+    queryParams?: StringMap | ArrayMap
   ): Promise<any> {
     return this.doTypedSeatersRequest({
       method: 'POST',
@@ -100,7 +92,7 @@ export class SeatersApiContext extends ApiContext {
   delete (
     abstractEndpoint: string,
     endpointParams?: StringMap,
-    queryParams?: StringMap
+    queryParams?: StringMap | ArrayMap
   ): Promise<any> {
     return this.doTypedSeatersRequest({
       method: 'DELETE',
