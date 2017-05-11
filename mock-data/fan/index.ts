@@ -21,7 +21,7 @@ export const fanMocks: Mock[] = [].concat([
     return {
       'status': 200,
       'statusText': 'OK',
-      'body': {}
+      'body': [lockedFg(), lockedFg(), lockedFg()]
     };
   }),
 
