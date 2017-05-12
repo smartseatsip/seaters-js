@@ -4,7 +4,7 @@ import { fan } from './fan';
 import { lockedFg, unlockFg } from './locked-fg';
 import { braintreePaymentInfo, braintreeToken } from './payment-info';
 import { fanGroupLook } from './fan-group-look';
-import { waitingListsWithSeat, waitingListsWithoutSeat } from './waiting-list';
+import { waitingListsWithSeat, waitingListsWithoutSeat, waitingList } from './waiting-list';
 import * as flowPayWl from './flow-pay-wl';
 import * as flowCheckout from './flow-checkout';
 import * as wlData from './wl-data';
@@ -30,6 +30,14 @@ export const fanMocks: Mock[] = [].concat([
       'status': 200,
       'statusText': 'OK',
       'body': lockedFg()
+    };
+  }),
+
+  mkMock('GET', '/api/fan/groups/waiting-lists', () => {
+    return {
+      'status': 200,
+      'statusText': 'OK',
+      'body': [waitingList, waitingList, waitingList]
     };
   }),
 

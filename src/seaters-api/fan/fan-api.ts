@@ -32,9 +32,9 @@ export class FanApi {
     );
   }
 
-  fanGroups (groupIds: string[]): Promise<FanGroup[]> {
+  fanGroups (fanGroupIds: string[]): Promise<FanGroup[]> {
     return this.apiContext.get('/fan/groups', {}, {
-      groupIds: groupIds
+      groupIds: fanGroupIds
     });
   }
 
@@ -84,6 +84,11 @@ export class FanApi {
       endpointParams,
       queryParams
     );
+  }
+
+  waitingListsInFanGroups (fanGroupIds: string[], pagingOptions: PagingOptions): Promise<PagedResult<WaitingList>> {
+    let queryParams = SeatersApiContext.buildPagingQueryParams(pagingOptions);
+    return this.apiContext.get('/fan/groups/waiting-lists', {}, Object.assign(queryParams, { groupIds: fanGroupIds }));
   }
 
   joinedFanGroups (pagingOptions: PagingOptions): Promise<PagedResult<FanGroup>> {

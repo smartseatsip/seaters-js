@@ -36,6 +36,10 @@
         "file": "node/fan-wl-in-fg.js"
       },
       {
+        "name": "Fetch list of WaitingLists by FanGroup IDs",
+        "file": "node/fan-wl-in-fgs.js"
+      },
+      {
         "name": "Accept a seat for a WaitingList",
         "file": "node/fan-accept-seat.js"
       },
