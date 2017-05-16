@@ -7,7 +7,7 @@ TMP_DIST="tmp/deploy";
 echo "building ${NAME} version ${VERSION}"
 
 npm install
-npm run gulp clean
+npm run gulp clean:precompile
 npm run gulp build:bundle
 npm run gulp build:mock-bundle
 #TODO run all tests
