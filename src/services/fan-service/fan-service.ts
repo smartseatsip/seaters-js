@@ -66,10 +66,10 @@ export class FanService {
   }
 
   getWaitingListsInFanGroups (
-    fanGroupId: string,
+    fanGroupIds: string[],
     pagingOptions: PagingOptions
   ): Promise<PagedResult<fan.WaitingList>> {
-    return this.seatersApi.fan.waitingListsInFanGroup(fanGroupId, this.convertPagingOptions(pagingOptions))
+    return this.seatersApi.fan.waitingListsInFanGroups(fanGroupIds, this.convertPagingOptions(pagingOptions))
       .then(r => this.convertPagedResult(r));
   }
 
