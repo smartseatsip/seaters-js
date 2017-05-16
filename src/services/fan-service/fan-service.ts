@@ -142,8 +142,8 @@ export class FanService {
       .then(translationMap => new LocalizableText(translationMap));
   }
 
-  joinProtectedWaitingList (waitingListId: string, code: string): Promise<fan.WaitingList> {
-    return this.waitingListService.joinProtectedWaitingList(waitingListId, code);
+  joinProtectedWaitingList (waitingListId: string, code: string, numberOfSeats: number): Promise<fan.WaitingList> {
+    return this.waitingListService.joinProtectedWaitingList(waitingListId, code, numberOfSeats);
   }
 
   private convertPagingOptions (pagingOptions: PagingOptions): any {

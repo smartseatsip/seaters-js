@@ -101,13 +101,15 @@ export function generateWl (
   waitingListId: string,
   position?: ExtendedPosition,
   seat?: Seat,
-  accessMode?: ACCESS_MODE
+  accessMode?: ACCESS_MODE,
+  directSalesEnabled?: boolean
 ): WaitingList {
   return (Object as any).assign({}, waitingList, {
     waitingListId: waitingListId,
     position: position,
     seat: seat,
-    accessMode: accessMode
+    accessMode: accessMode,
+    directSalesEnabled: directSalesEnabled
   });
 }
 
@@ -174,6 +176,9 @@ export const preauthorizedPosition: ExtendedPosition = {
 
 export const waitingListWithoutSeat: WaitingList
   | PagedResult<WaitingList> = generateWl('waiting-list-without-seat', preauthorizedPosition, null, 'PUBLIC');
+
+export const waitingListWithDirectSales: WaitingList
+  | PagedResult<WaitingList> = generateWl('waiting-list-without-seat', preauthorizedPosition, null, 'PUBLIC', true);
 
 export const waitingListsWithSeat: WaitingList | PagedResult<WaitingList> = mkPagedResult([waitingListWithSeat]);
 

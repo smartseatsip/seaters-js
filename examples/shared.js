@@ -36,6 +36,7 @@ exports.config = config;
 exports.fgId = config.fanGroup.fanGroupId;
 exports.fgIds = [config.fanGroup.fanGroupId];
 exports.wlId = config.fanGroup.waitingListId;
+exports.wlDirectSalesId = config.fanGroup.waitingListDirectSalesId;
 
 exports.sdk = SeatersSDK;
 

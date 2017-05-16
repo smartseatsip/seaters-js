@@ -12,6 +12,7 @@ import {
 } from '../../seaters-api/fan';
 import { fan } from './fan-types';
 import { retryUntil, compareObjects } from './../util';
+import { timeoutPromise } from '../util/retry-until';
 
 let WAITING_LIST_ACTION_STATUS = fan.WAITING_LIST_ACTION_STATUS;
 
@@ -72,7 +73,20 @@ export class WaitingListService {
 
   joinWaitingList (waitingListId: string, numberOfSeats: number): Promise<fan.WaitingList> {
     return this.api.fan.joinWaitingList(waitingListId, numberOfSeats)
-      .then(() => this.pollWaitingList(waitingListId, (wl) => wl.actionStatus !== WAITING_LIST_ACTION_STATUS.BOOK));
+      .then(() => this.pollWaitingList(waitingListId, (wl) => wl.actionStatus !== WAITING_LIST_ACTION_STATUS.BOOK))
+      // Wait for direct sales when applicable
+      .then((wl) => this.waitForDirectSales(wl));
+  }
+
+  joinProtectedWaitingList (waitingListId: string, code: string, numberOfSeats: number): Promise<fan.WaitingList> {
+    return this.getWaitingList(waitingListId)
+      .then(wl => this.api.fan.joinProtectedWaitingList(wl, code, numberOfSeats))
+      // wait for request to be ACCEPTED
+      .then(() => this.pollWaitingList(waitingListId, (wl) => this.checkUnlockStatus(wl)))
+      // wait for action status CAN_LEAVE
+      .then(() => this.pollWaitingList(waitingListId, (wl) => wl.actionStatus !== WAITING_LIST_ACTION_STATUS.UNLOCK))
+      // Wait for direct sales when applicable
+      .then((wl) => this.waitForDirectSales(wl));
   }
 
   leaveWaitingList (waitingListId: string): Promise<fan.WaitingList> {
@@ -131,15 +145,6 @@ export class WaitingListService {
           });
         }));
       }));
-  }
-
-  joinProtectedWaitingList (waitingListId: string, code: string): Promise<fan.WaitingList> {
-    return this.getWaitingList(waitingListId)
-      .then(wl => this.api.fan.joinProtectedWaitingList(wl, code))
-      // wait for request to be ACCEPTED
-      .then(() => this.pollWaitingList(waitingListId, (wl) => this.checkUnlockStatus(wl)))
-      // wait for action status CAN_LEAVE
-      .then(() => this.pollWaitingList(waitingListId, (wl) => wl.actionStatus !== WAITING_LIST_ACTION_STATUS.UNLOCK));
   }
 
   private checkUnlockStatus (wl: fan.WaitingList) {
@@ -262,6 +267,21 @@ export class WaitingListService {
       return WAITING_LIST_ACTION_STATUS.ERROR;
     }
 
+  }
+
+  private waitForDirectSales (wl: fan.WaitingList) {
+    // Immediately return when wl is not direct sales
+    if (!wl.directSalesEnabled) {
+      return Promise.resolve(wl);
+    }
+    console.log('waiting list is direct sales', wl);
+    // Instantly resolve when waiting list was already confirmed
+    if (wl.actionStatus === WAITING_LIST_ACTION_STATUS.CONFIRM) {
+      return Promise.resolve(wl);
+    }
+
+    // Wait a bit for direct sales to come through
+    return timeoutPromise(1000).then(() => this.getWaitingList(wl.waitingListId));
   }
 
   private hasVoucher (wl: fan.WaitingList): boolean {
