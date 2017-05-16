@@ -41,7 +41,7 @@ export const fanMocks: Mock[] = [].concat([
     };
   }),
 
-  mkMock('GET', '/api/fan/groups/waiting-lists?&&groupIds=fan-group&groupIds=fan-group', () => {
+  mkMock('GET', '/api/fan/groups/waiting-lists?groupIds=fan-group&groupIds=fan-group', () => {
     return {
       'status': 200,
       'statusText': 'OK',

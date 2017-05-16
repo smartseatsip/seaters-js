@@ -87,8 +87,16 @@ export class FanApi {
   }
 
   waitingListsInFanGroups (fanGroupIds: string[], pagingOptions: PagingOptions): Promise<PagedResult<WaitingList>> {
+    let endpointParams = undefined;
     let queryParams = SeatersApiContext.buildPagingQueryParams(pagingOptions);
-    return this.apiContext.get('/fan/groups/waiting-lists', {}, Object.assign(queryParams, { groupIds: fanGroupIds }));
+    queryParams = Object.assign(queryParams, {
+      groupIds: fanGroupIds
+    });
+    return this.apiContext.get(
+      '/fan/groups/waiting-lists',
+      endpointParams,
+      queryParams
+    );
   }
 
   joinedFanGroups (pagingOptions: PagingOptions): Promise<PagedResult<FanGroup>> {

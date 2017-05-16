@@ -44,7 +44,7 @@ export class ApiEndpoint {
   }
 
   private renderQueryParams (): string {
-    return Object.keys(this.queryParams).map(parameter => {
+    let paramsArray = Object.keys(this.queryParams).map(parameter => {
       if ((typeof this.queryParams[parameter]) === 'string') {
         let value = this.queryParams[parameter] as string;
         return encodeURIComponent(parameter) + '=' + encodeURIComponent(value);
@@ -58,7 +58,8 @@ export class ApiEndpoint {
         }
         return queryString;
       }
-    }).join('&');
+    }).filter(parameter => parameter !== undefined);
+    return paramsArray.join('&');
   }
 
   private renderConcreteEndpointWithQueryParams (): string {
