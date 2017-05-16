@@ -44,21 +44,18 @@ export class ApiEndpoint {
   }
 
   private renderQueryParams (): string {
-    let paramsArray = Object.keys(this.queryParams).map(parameter => {
-      if ((typeof this.queryParams[parameter]) === 'string') {
-        let value = this.queryParams[parameter] as string;
-        return encodeURIComponent(parameter) + '=' + encodeURIComponent(value);
-      } else if ((this.queryParams[parameter] as any) instanceof Array) {
-        let queryString = '';
-        for (let value of (this.queryParams[parameter] as any)) {
-          if (queryString.length) {
-            queryString += '&';
-          }
-          queryString += encodeURIComponent(parameter) + '=' + encodeURIComponent(value);
-        }
-        return queryString;
+    let paramsArray = Object.keys(this.queryParams).map(key => {
+      const value: string | string[] = this.queryParams[key] as string | string[];
+      if (Object.prototype.toString.call(value) === '[object Array]') {
+        const valueArray = value as string[];
+        return valueArray.map(param => {
+          return encodeURIComponent(key) + '=' + encodeURIComponent(param);
+        }).join('&');
+      } else {
+        const valueString = value as string;
+        return encodeURIComponent(key) + '=' + encodeURIComponent(valueString);
       }
-    }).filter(parameter => parameter !== undefined);
+    });
     return paramsArray.join('&');
   }
 
