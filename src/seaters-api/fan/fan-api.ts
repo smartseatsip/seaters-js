@@ -153,9 +153,10 @@ export class FanApi {
     return this.apiContext.post(endpoint, data, endpointParams);
   }
 
-  joinProtectedWaitingList (wl: WaitingList, code: string): Promise<WaitingListRequest> {
+  joinProtectedWaitingList (wl: WaitingList, code: string, numberOfSeats: number): Promise<WaitingListRequest> {
     let data = {
-      code: code
+      code: code,
+      numberOfSeats: numberOfSeats
     };
 
     let endpointParams = { waitingListId: wl.waitingListId };

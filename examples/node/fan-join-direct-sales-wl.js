@@ -9,7 +9,7 @@ var shared = require('../shared');
 
 var sdk = shared.sdk;
 var fgId = shared.fgId;
-var wlId = shared.wlId;
+var wlDirectSalesId = shared.wlDirectSalesId;
 
 shared.fanClient().then(client => {
 
@@ -22,16 +22,17 @@ shared.fanClient().then(client => {
       }
     })
     .then(() => console.log('FG joined'))
-    .then(() => client.fanService.waitingListService.getWaitingList(wlId))
+    .then(() => client.fanService.waitingListService.getWaitingList(wlDirectSalesId))
     .then(wl => {
+      console.log('WL status = %s', wl.actionStatus);
       if (wl.actionStatus === sdk.fan.WAITING_LIST_ACTION_STATUS.WAIT) {
         return wl.position;
       } else {
-        return client.fanService.joinWaitingList(wlId, 1);
+        return client.fanService.joinWaitingList(wlDirectSalesId, 1);
       }
     })
     .then(() => console.log('WL joined'))
-    .then(() => client.fanService.waitingListService.leaveWaitingList(wlId))
+    .then(() => client.fanService.waitingListService.rejectSeats(wlDirectSalesId))
     .then(() => console.log('WL left'))
     .then(() => client.fanService.fanGroupService.leaveFanGroup(fgId))
     .then(() => console.log('FG left'));

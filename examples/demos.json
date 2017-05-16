@@ -32,6 +32,10 @@
         "file": "node/fan-join-leave-fg-wl.js"
       },
       {
+        "name": "Join a FanGroup, Join a Direct Sales WaitingList, Leave both",
+        "file": "node/fan-join-direct-sales-wl.js"
+      },
+      {
         "name": "Fetch single WaitingList by WaitingList ID",
         "file": "node/fan-wl-by-id.js"
       },
