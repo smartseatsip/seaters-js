@@ -83,7 +83,7 @@ export class WaitingListService {
       .then(wl => this.api.fan.joinProtectedWaitingList(wl, code, numberOfSeats))
       // wait for request to be ACCEPTED
       .then(() => this.pollWaitingList(waitingListId, (wl) => this.checkUnlockStatus(wl)))
-      // wait for action status CAN_LEAVE
+      // wait for action status not to be UNLOCK
       .then(() => this.pollWaitingList(waitingListId, (wl) => wl.actionStatus !== WAITING_LIST_ACTION_STATUS.UNLOCK))
       // Wait for direct sales when applicable
       .then((wl) => this.waitForDirectSales(wl));
