@@ -37,7 +37,7 @@ export class ApiContext {
     return new ApiEndpoint(
       requestDefinition.abstractEndpoint,
       requestDefinition.endpointParams || {},
-      requestDefinition.queryParams || {},
+      requestDefinition.queryParams || ({} as any),
       this.apiPrefix
     );
   }
@@ -65,6 +65,7 @@ export class ApiContext {
         promise: request
       }
     };
+
     // notify all request listeners about the request that was just started
     this.requestsSubject.next(apiRequest);
     return request as Promise<ServerResponse>;

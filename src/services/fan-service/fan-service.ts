@@ -23,6 +23,10 @@ export class FanService {
     this.fanGroupService = new FanGroupService(seatersApi);
   }
 
+  getFanGroups (fanGroupIds: string[]): Promise<fan.FanGroup[]> {
+    return this.fanGroupService.getFanGroups(fanGroupIds);
+  }
+
   updateFan (fan: Fan): Promise<Fan> {
     return this.seatersApi.fan.updateFan(fan)
       .then(fan => this.sessionService.updateCurrentFan(fan));
@@ -58,6 +62,14 @@ export class FanService {
     pagingOptions: PagingOptions
   ): Promise<PagedResult<fan.WaitingList>> {
     return this.seatersApi.fan.waitingListsInFanGroup(fanGroupId, this.convertPagingOptions(pagingOptions))
+      .then(r => this.convertPagedResult(r));
+  }
+
+  getWaitingListsInFanGroups (
+    fanGroupIds: string[],
+    pagingOptions: PagingOptions
+  ): Promise<PagedResult<fan.WaitingList>> {
+    return this.seatersApi.fan.waitingListsInFanGroups(fanGroupIds, this.convertPagingOptions(pagingOptions))
       .then(r => this.convertPagedResult(r));
   }
 

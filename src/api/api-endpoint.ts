@@ -44,10 +44,19 @@ export class ApiEndpoint {
   }
 
   private renderQueryParams (): string {
-    return Object.keys(this.queryParams).map(parameter => {
-      let value = this.queryParams[parameter] as string;
-      return encodeURIComponent(parameter) + '=' + encodeURIComponent(value);
-    }).join('&');
+    let paramsArray = Object.keys(this.queryParams).map(key => {
+      const value: string | string[] = this.queryParams[key] as string | string[];
+      if (Array.isArray(value)) {
+        const valueArray = value as string[];
+        return valueArray.map(param => {
+          return encodeURIComponent(key) + '=' + encodeURIComponent(param);
+        }).join('&');
+      } else {
+        const valueString = value as string;
+        return encodeURIComponent(key) + '=' + encodeURIComponent(valueString);
+      }
+    });
+    return paramsArray.join('&');
   }
 
   private renderConcreteEndpointWithQueryParams (): string {

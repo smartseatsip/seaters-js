@@ -12,6 +12,10 @@
     "category": "Fan Operations",
     "demos": [
       {
+        "name": "Get a list of fan groups by ids",
+        "file": "node/get-fangroups.js"
+      },
+      {
         "name": "Fail To Unlock a FanGroup",
         "file": "node/fan-fail-to-unlock-fg.js"
       },
@@ -34,6 +38,10 @@
       {
         "name": "Fetch list of WaitingLists by FanGroup ID",
         "file": "node/fan-wl-in-fg.js"
+      },
+      {
+        "name": "Fetch list of WaitingLists by FanGroup IDs",
+        "file": "mock/get-wl-in-fangroups.js"
       },
       {
         "name": "Accept a seat for a WaitingList",

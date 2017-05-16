@@ -34,6 +34,7 @@ function buildLoggedInClient(user) {
 
 exports.config = config;
 exports.fgId = config.fanGroup.fanGroupId;
+exports.fgIds = [config.fanGroup.fanGroupId];
 exports.wlId = config.fanGroup.waitingListId;
 
 exports.sdk = SeatersSDK;

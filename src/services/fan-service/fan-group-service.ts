@@ -11,6 +11,11 @@ export class FanGroupService {
 
   }
 
+  getFanGroups (fanGroupIds: string[]): Promise<fan.FanGroup[]> {
+    return this.api.fan.fanGroups(fanGroupIds)
+      .then(fgs => fgs.map(fg => this.extendRawWaitingList(fg)));
+  }
+
   getFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
     return this.getRawFanGroup(fanGroupId)
       .then(fg => Object.assign(fg, {
@@ -61,6 +66,12 @@ export class FanGroupService {
       console.error('[FanGroupService] checkUnlockStatus - unknown status');
       throw new Error('strs.api.servererror');
     }
+  }
+
+  private extendRawWaitingList (fg: FanGroup): fan.FanGroup {
+    return Object.assign(fg, {
+      actionStatus: this.getFanGroupActionStatus(fg)
+    });
   }
 
   private getRawFanGroup (fanGroupId: string): Promise<FanGroup> {
