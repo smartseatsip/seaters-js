@@ -10,6 +10,7 @@
   "fanGroup": {
     "fanGroupId": "30034395-e3e0-48f9-9ba6-9762b1c4697c",
     "waitingListId": "b52eb117-a7e7-4ede-b0ee-b3523c92592f",
+    "waitingListDirectSalesId": "ebb326bb-00a5-47f0-8a5a-df3141318d5d",
     "fanGroupOwner": {
       "email": "test@test.com",
       "password": ""
