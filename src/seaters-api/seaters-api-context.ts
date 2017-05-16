@@ -50,7 +50,7 @@ export class SeatersApiContext extends ApiContext {
   get (
     abstractEndpoint: string,
     endpointParams?: StringMap,
-    queryParams?: StringMap | ArrayMap
+    queryParams?: ArrayMap
   ): Promise<any> {
     return this.doTypedSeatersRequest({
       abstractEndpoint: abstractEndpoint,
@@ -63,7 +63,7 @@ export class SeatersApiContext extends ApiContext {
     abstractEndpoint: string,
     body?: any,
     endpointParams?: StringMap,
-    queryParams?: StringMap | ArrayMap
+    queryParams?: ArrayMap
   ): Promise<any> {
     return this.doTypedSeatersRequest({
       method: 'PUT',
@@ -78,7 +78,7 @@ export class SeatersApiContext extends ApiContext {
     abstractEndpoint: string,
     body?: any,
     endpointParams?: StringMap,
-    queryParams?: StringMap | ArrayMap
+    queryParams?: ArrayMap
   ): Promise<any> {
     return this.doTypedSeatersRequest({
       method: 'POST',
@@ -92,7 +92,7 @@ export class SeatersApiContext extends ApiContext {
   delete (
     abstractEndpoint: string,
     endpointParams?: StringMap,
-    queryParams?: StringMap | ArrayMap
+    queryParams?: ArrayMap
   ): Promise<any> {
     return this.doTypedSeatersRequest({
       method: 'DELETE',
