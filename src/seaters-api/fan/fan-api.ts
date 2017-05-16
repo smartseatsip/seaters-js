@@ -10,6 +10,7 @@ import {
   PositionSalesTransactionInput, PositionSalesTransaction,
   AttendeesInfo
 } from './fan-types';
+import { WaitingListRequest } from './waiting-list';
 
 export class FanApi {
 
@@ -150,6 +151,22 @@ export class FanApi {
     let endpointParams = { waitingListId: waitingListId };
     let data = { numberOfSeats: numberOfSeats };
     return this.apiContext.post(endpoint, data, endpointParams);
+  }
+
+  joinProtectedWaitingList (wl: WaitingList, code: string): Promise<WaitingListRequest> {
+    let data = {
+      code: code
+    };
+
+    let endpointParams = { waitingListId: wl.waitingListId };
+    let endpoint = '/fan/waiting-lists/:waitingListId/request';
+
+    if (!wl.request) {
+
+      return this.apiContext.post(endpoint, data, endpointParams);
+    } else {
+      return this.apiContext.put(endpoint, data, endpointParams);
+    }
   }
 
   leaveWaitingList (waitingListId: string): Promise<void> {

@@ -2,9 +2,10 @@ import { Mock, mkMock, RequestOptions } from '../types';
 
 import { fan } from './fan';
 import { lockedFg, unlockFg } from './locked-fg';
+import { unlockWl } from './locked-wl';
 import { braintreePaymentInfo, braintreeToken } from './payment-info';
 import { fanGroupLook } from './fan-group-look';
-import { waitingListsWithSeat, waitingListsWithoutSeat, waitingList } from './waiting-list';
+import { waitingListsWithSeat, waitingListsWithoutSeat, waitingList, protectedWaitingListWithSeat } from './waiting-list';
 import * as flowPayWl from './flow-pay-wl';
 import * as flowCheckout from './flow-checkout';
 import * as wlData from './wl-data';
@@ -87,6 +88,30 @@ export const fanMocks: Mock[] = [].concat([
     status: 200,
     statusText: 'OK',
     body: waitingListsWithoutSeat
+  }),
+
+  mkMock('GET', '/api/fan/waiting-lists/locked-wl', () => {
+    return {
+      'status': 200,
+      'statusText': 'OK',
+      'body': protectedWaitingListWithSeat
+    };
+  }),
+
+  mkMock('PUT', '/api/fan/waiting-lists/locked-wl/request', (options: RequestOptions) => {
+    return {
+      'status': 200,
+      'statusText': 'OK',
+      'body': unlockWl(protectedWaitingListWithSeat, options)
+    };
+  }),
+
+  mkMock('POST', '/api/fan/waiting-lists/locked-wl/request', (options: RequestOptions) => {
+    return {
+      'status': 200,
+      'statusText': 'OK',
+      'body': unlockWl(protectedWaitingListWithSeat, options)
+    };
   }),
 
   mkMock('GET', '/api/fan/active-waiting-lists-with-seat?maxPageSize=10&itemOffset=0', {
