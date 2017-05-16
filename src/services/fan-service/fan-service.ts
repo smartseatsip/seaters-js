@@ -130,6 +130,10 @@ export class FanService {
       .then(translationMap => new LocalizableText(translationMap));
   }
 
+  joinProtectedWaitingList (waitingListId: string, code: string): Promise<fan.WaitingList> {
+    return this.waitingListService.joinProtectedWaitingList(waitingListId, code);
+  }
+
   private convertPagingOptions (pagingOptions: PagingOptions): any {
     return {
       itemOffset: pagingOptions.page * pagingOptions.maxPageSize,

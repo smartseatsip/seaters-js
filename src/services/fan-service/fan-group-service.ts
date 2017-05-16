@@ -30,23 +30,6 @@ export class FanGroupService {
       });
   }
 
-  checkUnlockStatus (fg) {
-    if (!fg.membership.request) {
-      console.error('[FanGroupService] checkUnlockStatus - no request made');
-      throw new Error('strs.api.servererror');
-    } else if (fg.membership.request.status === 'PENDING') {
-      return false;
-    } else if (fg.membership.request.status === 'ACCEPTED') {
-      return true;
-    } else if (fg.membership.request.status === 'REJECTED') {
-      console.warn('[FanGroupService] checkUnlockStatus - code rejected');
-      throw new Error('strs.api.fg.invalidcode');
-    } else {
-      console.error('[FanGroupService] checkUnlockStatus - unknown status');
-      throw new Error('strs.api.servererror');
-    }
-  }
-
   joinProtectedFanGroup (fanGroupId: string, code: string): Promise<fan.FanGroup> {
 
     return this.getFanGroup(fanGroupId)
@@ -61,6 +44,23 @@ export class FanGroupService {
   leaveFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
     return this.api.fan.leaveFanGroup(fanGroupId)
       .then(() => this.pollFanGroup(fanGroupId, (fg) => fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_JOIN));
+  }
+
+  private checkUnlockStatus (fg: fan.FanGroup) {
+    if (!fg.membership.request) {
+      console.error('[FanGroupService] checkUnlockStatus - no request made');
+      throw new Error('strs.api.servererror');
+    } else if (fg.membership.request.status === 'PENDING') {
+      return false;
+    } else if (fg.membership.request.status === 'ACCEPTED') {
+      return true;
+    } else if (fg.membership.request.status === 'REJECTED') {
+      console.warn('[FanGroupService] checkUnlockStatus - code rejected');
+      throw new Error('strs.api.fg.invalidcode');
+    } else {
+      console.error('[FanGroupService] checkUnlockStatus - unknown status');
+      throw new Error('strs.api.servererror');
+    }
   }
 
   private getRawFanGroup (fanGroupId: string): Promise<FanGroup> {

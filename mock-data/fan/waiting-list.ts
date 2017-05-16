@@ -1,6 +1,7 @@
 import { WaitingList, ExtendedPosition, Seat } from '../../src/seaters-api/fan';
 import { mkPagedResult } from '../types';
 import { PagedResult } from '../../src/seaters-api/paged-result';
+import { ACCESS_MODE } from '../../src/seaters-api/fan/fan-group';
 
 export const waitingList: WaitingList = {
   'groupId': 'fan-group',
@@ -96,11 +97,17 @@ export const waitingList: WaitingList = {
   'seat': null
 };
 
-export function generateWl (waitingListId: string, position?: ExtendedPosition, seat?: Seat): WaitingList {
-  return Object.assign({}, waitingList, {
+export function generateWl (
+  waitingListId: string,
+  position?: ExtendedPosition,
+  seat?: Seat,
+  accessMode?: ACCESS_MODE
+): WaitingList {
+  return (Object as any).assign({}, waitingList, {
     waitingListId: waitingListId,
     position: position,
-    seat: seat
+    seat: seat,
+    accessMode: accessMode
   });
 }
 
@@ -140,7 +147,7 @@ let seat: Seat = {
   }
 };
 
-export const waitingListWithSeat = generateWl('waiting-list-with-seat', positionPayedWithSeat, seat);
+export const waitingListWithSeat = generateWl('waiting-list-with-seat', positionPayedWithSeat, seat, 'PUBLIC');
 
 export const preauthorizedPosition: ExtendedPosition = {
   'attendeesInfo': { 'attendees': [] },
@@ -166,8 +173,10 @@ export const preauthorizedPosition: ExtendedPosition = {
 };
 
 export const waitingListWithoutSeat: WaitingList
-  | PagedResult<WaitingList> = generateWl('waiting-list-without-seat', preauthorizedPosition, null);
+  | PagedResult<WaitingList> = generateWl('waiting-list-without-seat', preauthorizedPosition, null, 'PUBLIC');
 
 export const waitingListsWithSeat: WaitingList | PagedResult<WaitingList> = mkPagedResult([waitingListWithSeat]);
 
 export const waitingListsWithoutSeat: WaitingList | PagedResult<WaitingList> = mkPagedResult([waitingListWithoutSeat]);
+
+export const protectedWaitingListWithSeat: WaitingList = generateWl('locked-wl', preauthorizedPosition, null, 'CODE_PROTECTED');

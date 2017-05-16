@@ -133,6 +133,35 @@ export class WaitingListService {
       }));
   }
 
+  joinProtectedWaitingList (waitingListId: string, code: string): Promise<fan.WaitingList> {
+    return this.getWaitingList(waitingListId)
+      .then(wl => this.api.fan.joinProtectedWaitingList(wl, code))
+      // wait for request to be ACCEPTED
+      .then(() => this.pollWaitingList(waitingListId, (wl) => this.checkUnlockStatus(wl)))
+      // wait for action status CAN_LEAVE
+      .then(() => this.pollWaitingList(waitingListId, (wl) => wl.actionStatus !== WAITING_LIST_ACTION_STATUS.UNLOCK));
+  }
+
+  private checkUnlockStatus (wl: fan.WaitingList) {
+    if (!wl.request) {
+      console.error('[WaitingListService] checkUnlockStatus - no request made');
+      // tslint:disable-next-line
+      throw 'strs.api.servererror';
+    } else if (wl.request.status === 'PENDING') {
+      return false;
+    } else if (wl.request.status === 'ACCEPTED') {
+      return true;
+    } else if (wl.request.status === 'REJECTED') {
+      console.warn('[WaitingListService] checkUnlockStatus - code rejected');
+      // tslint:disable-next-line
+      throw 'strs.api.wl.invalidcode';
+    } else {
+      console.error('[WaitingListService] checkUnlockStatus - unknown status');
+      // tslint:disable-next-line
+      throw 'strs.api.servererror';
+    }
+  }
+
   private getRawWaitingList (waitingListId: string): Promise<WaitingList> {
     return this.api.fan.waitingList(waitingListId);
   }
