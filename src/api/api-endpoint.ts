@@ -46,7 +46,7 @@ export class ApiEndpoint {
   private renderQueryParams (): string {
     let paramsArray = Object.keys(this.queryParams).map(key => {
       const value: string | string[] = this.queryParams[key] as string | string[];
-      if (Object.prototype.toString.call(value) === '[object Array]') {
+      if (Array.isArray(value)) {
         const valueArray = value as string[];
         return valueArray.map(param => {
           return encodeURIComponent(key) + '=' + encodeURIComponent(param);
