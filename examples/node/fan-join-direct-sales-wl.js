@@ -28,7 +28,7 @@ shared.fanClient().then(client => {
       if (wl.actionStatus === sdk.fan.WAITING_LIST_ACTION_STATUS.WAIT) {
         return wl.position;
       } else {
-        return client.fanService.waitingListService.joinWaitingList(wlDirectSalesId, 1);
+        return client.fanService.joinWaitingList(wlDirectSalesId, 1);
       }
     })
     .then(() => console.log('WL joined'))

@@ -142,6 +142,10 @@ export class FanService {
       .then(translationMap => new LocalizableText(translationMap));
   }
 
+  joinWaitingList (waitingListId: string, numberOfSeats: number): Promise<fan.WaitingList> {
+    return this.waitingListService.joinWaitingList(waitingListId, numberOfSeats);
+  }
+
   joinProtectedWaitingList (waitingListId: string, code: string, numberOfSeats: number): Promise<fan.WaitingList> {
     return this.waitingListService.joinProtectedWaitingList(waitingListId, code, numberOfSeats);
   }
