@@ -13,7 +13,9 @@ import {
   TICKETING_SYSTEM_TYPE
 } from '../../seaters-api/fan';
 import { fan } from './fan-types';
-import { retryUntil, compareObjects } from './../util';
+import { retryUntil } from './../util';
+import { timeoutPromise } from '../util/retry-until';
+import { compareFlatObjects } from '../util/compare-flat-objects';
 
 let WAITING_LIST_ACTION_STATUS = fan.WAITING_LIST_ACTION_STATUS;
 
@@ -125,11 +127,7 @@ export class WaitingListService {
         // console.log('storedAttendees', storedAttendees);
         // console.log('input attendees', attendeesInfo.attendees);
         return attendeesInfo.attendees.every(attendee => !!storedAttendees.find(storedAttendee => {
-          return compareObjects(attendee, storedAttendee, {
-            ignoreNullFields: true,
-            ignoreUndefinedFields: true,
-            looseComparison: false
-          });
+          return compareFlatObjects(attendee, storedAttendee);
         }));
       }));
   }
