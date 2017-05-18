@@ -100,14 +100,24 @@ export interface Address {
    * @format alpha-2 country code
    */
   countryCode: string;
-  street: string;
   zipCode: string;
   city: string;
   line1: string;
   line2: string;
   line3: string;
   state: string;
+
+  /**
+   * @deprecated
+   */
+  street: string;
+  /**
+   * @deprecated
+   */
   number: string;
+  /**
+   * @deprecated
+   */
   country: string;
 }
 
