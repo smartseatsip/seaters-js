@@ -11,9 +11,7 @@ import {
   TICKETING_SYSTEM_TYPE
 } from '../../seaters-api/fan';
 import { fan } from './fan-types';
-import { retryUntil } from './../util';
-import { timeoutPromise } from '../util/retry-until';
-import { compareFlatObjects } from '../util/compare-flat-objects';
+import { retryUntil, compareFlatObjects, timeoutPromise } from './../util';
 
 let WAITING_LIST_ACTION_STATUS = fan.WAITING_LIST_ACTION_STATUS;
 

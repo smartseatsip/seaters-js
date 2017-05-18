@@ -4,11 +4,15 @@ function createFlatArray (o, array) {
     let value = o[key];
     if (value === undefined || value === null) {
       return;
-    } else if (typeof value === 'string') {
-      array.push(key.toString() + value.toString());
-      return;
+    } else if (value instanceof Function) {
+      throw new Error('Functions are not supported');
+    } else if (value instanceof Array) {
+      throw new Error('Arrays are not supported');
+    } else if (typeof value === 'object') {
+      return createFlatArray(value, array);
     }
-    return createFlatArray(value, array);
+    array.push(key + value);
+    return;
   });
   return array;
 }
