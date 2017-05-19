@@ -14,7 +14,6 @@ import {
 } from '../../seaters-api/fan';
 import { fan } from './fan-types';
 import { retryUntil } from './../util';
-import { timeoutPromise } from '../util/retry-until';
 import { compareFlatObjects } from '../util/compare-flat-objects';
 
 let WAITING_LIST_ACTION_STATUS = fan.WAITING_LIST_ACTION_STATUS;
@@ -126,7 +125,7 @@ export class WaitingListService {
         // every attendee must be found in the stored attendees
         // console.log('storedAttendees', storedAttendees);
         // console.log('input attendees', attendeesInfo.attendees);
-        return attendeesInfo.attendees.every(attendee => !!storedAttendees.find(storedAttendee => {
+        return attendeesInfo.attendees.every(attendee => !!(storedAttendees as any).find(storedAttendee => {
           return compareFlatObjects(attendee, storedAttendee);
         }));
       }));
