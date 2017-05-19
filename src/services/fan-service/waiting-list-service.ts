@@ -13,8 +13,7 @@ import {
   TICKETING_SYSTEM_TYPE
 } from '../../seaters-api/fan';
 import { fan } from './fan-types';
-import { retryUntil } from './../util';
-import { compareFlatObjects } from '../util/compare-flat-objects';
+import { retryUntil, compareFlatObjects } from './../util';
 
 let WAITING_LIST_ACTION_STATUS = fan.WAITING_LIST_ACTION_STATUS;
 
