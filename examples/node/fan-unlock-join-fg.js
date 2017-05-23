@@ -13,7 +13,7 @@ var sdk = shared.sdk;
 
 shared.fanClient().then(client => {
 
-  return client.fanService.fanGroupService.getFanGroup(fgId)
+  return client.fanService.getFanGroup(fgId)
   // ensure we can unlock it
     .then(fg => {
       if (fg.actionStatus === sdk.fan.FAN_GROUP_ACTION_STATUS.CAN_UNLOCK) {

@@ -10,7 +10,7 @@ function buildClient(endpoint) {
     clients = [];
   }
   var client = new SeatersSDK.SeatersClient({
-    apiPrefix: endpoint || 'https://api.dev-seaters.com/api',
+    apiPrefix: endpoint || 'https://api-wat.qa-seaters.com/api',
     requestDriver: 'NODE'
   });
   clients.push(client);
@@ -83,12 +83,12 @@ exports.playbooks = {
    * For a fan client, join a fg if needed and then join a wl in this fg
    */
   joinWl(client, fgId, wlId, numberOfSeats) {
-    return client.fanGroupService.getFanGroup(fgId)
+    return client.fanService.getFanGroup(fgId)
       .then((fg) => {
         if (fg.membership.member) {
           return fg;
         }
-        return client.fanGroupService.joinFanGroup(fgId);
+        return client.fanService.joinFanGroup(fgId);
 
       })
       .then(() => client.waitingListService.getWaitingList(wlId))

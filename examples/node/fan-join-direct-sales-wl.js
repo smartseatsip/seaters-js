@@ -13,12 +13,12 @@ var wlDirectSalesId = shared.wlDirectSalesId;
 
 shared.fanClient().then(client => {
 
-  return client.fanService.fanGroupService.getFanGroup(fgId)
+  return client.fanService.getFanGroup(fgId)
     .then(fg => {
       if (fg.actionStatus === sdk.fan.FAN_GROUP_ACTION_STATUS.CAN_LEAVE) {
         return fg;
       } else {
-        return client.fanService.fanGroupService.joinFanGroup(fgId);
+        return client.fanService.joinFanGroup(fgId);
       }
     })
     .then(() => console.log('FG joined'))
