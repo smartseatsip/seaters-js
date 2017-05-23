@@ -28,7 +28,7 @@ shared.fanClient().then(client => {
     })
     // unlock - try with a wrong code
     .then(() => {
-      return client.fanService.fanGroupService.joinProtectedFanGroup(fgId, 'a wrong unlock code')
+      return client.fanService.joinProtectedFanGroup(fgId, 'a wrong unlock code')
       // expect it to fail
         .then(
           () => {

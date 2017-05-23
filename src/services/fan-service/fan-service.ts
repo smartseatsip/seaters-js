@@ -24,7 +24,7 @@ export class FanService {
   }
 
   /**
-   *  FAN GROUP SERVICE
+   *  FAN GROUPS
    */
   getFanGroups (fanGroupIds: string[]): Promise<fan.FanGroup[]> {
     return this.fanGroupService.getFanGroups(fanGroupIds);
@@ -38,11 +38,22 @@ export class FanService {
     return this.fanGroupService.joinFanGroup(fanGroupId);
   }
 
+  joinProtectedFanGroup (fanGroupId: string, code: string): Promise<fan.FanGroup> {
+    return this.fanGroupService.joinProtectedFanGroup(fanGroupId, code);
+  }
+
+  leaveFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
+    return this.fanGroupService.leaveFanGroup(fanGroupId);
+  }
+
   updateFan (fan: Fan): Promise<Fan> {
-    return this.seatersApi.fan.updateFan(fan)
+    return this.fanGroupService.updateFan(fan)
       .then(fan => this.sessionService.updateCurrentFan(fan));
   }
 
+  /**
+   *  WAITING LISTS
+   */
   getWaitingList (waitingListId: string): Promise<fan.WaitingList> {
     return this.waitingListService.getWaitingList(waitingListId);
   }
