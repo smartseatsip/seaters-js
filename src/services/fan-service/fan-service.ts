@@ -62,6 +62,14 @@ export class FanService {
     return this.waitingListService.getWaitingLists(waitingListIds);
   }
 
+  joinWaitingList (waitingListId: string, numberOfSeats: number): Promise<fan.WaitingList> {
+    return this.waitingListService.joinWaitingList(waitingListId, numberOfSeats);
+  }
+
+  joinProtectedWaitingList (waitingListId: string, code: string, numberOfSeats: number): Promise<fan.WaitingList> {
+    return this.waitingListService.joinProtectedWaitingList(waitingListId, code, numberOfSeats);
+  }
+
   getWaitingListsByKeywords (keywords: string[], page: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
     return this.publicService.getWaitingListsByKeywords(keywords, page)
       .then(pagedPublicWls => {
@@ -162,14 +170,6 @@ export class FanService {
   getVenueConditionsForWaitingList (waitingListId: string): Promise<LocalizableText> {
     return this.seatersApi.fan.getVenueConditions(waitingListId)
       .then(translationMap => new LocalizableText(translationMap));
-  }
-
-  joinWaitingList (waitingListId: string, numberOfSeats: number): Promise<fan.WaitingList> {
-    return this.waitingListService.joinWaitingList(waitingListId, numberOfSeats);
-  }
-
-  joinProtectedWaitingList (waitingListId: string, code: string, numberOfSeats: number): Promise<fan.WaitingList> {
-    return this.waitingListService.joinProtectedWaitingList(waitingListId, code, numberOfSeats);
   }
 
   private convertPagingOptions (pagingOptions: PagingOptions): any {

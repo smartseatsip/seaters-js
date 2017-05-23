@@ -23,6 +23,84 @@ export class WaitingListService {
 
   }
 
+  getWaitingList (waitingListId: string): Promise<fan.WaitingList> {
+    return this.getRawWaitingList(waitingListId)
+      .then((wl) => this.extendRawWaitingList(wl));
+  }
+
+  getWaitingLists (waitingListIds: string[]): Promise<fan.WaitingList[]> {
+    return this.api.fan.waitingLists(waitingListIds)
+      .then(wls => wls.map(wl => this.extendRawWaitingList(wl)));
+  }
+
+  joinWaitingList (waitingListId: string, numberOfSeats: number): Promise<fan.WaitingList> {
+    return this.api.fan.joinWaitingList(waitingListId, numberOfSeats)
+      .then(() => this.pollWaitingList(waitingListId, (wl) => wl.actionStatus !== WAITING_LIST_ACTION_STATUS.BOOK))
+      // Wait for direct sales when applicable
+      .then((wl) => this.waitForDirectSales(wl));
+  }
+
+  joinProtectedWaitingList (waitingListId: string, code: string, numberOfSeats: number): Promise<fan.WaitingList> {
+    return this.getWaitingList(waitingListId)
+      .then(wl => this.api.fan.joinProtectedWaitingList(wl, code, numberOfSeats))
+      // wait for request to be ACCEPTED
+      .then(() => this.pollWaitingList(waitingListId, (wl) => this.checkUnlockStatus(wl)))
+      // wait for action status not to be UNLOCK
+      .then(() => this.pollWaitingList(waitingListId, (wl) => wl.actionStatus !== WAITING_LIST_ACTION_STATUS.UNLOCK))
+      // Wait for direct sales when applicable
+      .then((wl) => this.waitForDirectSales(wl));
+  }
+
+  leaveWaitingList (waitingListId: string): Promise<fan.WaitingList> {
+    return this.api.fan.leaveWaitingList(waitingListId)
+    // wait until the status is returned to BOOK
+      .then(() => this.pollWaitingList(waitingListId, (wl) => wl.actionStatus === WAITING_LIST_ACTION_STATUS.BOOK));
+  }
+
+  payPosition (waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
+    return this.submitTransaction(waitingListId, transaction)
+    // wait for WL state to be 'GO_LIVE'
+      .then(() => this.waitUntilCanGoLive(waitingListId));
+  }
+
+  preauthorizePosition (waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
+    return this.submitTransaction(waitingListId, transaction)
+    // wait for preauthorization timer to be removed
+      .then(() => this.pollWaitingList(waitingListId, wl => {
+        return (wl.position.expirationDate as any) === null;
+      }));
+  }
+
+  saveAttendeesInfo (waitingListId: string, attendeesInfo: AttendeesInfo): Promise<fan.WaitingList> {
+    return this.api.fan.updateAttendeesInfo(waitingListId, attendeesInfo)
+    // wait for attendeeInfo to be updated in CQRS
+      .then(() => this.pollWaitingList(waitingListId, wl => {
+        let storedAttendees = (wl.position.attendeesInfo && wl.position.attendeesInfo.attendees) || [];
+        // every attendee must be found in the stored attendees
+        // console.log('storedAttendees', storedAttendees);
+        // console.log('input attendees', attendeesInfo.attendees);
+        return attendeesInfo.attendees.every(attendee => !!storedAttendees.find(storedAttendee => {
+          return compareFlatObjects(attendee, storedAttendee);
+        }));
+      }));
+  }
+
+  acceptSeats (waitingListId: string): Promise<fan.WaitingList> {
+    return this.api.fan.acceptSeats(waitingListId)
+      .then(() => this.waitUntilCanGoLive(waitingListId));
+  }
+
+  rejectSeats (waitingListId: string): Promise<fan.WaitingList> {
+    return this.api.fan.rejectSeats(waitingListId)
+      .then(() => this.pollWaitingList(waitingListId, (wl) => (wl.actionStatus === WAITING_LIST_ACTION_STATUS.BOOK || wl.actionStatus === WAITING_LIST_ACTION_STATUS.UNLOCK)));
+  }
+
+  exportSeats (waitingListId: string): Promise<fan.WaitingList> {
+    return this.waitUntilSeatsCanBeExported(waitingListId)
+      .then(() => this.api.fan.exportSeats(waitingListId))
+      .then(() => this.pollWaitingList(waitingListId, (wl) => (wl && wl.seat && wl.seat.exportedVoucherUrl && wl.seat.exportedVoucherUrl.length > 0)));
+  }
+
   canPay (wl: fan.WaitingList): boolean {
     if (WAITING_LIST_ACTION_STATUS.WAIT === wl.actionStatus) {
       return !!wl.position.expirationDate;
@@ -60,86 +138,8 @@ export class WaitingListService {
     return wls as PagedResult<fan.WaitingList>;
   }
 
-  getWaitingList (waitingListId: string): Promise<fan.WaitingList> {
-    return this.getRawWaitingList(waitingListId)
-      .then((wl) => this.extendRawWaitingList(wl));
-  }
-
-  getWaitingLists (waitingListIds: string[]): Promise<fan.WaitingList[]> {
-    return this.api.fan.waitingLists(waitingListIds)
-      .then(wls => wls.map(wl => this.extendRawWaitingList(wl)));
-  }
-
-  joinWaitingList (waitingListId: string, numberOfSeats: number): Promise<fan.WaitingList> {
-    return this.api.fan.joinWaitingList(waitingListId, numberOfSeats)
-      .then(() => this.pollWaitingList(waitingListId, (wl) => wl.actionStatus !== WAITING_LIST_ACTION_STATUS.BOOK))
-      // Wait for direct sales when applicable
-      .then((wl) => this.waitForDirectSales(wl));
-  }
-
-  joinProtectedWaitingList (waitingListId: string, code: string, numberOfSeats: number): Promise<fan.WaitingList> {
-    return this.getWaitingList(waitingListId)
-      .then(wl => this.api.fan.joinProtectedWaitingList(wl, code, numberOfSeats))
-      // wait for request to be ACCEPTED
-      .then(() => this.pollWaitingList(waitingListId, (wl) => this.checkUnlockStatus(wl)))
-      // wait for action status not to be UNLOCK
-      .then(() => this.pollWaitingList(waitingListId, (wl) => wl.actionStatus !== WAITING_LIST_ACTION_STATUS.UNLOCK))
-      // Wait for direct sales when applicable
-      .then((wl) => this.waitForDirectSales(wl));
-  }
-
-  leaveWaitingList (waitingListId: string): Promise<fan.WaitingList> {
-    return this.api.fan.leaveWaitingList(waitingListId)
-    // wait until the status is returned to BOOK
-      .then(() => this.pollWaitingList(waitingListId, (wl) => wl.actionStatus === WAITING_LIST_ACTION_STATUS.BOOK));
-  }
-
   getWaitingListPrice (waitingListId: string, numberOfSeats: number): Promise<fan.Price> {
     return this.api.fan.waitingListPrice(waitingListId, numberOfSeats);
-  }
-
-  acceptSeats (waitingListId: string): Promise<fan.WaitingList> {
-    return this.api.fan.acceptSeats(waitingListId)
-      .then(() => this.waitUntilCanGoLive(waitingListId));
-  }
-
-  rejectSeats (waitingListId: string): Promise<fan.WaitingList> {
-    return this.api.fan.rejectSeats(waitingListId)
-      .then(() => this.pollWaitingList(waitingListId, (wl) => (wl.actionStatus === WAITING_LIST_ACTION_STATUS.BOOK || wl.actionStatus === WAITING_LIST_ACTION_STATUS.UNLOCK)));
-  }
-
-  exportSeats (waitingListId: string): Promise<fan.WaitingList> {
-    return this.waitUntilSeatsCanBeExported(waitingListId)
-      .then(() => this.api.fan.exportSeats(waitingListId))
-      .then(() => this.pollWaitingList(waitingListId, (wl) => (wl && wl.seat && wl.seat.exportedVoucherUrl && wl.seat.exportedVoucherUrl.length > 0)));
-  }
-
-  payPosition (waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
-    return this.submitTransaction(waitingListId, transaction)
-    // wait for WL state to be 'GO_LIVE'
-      .then(() => this.waitUntilCanGoLive(waitingListId));
-  }
-
-  preauthorizePosition (waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
-    return this.submitTransaction(waitingListId, transaction)
-    // wait for preauthorization timer to be removed
-      .then(() => this.pollWaitingList(waitingListId, wl => {
-        return (wl.position.expirationDate as any) === null;
-      }));
-  }
-
-  saveAttendeesInfo (waitingListId: string, attendeesInfo: AttendeesInfo): Promise<fan.WaitingList> {
-    return this.api.fan.updateAttendeesInfo(waitingListId, attendeesInfo)
-    // wait for attendeeInfo to be updated in CQRS
-      .then(() => this.pollWaitingList(waitingListId, wl => {
-        let storedAttendees = (wl.position.attendeesInfo && wl.position.attendeesInfo.attendees) || [];
-        // every attendee must be found in the stored attendees
-        // console.log('storedAttendees', storedAttendees);
-        // console.log('input attendees', attendeesInfo.attendees);
-        return attendeesInfo.attendees.every(attendee => !!storedAttendees.find(storedAttendee => {
-          return compareFlatObjects(attendee, storedAttendee);
-        }));
-      }));
   }
 
   private checkUnlockStatus (wl: fan.WaitingList) {
