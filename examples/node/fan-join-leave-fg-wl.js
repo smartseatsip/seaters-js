@@ -31,7 +31,7 @@ shared.fanClient().then(client => {
       }
     })
     .then(() => console.log('WL joined'))
-    .then(() => client.fanService.waitingListService.leaveWaitingList(wlId))
+    .then(() => client.fanService.leaveWaitingList(wlId))
     .then(() => console.log('WL left'))
     .then(() => client.fanService.leaveFanGroup(fgId))
     .then(() => console.log('FG left'));

@@ -70,6 +70,10 @@ export class FanService {
     return this.waitingListService.joinProtectedWaitingList(waitingListId, code, numberOfSeats);
   }
 
+  leaveWaitingList (waitingListId: string): Promise<fan.WaitingList> {
+    return this.waitingListService.leaveWaitingList(waitingListId);
+  }
+
   getWaitingListsByKeywords (keywords: string[], page: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
     return this.publicService.getWaitingListsByKeywords(keywords, page)
       .then(pagedPublicWls => {
