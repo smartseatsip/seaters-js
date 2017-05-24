@@ -97,6 +97,10 @@
         "file": "mock/get-fangroup-look.js"
       },
       {
+        "name": "Fetch public FanGroups for all given IDs",
+        "file": "node/public-fgs-by-id.js"
+      },
+      {
         "name": "Fetch public WaitingLists by FanGroup ID",
         "file": "node/public-wl-by-fg-id.js"
       },

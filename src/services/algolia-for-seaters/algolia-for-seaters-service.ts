@@ -2,9 +2,7 @@ import { AppService } from './../app-service';
 import { AlgoliaApi, SearchQuery, SearchResult } from '../../algolia-api';
 import { RequestDriver } from '../../api';
 
-import { FanGroup } from './fan-group';
-import { WaitingList } from './waiting-list';
-import { TypedSearchResult } from './typed-search-result';
+import { FanGroup, WaitingList, TypedSearchResult, FG_ALGOLIA_TYPE, TYPE_FIELD, TYPO_TOLERANCE_STRICT } from './algolia-for-seaters-types';
 
 const DEFAULT_LOCALE = 'en';
 
@@ -22,6 +20,20 @@ export class AlgoliaForSeatersService {
     let q = this.buildExactQuery(fanGroupId, 'fanGroupId', 'FAN_GROUP');
     return this.findExactlyOne<FanGroup>(q, 'FanGroup', fanGroupId);
 
+  }
+
+  getFanGroupsById (fanGroupIds: string[]): Promise<FanGroup[]> {
+    let fanGroupIdsFilter = fanGroupIds.map((fanGroupId) => 'fanGroupId:' + fanGroupId).join(' OR ');
+    let q: SearchQuery = {
+      query: '',
+      typoTolerance: TYPO_TOLERANCE_STRICT,
+      facetFilters: [{
+        facet: TYPE_FIELD,
+        value: FG_ALGOLIA_TYPE
+      }],
+      filters: fanGroupIdsFilter
+    };
+    return this.findExactlyN<FanGroup>(q, fanGroupIds);
   }
 
   getWaitingListsByFanGroupId (fangroupId: string, hitsPerPage: number,
@@ -95,17 +107,31 @@ export class AlgoliaForSeatersService {
   }
 
   private findExactlyOne<T> (searchQuery: SearchQuery, entityType: string, identifier: string): Promise<T> {
+    return this.findExactlyN(searchQuery, [identifier])
+      .then((results) => results[0]);
+  }
+
+  private findExactlyN<T> (searchQuery: SearchQuery, identifiers: string[]): Promise<T[]> {
+    let n = identifiers.length;
     return this.search(searchQuery)
       .then(searchResult => {
-        if (searchResult.nbHits === 1) {
-          return searchResult.hits[0] as T;
-        } else if (searchResult.nbHits === 0) {
-          throw new Error('404 - not found: ' + entityType + ' (' + identifier + ')');
+        if (searchResult.nbHits === n) {
+          if (searchResult.hits.length === n) {
+            return searchResult.hits as T[];
+          } else {
+            // depending on algolia's limits we can technically ask for too many fangroups in one search query
+            // by the time this happens we're hopefully not using algolia for this purpose anymore.
+            let err = '[AlgoliaForSeatersService] could not fetch entire requested page-size';
+            console.error(err);
+            throw new Error(err);
+          }
         } else {
-          throw new Error('500 - unexpected nb hits from algolia on query: ' + searchResult.query);
+          let err = '[AlgoliaForSeatersService] unexpected nb hits from algolia on query';
+          console.log('[AlgoliaForSeatersService] expected %s but found %s results', n, searchResult.nbHits);
+          console.error(err, searchResult);
+          throw new Error(err);
         }
-      })
-      .then(r => this.stripAlgoliaFieldsFromObject(r));
+      });
   }
 
   private getSearchableAttributes (locale: string): Promise<string[]> {

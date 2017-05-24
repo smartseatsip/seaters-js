@@ -23,9 +23,14 @@ export interface SearchQuery {
   restrictSearchableAttributes?: string[];
 
   /**
-   * https://www.algolia.com/doc/rest-api/search/#filters
+   * https://www.algolia.com/doc/rest-api/search/#facetfilters
    */
   facetFilters?: FacetFilter[];
+
+  /**
+   * https://www.algolia.com/doc/rest-api/search/#filters
+   */
+  filters?: string;
 
   /**
    * https://www.algolia.com/doc/rest-api/search/#typotolerance

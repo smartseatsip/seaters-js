@@ -1,5 +1,7 @@
 export type FG_ACCESS_MODE = 'PUBLIC' | 'PRIVATE' | 'CODE_PROTECTED';
 
+export const FG_ALGOLIA_TYPE = 'FAN_GROUP';
+
 export interface FanGroup {
 
   fanGroupId: string;

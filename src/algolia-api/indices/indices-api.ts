@@ -59,7 +59,8 @@ export class IndicesApi {
       } as any,
       typoTolerance: defaultSerializer as any,
       maxValuesPerFacet: defaultSerializer as any,
-      tagFilters: defaultArraySerializer as any
+      tagFilters: defaultArraySerializer as any,
+      filters: defaultSerializer as any
     } as SearchQuery;
     Object.keys(searchQuery).forEach(key => {
       if (!serializers.hasOwnProperty(key)) {
