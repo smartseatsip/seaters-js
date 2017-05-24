@@ -47,11 +47,6 @@ export class FanService {
     return this.fanGroupService.leaveFanGroup(fanGroupId);
   }
 
-  updateFan (fan: Fan): Promise<Fan> {
-    return this.fanGroupService.updateFan(fan)
-      .then(fan => this.sessionService.updateCurrentFan(fan));
-  }
-
   /**
    *  WAITING LISTS
    */
@@ -142,6 +137,11 @@ export class FanService {
   /**
    *  COMBINATIONS
    */
+  updateFan (fan: Fan): Promise<Fan> {
+    return this.fanGroupService.updateFan(fan)
+      .then(fan => this.sessionService.updateCurrentFan(fan));
+  }
+
   getWaitingListsByKeywords (keywords: string[], page: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
     return this.publicService.getWaitingListsByKeywords(keywords, page)
       .then(pagedPublicWls => {
