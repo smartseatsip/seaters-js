@@ -83,20 +83,20 @@ exports.playbooks = {
    * For a fan client, join a fg if needed and then join a wl in this fg
    */
   joinWl(client, fgId, wlId, numberOfSeats) {
-    return client.fanGroupService.getFanGroup(fgId)
+    return client.fanService.getFanGroup(fgId)
       .then((fg) => {
         if (fg.membership.member) {
           return fg;
         }
-        return client.fanGroupService.joinFanGroup(fgId);
+        return client.fanService.joinFanGroup(fgId);
 
       })
-      .then(() => client.waitingListService.getWaitingList(wlId))
+      .then(() => client.fanService.getWaitingList(wlId))
       .then((wl) => {
         if (wl.position) {
           return wl.position;
         }
-        return client.waitingListService.joinWaitingList(wlId, numberOfSeats);
+        return client.fanService.joinWaitingList(wlId, numberOfSeats);
 
       });
   }

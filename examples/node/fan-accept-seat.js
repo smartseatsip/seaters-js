@@ -13,7 +13,7 @@ var wlId = shared.wlId;
 
 shared.fanClient().then(client => {
 
-  return client.fanService.waitingListService.acceptSeats(wlId)
+  return client.fanService.acceptSeats(wlId)
     .then(wl => {
         var position = wl.position;
         if (!position) {

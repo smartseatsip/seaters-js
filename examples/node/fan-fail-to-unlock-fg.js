@@ -13,7 +13,7 @@ var sdk = shared.sdk;
 
 shared.fanClient().then(client => {
 
-  return client.fanService.fanGroupService.getFanGroup(fgId)
+  return client.fanService.getFanGroup(fgId)
   // ensure we can unlock it
     .then(fg => {
       if (fg.actionStatus !== sdk.fan.FAN_GROUP_ACTION_STATUS.CAN_UNLOCK) {
@@ -28,7 +28,7 @@ shared.fanClient().then(client => {
     })
     // unlock - try with a wrong code
     .then(() => {
-      return client.fanService.fanGroupService.joinProtectedFanGroup(fgId, 'a wrong unlock code')
+      return client.fanService.joinProtectedFanGroup(fgId, 'a wrong unlock code')
       // expect it to fail
         .then(
           () => {

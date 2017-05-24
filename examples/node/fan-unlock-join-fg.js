@@ -13,7 +13,7 @@ var sdk = shared.sdk;
 
 shared.fanClient().then(client => {
 
-  return client.fanService.fanGroupService.getFanGroup(fgId)
+  return client.fanService.getFanGroup(fgId)
   // ensure we can unlock it
     .then(fg => {
       if (fg.actionStatus === sdk.fan.FAN_GROUP_ACTION_STATUS.CAN_UNLOCK) {
@@ -31,11 +31,11 @@ shared.fanClient().then(client => {
       }
     })
     // unlock & join
-    .then(() => client.fanService.fanGroupService.joinProtectedFanGroup(fgId, code))
+    .then(() => client.fanService.joinProtectedFanGroup(fgId, code))
     .then(
       fg => console.log('We have joined the fangroup. ActionStatus = %s', sdk.fan.FAN_GROUP_ACTION_STATUS[fg.actionStatus]))
     // leave it again
-    .then(() => client.fanService.fanGroupService.leaveFanGroup(fgId))
+    .then(() => client.fanService.leaveFanGroup(fgId))
     .then(
       fg => console.log('We have left the fangroup. ActionStatus = %s', sdk.fan.FAN_GROUP_ACTION_STATUS[fg.actionStatus]));
 

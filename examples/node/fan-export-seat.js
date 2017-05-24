@@ -17,7 +17,7 @@ var wlId = shared.wlId;
 
 shared.fanClient().then(client => {
 
-  return client.fanService.waitingListService.exportSeats(wlId)
+  return client.fanService.exportSeats(wlId)
     .then(wl => {
         console.log('Seat exported in WaitingList - PDF is available', wl);
       },

@@ -4,7 +4,8 @@ import {
   Price as _Price,
   PaymentInfo as _PaymentInfo,
   AttendeesInfo as _AttendeesInfo,
-  AttendeeInfo as _AttendeeInfo
+  AttendeeInfo as _AttendeeInfo,
+  Fan as _Fan
 } from '../../seaters-api/fan';
 
 export namespace fan {
@@ -82,6 +83,9 @@ export namespace fan {
   }
 
   export interface AttendeesInfo extends _AttendeesInfo {
+  }
+
+  export interface Fan extends _Fan {
   }
 
 }
