@@ -10,7 +10,7 @@ function buildClient(endpoint) {
     clients = [];
   }
   var client = new SeatersSDK.SeatersClient({
-    apiPrefix: endpoint || 'https://api-wat.qa-seaters.com/api',
+    apiPrefix: endpoint || 'https://api.dev-seaters.com/api',
     requestDriver: 'NODE'
   });
   clients.push(client);
