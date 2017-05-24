@@ -52,6 +52,31 @@ export class WaitingListService {
       .then(res => this.extendRawWaitingLists(res as any));
   }
 
+  getPositionBraintreePaymentInfo (waitingListId: string): Promise<fan.BraintreePaymentInfo> {
+    return this.getPositionPaymentInfo(waitingListId)
+      .then(paymentInfo => {
+        // ensure it's a proper braintree payment
+        if (paymentInfo.paymentSystemType !== 'BRAINTREE') {
+          throw new Error('WaitingList ' + waitingListId + ' is not configured to use braintree');
+        }
+        if (paymentInfo.transactions.length !== 1) {
+          console.error('[FanService] unexpected nbr of transactions for wl (%s) : %s', waitingListId, paymentInfo.transactions.length);
+          throw new Error('Unexpected number of transactions for braintree payment for WL ' + waitingListId);
+        }
+        // fetch the token for this position
+        return this.positionBraintreeToken(waitingListId)
+          .then(braintreeToken => {
+            // combine the settings with the token
+            return {
+              total: paymentInfo.transactions[0].total,
+              currency: paymentInfo.transactions[0].currency,
+              threeDSEnabled: paymentInfo.braintreeConfig.threeDSEnabled,
+              token: braintreeToken.token
+            } as fan.BraintreePaymentInfo;
+          });
+      });
+  }
+
   joinWaitingList (waitingListId: string, numberOfSeats: number): Promise<fan.WaitingList> {
     return this.api.fan.joinWaitingList(waitingListId, numberOfSeats)
       .then(() => this.pollWaitingList(waitingListId, (wl) => wl.actionStatus !== WAITING_LIST_ACTION_STATUS.BOOK))
