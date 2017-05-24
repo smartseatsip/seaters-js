@@ -91,12 +91,12 @@ exports.playbooks = {
         return client.fanService.joinFanGroup(fgId);
 
       })
-      .then(() => client.waitingListService.getWaitingList(wlId))
+      .then(() => client.fanService.getWaitingList(wlId))
       .then((wl) => {
         if (wl.position) {
           return wl.position;
         }
-        return client.waitingListService.joinWaitingList(wlId, numberOfSeats);
+        return client.fanService.joinWaitingList(wlId, numberOfSeats);
 
       });
   }

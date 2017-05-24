@@ -22,7 +22,7 @@ shared.fanClient().then(client => {
       }
     })
     .then(() => console.log('FG joined'))
-    .then(() => client.fanService.waitingListService.getWaitingList(wlDirectSalesId))
+    .then(() => client.fanService.getWaitingList(wlDirectSalesId))
     .then(wl => {
       console.log('WL status = %s', wl.actionStatus);
       if (wl.actionStatus === sdk.fan.WAITING_LIST_ACTION_STATUS.WAIT) {
@@ -32,7 +32,7 @@ shared.fanClient().then(client => {
       }
     })
     .then(() => console.log('WL joined'))
-    .then(() => client.fanService.waitingListService.rejectSeats(wlDirectSalesId))
+    .then(() => client.fanService.rejectSeats(wlDirectSalesId))
     .then(() => console.log('WL left'))
     .then(() => client.fanService.leaveFanGroup(fgId))
     .then(() => console.log('FG left'));

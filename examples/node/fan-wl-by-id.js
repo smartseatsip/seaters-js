@@ -11,7 +11,7 @@ var sdk = shared.sdk;
 var fgId = shared.fgId;
 var wlId = shared.wlId;
 
-shared.fanClient().then((client) => client.fanService.waitingListService.getWaitingList(wlId)
+shared.fanClient().then((client) => client.fanService.getWaitingList(wlId)
   .then((wl) => {
     console.log('WaitingList', wl);
   }))

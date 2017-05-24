@@ -1,5 +1,4 @@
-import { PagedResult } from '../../shared-types';
-
+import { PagedResult, PagingOptions } from '../../shared-types';
 import { SeatersApi } from '../../seaters-api';
 import {
   WaitingList,
@@ -12,6 +11,8 @@ import {
 } from '../../seaters-api/fan';
 import { fan } from './fan-types';
 import { retryUntil, compareFlatObjects, timeoutPromise } from './../util';
+import { TranslationMap } from '../../seaters-api/translation-map';
+import { BraintreeToken } from '../../seaters-api/fan/braintree-token';
 
 let WAITING_LIST_ACTION_STATUS = fan.WAITING_LIST_ACTION_STATUS;
 
@@ -31,6 +32,24 @@ export class WaitingListService {
   getWaitingLists (waitingListIds: string[]): Promise<fan.WaitingList[]> {
     return this.api.fan.waitingLists(waitingListIds)
       .then(wls => wls.map(wl => this.extendRawWaitingList(wl)));
+  }
+
+  getWaitingListsInFanGroup (fanGroupId: string, pagingOptions: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
+    return this.api.fan.waitingListsInFanGroup(fanGroupId, pagingOptions);
+  }
+
+  getWaitingListsInFanGroups (fanGroupIds: string[], pagingOptions: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
+    return this.api.fan.waitingListsInFanGroups(fanGroupIds, pagingOptions);
+  }
+
+  getMyWaitingListsWithoutSeat (page: PagingOptions): Promise<PagedResult<WaitingList>> {
+    return this.api.fan.joinedWaitingListsWithoutSeat(page)
+      .then(res => this.extendRawWaitingLists(res as any));
+  }
+
+  getMyWaitingListsWithSeat (page: PagingOptions): Promise<PagedResult<WaitingList>> {
+    return this.api.fan.joinedWaitingListsWithSeat(page)
+      .then(res => this.extendRawWaitingLists(res as any));
   }
 
   joinWaitingList (waitingListId: string, numberOfSeats: number): Promise<fan.WaitingList> {
@@ -55,6 +74,10 @@ export class WaitingListService {
     return this.api.fan.leaveWaitingList(waitingListId)
     // wait until the status is returned to BOOK
       .then(() => this.pollWaitingList(waitingListId, (wl) => wl.actionStatus === WAITING_LIST_ACTION_STATUS.BOOK));
+  }
+
+  getPositionPaymentInfo (waitingListId: string): Promise<fan.PaymentInfo> {
+    return this.api.fan.positionPaymentInfo(waitingListId);
   }
 
   payPosition (waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
@@ -101,17 +124,27 @@ export class WaitingListService {
       .then(() => this.pollWaitingList(waitingListId, (wl) => (wl && wl.seat && wl.seat.exportedVoucherUrl && wl.seat.exportedVoucherUrl.length > 0)));
   }
 
-  canPay (wl: fan.WaitingList): boolean {
-    if (WAITING_LIST_ACTION_STATUS.WAIT === wl.actionStatus) {
-      return !!wl.position.expirationDate;
-    } else if (WAITING_LIST_ACTION_STATUS.CONFIRM === wl.actionStatus) {
-      return !wl.position.transactionStatus || wl.position.transactionStatus === 'FAILURE';
-    } else {
-      return false;
-    }
+  getEventDescriptionForWaitingList (waitingListId: string): Promise<TranslationMap> {
+    return this.api.fan.getEventDescription(waitingListId);
   }
 
-  hasPaymentInProgress (wl: fan.WaitingList): boolean {
+  getVenueConditionsForWaitingList (waitingListId: string): Promise<TranslationMap> {
+    return this.api.fan.getVenueConditions(waitingListId);
+  }
+
+  positionBraintreeToken (waitingListId: string): Promise<BraintreeToken> {
+    return this.api.fan.positionBraintreeToken(waitingListId);
+  }
+
+  getWaitingListPrice (waitingListId: string, numberOfSeats: number): Promise<fan.Price> {
+    return this.api.fan.waitingListPrice(waitingListId, numberOfSeats);
+  }
+
+  private hasPreviousPayment (wl: fan.WaitingList): boolean {
+    return !!(wl.position && wl.position.transactionStatus);
+  }
+
+  private hasPaymentInProgress (wl: fan.WaitingList): boolean {
     if (!wl.position) {
       return false;
     } else {
@@ -120,26 +153,14 @@ export class WaitingListService {
     }
   }
 
-  hasPreviousPayment (wl: fan.WaitingList): boolean {
-    return !!(wl.position && wl.position.transactionStatus);
-  }
-
-  extendRawWaitingList (wl: WaitingList): fan.WaitingList {
-    return Object.assign(wl, {
-      actionStatus: this.getWaitingListActionStatus(wl),
-      // (T)ODO: pending status
-      shouldProvideAttendeesInfo: this.shouldProvideAttendeesInfo(wl),
-      processing: undefined
-    });
-  }
-
-  extendRawWaitingLists (wls: PagedResult<WaitingList>): PagedResult<fan.WaitingList> {
-    wls.items = wls.items.map(wl => this.extendRawWaitingList(wl));
-    return wls as PagedResult<fan.WaitingList>;
-  }
-
-  getWaitingListPrice (waitingListId: string, numberOfSeats: number): Promise<fan.Price> {
-    return this.api.fan.waitingListPrice(waitingListId, numberOfSeats);
+  private canPay (wl: fan.WaitingList): boolean {
+    if (WAITING_LIST_ACTION_STATUS.WAIT === wl.actionStatus) {
+      return !!wl.position.expirationDate;
+    } else if (WAITING_LIST_ACTION_STATUS.CONFIRM === wl.actionStatus) {
+      return !wl.position.transactionStatus || wl.position.transactionStatus === 'FAILURE';
+    } else {
+      return false;
+    }
   }
 
   private checkUnlockStatus (wl: fan.WaitingList) {
@@ -164,6 +185,20 @@ export class WaitingListService {
 
   private getRawWaitingList (waitingListId: string): Promise<WaitingList> {
     return this.api.fan.waitingList(waitingListId);
+  }
+
+  private extendRawWaitingList (wl: WaitingList): fan.WaitingList {
+    return Object.assign(wl, {
+      actionStatus: this.getWaitingListActionStatus(wl),
+      // (T)ODO: pending status
+      shouldProvideAttendeesInfo: this.shouldProvideAttendeesInfo(wl),
+      processing: undefined
+    });
+  }
+
+  private extendRawWaitingLists (wls: PagedResult<fan.WaitingList>): PagedResult<fan.WaitingList> {
+    wls.items = wls.items.map(wl => this.extendRawWaitingList(wl));
+    return wls as PagedResult<fan.WaitingList>;
   }
 
   private pollWaitingList (
