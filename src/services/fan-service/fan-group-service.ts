@@ -51,10 +51,6 @@ export class FanGroupService {
       .then(() => this.pollFanGroup(fanGroupId, (fg) => fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_JOIN));
   }
 
-  updateFan (fan: fan.Fan): Promise<fan.Fan> {
-    return this.api.fan.updateFan(fan);
-  }
-
   private checkUnlockStatus (fg: fan.FanGroup) {
     if (!fg.membership.request) {
       console.error('[FanGroupService] checkUnlockStatus - no request made');

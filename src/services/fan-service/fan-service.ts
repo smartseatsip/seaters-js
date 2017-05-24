@@ -142,7 +142,7 @@ export class FanService {
    *  COMBINATIONS
    */
   updateFan (fan: Fan): Promise<Fan> {
-    return this.fanGroupService.updateFan(fan)
+    return this.seatersApi.fan.updateFan(fan)
       .then(fan => this.sessionService.updateCurrentFan(fan));
   }
 
