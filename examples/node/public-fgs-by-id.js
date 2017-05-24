@@ -1,7 +1,7 @@
 var shared = require('../shared');
 
 var client = shared.client();
-var wlIds = ['aa4a607e-4b23-4b23-b59d-f65d4b1a22ed', '4bc07cc5-674a-4a17-a1d8-821b4227b71e'];
+var wlIds = ['700b1e95-db19-470f-bb30-186143551c2b', '99896a68-8a5d-48e4-947c-a344121b4316'];
 
 client.publicService.getFanGroups(wlIds)
   .then((res) => console.log('Public FGs', res))
