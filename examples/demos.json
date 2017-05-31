@@ -109,6 +109,10 @@
         "file": "node/public-wl-by-fg-id.js"
       },
       {
+        "name": "Fetch public WaitingLists by FanGroup IDs",
+        "file": "node/public-wls-by-fg-ids.js"
+      },
+      {
         "name": "Fetch public WaitingList by ID",
         "file": "node/public-wl-by-id.js"
       },

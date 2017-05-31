@@ -1,6 +1,8 @@
 export type WAITING_LIST_STATUS =
   'PUBLISHED' | 'OPEN' | 'CLOSED';
 
+export const WL_ALGOLIA_TYPE = 'WAITING_LIST';
+
 export type WL_ACCESS_MODE = 'PUBLIC' | 'PRIVATE' | 'CODE_PROTECTED';
 
 export interface WaitingList {

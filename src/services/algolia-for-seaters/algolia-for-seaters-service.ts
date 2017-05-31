@@ -2,7 +2,7 @@ import { AppService } from './../app-service';
 import { AlgoliaApi, SearchQuery, SearchResult } from '../../algolia-api';
 import { RequestDriver } from '../../api';
 
-import { FanGroup, WaitingList, TypedSearchResult, FG_ALGOLIA_TYPE, TYPE_FIELD, TYPO_TOLERANCE_STRICT } from './algolia-for-seaters-types';
+import { FanGroup, WaitingList, TypedSearchResult, FG_ALGOLIA_TYPE, WL_ALGOLIA_TYPE, TYPE_FIELD, TYPO_TOLERANCE_STRICT } from './algolia-for-seaters-types';
 
 const DEFAULT_LOCALE = 'en';
 
@@ -17,7 +17,7 @@ export class AlgoliaForSeatersService {
   }
 
   getFanGroupById (fanGroupId: string): Promise<FanGroup> {
-    let q = this.buildExactQuery(fanGroupId, 'fanGroupId', 'FAN_GROUP');
+    let q = this.buildExactQuery(fanGroupId, 'fanGroupId', FG_ALGOLIA_TYPE);
     return this.findExactlyOne<FanGroup>(q, 'FanGroup', fanGroupId);
 
   }
@@ -36,15 +36,30 @@ export class AlgoliaForSeatersService {
     return this.findExactlyN<FanGroup>(q, fanGroupIds);
   }
 
-  getWaitingListsByFanGroupId (fangroupId: string, hitsPerPage: number,
-    page: number
-  ): Promise<TypedSearchResult<WaitingList>> {
+  getWaitingListsByFanGroupId (fanGroupId: string, hitsPerPage: number, page: number):
+    Promise<TypedSearchResult<WaitingList>> {
     // TODO: sort by date ascending
-    let q = this.buildExactQuery(fangroupId, 'groupId', 'WAITING_LIST');
+    let q = this.buildExactQuery(fanGroupId, 'groupId', 'WAITING_LIST');
     q.page = page;
     q.hitsPerPage = hitsPerPage;
     return this.search(q)
       .then(r => this.stripAlgoliaFieldsFromSearchResultHits(r));
+  }
+
+  getWaitingListsByFanGroupIds (fanGroupIds: string[], hitsPerPage: number, page: number):
+    Promise<TypedSearchResult<WaitingList>> {
+    let fanGroupIdsFilter = fanGroupIds.map((fanGroupId) => 'groupId:' + fanGroupId).join(' OR ');
+    let q: SearchQuery = {
+      query: '',
+      typoTolerance: TYPO_TOLERANCE_STRICT,
+      facetFilters: [{
+        facet: TYPE_FIELD,
+        value: WL_ALGOLIA_TYPE
+      }],
+      filters: fanGroupIdsFilter
+    };
+    return this.search(q)
+      .then(r => this.stripAlgoliaFieldsFromObject(r));
   }
 
   getWaitingListById (waitingListId: string): Promise<WaitingList> {
