@@ -30,16 +30,16 @@ export class AppApi {
     return this.apiContext.get('/app/time-zones', null, queryParams);
   }
 
+  currencies (pagingOptions?: PagingOptions): Promise<PagedResult<Currency>> {
+    let queryParams = SeatersApiContext.buildPagingQueryParams(pagingOptions);
+    return this.apiContext.get('/app/currencies', null, queryParams);
+  }
+
   translations (target?: TRANSLATION_TARGET, language?: string, pagingOptions?: PagingOptions): Promise<PagedResult<Translation>> {
     let queryParams = SeatersApiContext.buildPagingQueryParams(pagingOptions);
     if (target) { queryParams.target = target; }
     if (language) { queryParams.language = language; }
     return this.apiContext.get('/app/translations', null, queryParams);
-  }
-
-  currencies (pagingOptions?: PagingOptions): Promise<PagedResult<Currency>> {
-    let queryParams = SeatersApiContext.buildPagingQueryParams(pagingOptions);
-    return this.apiContext.get('/app/currencies', null, queryParams);
   }
 
 }
