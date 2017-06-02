@@ -38,7 +38,11 @@ export class SeatersClient {
 
 }
 
-export let getSeatersClient = (() => {
+/**
+ * Obtain a seaters client. This will only instantiate the client with the given options the first time you invoke it.
+ * Calls made after the initial call will return the original instance.
+ */
+export let getSeatersClient: (options: SeatersClientOptions) => SeatersClient = (() => {
   let client: SeatersClient = undefined;
   return (options?: SeatersClientOptions) => {
     if (!client) {
