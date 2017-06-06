@@ -3,35 +3,52 @@
 var DEFAULT_PORT = 3000;
 
 var gulp = require('gulp');
-var webdriver = require('gulp-webdriver');
 var webpack = require('webpack-stream');
-var clean = require('gulp-clean');
-var gulpTsLint = require('gulp-tslint');
-var stylish = require('gulp-tslint-stylish');
-var eslint = require('gulp-eslint');
-var typescript = require('gulp-typescript');
-var jasmine = require('gulp-jasmine');
-var sourcemaps = require('gulp-sourcemaps');
-var babel = require('gulp-babel');
-var uglify = require('gulp-uglify');
-var rename = require('gulp-rename');
-
 var http = require('http');
 var connect = require('connect');
 var serveStatic = require('serve-static');
+var exec = require('child_process').exec;
 // We need runSequence until gulp4.0 is released
 var runSequence = require('run-sequence');
+
+var gulpPlugins = require('gulp-load-plugins')();
+
+// var gulpTsLint = require('gulp-tslint');
+// var stylish = require('gulp-tslint-stylish');
+// var eslint = require('gulp-eslint');
+// var typescript = require('gulp-typescript');
+// var jasmine = require('gulp-jasmine');
+// var sourcemaps = require('gulp-sourcemaps');
+// var babel = require('gulp-babel');
+// var uglify = require('gulp-uglify');
+// var rename = require('gulp-rename');
+
+function gulpExec(cmd, args, gulpCallback) {
+  let fullCmd = cmd;
+  if (args && args.length > 0) {
+    fullCmd = fullCmd + ' ' + args.join(' ');
+  }
+  exec(fullCmd, null, function (err, stdout, stderr) {
+    if(err) {
+      console.error('A problem occurred while executing command (%s):\n%s', cmd, stderr);
+      gulpCallback(err);
+    } else {
+      console.log(stdout);
+      gulpCallback();
+    }
+  });
+}
 
 var server = undefined;
 
 gulp.task('clean:precompile', function (cb) {
   return gulp.src(['lib', 'dist', 'errorShots', 'tmp'], { read: false })
-    .pipe(clean());
+    .pipe(gulpPlugins.clean());
 });
 
 gulp.task('clean:postcompile', function () {
   return gulp.src(['tmp'], { read: false })
-    .pipe(clean());
+    .pipe(gulpPlugins.clean());
 });
 
 gulp.task('tslint', function () {
@@ -40,10 +57,10 @@ gulp.task('tslint', function () {
     'mock-data/**/*.ts',
     '!mock-data/**/*.d.ts'
   ], { base: '.' })
-    .pipe(gulpTsLint({
+    .pipe(gulpPlugins.tslint({
       formatter: 'stylish'
     }))
-    .pipe(gulpTsLint.report(stylish, {
+    .pipe(gulpPlugins.tslint.report(gulpPlugins.tslintStylish, {
       emitError: false,
       sort: true,
       bell: true,
@@ -56,9 +73,9 @@ gulp.task('tslint', function () {
 
 gulp.task('eslint', [], function () {
   return gulp.src(['**/*.js', '!node_modules/**'])
-    .pipe(eslint())
-    .pipe(eslint.format())
-    .pipe(eslint.failAfterError());
+    .pipe(gulpPlugins.eslint())
+    .pipe(gulpPlugins.eslint.format())
+    .pipe(gulpPlugins.eslint.failAfterError());
 });
 
 gulp.task('build:bundle', [], function () {
@@ -88,7 +105,7 @@ gulp.task('build:mock-module', [], function () {
 var tsconfig = require('./tsconfig.json');
 gulp.task('build:typings', [], function () {
   return gulp.src(tsconfig.files.concat('src/**/*.ts', '!**/*.spec.ts'))
-    .pipe(typescript(tsconfig.compilerOptions))
+    .pipe(gulpPlugins.typescript(tsconfig.compilerOptions))
     .dts.pipe(gulp.dest('./dist/'));
 });
 
@@ -103,7 +120,7 @@ gulp.task('http', [], function (done) {
 
 gulp.task('test:e2e-browser', ['build:bundle', 'http'], function () {
   return gulp.src('./conf/wdio.conf.js')
-    .pipe(webdriver())
+    .pipe(gulpPlugins.webdriver())
     .on('end', function () {
       server.close();
     });
@@ -111,25 +128,25 @@ gulp.task('test:e2e-browser', ['build:bundle', 'http'], function () {
 
 gulp.task('test:e2e-node', ['build:module'], function () {
   return gulp.src('./e2e-node/**/*.spec.js')
-    .pipe(jasmine());
+    .pipe(gulpPlugins.jasmine());
 });
 
 gulp.task('build:babel', [], function () {
   return gulp.src('tmp/**/*.js')
-    .pipe(sourcemaps.init())
-    .pipe(babel({
+    .pipe(gulpPlugins.sourcemaps.init())
+    .pipe(gulpPlugins.babel({
       presets: ['es2015'],
       compact: false,
       sourceMaps: true
     }))
-    .pipe(sourcemaps.write())
+    .pipe(gulpPlugins.sourcemaps.write())
     .pipe(gulp.dest('dist'));
 });
 
 gulp.task('build:uglify', [], function () {
   return gulp.src('dist/*.bundle.js')
-    .pipe(uglify())
-    .pipe(rename({ suffix: '.min' }))
+    .pipe(gulpPlugins.uglify())
+    .pipe(gulpPlugins.rename({ suffix: '.min' }))
     .pipe(gulp.dest('dist'));
 });
 
@@ -155,5 +172,22 @@ gulp.task('test:e2e', ['test:e2e-browser', 'test:e2e-node']);
 gulp.task('test:unit', []);
 
 gulp.task('test', ['test:e2e', 'test:unit']);
+
+gulp.task('clean:doc', [], function () {
+  return gulp.src(['tmp'], { read: false })
+    .pipe(gulpPlugins.clean());
+});
+
+gulp.task('doc', ['clean:doc'], function (cb) {
+  // gulp-typedoc package seems pretty broken - use exec typedoc instead
+  gulpExec('./node_modules/typedoc/bin/typedoc', [
+    '--out doc/',
+    '--mode file',
+    '--name "Seaters SDK"',
+    '--readme doc-readme.md',
+    '--json doc/data.json',
+    'src/index.ts'
+  ], cb);
+});
 
 gulp.task('default', ['test']);
