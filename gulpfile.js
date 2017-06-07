@@ -13,16 +13,6 @@ var runSequence = require('run-sequence');
 
 var gulpPlugins = require('gulp-load-plugins')();
 
-// var gulpTsLint = require('gulp-tslint');
-// var stylish = require('gulp-tslint-stylish');
-// var eslint = require('gulp-eslint');
-// var typescript = require('gulp-typescript');
-// var jasmine = require('gulp-jasmine');
-// var sourcemaps = require('gulp-sourcemaps');
-// var babel = require('gulp-babel');
-// var uglify = require('gulp-uglify');
-// var rename = require('gulp-rename');
-
 function gulpExec(cmd, args, gulpCallback) {
   let fullCmd = cmd;
   if (args && args.length > 0) {
