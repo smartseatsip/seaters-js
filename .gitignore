@@ -12,6 +12,6 @@ examples/config.json
 dist/
 lib/
 src/**/*.d.ts
-mock-data/**/*.d.ts
 examples/tmp/
 doc/
+.awcache
