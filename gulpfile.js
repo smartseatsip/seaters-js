@@ -2,6 +2,23 @@ const gulp = require('gulp');
 const gulpPlugins = require('gulp-load-plugins')();
 const webpack = require('webpack');
 const runSequence = require('run-sequence');
+const { exec } = require('child_process');
+
+function gulpExec(cmd, args, gulpCallback) {
+  let fullCmd = cmd;
+  if (args && args.length > 0) {
+    fullCmd = `${ fullCmd } ${ args.join(' ') }`;
+  }
+  exec(fullCmd, null, (err, stdout, stderr) => {
+    if (err) {
+      console.error('A problem occurred while executing command (%s):\n%s', cmd, stderr);
+      gulpCallback(err);
+    } else {
+      console.log(stdout);
+      gulpCallback();
+    }
+  });
+}
 
 gulp.task('clean:precompile', () => gulp.src(['dist', 'doc'])
   .pipe(gulpPlugins.clean()));
@@ -16,21 +33,16 @@ gulp.task('typings', [], () => gulp.src(tsconfig.files.concat('src/**/*.ts'))
   .pipe(gulpPlugins.typescript(tsconfig.compilerOptions))
   .dts.pipe(gulp.dest('./dist/')));
 
-gulp.task('typedoc', () => gulp
-  .src(['src/*.ts'])
-  .pipe(gulpPlugins.typedoc({
-    module: 'commonjs',
-    target: 'es5',
-    includeDeclarations: true,
-
-    out: './doc',
-    json: 'doc/data.json',
-    readme: 'doc-readme.md',
-
-    name: 'Seaters SDK',
-    ignoreCompilerErrors: true,
-    version: true
-  })));
+gulp.task('typedoc', (cb) => {
+  gulpExec('./node_modules/typedoc/bin/typedoc', [
+    '--out doc/',
+    '--mode file',
+    '--name "Seaters SDK"',
+    '--readme doc-readme.md',
+    '--json doc/data.json',
+    'src/index.ts'
+  ], cb);
+});
 
 gulp.task('build', [], () => runSequence('clean:precompile', 'webpack', 'typings', 'typedoc', 'clean:postcompile'));
 gulp.task('serve', [], () => runSequence('clean:precompile', 'webpack'));
