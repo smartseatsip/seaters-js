@@ -1,0 +1,17 @@
+{
+  "name": "seaters",
+  "description": "Seaters functionality in a box!",
+  "main": "./dist/seaters.bundle.js",
+  "authors": [
+    "Ben Corne"
+  ],
+  "license": "ISC",
+  "homepage": "https://sdk.dev-seaters.com",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
