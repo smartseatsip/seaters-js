@@ -2,7 +2,7 @@
   "extends": [
     "eslint:recommended",
     "google",
-    "strict/es5",
+    "strict/es6",
     "strict/browser"
   ],
   "plugins": [
@@ -10,9 +10,6 @@
   ],
   "globals": {
     "angular": true
-  },
-  "env": {
-    "jasmine": true
   },
   "rules": {
     // Rules we don't need
@@ -50,11 +47,11 @@
     ],
     "max-params": [
       "error",
-      33
+      50
     ],
     "max-statements": [
       "error",
-      56
+      100
     ],
     "max-len": [
       "error",
@@ -78,15 +75,22 @@
       "vm",
       "modalVm"
     ],
-    "no-console": [
-      "error"
-    ],
+    "no-console": 0,
+    "no-debugger": 0,
     "capitalized-comments": [
       "error",
       "always",
       {
-        "ignorePattern": "pragma|ignored",
-        "ignoreInlineComments": true
+        "line": {
+          "ignorePattern": "pragma|ignored",
+          "ignoreInlineComments": true,
+          "ignoreConsecutiveComments": true
+        },
+        "block": {
+          "ignorePattern": "ignored",
+          "ignoreInlineComments": true,
+          "ignoreConsecutiveComments": true
+        }
       }
     ],
     "no-magic-numbers": [

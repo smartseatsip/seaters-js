@@ -6,7 +6,6 @@ npm-debug.log
 .idea/
 test-configs/*
 !test-configs/default.json
-tmp/
 translations.json
 examples/config.json
 dist/
