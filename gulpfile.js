@@ -53,5 +53,4 @@ gulp.task('http', gulpPlugins.serve({
 
 // Don't use these directly, use the npm scripts instead
 gulp.task('build', [], () => runSequence('clean:precompile', 'webpack', 'typings', 'typedoc', 'clean:postcompile'));
-gulp.task('serve:build', [], () => runSequence('clean:precompile', 'webpack'));
-gulp.task('serve:examples', [], () => runSequence('http'));
+gulp.task('serve', [], () => runSequence('http'));

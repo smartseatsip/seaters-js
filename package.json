@@ -6,8 +6,7 @@
   "typings": "./dist/index",
   "scripts": {
     "build": "gulp build",
-    "serve": "gulp serve:build",
-    "serve-examples": "gulp serve:examples"
+    "serve": "gulp serve"
   },
   "author": "Ben Corne",
   "license": "ISC",
@@ -24,6 +23,7 @@
     "eslint-config-google": "^0.8.0",
     "eslint-config-strict": "^13.0.0",
     "eslint-loader": "^1.7.1",
+    "eslint-plugin-angular": "^2.4.2",
     "file-loader": "^0.11.2",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
@@ -43,7 +43,6 @@
     "uglifyjs-webpack-plugin": "^0.4.3",
     "url-loader": "^0.5.8",
     "webpack": "^3.0.0-rc.1",
-    "webpack-dev-server": "^2.4.5",
     "webpack-merge": "^4.1.0",
     "webpack-stream": "^3.2.0"
   }
