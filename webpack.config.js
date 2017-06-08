@@ -1,8 +1,6 @@
 const webpackMerge = require('webpack-merge');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
-const TARGET = process.env.npm_lifecycle_event;
-
 const sharedModules = [
 
   // TSLint
@@ -100,7 +98,8 @@ const sharedConfig = {
   }
 };
 
-const moduleConfigs = [
+module.exports = [
+
   // Module
   webpackMerge(sharedConfig, {
 
@@ -122,10 +121,8 @@ const moduleConfigs = [
       filename: 'seaters-mock-data.module.js',
       libraryTarget: 'commonjs'
     }
-  })
-];
+  }),
 
-const bundleConfigs = [
   // Bundle
   webpackMerge(sharedConfig, {
 
@@ -153,10 +150,3 @@ const bundleConfigs = [
     }
   })
 ];
-
-let mergedConfigs = moduleConfigs;
-if (TARGET !== 'serve') {
-  Array.prototype.push.apply(mergedConfigs, bundleConfigs);
-}
-
-module.exports = mergedConfigs;
