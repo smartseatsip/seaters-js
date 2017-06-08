@@ -15,7 +15,6 @@ npm run build
 rm -rf "$TMP_DIR"
 mkdir -p "$DIST_DIR"
 cp dist/seaters*.bundle.* "$DIST_DIR"
-cp -r examples "$DIST_DIR"
 cp -r doc/* "$DIST_DIR"
 cd "$TMP_DIR"
 #tar -czf "${NAME}-${VERSION}.tgz" seaters-sdk

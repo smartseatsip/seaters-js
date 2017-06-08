@@ -5,7 +5,6 @@ import { FanService, PublicService, SessionService, AppService } from './service
 export interface SeatersClientOptions {
   apiPrefix: string;
   requestDriver?: REQUEST_DRIVER_TYPE;
-  mockData?: any;
 }
 
 export class SeatersClient {
@@ -27,7 +26,7 @@ export class SeatersClient {
 
   constructor (options?: SeatersClientOptions) {
     options = Object.assign({}, SeatersClient.DEFAULT_OPTIONS, options);
-    let requestDriver = getRequestDriver(options.requestDriver, options.mockData);
+    let requestDriver = getRequestDriver(options.requestDriver);
 
     this.seatersApi = new SeatersApi(options.apiPrefix, requestDriver);
     this.sessionService = new SessionService(this.seatersApi);

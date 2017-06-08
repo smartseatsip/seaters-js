@@ -4,8 +4,6 @@ const webpack = require('webpack');
 const runSequence = require('run-sequence');
 const { exec } = require('child_process');
 
-const DEFAULT_PORT = 3000;
-
 function gulpExec(cmd, args, gulpCallback) {
   let fullCmd = cmd;
   if (args && args.length > 0) {
@@ -25,9 +23,6 @@ function gulpExec(cmd, args, gulpCallback) {
 gulp.task('clean:precompile', () => gulp.src(['dist', 'doc'])
   .pipe(gulpPlugins.clean()));
 
-gulp.task('clean:postcompile', () => gulp.src(['lib'])
-  .pipe(gulpPlugins.clean()));
-
 gulp.task('webpack', (cb) => webpack(require('./webpack.config'), cb));
 
 const tsconfig = require('./tsconfig.json');
@@ -40,17 +35,11 @@ gulp.task('typedoc', (cb) => {
     '--out doc/',
     '--mode file',
     '--name "Seaters SDK"',
-    '--readme doc-readme.md',
+    '--readme README.md',
     '--json doc/data.json',
     'src/index.ts'
   ], cb);
 });
 
-gulp.task('http', gulpPlugins.serve({
-  root: ['examples'],
-  port: DEFAULT_PORT
-}));
-
 // Don't use these directly, use the npm scripts instead
-gulp.task('build', [], () => runSequence('clean:precompile', 'webpack', 'typings', 'typedoc', 'clean:postcompile'));
-gulp.task('serve', [], () => runSequence('http'));
+gulp.task('build', [], () => runSequence('clean:precompile', 'webpack', 'typings', 'typedoc'));

@@ -111,18 +111,6 @@ module.exports = [
     }
   }),
 
-  // Mock data module
-  webpackMerge(sharedConfig, {
-
-    context: `${__dirname}/mock-data`,
-    entry: './index',
-    target: 'node',
-    output: {
-      filename: 'seaters-mock-data.module.js',
-      libraryTarget: 'commonjs'
-    }
-  }),
-
   // Bundle
   webpackMerge(sharedConfig, {
 
@@ -136,17 +124,5 @@ module.exports = [
     plugins: [
       new UglifyJSPlugin()
     ]
-  }),
-
-  // Mock data bundle
-  webpackMerge(sharedConfig, {
-
-    context: `${__dirname}/mock-data`,
-    entry: './index',
-    output: {
-      filename: 'seaters-mock-data.bundle.js',
-      libraryTarget: 'var',
-      library: 'SeatersSDKMockData'
-    }
   })
 ];
