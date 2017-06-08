@@ -1,4 +1,5 @@
 const webpackMerge = require('webpack-merge');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 const TARGET = process.env.npm_lifecycle_event;
 
@@ -93,7 +94,7 @@ const sharedConfig = {
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx']
   },
-  devtool: 'inline-source-map',
+  devtool: 'source-map',
   module: {
     rules: sharedModules.concat([])
   }
@@ -134,7 +135,10 @@ const bundleConfigs = [
       filename: 'seaters.bundle.js',
       libraryTarget: 'var',
       library: 'SeatersSDK'
-    }
+    },
+    plugins: [
+      new UglifyJSPlugin()
+    ]
   }),
 
   // Mock data bundle
