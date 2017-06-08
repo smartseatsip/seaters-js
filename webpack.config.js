@@ -32,6 +32,34 @@ const sharedModules = [
     loader: 'awesome-typescript-loader'
   },
 
+  // SASS
+  {
+    test: /\.scss$/,
+    use: ['style-loader', 'css-loader', 'sass-loader']
+  },
+
+  // CSS
+  {
+    test: /\.css$/,
+    use: ['style-loader', 'css-loader']
+  },
+
+  // JSON
+  {
+    test: /\.json$/,
+    loader: 'json-loader'
+  },
+
+  // Images
+  {
+    test: /\.jpg$/,
+    loader: ['file-loader']
+  },
+  {
+    test: /\.png$/,
+    loader: ['url-loader?mimetype=image/png']
+  },
+
   // Replace package version
   {
     test: /\.tsx?$/,
