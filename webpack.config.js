@@ -1,5 +1,5 @@
 const webpackMerge = require('webpack-merge');
-const args = require('minimist')(process.argv.slice(5));
+const TARGET = process.env.npm_lifecycle_event;
 
 const sharedModules = [
 
@@ -122,8 +122,8 @@ const bundleConfigs = [
 ];
 
 let mergedConfigs = moduleConfigs;
-if (args.build) {
-  mergedConfigs.concat(bundleConfigs);
+if (TARGET === 'build') {
+  Array.prototype.push.apply(mergedConfigs, bundleConfigs);
 }
 
 module.exports = mergedConfigs;
