@@ -6,7 +6,8 @@
   "typings": "./dist/index",
   "scripts": {
     "build": "gulp build",
-    "serve": "gulp serve"
+    "serve": "gulp serve:build",
+    "serve-examples": "gulp serve:examples"
   },
   "author": "Ben Corne",
   "license": "ISC",
@@ -27,6 +28,7 @@
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
     "gulp-load-plugins": "^1.5.0",
+    "gulp-serve": "^1.4.0",
     "gulp-typescript": "^3.1.7",
     "json-loader": "^0.5.4",
     "run-sequence": "^1.2.2",

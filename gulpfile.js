@@ -4,6 +4,8 @@ const webpack = require('webpack');
 const runSequence = require('run-sequence');
 const { exec } = require('child_process');
 
+const DEFAULT_PORT = 3000;
+
 function gulpExec(cmd, args, gulpCallback) {
   let fullCmd = cmd;
   if (args && args.length > 0) {
@@ -44,5 +46,12 @@ gulp.task('typedoc', (cb) => {
   ], cb);
 });
 
+gulp.task('http', gulpPlugins.serve({
+  root: ['examples'],
+  port: DEFAULT_PORT
+}));
+
+// Don't use these directly, use the npm scripts instead
 gulp.task('build', [], () => runSequence('clean:precompile', 'webpack', 'typings', 'typedoc', 'clean:postcompile'));
-gulp.task('serve', [], () => runSequence('clean:precompile', 'webpack'));
+gulp.task('serve:build', [], () => runSequence('clean:precompile', 'webpack'));
+gulp.task('serve:examples', [], () => runSequence('http'));
