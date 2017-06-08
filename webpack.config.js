@@ -155,7 +155,7 @@ const bundleConfigs = [
 ];
 
 let mergedConfigs = moduleConfigs;
-if (TARGET === 'build') {
+if (TARGET !== 'serve') {
   Array.prototype.push.apply(mergedConfigs, bundleConfigs);
 }
 
