@@ -10,8 +10,7 @@ echo "building ${NAME} version ${VERSION}"
 
 set -x
 npm install
-npm run gulp build
-npm run gulp doc
+npm run build
 #TODO run all tests
 rm -rf "$TMP_DIR"
 mkdir -p "$DIST_DIR"

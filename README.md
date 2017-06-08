@@ -1,20 +1,17 @@
 # Seaters SDK
 
-## Prerequisites
-
-TODO
 
 ## Installation
 
-TODO
+$ `npm install`
+
+## Serve
+
+To serve a package, run $ `npm run serve`.
 
 ## Build
 
-To build a production package, run $ `gulp build`.
-
-## Test
-
-TODO
+To build a production package, run $ `npm run build`.
 
 ## Linting
 

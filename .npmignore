@@ -4,7 +4,6 @@ examples
 test-configs
 .editorconfig
 build.sh
-gulpfile.js
 tsconfig.json
 assets
 conf

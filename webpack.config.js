@@ -1,4 +1,5 @@
 const webpackMerge = require('webpack-merge');
+
 const TARGET = process.env.npm_lifecycle_event;
 
 const sharedModules = [
@@ -85,6 +86,10 @@ const sharedModules = [
 
 const sharedConfig = {
   entry: './index',
+  output: {
+    path: `${__dirname}/dist`,
+    publicPath: `${__dirname}/dist`
+  },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx']
   },
@@ -101,7 +106,6 @@ const moduleConfigs = [
     context: `${__dirname}/src`,
     target: 'node',
     output: {
-      path: `${__dirname}/dist`,
       filename: 'seaters.module.js',
       libraryTarget: 'commonjs'
     }
@@ -114,7 +118,6 @@ const moduleConfigs = [
     entry: './index',
     target: 'node',
     output: {
-      path: `${__dirname}/dist`,
       filename: 'seaters-mock-data.module.js',
       libraryTarget: 'commonjs'
     }
@@ -128,7 +131,6 @@ const bundleConfigs = [
     context: `${__dirname}/src`,
     entry: './index',
     output: {
-      path: `${__dirname}/dist`,
       filename: 'seaters.bundle.js',
       libraryTarget: 'var',
       library: 'SeatersSDK'
@@ -141,7 +143,6 @@ const bundleConfigs = [
     context: `${__dirname}/mock-data`,
     entry: './index',
     output: {
-      path: `${__dirname}/dist`,
       filename: 'seaters-mock-data.bundle.js',
       libraryTarget: 'var',
       library: 'SeatersSDKMockData'
