@@ -1,5 +1,4 @@
 const webpackMerge = require('webpack-merge');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 const sharedModules = [
 
@@ -28,7 +27,6 @@ const sharedModules = [
   // Typescript
   {
     test: /\.tsx?$/,
-    exclude: /node_modules/,
     loader: 'awesome-typescript-loader'
   },
 
@@ -63,7 +61,6 @@ const sharedModules = [
   // Replace package version
   {
     test: /\.tsx?$/,
-    exclude: /node_modules/,
     loader: 'string-replace-loader',
     query: {
       search: '${package.version}',
@@ -74,7 +71,6 @@ const sharedModules = [
   // Replace API location
   {
     test: /\.tsx?$/,
-    exclude: /node_modules/,
     loader: 'string-replace-loader',
     query: {
       search: '${api.location}',
@@ -120,9 +116,6 @@ module.exports = [
       filename: 'seaters.bundle.js',
       libraryTarget: 'var',
       library: 'SeatersSDK'
-    },
-    plugins: [
-      new UglifyJSPlugin()
-    ]
+    }
   })
 ];

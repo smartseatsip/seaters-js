@@ -1,9 +1,6 @@
 import { HTTP_METHOD } from './http-method';
 
-import { NodeRequestDriver } from './node-request-driver';
-import { BrowserRequestDriver } from './browser-request-driver';
-
-export type REQUEST_DRIVER_TYPE = 'BROWSER' | 'NODE' | 'MOCK';
+export type REQUEST_DRIVER_TYPE = 'BROWSER' | 'NODE';
 
 export interface ServerResponse {
   status: number;
@@ -35,8 +32,8 @@ export type RequestDriver = (options: RequestOptions) => Promise<ServerResponse>
 export function getRequestDriver (type: REQUEST_DRIVER_TYPE): RequestDriver {
   switch (type) {
     case 'BROWSER':
-      return BrowserRequestDriver;
+      return require('./browser-request-driver');
     default:
-      return NodeRequestDriver;
+      return require('./node-request-driver');
   }
 }
