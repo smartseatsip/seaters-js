@@ -32,8 +32,8 @@ export type RequestDriver = (options: RequestOptions) => Promise<ServerResponse>
 export function getRequestDriver (type: REQUEST_DRIVER_TYPE): RequestDriver {
   switch (type) {
     case 'BROWSER':
-      return require('./browser-request-driver');
+      return require('./browser-request-driver')['default'];
     default:
-      return require('./node-request-driver');
+      return require('./node-request-driver')['default'];
   }
 }

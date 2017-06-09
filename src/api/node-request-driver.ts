@@ -30,7 +30,7 @@ function buildServerResponse (req, res, body: string): ServerResponse {
   };
 }
 
-export function NodeRequestDriver (options: RequestOptions): Promise<ServerResponse> {
+export default function (options: RequestOptions): Promise<ServerResponse> {
 
   let deferred = new DeferredPromise<ServerResponse>();
 
