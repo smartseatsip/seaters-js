@@ -26,7 +26,6 @@ export class SeatersClient {
 
   constructor (options?: SeatersClientOptions) {
     options = Object.assign({}, SeatersClient.DEFAULT_OPTIONS, options);
-    console.log('Creating driver with ', options);
     let requestDriver = getRequestDriver(options.requestDriver);
 
     this.seatersApi = new SeatersApi(options.apiPrefix, requestDriver);
