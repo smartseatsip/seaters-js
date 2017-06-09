@@ -31,7 +31,7 @@ function buildXhr (options: RequestOptions): XMLHttpRequest {
   return xhr;
 }
 
-export function BrowserRequestDriver (options: RequestOptions): Promise<ServerResponse> {
+export default function (options: RequestOptions): Promise<ServerResponse> {
 
   let xhr = buildXhr(options);
 

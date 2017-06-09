@@ -10,13 +10,11 @@ echo "building ${NAME} version ${VERSION}"
 
 set -x
 npm install
-npm run gulp build
-npm run gulp doc
+npm run build
 #TODO run all tests
 rm -rf "$TMP_DIR"
 mkdir -p "$DIST_DIR"
 cp dist/seaters*.bundle.* "$DIST_DIR"
-cp -r examples "$DIST_DIR"
 cp -r doc/* "$DIST_DIR"
 cd "$TMP_DIR"
 #tar -czf "${NAME}-${VERSION}.tgz" seaters-sdk

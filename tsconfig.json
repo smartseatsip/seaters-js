@@ -7,6 +7,7 @@
     "outDir": "lib",
     "declaration": true,
     "declarationDir": "dist",
+    "sourceMap": true,
     "lib": [
       "es6"
     ],
@@ -16,5 +17,12 @@
   },
   "files": [
     "src/index.ts"
-  ]
+  ],
+  "awesomeTypescriptLoaderOptions": {
+    "useBabel": true,
+    "useCache": true,
+    "babelOptions": {
+      "presets": ["es2015"]
+    }
+  }
 }

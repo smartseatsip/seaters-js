@@ -1,10 +1,6 @@
 import { HTTP_METHOD } from './http-method';
 
-import { NodeRequestDriver } from './node-request-driver';
-import { BrowserRequestDriver } from './browser-request-driver';
-import { buildMockRequestDriver } from './mock-request-driver';
-
-export type REQUEST_DRIVER_TYPE = 'BROWSER' | 'NODE' | 'MOCK';
+export type REQUEST_DRIVER_TYPE = 'BROWSER' | 'NODE';
 
 export interface ServerResponse {
   status: number;
@@ -33,14 +29,11 @@ export type RequestDriver = (options: RequestOptions) => Promise<ServerResponse>
 /**
  * Obtain the request driver for the given type
  */
-export function getRequestDriver (type: REQUEST_DRIVER_TYPE, mockData?: any): RequestDriver {
+export function getRequestDriver (type: REQUEST_DRIVER_TYPE): RequestDriver {
   switch (type) {
     case 'BROWSER':
-      return BrowserRequestDriver;
-    case 'NODE':
-      return NodeRequestDriver;
-    case 'MOCK':
-      return buildMockRequestDriver(mockData);
+      return require('./browser-request-driver')['default'];
+    default:
+      return require('./node-request-driver')['default'];
   }
-  throw new Error('Unknown request driver type: ' + type);
 }
