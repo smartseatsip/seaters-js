@@ -31,7 +31,7 @@ gulp.task('typings', [], () => gulp.src(tsconfig.files.concat('src/**/*.ts'))
   .dts.pipe(gulp.dest('./dist/')));
 
 gulp.task('typedoc', (cb) => {
-  gulpExec('./node_modules/typedoc/bin/typedoc', [
+  gulpExec('node ./node_modules/typedoc/bin/typedoc', [
     '--out doc/',
     '--mode file',
     '--name "Seaters SDK"',
