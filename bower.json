@@ -12,6 +12,16 @@
     "node_modules",
     "bower_components",
     "test",
-    "tests"
+    "tests",
+    "src",
+    ".editorconfig",
+    ".eslintignore",
+    ".gitignore",
+    ".npmignore",
+    "build.sh",
+    "gulpfile.js",
+    "tsconfig.json",
+    "tslint.json",
+    "webpack.config.js"
   ]
 }
