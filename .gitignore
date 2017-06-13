@@ -2,8 +2,10 @@ node_modules/
 npm-debug.log
 .vscode/
 .idea/
-dist/
 lib/
 src/**/*.d.ts
 doc/
 .awcache
+
+dist/**/*
+!dist/seaters.bundle.js
