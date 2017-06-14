@@ -8,7 +8,7 @@ import { SeatersExceptionV1 } from './seaters-exception-v1';
 import { ServerError } from './server-error';
 import { ValidationError } from './validation-error';
 import { ClientError } from './client-error';
-import { PagingOptions } from './paging-options';
+import { PagedResult, PagingOptions } from '../shared-types';
 
 export class SeatersApiContext extends ApiContext {
 
@@ -21,8 +21,20 @@ export class SeatersApiContext extends ApiContext {
   public static buildPagingQueryParams (pagingOptions: PagingOptions): { [key: string]: any } {
     return {
       maxPageSize: pagingOptions.maxPageSize,
-      itemOffset: pagingOptions.itemOffset
+      itemOffset: pagingOptions.page
     };
+  }
+
+  public static convertPagedResultToArray (promise: Promise<PagedResult<any>>): Promise<Array<any>> {
+    return new Promise(function (resolve, reject) {
+      promise
+        .then(function (response) {
+          if (response.items === undefined) {
+            resolve(response);
+          }
+          resolve(response.items);
+        }).catch(reject);
+    });
   }
 
   /**

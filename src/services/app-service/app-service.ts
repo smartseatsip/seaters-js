@@ -1,6 +1,5 @@
 import { SeatersApi } from '../../seaters-api';
 import { app } from './app-types';
-import { PagedResult, PagingOptions } from '../../shared-types';
 import { HEALTH_NODE_OK } from '../../seaters-api/health/health-types';
 
 const ALL_COUNTRIES_PAGE_SIZE = 1000;
@@ -30,32 +29,32 @@ export class AppService {
    * Fetch a list of countries
    * @param page defaults to a page with maxPageSize set to anticipated maximum value
    */
-  getCountries (page?: PagingOptions): Promise<PagedResult<app.Country>> {
-    return this.seatersApi.app.countries(this.defaultPage(page, ALL_COUNTRIES_PAGE_SIZE));
+  getCountries (): Promise<Array<app.Country>> {
+    return this.seatersApi.app.countries({ page: 0, maxPageSize: ALL_COUNTRIES_PAGE_SIZE });
   }
 
   /**
    * Fetch a list of languages
    * @param page defaults to a page with maxPageSize set to anticipated maximum value
    */
-  getLanguages (page?: PagingOptions): Promise<PagedResult<app.Language>> {
-    return this.seatersApi.app.languages(this.defaultPage(page, ALL_LANGUAGES_PAGE_SIZE));
+  getLanguages (): Promise<Array<app.Language>> {
+    return this.seatersApi.app.languages({ page: 0, maxPageSize: ALL_LANGUAGES_PAGE_SIZE });
   }
 
   /**
    * Fetch a list of currencies
    * @param page defaults to a page with maxPageSize set to anticipated maximum value
    */
-  getCurrencies (page?: PagingOptions): Promise<PagedResult<app.Currency>> {
-    return this.seatersApi.app.currencies(this.defaultPage(page, ALL_CURRENCIES_PAGE_SIZE));
+  getCurrencies (): Promise<Array<app.Currency>> {
+    return this.seatersApi.app.currencies({ page: 0, maxPageSize: ALL_CURRENCIES_PAGE_SIZE });
   }
 
   /**
    * Fetch a list of time zones
    * @param page defaults to a page with maxPageSize set to anticipated maximum value
    */
-  getTimeZones (page?: PagingOptions): Promise<PagedResult<app.TimeZone>> {
-    return this.seatersApi.app.timeZones(this.defaultPage(page, ALL_TIME_ZONES_PAGE_SIZE));
+  getTimeZones (): Promise<Array<app.TimeZone>> {
+    return this.seatersApi.app.timeZones({ page: 0, maxPageSize: ALL_TIME_ZONES_PAGE_SIZE });
   }
 
   /**
@@ -64,8 +63,8 @@ export class AppService {
    * @param target restrict to translations for the given target application
    * @param language restrict to translations in the given language (alpha-2 country code)
    */
-  getTranslations (target?: app.TRANSLATION_TARGET, language?: string, page?: PagingOptions): Promise<PagedResult<app.Translation>> {
-    return this.seatersApi.app.translations(target, language, this.defaultPage(page, ALL_TRANSLATIONS_PAGE_SIZE));
+  getTranslations (target?: app.TRANSLATION_TARGET, language?: string): Promise<Array<app.Translation>> {
+    return this.seatersApi.app.translations(target, language, { page: 0, maxPageSize: ALL_TRANSLATIONS_PAGE_SIZE });
   }
 
   /**
@@ -78,17 +77,6 @@ export class AppService {
         console.error('Seaters API under maintenance', err);
         return true;
       });
-  }
-
-  private defaultPage (page: PagingOptions, defaultPageSize: number): PagingOptions {
-    if (page) {
-      return page;
-    } else {
-      return {
-        maxPageSize: defaultPageSize,
-        page: 0
-      };
-    }
   }
 
 }

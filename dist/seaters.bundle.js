@@ -187,8 +187,18 @@ var SeatersApiContext = function (_super) {
     SeatersApiContext.buildPagingQueryParams = function (pagingOptions) {
         return {
             maxPageSize: pagingOptions.maxPageSize,
-            itemOffset: pagingOptions.itemOffset
+            itemOffset: pagingOptions.page
         };
+    };
+    SeatersApiContext.convertPagedResultToArray = function (promise) {
+        return new Promise(function (resolve, reject) {
+            promise.then(function (response) {
+                if (response.items === undefined) {
+                    resolve(response);
+                }
+                resolve(response.items);
+            }).catch(reject);
+        });
     };
     /**
      * Returns a promise that either resolves with the requested resource
@@ -516,19 +526,19 @@ var AppApi = function () {
     };
     AppApi.prototype.countries = function (pagingOptions) {
         var queryParams = seaters_api_context_1.SeatersApiContext.buildPagingQueryParams(pagingOptions);
-        return this.apiContext.get('/app/countries', null, queryParams);
+        return seaters_api_context_1.SeatersApiContext.convertPagedResultToArray(this.apiContext.get('/app/countries', null, queryParams));
     };
     AppApi.prototype.languages = function (pagingOptions) {
         var queryParams = seaters_api_context_1.SeatersApiContext.buildPagingQueryParams(pagingOptions);
-        return this.apiContext.get('/app/languages', null, queryParams);
+        return seaters_api_context_1.SeatersApiContext.convertPagedResultToArray(this.apiContext.get('/app/languages', null, queryParams));
     };
     AppApi.prototype.timeZones = function (pagingOptions) {
         var queryParams = seaters_api_context_1.SeatersApiContext.buildPagingQueryParams(pagingOptions);
-        return this.apiContext.get('/app/time-zones', null, queryParams);
+        return seaters_api_context_1.SeatersApiContext.convertPagedResultToArray(this.apiContext.get('/app/time-zones', null, queryParams));
     };
     AppApi.prototype.currencies = function (pagingOptions) {
         var queryParams = seaters_api_context_1.SeatersApiContext.buildPagingQueryParams(pagingOptions);
-        return this.apiContext.get('/app/currencies', null, queryParams);
+        return seaters_api_context_1.SeatersApiContext.convertPagedResultToArray(this.apiContext.get('/app/currencies', null, queryParams));
     };
     AppApi.prototype.translations = function (target, language, pagingOptions) {
         var queryParams = seaters_api_context_1.SeatersApiContext.buildPagingQueryParams(pagingOptions);
@@ -538,7 +548,7 @@ var AppApi = function () {
         if (language) {
             queryParams.language = language;
         }
-        return this.apiContext.get('/app/translations', null, queryParams);
+        return seaters_api_context_1.SeatersApiContext.convertPagedResultToArray(this.apiContext.get('/app/translations', null, queryParams));
     };
     return AppApi;
 }();
@@ -2994,29 +3004,29 @@ var AppService = function () {
      * Fetch a list of countries
      * @param page defaults to a page with maxPageSize set to anticipated maximum value
      */
-    AppService.prototype.getCountries = function (page) {
-        return this.seatersApi.app.countries(this.defaultPage(page, ALL_COUNTRIES_PAGE_SIZE));
+    AppService.prototype.getCountries = function () {
+        return this.seatersApi.app.countries({ page: 0, maxPageSize: ALL_COUNTRIES_PAGE_SIZE });
     };
     /**
      * Fetch a list of languages
      * @param page defaults to a page with maxPageSize set to anticipated maximum value
      */
-    AppService.prototype.getLanguages = function (page) {
-        return this.seatersApi.app.languages(this.defaultPage(page, ALL_LANGUAGES_PAGE_SIZE));
+    AppService.prototype.getLanguages = function () {
+        return this.seatersApi.app.languages({ page: 0, maxPageSize: ALL_LANGUAGES_PAGE_SIZE });
     };
     /**
      * Fetch a list of currencies
      * @param page defaults to a page with maxPageSize set to anticipated maximum value
      */
-    AppService.prototype.getCurrencies = function (page) {
-        return this.seatersApi.app.currencies(this.defaultPage(page, ALL_CURRENCIES_PAGE_SIZE));
+    AppService.prototype.getCurrencies = function () {
+        return this.seatersApi.app.currencies({ page: 0, maxPageSize: ALL_CURRENCIES_PAGE_SIZE });
     };
     /**
      * Fetch a list of time zones
      * @param page defaults to a page with maxPageSize set to anticipated maximum value
      */
-    AppService.prototype.getTimeZones = function (page) {
-        return this.seatersApi.app.timeZones(this.defaultPage(page, ALL_TIME_ZONES_PAGE_SIZE));
+    AppService.prototype.getTimeZones = function () {
+        return this.seatersApi.app.timeZones({ page: 0, maxPageSize: ALL_TIME_ZONES_PAGE_SIZE });
     };
     /**
      * Fetch a list of translations
@@ -3024,8 +3034,8 @@ var AppService = function () {
      * @param target restrict to translations for the given target application
      * @param language restrict to translations in the given language (alpha-2 country code)
      */
-    AppService.prototype.getTranslations = function (target, language, page) {
-        return this.seatersApi.app.translations(target, language, this.defaultPage(page, ALL_TRANSLATIONS_PAGE_SIZE));
+    AppService.prototype.getTranslations = function (target, language) {
+        return this.seatersApi.app.translations(target, language, { page: 0, maxPageSize: ALL_TRANSLATIONS_PAGE_SIZE });
     };
     /**
      * Check if the API is in maintenance mode
@@ -3037,16 +3047,6 @@ var AppService = function () {
             console.error('Seaters API under maintenance', err);
             return true;
         });
-    };
-    AppService.prototype.defaultPage = function (page, defaultPageSize) {
-        if (page) {
-            return page;
-        } else {
-            return {
-                maxPageSize: defaultPageSize,
-                page: 0
-            };
-        }
     };
     return AppService;
 }();
