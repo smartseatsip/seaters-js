@@ -70,6 +70,7 @@ export class SessionService {
    * @returns {Promise<TResult2|TResult1>}
    */
   doOAuthCodeLogin (oauthProvider: string, code: string): Promise<session.Fan> {
+    console.warn('[sessionService] doOAuthCodeLogin is deprecated and will be removed soon, use doOAuthCodeLoginV2 instead to retrieve the session');
     return this.seatersApi.authentication.loginWithOAuthCode(oauthProvider, code)
       .then((r) => this.finishLogin(r))
       .then((session) => session.identity);
