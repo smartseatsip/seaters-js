@@ -15,4 +15,8 @@ export namespace session {
   export interface SessionToken extends authentication.SessionToken {
   }
 
+  export interface Session extends authentication.Session {
+
+  }
+
 }

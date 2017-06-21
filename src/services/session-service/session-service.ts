@@ -48,7 +48,7 @@ export class SessionService {
     return Promise.resolve<session.Fan>(this.currentFan);
   }
 
-  doEmailPasswordLogin (email: string, password: string, mfaToken?: string): Promise<session.Fan> {
+  doEmailPasswordLogin (email: string, password: string, mfaToken?: string): Promise<session.Session> {
     return this.seatersApi.authentication.emailPasswordLogin({
       email: email,
       password: password,
@@ -56,14 +56,14 @@ export class SessionService {
     }).then((r) => this.finishLogin(r));
   }
 
-  doStoredTokenLogin (storedToken: string, mfaToken?: string): Promise<session.Fan> {
+  doStoredTokenLogin (storedToken: string, mfaToken?: string): Promise<session.Session> {
     return this.seatersApi.authentication.storedTokenLogin({
       token: storedToken,
       mfaToken: mfaToken
     }).then((r) => this.finishLogin(r));
   }
 
-  doOAuthCodeLogin (oauthProvider: string, code: string): Promise<session.Fan> {
+  doOAuthCodeLogin (oauthProvider: string, code: string): Promise<session.Session> {
     return this.seatersApi.authentication.loginWithOAuthCode(oauthProvider, code)
       .then((r) => this.finishLogin(r));
   }
@@ -82,7 +82,7 @@ export class SessionService {
     firstname: string,
     lastname: string,
     language?: string
-  ): Promise<session.Fan> {
+  ): Promise<session.Session> {
     return this.seatersApi.authentication.signup({
       email: email,
       password: password,
@@ -149,12 +149,19 @@ export class SessionService {
     );
   }
 
-  private finishLogin (authSuccess: AuthenticationSuccess): Promise<session.Fan> {
+  private finishLogin (authSuccess: AuthenticationSuccess): Promise<session.Session> {
     this.setSession({
       expirationDate: authSuccess.token.expirationDate,
       token: authSuccess.token.value
     });
-    return this.setCurrentFan();
+    return this.setCurrentFan().then((identity) => {
+      return {
+        active: true,
+        expiresOn: authSuccess.token.expirationDate,
+        identity: identity,
+        token: authSuccess.token.value
+      };
+    });
   }
 
   private setSession (session: session.SessionToken): void {
@@ -171,7 +178,7 @@ export class SessionService {
       .then(fan => this.currentFan = fan);
   }
 
-  private doRefreshTokenLogin (refreshToken: string, mfaToken?: string): Promise<session.Fan> {
+  private doRefreshTokenLogin (refreshToken: string, mfaToken?: string): Promise<session.Session> {
     return this.seatersApi.authentication.refreshTokenLogin({
       token: refreshToken,
       mfaToken: mfaToken

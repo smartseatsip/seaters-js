@@ -546,7 +546,7 @@ var AppApi = function () {
             queryParams.target = target;
         }
         if (language) {
-            queryParams.language = language;
+            queryParams.lang = language;
         }
         return seaters_api_context_1.SeatersApiContext.convertPagedResultToArray(this.apiContext.get('/app/translations', null, queryParams));
     };
@@ -1398,7 +1398,7 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.version = '1.20.4';
+exports.version = '1.20.6';
 __export(__webpack_require__(17));
 var fan_types_1 = __webpack_require__(2);
 exports.fan = fan_types_1.fan;
@@ -2929,7 +2929,14 @@ var SessionService = function () {
             expirationDate: authSuccess.token.expirationDate,
             token: authSuccess.token.value
         });
-        return this.setCurrentFan();
+        return this.setCurrentFan().then(function (identity) {
+            return {
+                active: true,
+                expiresOn: authSuccess.token.expirationDate,
+                identity: identity,
+                token: authSuccess.token.value
+            };
+        });
     };
     SessionService.prototype.setSession = function (session) {
         this.seatersApi.apiContext.setHeader(AUTH_HEADER, AUTH_BEARER + ' ' + session.token);
