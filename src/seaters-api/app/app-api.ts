@@ -37,7 +37,7 @@ export class AppApi {
   translations (target?: TRANSLATION_TARGET, language?: string, pagingOptions?: PagingOptions): Promise<Array<Translation>> {
     let queryParams = SeatersApiContext.buildPagingQueryParams(pagingOptions);
     if (target) { queryParams.target = target; }
-    if (language) { queryParams.language = language; }
+    if (language) { queryParams.lang = language; }
     return SeatersApiContext.convertPagedResultToArray(this.apiContext.get('/app/translations', null, queryParams));
   }
 
