@@ -169,7 +169,6 @@ export class SessionService {
     });
     return this.setCurrentFan().then((identity) => {
       return {
-        active: true,
         expiresOn: authSuccess.token.expirationDate,
         identity: identity,
         token: authSuccess.token.value

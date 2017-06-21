@@ -1398,7 +1398,7 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.version = '1.20.6';
+exports.version = '1.20.7';
 __export(__webpack_require__(17));
 var fan_types_1 = __webpack_require__(2);
 exports.fan = fan_types_1.fan;
@@ -2851,7 +2851,22 @@ var SessionService = function () {
             return _this.finishLogin(r);
         });
     };
+    /**
+     * @deprecated Use doOAuthCodeLoginV2 instead to retrieve the session
+     * @param oauthProvider
+     * @param code
+     * @returns {Promise<TResult2|TResult1>}
+     */
     SessionService.prototype.doOAuthCodeLogin = function (oauthProvider, code) {
+        var _this = this;
+        console.warn('[sessionService] doOAuthCodeLogin is deprecated and will be removed soon, use doOAuthCodeLoginV2 instead to retrieve the session');
+        return this.seatersApi.authentication.loginWithOAuthCode(oauthProvider, code).then(function (r) {
+            return _this.finishLogin(r);
+        }).then(function (session) {
+            return session.identity;
+        });
+    };
+    SessionService.prototype.doOAuthCodeLoginV2 = function (oauthProvider, code) {
         var _this = this;
         return this.seatersApi.authentication.loginWithOAuthCode(oauthProvider, code).then(function (r) {
             return _this.finishLogin(r);

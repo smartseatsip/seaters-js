@@ -105,7 +105,6 @@ export interface AuthenticationSuccess {
 }
 
 export interface Session {
-  active: boolean;
   expiresOn: string;
   identity: any;
   token: string;
