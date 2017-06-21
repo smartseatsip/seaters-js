@@ -63,6 +63,12 @@ export class SessionService {
     }).then((r) => this.finishLogin(r));
   }
 
+  /**
+   * @deprecated Use doOAuthCodeLoginV2 instead to retrieve the session
+   * @param oauthProvider
+   * @param code
+   * @returns {Promise<TResult2|TResult1>}
+   */
   doOAuthCodeLogin (oauthProvider: string, code: string): Promise<session.Fan> {
     return this.seatersApi.authentication.loginWithOAuthCode(oauthProvider, code)
       .then((r) => this.finishLogin(r))
