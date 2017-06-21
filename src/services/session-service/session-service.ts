@@ -63,7 +63,13 @@ export class SessionService {
     }).then((r) => this.finishLogin(r));
   }
 
-  doOAuthCodeLogin (oauthProvider: string, code: string): Promise<session.Session> {
+  doOAuthCodeLogin (oauthProvider: string, code: string): Promise<session.Fan> {
+    return this.seatersApi.authentication.loginWithOAuthCode(oauthProvider, code)
+      .then((r) => this.finishLogin(r))
+      .then((session) => session.identity);
+  }
+
+  doOAuthCodeLoginV2 (oauthProvider: string, code: string): Promise<session.Session> {
     return this.seatersApi.authentication.loginWithOAuthCode(oauthProvider, code)
       .then((r) => this.finishLogin(r));
   }
