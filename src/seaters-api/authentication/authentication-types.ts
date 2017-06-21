@@ -103,3 +103,10 @@ export interface AuthenticationSuccess {
   };
   userData: UserData;
 }
+
+export interface Session {
+  expiresOn: string;
+  identity: any;
+  token: string;
+  userId?: string;
+}
