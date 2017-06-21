@@ -2946,7 +2946,6 @@ var SessionService = function () {
         });
         return this.setCurrentFan().then(function (identity) {
             return {
-                active: true,
                 expiresOn: authSuccess.token.expirationDate,
                 identity: identity,
                 token: authSuccess.token.value
