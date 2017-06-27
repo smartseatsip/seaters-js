@@ -69,7 +69,12 @@ export class AlgoliaForSeatersService {
 
   search (searchQuery: SearchQuery): Promise<SearchResult> {
     return this.api()
-      .then(api => api.indices.searchIndex(this.searchIndex, searchQuery));
+      .then((api) => api.indices.searchIndex(this.searchIndex, searchQuery))
+      .then((res) => {
+        res.hits.filter((item) => item.type === WL_ALGOLIA_TYPE)
+          .forEach((item) => this.patchWaitingList(item));
+        return res;
+      });
   }
 
   searchSeatersContent (query: string, locale: string, hitsPerPage: number, page: number): Promise<SearchResult> {
@@ -180,6 +185,27 @@ export class AlgoliaForSeatersService {
   private stripAlgoliaFieldsFromSearchResultHits<T> (result: SearchResult): SearchResult {
     result.hits.forEach(hit => this.stripAlgoliaFieldsFromObject(hit));
     return result;
+  }
+
+  private patchWaitingList (wl: any): WaitingList {
+    // TODO remove as soon as backend exposes .price
+    if (!wl.hasOwnProperty('price')) {
+      (wl as WaitingList).price = {
+        facialPrice: wl.facialPrice,
+        formattedFacialPrice: wl.formattedFacialPrice,
+        totalFacialPrice: wl.totalFacialPrice,
+        formattedTotalFacialPrice: wl.formattedTotalFacialPrice,
+        feeExcVat: wl.feeExcVat,
+        formattedFeeExcVat: wl.formattedFeeExcVat,
+        feeVat: wl.feeVat,
+        formattedFeeVat: wl.formattedFeeVat,
+        fee: wl.fee,
+        formattedFee: wl.formattedFee,
+        total: wl.total,
+        formattedTotal: wl.formattedTotal
+      };
+    }
+    return wl;
   }
 
 }
