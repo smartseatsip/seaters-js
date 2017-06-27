@@ -1,3 +1,5 @@
+import { Price } from './price';
+
 export type WAITING_LIST_STATUS =
   'PUBLISHED' | 'OPEN' | 'CLOSED';
 
@@ -36,6 +38,7 @@ export interface WaitingList {
   waitingListStatus: WAITING_LIST_STATUS;
   accessMode: WL_ACCESS_MODE;
   directSalesEnabled: boolean;
+  price: Price;
 
   displayName: string;
 
