@@ -17,9 +17,10 @@ export class SeatersApiContext extends ApiContext {
   }
 
   public static buildPagingQueryParams (pagingOptions: PagingOptions): { [key: string]: any } {
+    pagingOptions = pagingOptions || {};
     return {
-      maxPageSize: pagingOptions.maxPageSize,
-      itemOffset: pagingOptions.page
+      maxPageSize: pagingOptions.maxPageSize || 9999,
+      itemOffset: pagingOptions.page || 0
     };
   }
 

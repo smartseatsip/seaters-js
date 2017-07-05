@@ -185,9 +185,10 @@ var SeatersApiContext = function (_super) {
         return _super.call(this, prefix, requestDriver) || this;
     }
     SeatersApiContext.buildPagingQueryParams = function (pagingOptions) {
+        pagingOptions = pagingOptions || {};
         return {
-            maxPageSize: pagingOptions.maxPageSize,
-            itemOffset: pagingOptions.page
+            maxPageSize: pagingOptions.maxPageSize || 9999,
+            itemOffset: pagingOptions.page || 0
         };
     };
     SeatersApiContext.convertPagedResultToArray = function (promise) {
@@ -376,7 +377,7 @@ var SeatersApiContext = function (_super) {
             try {
                 return Promise.resolve(JSON.parse(body));
             } catch (e) {
-                // In case the response is not JSON
+                // Incase the respons
                 return Promise.resolve(body);
             }
         } else {
@@ -628,7 +629,6 @@ var FanApi = function () {
         return this.apiContext.get('/fan/groups/:fanGroupId/waiting-lists', endpointParams, queryParams);
     };
     FanApi.prototype.waitingListsInFanGroups = function (fanGroupIds, pagingOptions) {
-        console.log('fan-api waitingListsInFanGroups', pagingOptions);
         var endpointParams = undefined;
         var queryParams = seaters_api_1.SeatersApiContext.buildPagingQueryParams(pagingOptions);
         queryParams = Object.assign(queryParams, {
@@ -886,7 +886,6 @@ var WaitingListService = function () {
         return this.api.fan.waitingListsInFanGroup(fanGroupId, pagingOptions);
     };
     WaitingListService.prototype.getWaitingListsInFanGroups = function (fanGroupIds, pagingOptions) {
-        console.log('waiting-list-service getWaitingListsInFanGroups', pagingOptions);
         return this.api.fan.waitingListsInFanGroups(fanGroupIds, pagingOptions);
     };
     WaitingListService.prototype.getMyWaitingListsWithoutSeat = function (page) {
@@ -2254,14 +2253,13 @@ var FanService = function () {
     };
     FanService.prototype.getWaitingListsInFanGroup = function (fanGroupId, pagingOptions) {
         var _this = this;
-        return this.waitingListService.getWaitingListsInFanGroup(fanGroupId, this.convertPagingOptions(pagingOptions)).then(function (r) {
+        return this.waitingListService.getWaitingListsInFanGroup(fanGroupId, pagingOptions).then(function (r) {
             return _this.convertPagedResult(r);
         });
     };
     FanService.prototype.getWaitingListsInFanGroups = function (fanGroupIds, pagingOptions) {
         var _this = this;
-        console.log('fan-service getWaitingListsInFanGroups', pagingOptions);
-        return this.waitingListService.getWaitingListsInFanGroups(fanGroupIds, this.convertPagingOptions(pagingOptions)).then(function (r) {
+        return this.waitingListService.getWaitingListsInFanGroups(fanGroupIds, pagingOptions).then(function (r) {
             return _this.convertPagedResult(r);
         });
     };
@@ -2349,12 +2347,6 @@ var FanService = function () {
     /**
      *  HELPERS
      */
-    FanService.prototype.convertPagingOptions = function (pagingOptions) {
-        return {
-            itemOffset: pagingOptions.page * pagingOptions.maxPageSize,
-            maxPageSize: pagingOptions.maxPageSize
-        };
-    };
     FanService.prototype.convertPagedResult = function (result) {
         return {
             items: result.items,
