@@ -20,10 +20,7 @@ export class SeatersApiContext extends ApiContext {
     pagingOptions = pagingOptions || {};
     return {
       maxPageSize: pagingOptions.maxPageSize || 9999,
-      itemOffset: pagingOptions.page || 0,
-
-      // @TODO: only for v2 endpoints
-      size: pagingOptions.maxPageSize || 9999
+      itemOffset: pagingOptions.page || 0
     };
   }
 
