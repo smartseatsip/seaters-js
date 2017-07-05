@@ -33,6 +33,20 @@ export class FanApi {
     );
   }
 
+  fanGroupBySlug (slug: string): Promise<FanGroup> {
+    return this.apiContext.get(
+      '/fan/fangroups-by-slug/:slug',
+      { slug: slug }
+    );
+  }
+
+  fanGroupLookBySlug (slug: string): Promise<FanGroup> {
+    return this.apiContext.get(
+      '/fan/fangroups-by-slug/:slug/look',
+      { slug: slug }
+    );
+  }
+
   fanGroups (fanGroupIds: string[]): Promise<FanGroup[]> {
     return this.apiContext.get('/fan/groups', {}, {
       groupIds: fanGroupIds

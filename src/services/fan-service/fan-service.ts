@@ -35,6 +35,14 @@ export class FanService {
     return this.fanGroupService.getFanGroup(fanGroupId);
   }
 
+  getFanGroupBySlug (slug: string): Promise<fan.FanGroup> {
+    return this.fanGroupService.getFanGroupBySlug(slug);
+  }
+
+  getFanGroupLookBySlug (slug: string): Promise<fan.FanGroup> {
+    return this.fanGroupService.getFanGroupLookBySlug(slug);
+  }
+
   joinFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
     return this.fanGroupService.joinFanGroup(fanGroupId);
   }
@@ -63,7 +71,10 @@ export class FanService {
       .then(r => this.convertPagedResult(r));
   }
 
-  getWaitingListsInFanGroups (fanGroupIds: string[], pagingOptions: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
+  getWaitingListsInFanGroups (
+    fanGroupIds: string[],
+    pagingOptions: PagingOptions
+  ): Promise<PagedResult<fan.WaitingList>> {
     return this.waitingListService.getWaitingListsInFanGroups(fanGroupIds, this.convertPagingOptions(pagingOptions))
       .then(r => this.convertPagedResult(r));
   }

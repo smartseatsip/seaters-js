@@ -58,7 +58,7 @@ var SeatersSDK =
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/home/bcorne/seaters/sdk/dist";
+/******/ 	__webpack_require__.p = "/Users/sanderdecoster/local_projects/seaters/seaters-js/dist";
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 16);
@@ -429,8 +429,8 @@ var ApiEndpoint = function () {
         this.absoluteEndpoint = this.renderAbsoluteEndpoint();
     }
     ApiEndpoint.prototype.normalizeAbstractEndpoint = function (abstractEndpoint) {
-        return abstractEndpoint.replace(/^\//, '') // no prefixed '/'
-        .replace(/\/$/, ''); // no trailing '/'
+        return abstractEndpoint.replace(/^\//, '' // no prefixed '/'
+        ).replace(/\/$/, ''); // no trailing '/'
     };
     ApiEndpoint.prototype.renderEndpointParam = function (parameter) {
         if (!this.endpointParams.hasOwnProperty(parameter)) {
@@ -577,6 +577,12 @@ var FanApi = function () {
     };
     FanApi.prototype.fanGroup = function (fanGroupId) {
         return this.apiContext.get('/fan/groups/:fanGroupId', { fanGroupId: fanGroupId });
+    };
+    FanApi.prototype.fanGroupBySlug = function (slug) {
+        return this.apiContext.get('/fan/fangroups-by-slug/:slug', { slug: slug });
+    };
+    FanApi.prototype.fanGroupLookBySlug = function (slug) {
+        return this.apiContext.get('/fan/fangroups-by-slug/:slug/look', { slug: slug });
     };
     FanApi.prototype.fanGroups = function (fanGroupIds) {
         return this.apiContext.get('/fan/groups', {}, {
@@ -1286,6 +1292,17 @@ var FanGroupService = function () {
                 actionStatus: _this.getFanGroupActionStatus(fg)
             });
         });
+    };
+    FanGroupService.prototype.getFanGroupBySlug = function (slug) {
+        var _this = this;
+        return this.api.fan.fanGroupBySlug(slug).then(function (fg) {
+            return Object.assign(fg, {
+                actionStatus: _this.getFanGroupActionStatus(fg)
+            });
+        });
+    };
+    FanGroupService.prototype.getFanGroupLookBySlug = function (slug) {
+        return this.api.fan.fanGroupLookBySlug(slug);
     };
     FanGroupService.prototype.joinFanGroup = function (fanGroupId) {
         var _this = this;
@@ -2187,6 +2204,12 @@ var FanService = function () {
     };
     FanService.prototype.getFanGroup = function (fanGroupId) {
         return this.fanGroupService.getFanGroup(fanGroupId);
+    };
+    FanService.prototype.getFanGroupBySlug = function (slug) {
+        return this.fanGroupService.getFanGroupBySlug(slug);
+    };
+    FanService.prototype.getFanGroupLookBySlug = function (slug) {
+        return this.fanGroupService.getFanGroupLookBySlug(slug);
     };
     FanService.prototype.joinFanGroup = function (fanGroupId) {
         return this.fanGroupService.joinFanGroup(fanGroupId);

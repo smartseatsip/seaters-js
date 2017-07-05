@@ -23,6 +23,17 @@ export class FanGroupService {
       }));
   }
 
+  getFanGroupBySlug (slug: string): Promise<fan.FanGroup> {
+    return this.api.fan.fanGroupBySlug(slug)
+      .then(fg => Object.assign(fg, {
+        actionStatus: this.getFanGroupActionStatus(fg)
+      }));
+  }
+
+  getFanGroupLookBySlug (slug: string): Promise<fan.FanGroup> {
+    return this.api.fan.fanGroupLookBySlug(slug);
+  }
+
   joinFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
     return this.api.fan.joinFanGroup(fanGroupId)
       .then(() => {
