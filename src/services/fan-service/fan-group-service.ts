@@ -23,6 +23,21 @@ export class FanGroupService {
       }));
   }
 
+  getFanGroupBySlug (slug: string): Promise<fan.FanGroup> {
+    return this.api.fan.fanGroupBySlug(slug)
+      .then(fg => Object.assign(fg, {
+        actionStatus: this.getFanGroupActionStatus(fg)
+      }));
+  }
+
+  getFanGroupLookBySlug (slug: string): Promise<fan.FanGroup> {
+    return this.api.fan.fanGroupLookBySlug(slug);
+  }
+
+  getFanGroupTranslatedDescription (fanGroupId: string): Promise<fan.FanGroup> {
+    return this.api.fan.fanGroupTranslatedDescription(fanGroupId);
+  }
+
   joinFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
     return this.api.fan.joinFanGroup(fanGroupId)
       .then(() => {
@@ -49,6 +64,10 @@ export class FanGroupService {
   leaveFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
     return this.api.fan.leaveFanGroup(fanGroupId)
       .then(() => this.pollFanGroup(fanGroupId, (fg) => fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_JOIN));
+  }
+
+  shareFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
+    return this.api.fan.shareFanGroup(fanGroupId);
   }
 
   private checkUnlockStatus (fg: fan.FanGroup) {
