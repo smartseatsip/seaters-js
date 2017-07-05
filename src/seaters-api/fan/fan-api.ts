@@ -47,6 +47,13 @@ export class FanApi {
     );
   }
 
+  fanGroupTranslatedDescription (fanGroupId: string): Promise<FanGroup> {
+    return this.apiContext.get(
+      '/fan/groups/:fanGroupId/translated-description',
+      { fanGroupId: fanGroupId }
+    );
+  }
+
   fanGroups (fanGroupIds: string[]): Promise<FanGroup[]> {
     return this.apiContext.get('/fan/groups', {}, {
       groupIds: fanGroupIds
@@ -87,8 +94,14 @@ export class FanApi {
     return this.apiContext.delete(
       '/fan/groups/:fanGroupId',
       { fanGroupId: fanGroupId }
-    )
-      .then(() => undefined);
+    );
+  }
+
+  shareFanGroup (fanGroupId: string): Promise<FanGroup> {
+    return this.apiContext.get(
+      '/fan/groups/:fanGroupId/share',
+      { fanGroupId: fanGroupId }
+    );
   }
 
   waitingListsInFanGroup (fanGroupId: string, pagingOptions: PagingOptions): Promise<PagedResult<WaitingList>> {

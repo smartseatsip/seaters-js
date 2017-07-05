@@ -43,6 +43,10 @@ export class FanService {
     return this.fanGroupService.getFanGroupLookBySlug(slug);
   }
 
+  getFanGroupTranslatedDescription (fanGroupId: string): Promise<fan.FanGroup> {
+    return this.fanGroupService.getFanGroupTranslatedDescription(fanGroupId);
+  }
+
   joinFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
     return this.fanGroupService.joinFanGroup(fanGroupId);
   }
@@ -53,6 +57,10 @@ export class FanService {
 
   leaveFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
     return this.fanGroupService.leaveFanGroup(fanGroupId);
+  }
+
+  shareFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
+    return this.fanGroupService.shareFanGroup(fanGroupId);
   }
 
   /**
@@ -67,7 +75,7 @@ export class FanService {
   }
 
   getWaitingListsInFanGroup (fanGroupId: string, pagingOptions: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
-    return this.waitingListService.getWaitingListsInFanGroup(fanGroupId, this.convertPagingOptions(pagingOptions))
+    return this.waitingListService.getWaitingListsInFanGroup(fanGroupId, pagingOptions)
       .then(r => this.convertPagedResult(r));
   }
 
@@ -75,7 +83,7 @@ export class FanService {
     fanGroupIds: string[],
     pagingOptions: PagingOptions
   ): Promise<PagedResult<fan.WaitingList>> {
-    return this.waitingListService.getWaitingListsInFanGroups(fanGroupIds, this.convertPagingOptions(pagingOptions))
+    return this.waitingListService.getWaitingListsInFanGroups(fanGroupIds, pagingOptions)
       .then(r => this.convertPagedResult(r));
   }
 
@@ -177,12 +185,6 @@ export class FanService {
   /**
    *  HELPERS
    */
-  private convertPagingOptions (pagingOptions: PagingOptions): any {
-    return {
-      itemOffset: pagingOptions.page * pagingOptions.maxPageSize,
-      maxPageSize: pagingOptions.maxPageSize
-    };
-  }
 
   private convertPagedResult<T> (result: any): PagedResult<T> {
     return {

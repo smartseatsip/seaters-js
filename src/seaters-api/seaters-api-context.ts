@@ -13,9 +13,7 @@ import { PagedResult, PagingOptions } from '../shared-types';
 export class SeatersApiContext extends ApiContext {
 
   constructor (prefix: string, requestDriver: RequestDriver) {
-
     super(prefix, requestDriver);
-
   }
 
   public static buildPagingQueryParams (pagingOptions: PagingOptions): { [key: string]: any } {
@@ -247,7 +245,12 @@ export class SeatersApiContext extends ApiContext {
 
   private parseResult (body: string): any {
     if (typeof(body as any) === 'string' && body.length > 0) {
-      return Promise.resolve(JSON.parse(body));
+      try {
+        return Promise.resolve(JSON.parse(body));
+      } catch (e) {
+        // Incase the respons
+        return Promise.resolve(body);
+      }
     } else {
       return Promise.resolve(null);
     }

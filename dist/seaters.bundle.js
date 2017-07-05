@@ -373,7 +373,12 @@ var SeatersApiContext = function (_super) {
     };
     SeatersApiContext.prototype.parseResult = function (body) {
         if (typeof body === 'string' && body.length > 0) {
-            return Promise.resolve(JSON.parse(body));
+            try {
+                return Promise.resolve(JSON.parse(body));
+            } catch (e) {
+                // In case the response is not JSON
+                return Promise.resolve(body);
+            }
         } else {
             return Promise.resolve(null);
         }
@@ -584,6 +589,9 @@ var FanApi = function () {
     FanApi.prototype.fanGroupLookBySlug = function (slug) {
         return this.apiContext.get('/fan/fangroups-by-slug/:slug/look', { slug: slug });
     };
+    FanApi.prototype.fanGroupTranslatedDescription = function (fanGroupId) {
+        return this.apiContext.get('/fan/groups/:fanGroupId/translated-description', { fanGroupId: fanGroupId });
+    };
     FanApi.prototype.fanGroups = function (fanGroupIds) {
         return this.apiContext.get('/fan/groups', {}, {
             groupIds: fanGroupIds
@@ -609,9 +617,10 @@ var FanApi = function () {
         }
     };
     FanApi.prototype.leaveFanGroup = function (fanGroupId) {
-        return this.apiContext.delete('/fan/groups/:fanGroupId', { fanGroupId: fanGroupId }).then(function () {
-            return undefined;
-        });
+        return this.apiContext.delete('/fan/groups/:fanGroupId', { fanGroupId: fanGroupId });
+    };
+    FanApi.prototype.shareFanGroup = function (fanGroupId) {
+        return this.apiContext.get('/fan/groups/:fanGroupId/share', { fanGroupId: fanGroupId });
     };
     FanApi.prototype.waitingListsInFanGroup = function (fanGroupId, pagingOptions) {
         var endpointParams = { fanGroupId: fanGroupId };
@@ -619,6 +628,7 @@ var FanApi = function () {
         return this.apiContext.get('/fan/groups/:fanGroupId/waiting-lists', endpointParams, queryParams);
     };
     FanApi.prototype.waitingListsInFanGroups = function (fanGroupIds, pagingOptions) {
+        console.log('fan-api waitingListsInFanGroups', pagingOptions);
         var endpointParams = undefined;
         var queryParams = seaters_api_1.SeatersApiContext.buildPagingQueryParams(pagingOptions);
         queryParams = Object.assign(queryParams, {
@@ -876,6 +886,7 @@ var WaitingListService = function () {
         return this.api.fan.waitingListsInFanGroup(fanGroupId, pagingOptions);
     };
     WaitingListService.prototype.getWaitingListsInFanGroups = function (fanGroupIds, pagingOptions) {
+        console.log('waiting-list-service getWaitingListsInFanGroups', pagingOptions);
         return this.api.fan.waitingListsInFanGroups(fanGroupIds, pagingOptions);
     };
     WaitingListService.prototype.getMyWaitingListsWithoutSeat = function (page) {
@@ -1304,6 +1315,9 @@ var FanGroupService = function () {
     FanGroupService.prototype.getFanGroupLookBySlug = function (slug) {
         return this.api.fan.fanGroupLookBySlug(slug);
     };
+    FanGroupService.prototype.getFanGroupTranslatedDescription = function (fanGroupId) {
+        return this.api.fan.fanGroupTranslatedDescription(fanGroupId);
+    };
     FanGroupService.prototype.joinFanGroup = function (fanGroupId) {
         var _this = this;
         return this.api.fan.joinFanGroup(fanGroupId).then(function () {
@@ -1335,6 +1349,9 @@ var FanGroupService = function () {
                 return fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_JOIN;
             });
         });
+    };
+    FanGroupService.prototype.shareFanGroup = function (fanGroupId) {
+        return this.api.fan.shareFanGroup(fanGroupId);
     };
     FanGroupService.prototype.checkUnlockStatus = function (fg) {
         if (!fg.membership.request) {
@@ -2211,6 +2228,9 @@ var FanService = function () {
     FanService.prototype.getFanGroupLookBySlug = function (slug) {
         return this.fanGroupService.getFanGroupLookBySlug(slug);
     };
+    FanService.prototype.getFanGroupTranslatedDescription = function (fanGroupId) {
+        return this.fanGroupService.getFanGroupTranslatedDescription(fanGroupId);
+    };
     FanService.prototype.joinFanGroup = function (fanGroupId) {
         return this.fanGroupService.joinFanGroup(fanGroupId);
     };
@@ -2219,6 +2239,9 @@ var FanService = function () {
     };
     FanService.prototype.leaveFanGroup = function (fanGroupId) {
         return this.fanGroupService.leaveFanGroup(fanGroupId);
+    };
+    FanService.prototype.shareFanGroup = function (fanGroupId) {
+        return this.fanGroupService.shareFanGroup(fanGroupId);
     };
     /**
      *  WAITING LISTS
@@ -2237,6 +2260,7 @@ var FanService = function () {
     };
     FanService.prototype.getWaitingListsInFanGroups = function (fanGroupIds, pagingOptions) {
         var _this = this;
+        console.log('fan-service getWaitingListsInFanGroups', pagingOptions);
         return this.waitingListService.getWaitingListsInFanGroups(fanGroupIds, this.convertPagingOptions(pagingOptions)).then(function (r) {
             return _this.convertPagedResult(r);
         });
