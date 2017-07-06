@@ -240,12 +240,6 @@ export class FanApi {
     return this.apiContext.get(endpoint, endpointParams);
   }
 
-  getPositionSalesTransaction (waitingListId: string): Promise<PositionSalesTransaction> {
-    let endpoint = '/fan/waiting-lists/:waitingListId/transaction';
-    let endpointParams = { waitingListId: waitingListId };
-    return this.apiContext.get(endpoint, endpointParams);
-  }
-
   createPositionSalesTransaction (
     waitingListId: string,
     transaction: PositionSalesTransactionInput
