@@ -96,6 +96,10 @@ export class WaitingListService {
       .then((wl) => this.waitForDirectSales(wl));
   }
 
+  shareWaitingList (waitingListId: string): Promise<fan.WaitingList> {
+    return this.api.fan.shareWaitingList(waitingListId);
+  }
+
   leaveWaitingList (waitingListId: string): Promise<fan.WaitingList> {
     return this.api.fan.leaveWaitingList(waitingListId)
     // wait until the status is returned to BOOK

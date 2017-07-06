@@ -197,11 +197,17 @@ export class FanApi {
     }
   }
 
+  shareWaitingList (waitingListId: string): Promise<WaitingList> {
+    return this.apiContext.get(
+      '/fan/waiting-lists/:waitingListId/share',
+      { waitingListId: waitingListId }
+    );
+  }
+
   leaveWaitingList (waitingListId: string): Promise<void> {
     let endpoint = '/fan/waiting-lists/:waitingListId/position';
     let endpointParams = { waitingListId: waitingListId };
-    return this.apiContext.delete(endpoint, endpointParams)
-      .then(() => undefined);
+    return this.apiContext.delete(endpoint, endpointParams);
   }
 
   acceptSeats (waitingListId: string): Promise<WaitingList> {

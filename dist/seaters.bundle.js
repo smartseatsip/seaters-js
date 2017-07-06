@@ -683,12 +683,18 @@ var FanApi = function () {
             return this.apiContext.put(endpoint, data, endpointParams);
         }
     };
+    FanApi.prototype.shareWaitingList = function (waitingListId) {
+        return this.apiContext.get('/fan/waiting-lists/:waitingListId/share', { waitingListId: waitingListId });
+    };
     FanApi.prototype.leaveWaitingList = function (waitingListId) {
         var endpoint = '/fan/waiting-lists/:waitingListId/position';
         var endpointParams = { waitingListId: waitingListId };
-        return this.apiContext.delete(endpoint, endpointParams).then(function () {
-            return undefined;
-        });
+        return this.apiContext.delete(endpoint, endpointParams);
+    };
+    FanApi.prototype.getWaitingListPosition = function (waitingListId) {
+        var endpoint = '/fan/waiting-lists/:waitingListId/position';
+        var endpointParams = { waitingListId: waitingListId };
+        return this.apiContext.get(endpoint, endpointParams);
     };
     FanApi.prototype.acceptSeats = function (waitingListId) {
         var endpoint = '/fan/waiting-lists/:waitingListId/accept';
@@ -949,6 +955,9 @@ var WaitingListService = function () {
             return _this.waitForDirectSales(wl);
         });
     };
+    WaitingListService.prototype.shareWaitingList = function (waitingListId) {
+        return this.api.fan.shareWaitingList(waitingListId);
+    };
     WaitingListService.prototype.leaveWaitingList = function (waitingListId) {
         var _this = this;
         return this.api.fan.leaveWaitingList(waitingListId).then(function () {
@@ -956,6 +965,9 @@ var WaitingListService = function () {
                 return wl.actionStatus === WAITING_LIST_ACTION_STATUS.BOOK;
             });
         });
+    };
+    WaitingListService.prototype.getWaitingListPosition = function (waitingListId) {
+        return this.api.fan.getWaitingListPosition(waitingListId);
     };
     WaitingListService.prototype.getPositionPaymentInfo = function (waitingListId) {
         return this.api.fan.positionPaymentInfo(waitingListId);
@@ -2278,8 +2290,14 @@ var FanService = function () {
     FanService.prototype.joinProtectedWaitingList = function (waitingListId, code, numberOfSeats) {
         return this.waitingListService.joinProtectedWaitingList(waitingListId, code, numberOfSeats);
     };
+    FanService.prototype.shareWaitingList = function (waitingListId) {
+        return this.waitingListService.shareWaitingList(waitingListId);
+    };
     FanService.prototype.leaveWaitingList = function (waitingListId) {
         return this.waitingListService.leaveWaitingList(waitingListId);
+    };
+    FanService.prototype.getWaitingListPosition = function (waitingListId) {
+        return this.waitingListService.getWaitingListPosition(waitingListId);
     };
     FanService.prototype.getPositionPaymentInfo = function (waitingListId) {
         return this.waitingListService.getPositionPaymentInfo(waitingListId);

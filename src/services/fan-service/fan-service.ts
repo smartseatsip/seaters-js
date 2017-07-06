@@ -107,6 +107,10 @@ export class FanService {
     return this.waitingListService.joinProtectedWaitingList(waitingListId, code, numberOfSeats);
   }
 
+  shareWaitingList (waitingListId: string): Promise<fan.WaitingList> {
+    return this.waitingListService.shareWaitingList(waitingListId);
+  }
+
   leaveWaitingList (waitingListId: string): Promise<fan.WaitingList> {
     return this.waitingListService.leaveWaitingList(waitingListId);
   }
