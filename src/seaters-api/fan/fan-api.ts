@@ -151,6 +151,13 @@ export class FanApi {
     );
   }
 
+  waitingListTranslatedVenueDescription (waitingListId: string): Promise<WaitingList> {
+    return this.apiContext.get(
+      '/fan/waiting-lists/:waitingListId/translated-venue-conditions',
+      { waitingListId: waitingListId }
+    );
+  }
+
   waitingList (waitingListId: string): Promise<WaitingList> {
     let endpoint = '/fan/waiting-lists/:waitingListId';
     let endpointParams = { waitingListId: waitingListId };

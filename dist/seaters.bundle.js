@@ -645,6 +645,9 @@ var FanApi = function () {
     FanApi.prototype.joinedWaitingListsWithSeat = function (pagingOptions) {
         return this.apiContext.get('/fan/active-waiting-lists-with-seat', null, seaters_api_1.SeatersApiContext.buildPagingQueryParams(pagingOptions));
     };
+    FanApi.prototype.waitingListTranslatedVenueDescription = function (waitingListId) {
+        return this.apiContext.get('/fan/waiting-lists/:waitingListId/translated-venue-conditions', { waitingListId: waitingListId });
+    };
     FanApi.prototype.waitingList = function (waitingListId) {
         var endpoint = '/fan/waiting-lists/:waitingListId';
         var endpointParams = { waitingListId: waitingListId };
@@ -691,11 +694,6 @@ var FanApi = function () {
         var endpointParams = { waitingListId: waitingListId };
         return this.apiContext.delete(endpoint, endpointParams);
     };
-    FanApi.prototype.getWaitingListPosition = function (waitingListId) {
-        var endpoint = '/fan/waiting-lists/:waitingListId/position';
-        var endpointParams = { waitingListId: waitingListId };
-        return this.apiContext.get(endpoint, endpointParams);
-    };
     FanApi.prototype.acceptSeats = function (waitingListId) {
         var endpoint = '/fan/waiting-lists/:waitingListId/accept';
         var endpointParams = { waitingListId: waitingListId };
@@ -718,11 +716,6 @@ var FanApi = function () {
     };
     FanApi.prototype.positionBraintreeToken = function (waitingListId) {
         var endpoint = '/fan/waiting-lists/:waitingListId/position/braintree-token';
-        var endpointParams = { waitingListId: waitingListId };
-        return this.apiContext.get(endpoint, endpointParams);
-    };
-    FanApi.prototype.getPositionSalesTransaction = function (waitingListId) {
-        var endpoint = '/fan/waiting-lists/:waitingListId/transaction';
         var endpointParams = { waitingListId: waitingListId };
         return this.apiContext.get(endpoint, endpointParams);
     };
@@ -906,6 +899,9 @@ var WaitingListService = function () {
             return _this.extendRawWaitingLists(res);
         });
     };
+    WaitingListService.prototype.getWaitingListTranslatedVenueDescription = function (waitingListId) {
+        return this.api.fan.waitingListTranslatedVenueDescription(waitingListId);
+    };
     WaitingListService.prototype.getPositionBraintreePaymentInfo = function (waitingListId) {
         var _this = this;
         return this.getPositionPaymentInfo(waitingListId).then(function (paymentInfo) {
@@ -965,9 +961,6 @@ var WaitingListService = function () {
                 return wl.actionStatus === WAITING_LIST_ACTION_STATUS.BOOK;
             });
         });
-    };
-    WaitingListService.prototype.getWaitingListPosition = function (waitingListId) {
-        return this.api.fan.getWaitingListPosition(waitingListId);
     };
     WaitingListService.prototype.getPositionPaymentInfo = function (waitingListId) {
         return this.api.fan.positionPaymentInfo(waitingListId);
@@ -2281,6 +2274,9 @@ var FanService = function () {
     FanService.prototype.getMyWaitingListsWithSeat = function (page) {
         return this.waitingListService.getMyWaitingListsWithSeat(page);
     };
+    FanService.prototype.getWaitingListTranslatedVenueDescription = function (waitingListId) {
+        return this.waitingListService.getWaitingListTranslatedVenueDescription(waitingListId);
+    };
     FanService.prototype.getPositionBraintreePaymentInfo = function (waitingListId) {
         return this.waitingListService.getPositionBraintreePaymentInfo(waitingListId);
     };
@@ -2295,9 +2291,6 @@ var FanService = function () {
     };
     FanService.prototype.leaveWaitingList = function (waitingListId) {
         return this.waitingListService.leaveWaitingList(waitingListId);
-    };
-    FanService.prototype.getWaitingListPosition = function (waitingListId) {
-        return this.waitingListService.getWaitingListPosition(waitingListId);
     };
     FanService.prototype.getPositionPaymentInfo = function (waitingListId) {
         return this.waitingListService.getPositionPaymentInfo(waitingListId);

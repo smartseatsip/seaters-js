@@ -52,6 +52,10 @@ export class WaitingListService {
       .then(res => this.extendRawWaitingLists(res as any));
   }
 
+  getWaitingListTranslatedVenueDescription (waitingListId: string): Promise<fan.WaitingList> {
+    return this.api.fan.waitingListTranslatedVenueDescription(waitingListId);
+  }
+
   getPositionBraintreePaymentInfo (waitingListId: string): Promise<fan.BraintreePaymentInfo> {
     return this.getPositionPaymentInfo(waitingListId)
       .then(paymentInfo => {

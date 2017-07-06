@@ -95,6 +95,10 @@ export class FanService {
     return this.waitingListService.getMyWaitingListsWithSeat(page);
   }
 
+  getWaitingListTranslatedVenueDescription (waitingListId: string): Promise<fan.WaitingList> {
+    return this.waitingListService.getWaitingListTranslatedVenueDescription(waitingListId);
+  }
+
   getPositionBraintreePaymentInfo (waitingListId: string): Promise<fan.BraintreePaymentInfo> {
     return this.waitingListService.getPositionBraintreePaymentInfo(waitingListId);
   }
