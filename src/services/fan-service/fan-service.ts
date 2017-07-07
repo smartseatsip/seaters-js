@@ -143,10 +143,18 @@ export class FanService {
     return this.waitingListService.getEventDescriptionForWaitingList(waitingListId)
       .then(translationMap => new LocalizableText(translationMap));
   }
+  
+  getTranslatedEventDescriptionForWaitingList (waitingListId: string): Promise<LocalizableText> {
+    return this.waitingListService.getTranslatedEventDescriptionForWaitingList(waitingListId);
+  }
 
   getVenueConditionsForWaitingList (waitingListId: string): Promise<LocalizableText> {
     return this.waitingListService.getVenueConditionsForWaitingList(waitingListId)
       .then(translationMap => new LocalizableText(translationMap));
+  }
+  
+  getTranslatedVenueConditionsForWaitingList (waitingListId: string): Promise<LocalizableText> {
+    return this.waitingListService.getTranslatedVenueConditionsForWaitingList(waitingListId);
   }
 
   positionBraintreeToken (waitingListId: string): Promise<BraintreeToken> {

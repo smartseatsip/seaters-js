@@ -274,6 +274,20 @@ export class FanApi {
       { waitingListId: waitingListId }
     );
   }
+  
+  getTranslatedEventDescription (waitingListId: string): Promise<TranslationMap> {
+    return this.apiContext.get(
+      '/fan/waiting-lists/:waitingListId/translated-event-description',
+      { waitingListId: waitingListId }
+    );
+  }
+  
+  getTranslatedVenueConditions (waitingListId: string): Promise<TranslationMap> {
+    return this.apiContext.get(
+      '/fan/waiting-lists/:waitingListId/translated-venue-conditions',
+      { waitingListId: waitingListId }
+    );
+  }
 
 }
 

@@ -153,9 +153,17 @@ export class WaitingListService {
   getEventDescriptionForWaitingList (waitingListId: string): Promise<TranslationMap> {
     return this.api.fan.getEventDescription(waitingListId);
   }
+  
+  getTranslatedEventDescriptionForWaitingList (waitingListId: string): Promise<TranslationMap> {
+    return this.api.fan.getTranslatedEventDescription(waitingListId);
+  }
 
   getVenueConditionsForWaitingList (waitingListId: string): Promise<TranslationMap> {
     return this.api.fan.getVenueConditions(waitingListId);
+  }
+  
+  getTranslatedVenueConditionsForWaitingList (waitingListId: string): Promise<TranslationMap> {
+    return this.api.fan.getTranslatedVenueConditions(waitingListId);
   }
 
   positionBraintreeToken (waitingListId: string): Promise<BraintreeToken> {
