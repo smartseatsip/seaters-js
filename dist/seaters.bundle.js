@@ -58,7 +58,7 @@ var SeatersSDK =
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/Users/sanderdecoster/local_projects/seaters/seaters-js/dist";
+/******/ 	__webpack_require__.p = "C:\\local_projects\\seaters\\seaters-js/dist";
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 16);
@@ -435,8 +435,8 @@ var ApiEndpoint = function () {
         this.absoluteEndpoint = this.renderAbsoluteEndpoint();
     }
     ApiEndpoint.prototype.normalizeAbstractEndpoint = function (abstractEndpoint) {
-        return abstractEndpoint.replace(/^\//, '' // no prefixed '/'
-        ).replace(/\/$/, ''); // no trailing '/'
+        return abstractEndpoint.replace(/^\//, '') // no prefixed '/'
+        .replace(/\/$/, ''); // no trailing '/'
     };
     ApiEndpoint.prototype.renderEndpointParam = function (parameter) {
         if (!this.endpointParams.hasOwnProperty(parameter)) {
@@ -741,6 +741,12 @@ var FanApi = function () {
     FanApi.prototype.getVenueConditions = function (waitingListId) {
         return this.apiContext.get('/fan/waiting-lists/:waitingListId/venue-conditions', { waitingListId: waitingListId });
     };
+    FanApi.prototype.getTranslatedEventDescription = function (waitingListId) {
+        return this.apiContext.get('/fan/waiting-lists/:waitingListId/translated-event-description', { waitingListId: waitingListId });
+    };
+    FanApi.prototype.getTranslatedVenueConditions = function (waitingListId) {
+        return this.apiContext.get('/fan/waiting-lists/:waitingListId/translated-venue-conditions', { waitingListId: waitingListId });
+    };
     return FanApi;
 }();
 exports.FanApi = FanApi;
@@ -1017,8 +1023,14 @@ var WaitingListService = function () {
     WaitingListService.prototype.getEventDescriptionForWaitingList = function (waitingListId) {
         return this.api.fan.getEventDescription(waitingListId);
     };
+    WaitingListService.prototype.getTranslatedEventDescriptionForWaitingList = function (waitingListId) {
+        return this.api.fan.getTranslatedEventDescription(waitingListId);
+    };
     WaitingListService.prototype.getVenueConditionsForWaitingList = function (waitingListId) {
         return this.api.fan.getVenueConditions(waitingListId);
+    };
+    WaitingListService.prototype.getTranslatedVenueConditionsForWaitingList = function (waitingListId) {
+        return this.api.fan.getTranslatedVenueConditions(waitingListId);
     };
     WaitingListService.prototype.positionBraintreeToken = function (waitingListId) {
         return this.api.fan.positionBraintreeToken(waitingListId);
@@ -2307,10 +2319,16 @@ var FanService = function () {
             return new util_1.LocalizableText(translationMap);
         });
     };
+    FanService.prototype.getTranslatedEventDescriptionForWaitingList = function (waitingListId) {
+        return this.waitingListService.getTranslatedEventDescriptionForWaitingList(waitingListId);
+    };
     FanService.prototype.getVenueConditionsForWaitingList = function (waitingListId) {
         return this.waitingListService.getVenueConditionsForWaitingList(waitingListId).then(function (translationMap) {
             return new util_1.LocalizableText(translationMap);
         });
+    };
+    FanService.prototype.getTranslatedVenueConditionsForWaitingList = function (waitingListId) {
+        return this.waitingListService.getTranslatedVenueConditionsForWaitingList(waitingListId);
     };
     FanService.prototype.positionBraintreeToken = function (waitingListId) {
         return this.waitingListService.positionBraintreeToken(waitingListId);
