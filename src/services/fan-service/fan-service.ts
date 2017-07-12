@@ -7,7 +7,7 @@ import { LocalizableText } from '../util';
 import { PagedResult, PagingOptions } from '../../shared-types';
 import { SessionService } from '../session-service';
 import { PublicService } from '../public-service';
-import { Fan, PositionSalesTransactionInput, AttendeesInfo } from '../../seaters-api/fan/fan-types';
+import { Fan, PositionSalesTransactionInput, AttendeeInfo } from '../../seaters-api/fan/fan-types';
 import { BraintreeToken } from '../../seaters-api/fan/braintree-token';
 
 export class FanService {
@@ -123,7 +123,7 @@ export class FanService {
     return this.waitingListService.preauthorizePosition(waitingListId, transaction);
   }
 
-  saveAttendeesInfo (waitingListId: string, attendeesInfo: AttendeesInfo): Promise<fan.WaitingList> {
+  saveAttendeesInfo (waitingListId: string, attendeesInfo: Array<AttendeeInfo>): Promise<fan.WaitingList> {
     return this.waitingListService.saveAttendeesInfo(waitingListId, attendeesInfo);
   }
 
@@ -143,7 +143,7 @@ export class FanService {
     return this.waitingListService.getEventDescriptionForWaitingList(waitingListId)
       .then(translationMap => new LocalizableText(translationMap));
   }
-  
+
   getTranslatedEventDescriptionForWaitingList (waitingListId: string): Promise<LocalizableText> {
     return this.waitingListService.getTranslatedEventDescriptionForWaitingList(waitingListId);
   }
@@ -152,7 +152,7 @@ export class FanService {
     return this.waitingListService.getVenueConditionsForWaitingList(waitingListId)
       .then(translationMap => new LocalizableText(translationMap));
   }
-  
+
   getTranslatedVenueConditionsForWaitingList (waitingListId: string): Promise<LocalizableText> {
     return this.waitingListService.getTranslatedVenueConditionsForWaitingList(waitingListId);
   }

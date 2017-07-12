@@ -991,7 +991,7 @@ var WaitingListService = function () {
                 // every attendee must be found in the stored attendees
                 // console.log('storedAttendees', storedAttendees);
                 // console.log('input attendees', attendeesInfo.attendees);
-                return attendeesInfo.attendees.every(function (attendee) {
+                return attendeesInfo.every(function (attendee) {
                     return !!storedAttendees.find(function (storedAttendee) {
                         return util_1.compareFlatObjects(attendee, storedAttendee);
                     });
@@ -1446,7 +1446,7 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.version = '1.20.13';
+exports.version = '1.20.14';
 __export(__webpack_require__(17));
 var fan_types_1 = __webpack_require__(2);
 exports.fan = fan_types_1.fan;

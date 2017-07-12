@@ -120,7 +120,7 @@ export class WaitingListService {
       }));
   }
 
-  saveAttendeesInfo (waitingListId: string, attendeesInfo: AttendeesInfo): Promise<fan.WaitingList> {
+  saveAttendeesInfo (waitingListId: string, attendeesInfo: Array<AttendeeInfo>): Promise<fan.WaitingList> {
     return this.api.fan.updateAttendeesInfo(waitingListId, attendeesInfo)
     // wait for attendeeInfo to be updated in CQRS
       .then(() => this.pollWaitingList(waitingListId, wl => {
@@ -128,7 +128,7 @@ export class WaitingListService {
         // every attendee must be found in the stored attendees
         // console.log('storedAttendees', storedAttendees);
         // console.log('input attendees', attendeesInfo.attendees);
-        return attendeesInfo.attendees.every(attendee => !!storedAttendees.find(storedAttendee => {
+        return attendeesInfo.every(attendee => !!storedAttendees.find(storedAttendee => {
           return compareFlatObjects(attendee, storedAttendee);
         }));
       }));
@@ -153,7 +153,7 @@ export class WaitingListService {
   getEventDescriptionForWaitingList (waitingListId: string): Promise<TranslationMap> {
     return this.api.fan.getEventDescription(waitingListId);
   }
-  
+
   getTranslatedEventDescriptionForWaitingList (waitingListId: string): Promise<TranslationMap> {
     return this.api.fan.getTranslatedEventDescription(waitingListId);
   }
@@ -161,7 +161,7 @@ export class WaitingListService {
   getVenueConditionsForWaitingList (waitingListId: string): Promise<TranslationMap> {
     return this.api.fan.getVenueConditions(waitingListId);
   }
-  
+
   getTranslatedVenueConditionsForWaitingList (waitingListId: string): Promise<TranslationMap> {
     return this.api.fan.getTranslatedVenueConditions(waitingListId);
   }
