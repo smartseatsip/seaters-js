@@ -8,7 +8,7 @@ import {
   Fan, FanGroup, WaitingList, FanGroupRequest, Position,
   Price, PaymentInfo, BraintreeToken, FanGroupLook,
   PositionSalesTransactionInput, PositionSalesTransaction,
-  AttendeesInfo
+  AttendeeInfo
 } from './fan-types';
 import { WaitingListRequest } from './waiting-list';
 
@@ -255,7 +255,7 @@ export class FanApi {
     return this.apiContext.delete(endpoint, endpointParams);
   }
 
-  updateAttendeesInfo (waitingListId: string, attendeesInfo: AttendeesInfo): Promise<Position> {
+  updateAttendeesInfo (waitingListId: string, attendeesInfo: Array<AttendeeInfo>): Promise<Position> {
     let data = {
       attendees: attendeesInfo
     };
