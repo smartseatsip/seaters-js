@@ -58,7 +58,7 @@ var SeatersSDK =
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "C:\\local_projects\\seaters\\seaters-js/dist";
+/******/ 	__webpack_require__.p = "/Users/svenschippers/Development/Seaters/seaters-js/dist";
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 16);
@@ -731,9 +731,12 @@ var FanApi = function () {
         return this.apiContext.delete(endpoint, endpointParams);
     };
     FanApi.prototype.updateAttendeesInfo = function (waitingListId, attendeesInfo) {
+        var data = {
+            attendees: attendeesInfo
+        };
         var endpoint = '/v2/fan/waiting-lists/:waitingListId/position/attendees-info';
         var endpointParams = { waitingListId: waitingListId };
-        return this.apiContext.put(endpoint, attendeesInfo, endpointParams);
+        return this.apiContext.put(endpoint, data, endpointParams);
     };
     FanApi.prototype.getEventDescription = function (waitingListId) {
         return this.apiContext.get('/fan/waiting-lists/:waitingListId/event-description', { waitingListId: waitingListId });
@@ -1443,7 +1446,7 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.version = '1.20.12';
+exports.version = '1.20.13';
 __export(__webpack_require__(17));
 var fan_types_1 = __webpack_require__(2);
 exports.fan = fan_types_1.fan;
