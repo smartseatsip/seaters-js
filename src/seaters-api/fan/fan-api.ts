@@ -256,9 +256,12 @@ export class FanApi {
   }
 
   updateAttendeesInfo (waitingListId: string, attendeesInfo: AttendeesInfo): Promise<Position> {
+    let data = {
+      attendees: attendeesInfo
+    };
     let endpoint = '/v2/fan/waiting-lists/:waitingListId/position/attendees-info';
     let endpointParams = { waitingListId: waitingListId };
-    return this.apiContext.put(endpoint, attendeesInfo, endpointParams);
+    return this.apiContext.put(endpoint, data, endpointParams);
   }
 
   getEventDescription (waitingListId: string): Promise<TranslationMap> {
@@ -274,14 +277,14 @@ export class FanApi {
       { waitingListId: waitingListId }
     );
   }
-  
+
   getTranslatedEventDescription (waitingListId: string): Promise<TranslationMap> {
     return this.apiContext.get(
       '/fan/waiting-lists/:waitingListId/translated-event-description',
       { waitingListId: waitingListId }
     );
   }
-  
+
   getTranslatedVenueConditions (waitingListId: string): Promise<TranslationMap> {
     return this.apiContext.get(
       '/fan/waiting-lists/:waitingListId/translated-venue-conditions',
