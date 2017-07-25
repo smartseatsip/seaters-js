@@ -9,6 +9,7 @@ import { SessionService } from '../session-service';
 import { PublicService } from '../public-service';
 import { Fan, PositionSalesTransactionInput, AttendeeInfo } from '../../seaters-api/fan/fan-types';
 import { BraintreeToken } from '../../seaters-api/fan/braintree-token';
+import { PhoneNumber } from '../../seaters-api/fan/fan';
 
 export class FanService {
 
@@ -163,6 +164,19 @@ export class FanService {
 
   getWaitingListPrice (waitingListId: string, numberOfSeats: number): Promise<fan.Price> {
     return this.waitingListService.getWaitingListPrice(waitingListId, numberOfSeats);
+  }
+
+  /**
+   * FANS
+   */
+
+  /**
+   * Send a new SMS containing the code needed to validate email / phone.
+   * @param phone
+   * @returns {any}
+   */
+  sendValidationCodeViaSMS (phone: PhoneNumber): Promise<Fan> {
+    return this.seatersApi.apiContext.put('/fan/mobile-phone-number', phone);
   }
 
   /**
