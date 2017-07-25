@@ -58,7 +58,7 @@ var SeatersSDK =
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/Users/svenschippers/Development/Seaters/seaters-js/dist";
+/******/ 	__webpack_require__.p = "/Users/sanderdecoster/local_projects/seaters/seaters-js/dist";
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 16);
@@ -435,8 +435,8 @@ var ApiEndpoint = function () {
         this.absoluteEndpoint = this.renderAbsoluteEndpoint();
     }
     ApiEndpoint.prototype.normalizeAbstractEndpoint = function (abstractEndpoint) {
-        return abstractEndpoint.replace(/^\//, '') // no prefixed '/'
-        .replace(/\/$/, ''); // no trailing '/'
+        return abstractEndpoint.replace(/^\//, '' // no prefixed '/'
+        ).replace(/\/$/, ''); // no trailing '/'
     };
     ApiEndpoint.prototype.renderEndpointParam = function (parameter) {
         if (!this.endpointParams.hasOwnProperty(parameter)) {
@@ -1451,7 +1451,7 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.version = '1.20.14';
+exports.version = '1.20.15';
 __export(__webpack_require__(17));
 var fan_types_1 = __webpack_require__(2);
 exports.fan = fan_types_1.fan;
@@ -2349,6 +2349,17 @@ var FanService = function () {
     };
     FanService.prototype.getWaitingListPrice = function (waitingListId, numberOfSeats) {
         return this.waitingListService.getWaitingListPrice(waitingListId, numberOfSeats);
+    };
+    /**
+     * FANS
+     */
+    /**
+     * Send a new SMS containing the code needed to validate email / phone.
+     * @param phone
+     * @returns {any}
+     */
+    FanService.prototype.sendValidationCodeViaSMS = function (phone) {
+        return this.seatersApi.apiContext.put('/fan/mobile-phone-number', phone);
     };
     /**
      *  COMBINATIONS
