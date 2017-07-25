@@ -645,6 +645,9 @@ var FanApi = function () {
     FanApi.prototype.joinedWaitingListsWithSeat = function (pagingOptions) {
         return this.apiContext.get('/fan/active-waiting-lists-with-seat', null, seaters_api_1.SeatersApiContext.buildPagingQueryParams(pagingOptions));
     };
+    FanApi.prototype.waitingListTranslatedVenueDescription = function (waitingListId) {
+        return this.apiContext.get('/fan/waiting-lists/:waitingListId/translated-venue-conditions', { waitingListId: waitingListId });
+    };
     FanApi.prototype.waitingList = function (waitingListId) {
         var endpoint = '/fan/waiting-lists/:waitingListId';
         var endpointParams = { waitingListId: waitingListId };
@@ -683,12 +686,13 @@ var FanApi = function () {
             return this.apiContext.put(endpoint, data, endpointParams);
         }
     };
+    FanApi.prototype.shareWaitingList = function (waitingListId) {
+        return this.apiContext.get('/fan/waiting-lists/:waitingListId/share', { waitingListId: waitingListId });
+    };
     FanApi.prototype.leaveWaitingList = function (waitingListId) {
         var endpoint = '/fan/waiting-lists/:waitingListId/position';
         var endpointParams = { waitingListId: waitingListId };
-        return this.apiContext.delete(endpoint, endpointParams).then(function () {
-            return undefined;
-        });
+        return this.apiContext.delete(endpoint, endpointParams);
     };
     FanApi.prototype.acceptSeats = function (waitingListId) {
         var endpoint = '/fan/waiting-lists/:waitingListId/accept';
@@ -712,11 +716,6 @@ var FanApi = function () {
     };
     FanApi.prototype.positionBraintreeToken = function (waitingListId) {
         var endpoint = '/fan/waiting-lists/:waitingListId/position/braintree-token';
-        var endpointParams = { waitingListId: waitingListId };
-        return this.apiContext.get(endpoint, endpointParams);
-    };
-    FanApi.prototype.getPositionSalesTransaction = function (waitingListId) {
-        var endpoint = '/fan/waiting-lists/:waitingListId/transaction';
         var endpointParams = { waitingListId: waitingListId };
         return this.apiContext.get(endpoint, endpointParams);
     };
@@ -909,6 +908,9 @@ var WaitingListService = function () {
             return _this.extendRawWaitingLists(res);
         });
     };
+    WaitingListService.prototype.getWaitingListTranslatedVenueDescription = function (waitingListId) {
+        return this.api.fan.waitingListTranslatedVenueDescription(waitingListId);
+    };
     WaitingListService.prototype.getPositionBraintreePaymentInfo = function (waitingListId) {
         var _this = this;
         return this.getPositionPaymentInfo(waitingListId).then(function (paymentInfo) {
@@ -957,6 +959,9 @@ var WaitingListService = function () {
         }).then(function (wl) {
             return _this.waitForDirectSales(wl);
         });
+    };
+    WaitingListService.prototype.shareWaitingList = function (waitingListId) {
+        return this.api.fan.shareWaitingList(waitingListId);
     };
     WaitingListService.prototype.leaveWaitingList = function (waitingListId) {
         var _this = this;
@@ -2284,6 +2289,9 @@ var FanService = function () {
     FanService.prototype.getMyWaitingListsWithSeat = function (page) {
         return this.waitingListService.getMyWaitingListsWithSeat(page);
     };
+    FanService.prototype.getWaitingListTranslatedVenueDescription = function (waitingListId) {
+        return this.waitingListService.getWaitingListTranslatedVenueDescription(waitingListId);
+    };
     FanService.prototype.getPositionBraintreePaymentInfo = function (waitingListId) {
         return this.waitingListService.getPositionBraintreePaymentInfo(waitingListId);
     };
@@ -2292,6 +2300,9 @@ var FanService = function () {
     };
     FanService.prototype.joinProtectedWaitingList = function (waitingListId, code, numberOfSeats) {
         return this.waitingListService.joinProtectedWaitingList(waitingListId, code, numberOfSeats);
+    };
+    FanService.prototype.shareWaitingList = function (waitingListId) {
+        return this.waitingListService.shareWaitingList(waitingListId);
     };
     FanService.prototype.leaveWaitingList = function (waitingListId) {
         return this.waitingListService.leaveWaitingList(waitingListId);

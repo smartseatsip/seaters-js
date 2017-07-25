@@ -151,6 +151,13 @@ export class FanApi {
     );
   }
 
+  waitingListTranslatedVenueDescription (waitingListId: string): Promise<WaitingList> {
+    return this.apiContext.get(
+      '/fan/waiting-lists/:waitingListId/translated-venue-conditions',
+      { waitingListId: waitingListId }
+    );
+  }
+
   waitingList (waitingListId: string): Promise<WaitingList> {
     let endpoint = '/fan/waiting-lists/:waitingListId';
     let endpointParams = { waitingListId: waitingListId };
@@ -197,11 +204,17 @@ export class FanApi {
     }
   }
 
+  shareWaitingList (waitingListId: string): Promise<WaitingList> {
+    return this.apiContext.get(
+      '/fan/waiting-lists/:waitingListId/share',
+      { waitingListId: waitingListId }
+    );
+  }
+
   leaveWaitingList (waitingListId: string): Promise<void> {
     let endpoint = '/fan/waiting-lists/:waitingListId/position';
     let endpointParams = { waitingListId: waitingListId };
-    return this.apiContext.delete(endpoint, endpointParams)
-      .then(() => undefined);
+    return this.apiContext.delete(endpoint, endpointParams);
   }
 
   acceptSeats (waitingListId: string): Promise<WaitingList> {
@@ -230,12 +243,6 @@ export class FanApi {
 
   positionBraintreeToken (waitingListId: string): Promise<BraintreeToken> {
     let endpoint = '/fan/waiting-lists/:waitingListId/position/braintree-token';
-    let endpointParams = { waitingListId: waitingListId };
-    return this.apiContext.get(endpoint, endpointParams);
-  }
-
-  getPositionSalesTransaction (waitingListId: string): Promise<PositionSalesTransaction> {
-    let endpoint = '/fan/waiting-lists/:waitingListId/transaction';
     let endpointParams = { waitingListId: waitingListId };
     return this.apiContext.get(endpoint, endpointParams);
   }

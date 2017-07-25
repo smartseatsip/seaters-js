@@ -96,6 +96,10 @@ export class FanService {
     return this.waitingListService.getMyWaitingListsWithSeat(page);
   }
 
+  getWaitingListTranslatedVenueDescription (waitingListId: string): Promise<fan.WaitingList> {
+    return this.waitingListService.getWaitingListTranslatedVenueDescription(waitingListId);
+  }
+
   getPositionBraintreePaymentInfo (waitingListId: string): Promise<fan.BraintreePaymentInfo> {
     return this.waitingListService.getPositionBraintreePaymentInfo(waitingListId);
   }
@@ -106,6 +110,10 @@ export class FanService {
 
   joinProtectedWaitingList (waitingListId: string, code: string, numberOfSeats: number): Promise<fan.WaitingList> {
     return this.waitingListService.joinProtectedWaitingList(waitingListId, code, numberOfSeats);
+  }
+
+  shareWaitingList (waitingListId: string): Promise<fan.WaitingList> {
+    return this.waitingListService.shareWaitingList(waitingListId);
   }
 
   leaveWaitingList (waitingListId: string): Promise<fan.WaitingList> {

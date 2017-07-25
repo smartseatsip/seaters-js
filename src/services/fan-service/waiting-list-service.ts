@@ -52,6 +52,10 @@ export class WaitingListService {
       .then(res => this.extendRawWaitingLists(res as any));
   }
 
+  getWaitingListTranslatedVenueDescription (waitingListId: string): Promise<fan.WaitingList> {
+    return this.api.fan.waitingListTranslatedVenueDescription(waitingListId);
+  }
+
   getPositionBraintreePaymentInfo (waitingListId: string): Promise<fan.BraintreePaymentInfo> {
     return this.getPositionPaymentInfo(waitingListId)
       .then(paymentInfo => {
@@ -94,6 +98,10 @@ export class WaitingListService {
       .then(() => this.pollWaitingList(waitingListId, (wl) => wl.actionStatus !== WAITING_LIST_ACTION_STATUS.UNLOCK))
       // Wait for direct sales when applicable
       .then((wl) => this.waitForDirectSales(wl));
+  }
+
+  shareWaitingList (waitingListId: string): Promise<fan.WaitingList> {
+    return this.api.fan.shareWaitingList(waitingListId);
   }
 
   leaveWaitingList (waitingListId: string): Promise<fan.WaitingList> {
