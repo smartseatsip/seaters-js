@@ -1451,7 +1451,7 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.version = '1.20.15';
+exports.version = '1.20.16';
 __export(__webpack_require__(17));
 var fan_types_1 = __webpack_require__(2);
 exports.fan = fan_types_1.fan;
@@ -2949,6 +2949,8 @@ var SessionService = function () {
             mfaToken: mfaToken
         }).then(function (r) {
             return _this.finishLogin(r);
+        }).catch(function (e) {
+            return console.error('Error logging in', e);
         });
     };
     SessionService.prototype.doStoredTokenLogin = function (storedToken, mfaToken) {
@@ -2958,6 +2960,8 @@ var SessionService = function () {
             mfaToken: mfaToken
         }).then(function (r) {
             return _this.finishLogin(r);
+        }).catch(function (e) {
+            return console.error('Error logging in with stored token', e);
         });
     };
     /**
@@ -2973,12 +2977,16 @@ var SessionService = function () {
             return _this.finishLogin(r);
         }).then(function (session) {
             return session.identity;
+        }).catch(function (e) {
+            return console.error('Error doing OAuth code login', e);
         });
     };
     SessionService.prototype.doOAuthCodeLoginV2 = function (oauthProvider, code) {
         var _this = this;
         return this.seatersApi.authentication.loginWithOAuthCode(oauthProvider, code).then(function (r) {
             return _this.finishLogin(r);
+        }).catch(function (e) {
+            return console.error('Error doing v2 OAuth code login', e);
         });
     };
     SessionService.prototype.doLogout = function () {
@@ -2998,6 +3006,8 @@ var SessionService = function () {
             language: language || 'en' // TODO: refer to config setting for default language
         }).then(function () {
             return _this.doEmailPasswordLogin(email, password);
+        }).catch(function (e) {
+            return console.error('Error doing email password signup', e);
         });
     };
     /**

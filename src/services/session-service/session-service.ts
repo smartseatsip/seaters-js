@@ -53,14 +53,14 @@ export class SessionService {
       email: email,
       password: password,
       mfaToken: mfaToken
-    }).then((r) => this.finishLogin(r));
+    }).then((r) => this.finishLogin(r)).catch((e) => console.error('Error logging in', e));
   }
 
   doStoredTokenLogin (storedToken: string, mfaToken?: string): Promise<session.Session> {
     return this.seatersApi.authentication.storedTokenLogin({
       token: storedToken,
       mfaToken: mfaToken
-    }).then((r) => this.finishLogin(r));
+    }).then((r) => this.finishLogin(r)).catch((e) => console.error('Error logging in with stored token', e));
   }
 
   /**
@@ -73,12 +73,14 @@ export class SessionService {
     console.warn('[sessionService] doOAuthCodeLogin is deprecated and will be removed soon, use doOAuthCodeLoginV2 instead to retrieve the session');
     return this.seatersApi.authentication.loginWithOAuthCode(oauthProvider, code)
       .then((r) => this.finishLogin(r))
-      .then((session) => session.identity);
+      .then((session) => session.identity)
+      .catch((e) => console.error('Error doing OAuth code login', e));
   }
 
   doOAuthCodeLoginV2 (oauthProvider: string, code: string): Promise<session.Session> {
     return this.seatersApi.authentication.loginWithOAuthCode(oauthProvider, code)
-      .then((r) => this.finishLogin(r));
+      .then((r) => this.finishLogin(r))
+      .catch((e) => console.error('Error doing v2 OAuth code login', e));
   }
 
   doLogout () {
@@ -103,7 +105,8 @@ export class SessionService {
       lastName: lastname,
       language: language || 'en' // TODO: refer to config setting for default language
     })
-      .then(() => this.doEmailPasswordLogin(email, password));
+      .then(() => this.doEmailPasswordLogin(email, password))
+      .catch((e) => console.error('Error doing email password signup', e));
   }
 
   /**
