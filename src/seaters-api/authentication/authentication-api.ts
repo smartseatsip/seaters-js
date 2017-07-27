@@ -4,7 +4,7 @@ import {
   UserData, SessionToken, ResetEmailData, SignupData,
   ValidationData, EmailValidationData, MobilePhoneValidationData,
   EmailPasswordCredentials, StoredTokenCredentials, RefreshTokenCredentials,
-  AuthenticationSuccess
+  AuthenticationSuccess, AuthTokenInput, AuthToken
 } from './authentication-types';
 
 export class AuthenticationApi {
@@ -76,6 +76,23 @@ export class AuthenticationApi {
     let endpointParams = { oauthProvider: oauthProvider };
     let queryParams = { code: code };
     return this.apiContext.get(endpoint, endpointParams, queryParams);
+  }
+
+  /**
+   * Create a new authentication token that can be stored and is valid for a longer time
+   * for the authenticated user.
+   */
+  createStoredToken (input: AuthTokenInput): Promise<AuthToken> {
+    let endpoint = '/auth/auth-tokens';
+    return this.apiContext.post(endpoint, input, null, null);
+  }
+
+  /**
+   * Get all stored tokens for authenticated user
+   */
+  getStoredTokens (): Promise<AuthToken[]> {
+    let endpoint = '/auth/auth-tokens';
+    return this.apiContext.get(endpoint);
   }
 
 }

@@ -58,7 +58,7 @@ var SeatersSDK =
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/Users/sanderdecoster/local_projects/seaters/seaters-js/dist";
+/******/ 	__webpack_require__.p = "/home/bcorne/seaters/sdk/dist";
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 16);
@@ -83,6 +83,7 @@ __export(__webpack_require__(23));
 __export(__webpack_require__(24));
 __export(__webpack_require__(5));
 __export(__webpack_require__(25));
+__export(__webpack_require__(26));
 
 /***/ }),
 /* 1 */
@@ -97,10 +98,10 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(27));
+__export(__webpack_require__(28));
 __export(__webpack_require__(4));
-__export(__webpack_require__(32));
 __export(__webpack_require__(33));
+__export(__webpack_require__(34));
 __export(__webpack_require__(9));
 __export(__webpack_require__(12));
 __export(__webpack_require__(8));
@@ -435,8 +436,8 @@ var ApiEndpoint = function () {
         this.absoluteEndpoint = this.renderAbsoluteEndpoint();
     }
     ApiEndpoint.prototype.normalizeAbstractEndpoint = function (abstractEndpoint) {
-        return abstractEndpoint.replace(/^\//, '' // no prefixed '/'
-        ).replace(/\/$/, ''); // no trailing '/'
+        return abstractEndpoint.replace(/^\//, '') // no prefixed '/'
+        .replace(/\/$/, ''); // no trailing '/'
     };
     ApiEndpoint.prototype.renderEndpointParam = function (parameter) {
         if (!this.endpointParams.hasOwnProperty(parameter)) {
@@ -855,6 +856,21 @@ var AuthenticationApi = function () {
         var endpointParams = { oauthProvider: oauthProvider };
         var queryParams = { code: code };
         return this.apiContext.get(endpoint, endpointParams, queryParams);
+    };
+    /**
+     * Create a new authentication token that can be stored and is valid for a longer time
+     * for the authenticated user.
+     */
+    AuthenticationApi.prototype.createStoredToken = function (input) {
+        var endpoint = '/auth/auth-tokens';
+        return this.apiContext.post(endpoint, input, null, null);
+    };
+    /**
+     * Get all stored tokens for authenticated user
+     */
+    AuthenticationApi.prototype.getStoredTokens = function () {
+        var endpoint = '/auth/auth-tokens';
+        return this.apiContext.get(endpoint);
     };
     return AuthenticationApi;
 }();
@@ -1433,8 +1449,8 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(44));
 __export(__webpack_require__(45));
+__export(__webpack_require__(46));
 exports.TYPE_FIELD = 'type';
 exports.TYPO_TOLERANCE_STRICT = 'strict';
 
@@ -1466,7 +1482,7 @@ exports.fan = fan_types_1.fan;
 Object.defineProperty(exports, "__esModule", { value: true });
 var api_1 = __webpack_require__(3);
 var seaters_api_1 = __webpack_require__(1);
-var services_1 = __webpack_require__(34);
+var services_1 = __webpack_require__(35);
 var SeatersClient = function () {
     function SeatersClient(options) {
         options = Object.assign({}, SeatersClient.DEFAULT_OPTIONS, options);
@@ -1593,7 +1609,7 @@ function getRequestDriver(type) {
         case 'BROWSER':
             return __webpack_require__(21)['default'];
         default:
-            return __webpack_require__(26)['default'];
+            return __webpack_require__(27)['default'];
     }
 }
 exports.getRequestDriver = getRequestDriver;
@@ -1909,6 +1925,24 @@ exports.LocalizableText = LocalizableText;
 
 "use strict";
 
+// https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0;
+        var v = c === 'x' ? r : r & 0x3 | 0x8;
+        return v.toString(16);
+    });
+}
+exports.uuidv4 = uuidv4;
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var util_1 = __webpack_require__(0);
@@ -1960,7 +1994,7 @@ function default_1(options) {
 exports.default = default_1;
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1969,8 +2003,8 @@ exports.default = default_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 var app_api_1 = __webpack_require__(8);
 var fan_api_1 = __webpack_require__(9);
-var admin_1 = __webpack_require__(28);
-var health_1 = __webpack_require__(31);
+var admin_1 = __webpack_require__(29);
+var health_1 = __webpack_require__(32);
 var authentication_api_1 = __webpack_require__(12);
 var seaters_api_context_1 = __webpack_require__(4);
 var SeatersApi = function () {
@@ -1987,7 +2021,7 @@ var SeatersApi = function () {
 exports.SeatersApi = SeatersApi;
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1999,10 +2033,10 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(29));
+__export(__webpack_require__(30));
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2027,7 +2061,7 @@ var __extends = undefined && undefined.__extends || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 /* tslint:disable:no-floating-promises */
 var seaters_api_1 = __webpack_require__(1);
-var seaters_api_controller_1 = __webpack_require__(30);
+var seaters_api_controller_1 = __webpack_require__(31);
 var AdminApi = function (_super) {
     __extends(AdminApi, _super);
     function AdminApi(apiContext) {
@@ -2068,7 +2102,7 @@ exports.AdminApi = AdminApi;
 /* tslint:enable:no-floating-promises */
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2095,7 +2129,7 @@ var SeatersApiController = function () {
 exports.SeatersApiController = SeatersApiController;
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2111,7 +2145,7 @@ __export(__webpack_require__(10));
 __export(__webpack_require__(11));
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2143,7 +2177,7 @@ var PagingOptions = function () {
 exports.PagingOptions = PagingOptions;
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2177,25 +2211,6 @@ function seatersExceptionV1MessageMapper(mapping) {
 exports.seatersExceptionV1MessageMapper = seatersExceptionV1MessageMapper;
 
 /***/ }),
-/* 34 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-function __export(m) {
-    for (var p in m) {
-        if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-    }
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(35));
-__export(__webpack_require__(37));
-__export(__webpack_require__(46));
-__export(__webpack_require__(48));
-__export(__webpack_require__(0));
-
-/***/ }),
 /* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2209,12 +2224,31 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(__webpack_require__(36));
+__export(__webpack_require__(38));
+__export(__webpack_require__(47));
+__export(__webpack_require__(49));
+__export(__webpack_require__(0));
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function __export(m) {
+    for (var p in m) {
+        if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+    }
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(37));
 __export(__webpack_require__(2));
 __export(__webpack_require__(13));
 __export(__webpack_require__(14));
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2404,7 +2438,7 @@ var FanService = function () {
 exports.FanService = FanService;
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2416,10 +2450,10 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(38));
+__export(__webpack_require__(39));
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2428,7 +2462,7 @@ __export(__webpack_require__(38));
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var algolia_for_seaters_1 = __webpack_require__(39);
+var algolia_for_seaters_1 = __webpack_require__(40);
 var PublicService = function () {
     function PublicService(appService, requestDriver, seatersApi) {
         this.seatersApi = seatersApi;
@@ -2499,7 +2533,7 @@ var PublicService = function () {
 exports.PublicService = PublicService;
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2511,18 +2545,18 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(40));
+__export(__webpack_require__(41));
 __export(__webpack_require__(15));
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var algolia_api_1 = __webpack_require__(41);
+var algolia_api_1 = __webpack_require__(42);
 var algolia_for_seaters_types_1 = __webpack_require__(15);
 var DEFAULT_LOCALE = 'en';
 var AlgoliaForSeatersService = function () {
@@ -2728,7 +2762,7 @@ var AlgoliaForSeatersService = function () {
 exports.AlgoliaForSeatersService = AlgoliaForSeatersService;
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2740,10 +2774,10 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(42));
+__export(__webpack_require__(43));
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2767,7 +2801,7 @@ var __extends = undefined && undefined.__extends || function () {
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
 var api_1 = __webpack_require__(3);
-var indices_api_1 = __webpack_require__(43);
+var indices_api_1 = __webpack_require__(44);
 var APP_ID_HEADER = 'X-Algolia-Application-Id';
 var API_KEY_HEADER = 'X-Algolia-API-Key';
 var API_LOCATION_INFIX = '-dsn.algolia.net/1/';
@@ -2790,7 +2824,7 @@ var AlgoliaApi = function (_super) {
 exports.AlgoliaApi = AlgoliaApi;
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2864,7 +2898,7 @@ var IndicesApi = function () {
 exports.IndicesApi = IndicesApi;
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2874,7 +2908,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FG_ALGOLIA_TYPE = 'FAN_GROUP';
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2884,7 +2918,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.WL_ALGOLIA_TYPE = 'WAITING_LIST';
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2896,19 +2930,21 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(47));
+__export(__webpack_require__(48));
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var util_1 = __webpack_require__(0);
 var seaters_api_1 = __webpack_require__(1);
 var AUTH_HEADER = 'Authorization';
 var AUTH_BEARER = 'SeatersBearer';
+var MS_TO_EXTEND_BEFORE_SESSION_EXPIRES = 60;
 var VALIDATION_ERRORS;
 (function (VALIDATION_ERRORS) {
     VALIDATION_ERRORS[VALIDATION_ERRORS["WRONG_VALIDATION_CODE"] = 0] = "WRONG_VALIDATION_CODE";
@@ -2916,6 +2952,7 @@ var VALIDATION_ERRORS;
 var SESSION_STRATEGY;
 (function (SESSION_STRATEGY) {
     SESSION_STRATEGY[SESSION_STRATEGY["EXPIRE"] = 0] = "EXPIRE";
+    SESSION_STRATEGY[SESSION_STRATEGY["EXTEND"] = 1] = "EXTEND";
 })(SESSION_STRATEGY = exports.SESSION_STRATEGY || (exports.SESSION_STRATEGY = {}));
 var SessionService = function () {
     function SessionService(seatersApi, sessionStrategy) {
@@ -2924,7 +2961,7 @@ var SessionService = function () {
         this.validationMessageMapper = seaters_api_1.seatersExceptionV1MessageMapper({
             'Wrong validation code': VALIDATION_ERRORS.WRONG_VALIDATION_CODE
         });
-        this.sessionStrategy = sessionStrategy || SESSION_STRATEGY.EXPIRE;
+        this.sessionStrategy = sessionStrategy || SESSION_STRATEGY.EXTEND;
     }
     /**
      * Configure the given session to be used. This method is intended for transitional
@@ -2937,10 +2974,22 @@ var SessionService = function () {
         this.setSession(session);
         this.currentFan = fan;
     };
+    /**
+     * Manually configure the fan (in case the current fan was changed / retrieved externally)
+     *
+     * @param fan latest fan object
+     */
     SessionService.prototype.updateCurrentFan = function (fan) {
         this.currentFan = fan;
         return Promise.resolve(this.currentFan);
     };
+    /**
+     * Log in using an email/password
+     *
+     * @param email valid email or seaters username
+     * @param password plain text password
+     * @param mfaToken authenticator token
+     */
     SessionService.prototype.doEmailPasswordLogin = function (email, password, mfaToken) {
         var _this = this;
         return this.seatersApi.authentication.emailPasswordLogin({
@@ -2953,6 +3002,12 @@ var SessionService = function () {
             return console.error('Error logging in', e);
         });
     };
+    /**
+     * Log in using a stored token (long term validity)
+     *
+     * @param storedToken long term token
+     * @param mfaToken authenticator token
+     */
     SessionService.prototype.doStoredTokenLogin = function (storedToken, mfaToken) {
         var _this = this;
         return this.seatersApi.authentication.storedTokenLogin({
@@ -2972,7 +3027,7 @@ var SessionService = function () {
      */
     SessionService.prototype.doOAuthCodeLogin = function (oauthProvider, code) {
         var _this = this;
-        console.warn('[sessionService] doOAuthCodeLogin is deprecated and will be removed soon, use doOAuthCodeLoginV2 instead to retrieve the session');
+        console.warn('[SessionService] doOAuthCodeLogin is deprecated and will be removed soon, use doOAuthCodeLoginV2 instead to retrieve the session');
         return this.seatersApi.authentication.loginWithOAuthCode(oauthProvider, code).then(function (r) {
             return _this.finishLogin(r);
         }).then(function (session) {
@@ -3041,22 +3096,86 @@ var SessionService = function () {
             code: code
         }).catch(this.validationMessageMapper);
     };
+    /**
+     * Change the email associated to the current user
+     * @param email new email address
+     */
     SessionService.prototype.doEmailReset = function (email) {
         return this.seatersApi.authentication.resetEmail({
             email: email,
             token: this.sessionToken
         });
     };
+    SessionService.prototype.checkStoredTokenValidity = function (authToken, applicationName, deviceId, applicationId) {
+        // ensure the expiration date is in the future
+        var expirationDate = new Date(authToken.expirationDate);
+        var diff = expirationDate.getTime() - new Date().getTime();
+        if (diff < 0) return false;
+        // check if application name, device id and application id matches
+        if (authToken.applicationName !== applicationName) return false;
+        if (deviceId && authToken.deviceId !== deviceId) return false;
+        if (applicationId && authToken.applicationId !== applicationId) return false;
+        // the token is valid
+        return true;
+    };
+    /**
+     * Checks if there are any valid stored tokens and returns the first one. If there are none
+     * it will create a new token and return this
+     * @param applicationName the name of the application, e.g. "Seaters Embedded"
+     * @param deviceId defaults to "SDK-device-<random UUID>"
+     * @param applicationId defaults to "SDK-app-<random UUID>"
+     */
+    SessionService.prototype.obtainStoredToken = function (applicationName, deviceId, applicationId) {
+        var _this = this;
+        if (!applicationName) {
+            throw new Error('[SessionService] applicationName is mandatory to obtain a stored token');
+        }
+        return this.seatersApi.authentication.getStoredTokens().then(function (storedTokens) {
+            // find the existing stored token, using the provided data to match
+            var storedToken = storedTokens.find(function (t) {
+                return _this.checkStoredTokenValidity(t, applicationName, deviceId, applicationId);
+            });
+            if (storedToken) {
+                return storedToken;
+            } else {
+                // if no acceptable token was found, create a new token
+                var input = {
+                    applicationName: applicationName,
+                    deviceId: deviceId || 'SDK-device-' + util_1.uuidv4(),
+                    applicationId: applicationId || 'SDK-application-' + util_1.uuidv4()
+                };
+                return _this.seatersApi.authentication.createStoredToken(input);
+            }
+        });
+    };
+    /**
+     * Return the current logged in fan
+     */
     SessionService.prototype.whoami = function () {
         return this.currentFan;
     };
-    SessionService.prototype.applyExpireSessionStrategy = function (session) {
-        var _this = this;
+    SessionService.prototype.waitUntilMillisBeforeSessionExpires = function (session, msBefore) {
         var diff = new Date(session.expirationDate).getTime() - new Date().getTime();
         console.log('session expires on %s (in %s minutes)', session.expirationDate, Math.round(diff / (1000 * 60)));
-        setTimeout(function () {
-            return _this.doLogout();
-        }, diff);
+        return new Promise(function (resolve, reject) {
+            return setTimeout(function () {
+                return resolve();
+            }, diff - msBefore);
+        });
+    };
+    SessionService.prototype.applyExpireSessionStrategy = function (session) {
+        var _this = this;
+        this.waitUntilMillisBeforeSessionExpires(session, 0).then(function () {
+            console.log('[SessionService] session expired');
+            _this.doLogout();
+        });
+    };
+    SessionService.prototype.applyExtendSessionStrategy = function (session) {
+        var _this = this;
+        this.waitUntilMillisBeforeSessionExpires(session, MS_TO_EXTEND_BEFORE_SESSION_EXPIRES).then(function () {
+            console.log('[SessionService] session about to expire, renewing');
+            _this.doRefreshTokenLogin(session.token);
+        });
     };
     SessionService.prototype.finishLogin = function (authSuccess) {
         this.setSession({
@@ -3075,8 +3194,12 @@ var SessionService = function () {
         this.seatersApi.apiContext.setHeader(AUTH_HEADER, AUTH_BEARER + ' ' + session.token);
         this.sessionToken = session.token;
         switch (this.sessionStrategy) {
+            case SESSION_STRATEGY.EXTEND:
+                return this.applyExtendSessionStrategy(session);
+            case SESSION_STRATEGY.EXPIRE:
+                return this.applyExpireSessionStrategy(session);
             default:
-                this.applyExpireSessionStrategy(session);
+                throw new Error('Unknown session strategy: ' + JSON.stringify(this.sessionStrategy));
         }
     };
     SessionService.prototype.setCurrentFan = function () {
@@ -3099,7 +3222,7 @@ var SessionService = function () {
 exports.SessionService = SessionService;
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3111,10 +3234,10 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(49));
+__export(__webpack_require__(50));
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
