@@ -1,4 +1,4 @@
-import { uuidv4 } from '../util';
+import { uuidv4, normalizeLondonTimezoneDate } from '../util';
 import { SeatersApi, SeatersApiException, seatersExceptionV1MessageMapper } from '../../seaters-api';
 import { session } from './session-types';
 import { MobilePhoneValidationData, AuthenticationSuccess } from '../../seaters-api/authentication';
@@ -174,7 +174,7 @@ export class SessionService {
 
   checkStoredTokenValidity (authToken: session.StoredToken, applicationName: string, deviceId?: string, applicationId?: string): boolean {
     // ensure the expiration date is in the future
-    let expirationDate = new Date(authToken.expirationDate);
+    let expirationDate = new Date(normalizeLondonTimezoneDate(authToken.expirationDate));
     let diff = (expirationDate.getTime() - new Date().getTime());
     if (diff < 0) return false;
     // check if application name, device id and application id matches
@@ -222,10 +222,11 @@ export class SessionService {
   }
 
   private waitUntilMillisBeforeSessionExpires (session: session.SessionToken, msBefore: number): Promise<any> {
-    let diff = new Date(session.expirationDate).getTime() - new Date().getTime();
+    let expirationDate = normalizeLondonTimezoneDate(session.expirationDate);
+    let diff = new Date(expirationDate).getTime() - new Date().getTime();
     console.log(
       'session expires on %s (in %s minutes)',
-      session.expirationDate,
+      expirationDate,
       Math.round(diff / (1000 * 60))
     );
     return new Promise((resolve, reject) => setTimeout(() => resolve(), diff - msBefore));
@@ -248,13 +249,14 @@ export class SessionService {
   }
 
   private finishLogin (authSuccess: AuthenticationSuccess): Promise<session.Session> {
+    let expirationDate = normalizeLondonTimezoneDate(authSuccess.token.expirationDate);
     this.setSession({
-      expirationDate: authSuccess.token.expirationDate,
+      expirationDate: expirationDate,
       token: authSuccess.token.value
     });
     return this.setCurrentFan().then((identity) => {
       return {
-        expiresOn: authSuccess.token.expirationDate,
+        expiresOn: expirationDate,
         identity: identity,
         token: authSuccess.token.value
       };

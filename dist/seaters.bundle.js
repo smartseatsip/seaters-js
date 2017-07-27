@@ -84,6 +84,7 @@ __export(__webpack_require__(24));
 __export(__webpack_require__(5));
 __export(__webpack_require__(25));
 __export(__webpack_require__(26));
+__export(__webpack_require__(27));
 
 /***/ }),
 /* 1 */
@@ -98,10 +99,10 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(28));
+__export(__webpack_require__(29));
 __export(__webpack_require__(4));
-__export(__webpack_require__(33));
 __export(__webpack_require__(34));
+__export(__webpack_require__(35));
 __export(__webpack_require__(9));
 __export(__webpack_require__(12));
 __export(__webpack_require__(8));
@@ -1449,8 +1450,8 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(45));
 __export(__webpack_require__(46));
+__export(__webpack_require__(47));
 exports.TYPE_FIELD = 'type';
 exports.TYPO_TOLERANCE_STRICT = 'strict';
 
@@ -1467,7 +1468,7 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.version = '1.20.16';
+exports.version = '1.20.18';
 __export(__webpack_require__(17));
 var fan_types_1 = __webpack_require__(2);
 exports.fan = fan_types_1.fan;
@@ -1482,7 +1483,7 @@ exports.fan = fan_types_1.fan;
 Object.defineProperty(exports, "__esModule", { value: true });
 var api_1 = __webpack_require__(3);
 var seaters_api_1 = __webpack_require__(1);
-var services_1 = __webpack_require__(35);
+var services_1 = __webpack_require__(36);
 var SeatersClient = function () {
     function SeatersClient(options) {
         options = Object.assign({}, SeatersClient.DEFAULT_OPTIONS, options);
@@ -1609,7 +1610,7 @@ function getRequestDriver(type) {
         case 'BROWSER':
             return __webpack_require__(21)['default'];
         default:
-            return __webpack_require__(27)['default'];
+            return __webpack_require__(28)['default'];
     }
 }
 exports.getRequestDriver = getRequestDriver;
@@ -1945,6 +1946,23 @@ exports.uuidv4 = uuidv4;
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Transforms this format "2017-07-27T17:18:33.994+0000" into "2017-07-27T17:19:38.182Z"
+ * Leaves the latter format alone
+ */
+function normalizeLondonTimezoneDate(date) {
+  return date.replace(/\+0000$/, 'Z');
+}
+exports.normalizeLondonTimezoneDate = normalizeLondonTimezoneDate;
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", { value: true });
 var util_1 = __webpack_require__(0);
 var http = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"http\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
 var https = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"https\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
@@ -1994,7 +2012,7 @@ function default_1(options) {
 exports.default = default_1;
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2003,8 +2021,8 @@ exports.default = default_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 var app_api_1 = __webpack_require__(8);
 var fan_api_1 = __webpack_require__(9);
-var admin_1 = __webpack_require__(29);
-var health_1 = __webpack_require__(32);
+var admin_1 = __webpack_require__(30);
+var health_1 = __webpack_require__(33);
 var authentication_api_1 = __webpack_require__(12);
 var seaters_api_context_1 = __webpack_require__(4);
 var SeatersApi = function () {
@@ -2021,7 +2039,7 @@ var SeatersApi = function () {
 exports.SeatersApi = SeatersApi;
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2033,10 +2051,10 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(30));
+__export(__webpack_require__(31));
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2061,7 +2079,7 @@ var __extends = undefined && undefined.__extends || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 /* tslint:disable:no-floating-promises */
 var seaters_api_1 = __webpack_require__(1);
-var seaters_api_controller_1 = __webpack_require__(31);
+var seaters_api_controller_1 = __webpack_require__(32);
 var AdminApi = function (_super) {
     __extends(AdminApi, _super);
     function AdminApi(apiContext) {
@@ -2102,7 +2120,7 @@ exports.AdminApi = AdminApi;
 /* tslint:enable:no-floating-promises */
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2129,7 +2147,7 @@ var SeatersApiController = function () {
 exports.SeatersApiController = SeatersApiController;
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2145,7 +2163,7 @@ __export(__webpack_require__(10));
 __export(__webpack_require__(11));
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2177,7 +2195,7 @@ var PagingOptions = function () {
 exports.PagingOptions = PagingOptions;
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2211,25 +2229,6 @@ function seatersExceptionV1MessageMapper(mapping) {
 exports.seatersExceptionV1MessageMapper = seatersExceptionV1MessageMapper;
 
 /***/ }),
-/* 35 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-function __export(m) {
-    for (var p in m) {
-        if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-    }
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(36));
-__export(__webpack_require__(38));
-__export(__webpack_require__(47));
-__export(__webpack_require__(49));
-__export(__webpack_require__(0));
-
-/***/ }),
 /* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2243,12 +2242,31 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(__webpack_require__(37));
+__export(__webpack_require__(39));
+__export(__webpack_require__(48));
+__export(__webpack_require__(50));
+__export(__webpack_require__(0));
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function __export(m) {
+    for (var p in m) {
+        if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+    }
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(38));
 __export(__webpack_require__(2));
 __export(__webpack_require__(13));
 __export(__webpack_require__(14));
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2438,7 +2456,7 @@ var FanService = function () {
 exports.FanService = FanService;
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2450,10 +2468,10 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(39));
+__export(__webpack_require__(40));
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2462,7 +2480,7 @@ __export(__webpack_require__(39));
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var algolia_for_seaters_1 = __webpack_require__(40);
+var algolia_for_seaters_1 = __webpack_require__(41);
 var PublicService = function () {
     function PublicService(appService, requestDriver, seatersApi) {
         this.seatersApi = seatersApi;
@@ -2533,7 +2551,7 @@ var PublicService = function () {
 exports.PublicService = PublicService;
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2545,18 +2563,18 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(41));
+__export(__webpack_require__(42));
 __export(__webpack_require__(15));
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var algolia_api_1 = __webpack_require__(42);
+var algolia_api_1 = __webpack_require__(43);
 var algolia_for_seaters_types_1 = __webpack_require__(15);
 var DEFAULT_LOCALE = 'en';
 var AlgoliaForSeatersService = function () {
@@ -2762,7 +2780,7 @@ var AlgoliaForSeatersService = function () {
 exports.AlgoliaForSeatersService = AlgoliaForSeatersService;
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2774,10 +2792,10 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(43));
+__export(__webpack_require__(44));
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2801,7 +2819,7 @@ var __extends = undefined && undefined.__extends || function () {
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
 var api_1 = __webpack_require__(3);
-var indices_api_1 = __webpack_require__(44);
+var indices_api_1 = __webpack_require__(45);
 var APP_ID_HEADER = 'X-Algolia-Application-Id';
 var API_KEY_HEADER = 'X-Algolia-API-Key';
 var API_LOCATION_INFIX = '-dsn.algolia.net/1/';
@@ -2824,7 +2842,7 @@ var AlgoliaApi = function (_super) {
 exports.AlgoliaApi = AlgoliaApi;
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2898,7 +2916,7 @@ var IndicesApi = function () {
 exports.IndicesApi = IndicesApi;
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2908,7 +2926,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FG_ALGOLIA_TYPE = 'FAN_GROUP';
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2918,7 +2936,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.WL_ALGOLIA_TYPE = 'WAITING_LIST';
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2930,10 +2948,10 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(48));
+__export(__webpack_require__(49));
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3108,7 +3126,7 @@ var SessionService = function () {
     };
     SessionService.prototype.checkStoredTokenValidity = function (authToken, applicationName, deviceId, applicationId) {
         // ensure the expiration date is in the future
-        var expirationDate = new Date(authToken.expirationDate);
+        var expirationDate = new Date(util_1.normalizeLondonTimezoneDate(authToken.expirationDate));
         var diff = expirationDate.getTime() - new Date().getTime();
         if (diff < 0) return false;
         // check if application name, device id and application id matches
@@ -3155,8 +3173,9 @@ var SessionService = function () {
         return this.currentFan;
     };
     SessionService.prototype.waitUntilMillisBeforeSessionExpires = function (session, msBefore) {
-        var diff = new Date(session.expirationDate).getTime() - new Date().getTime();
-        console.log('session expires on %s (in %s minutes)', session.expirationDate, Math.round(diff / (1000 * 60)));
+        var expirationDate = util_1.normalizeLondonTimezoneDate(session.expirationDate);
+        var diff = new Date(expirationDate).getTime() - new Date().getTime();
+        console.log('session expires on %s (in %s minutes)', expirationDate, Math.round(diff / (1000 * 60)));
         return new Promise(function (resolve, reject) {
             return setTimeout(function () {
                 return resolve();
@@ -3178,13 +3197,14 @@ var SessionService = function () {
         });
     };
     SessionService.prototype.finishLogin = function (authSuccess) {
+        var expirationDate = util_1.normalizeLondonTimezoneDate(authSuccess.token.expirationDate);
         this.setSession({
-            expirationDate: authSuccess.token.expirationDate,
+            expirationDate: expirationDate,
             token: authSuccess.token.value
         });
         return this.setCurrentFan().then(function (identity) {
             return {
-                expiresOn: authSuccess.token.expirationDate,
+                expiresOn: expirationDate,
                 identity: identity,
                 token: authSuccess.token.value
             };
@@ -3222,7 +3242,7 @@ var SessionService = function () {
 exports.SessionService = SessionService;
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3234,10 +3254,10 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(50));
+__export(__webpack_require__(51));
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

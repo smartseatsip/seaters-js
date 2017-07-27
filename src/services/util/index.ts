@@ -5,3 +5,4 @@ export * from './compare-flat-objects';
 export * from './subject';
 export * from './localizable-text';
 export * from './uuid';
+export * from './date';
