@@ -19,4 +19,8 @@ export namespace session {
 
   }
 
+  export interface StoredToken extends authentication.AuthToken {
+
+  }
+
 }

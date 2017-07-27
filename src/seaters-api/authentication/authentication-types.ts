@@ -104,8 +104,8 @@ export interface StoredTokenCredentials {
  */
 export interface AuthenticationSuccess {
   token: {
-    value: string,
-    expirationDate: string
+    value: string;
+    expirationDate: string;
   };
   userData: UserData;
 }
@@ -115,4 +115,29 @@ export interface Session {
   identity: any;
   token: string;
   userId?: string;
+}
+
+export interface AuthTokenInput {
+  /**
+   * Name of the application
+   */
+  applicationName: string;
+
+  /**
+   * Unique ID for the device running the application
+   */
+  deviceId: string;
+
+  /**
+   * Unique ID for the application
+   */
+  applicationId: string;
+}
+
+export interface AuthToken {
+  deviceId: string;
+  applicationName: string;
+  expirationDate: string;
+  applicationId: string;
+  token: string;
 }
