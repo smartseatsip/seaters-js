@@ -1,7 +1,7 @@
 import { SeatersApiContext, SeatersApiException } from '../../seaters-api';
 import { Fan } from '../fan';
 import {
-  UserData, SessionToken, ResetEmailData, SignupData,
+  UserData, SessionToken, ResetEmailData, SignupData, AnonymousSignupData,
   ValidationData, EmailValidationData, MobilePhoneValidationData,
   EmailPasswordCredentials, StoredTokenCredentials, RefreshTokenCredentials,
   AuthenticationSuccess
@@ -47,6 +47,15 @@ export class AuthenticationApi {
   }
 
   /**
+   * Signs up a new user without firstname / lastname / password
+   * @param input
+   * @returns {any}
+   */
+  signupAnonymous (input: AnonymousSignupData): Promise<AuthenticationSuccess> {
+    return this.apiContext.post('/v2/authentication/embedded/signup', input);
+  }
+
+  /**
    * Validates an email or phone number and marks it as confirmed
    *
    * @param input Either the email or the phone and the confirmation code
@@ -67,7 +76,7 @@ export class AuthenticationApi {
   }
 
   /**
-   * Obtain a seaters ession by passing an oauth code for a given provider
+   * Obtain a seaters session by passing an oauth code for a given provider
    * Examples that should work are github, facebook. For your specific provider name
    * please refer to a seaters developer.
    */

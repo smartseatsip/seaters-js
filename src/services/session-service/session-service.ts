@@ -103,10 +103,24 @@ export class SessionService {
       password: password,
       firstName: firstname,
       lastName: lastname,
-      language: language || 'en' // TODO: refer to config setting for default language
+      language: language || 'en'
     })
       .then(() => this.doEmailPasswordLogin(email, password))
       .catch((e) => console.error('Error doing email password signup', e));
+  }
+
+  doEmailSignUp (
+    email: string,
+    fanGroupId: string,
+    language?: string
+  ): Promise<session.Session> {
+    return this.seatersApi.authentication.signupAnonymous({
+      email: email,
+      fanGroupId: fanGroupId,
+      language: language || 'en'
+    })
+      .then((authSuccess) => this.finishLogin(authSuccess))
+      .catch((e) => console.error('Error doing anonymous email signup', e));
   }
 
   /**

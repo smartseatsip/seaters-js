@@ -8,6 +8,12 @@ export interface SignupData {
   password: string;
 }
 
+export interface AnonymousSignupData {
+  email: string;
+  language: string;
+  fanGroupId: string;
+}
+
 export type ValidationData = EmailValidationData | MobilePhoneValidationData;
 export interface EmailValidationData {
   code: string;
