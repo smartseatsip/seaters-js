@@ -58,7 +58,7 @@ var SeatersSDK =
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/home/bcorne/seaters/sdk/dist";
+/******/ 	__webpack_require__.p = "/Users/sanderdecoster/local_projects/seaters/seaters-js/dist";
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 16);
@@ -437,8 +437,8 @@ var ApiEndpoint = function () {
         this.absoluteEndpoint = this.renderAbsoluteEndpoint();
     }
     ApiEndpoint.prototype.normalizeAbstractEndpoint = function (abstractEndpoint) {
-        return abstractEndpoint.replace(/^\//, '') // no prefixed '/'
-        .replace(/\/$/, ''); // no trailing '/'
+        return abstractEndpoint.replace(/^\//, '' // no prefixed '/'
+        ).replace(/\/$/, ''); // no trailing '/'
     };
     ApiEndpoint.prototype.renderEndpointParam = function (parameter) {
         if (!this.endpointParams.hasOwnProperty(parameter)) {
@@ -830,6 +830,14 @@ var AuthenticationApi = function () {
         return this.apiContext.post('/v2/authentication/signup', input);
     };
     /**
+     * Signs up a new user without firstname / lastname / password
+     * @param input
+     * @returns {any}
+     */
+    AuthenticationApi.prototype.signupAnonymous = function (input) {
+        return this.apiContext.post('/v2/authentication/embedded/signup', input);
+    };
+    /**
      * Validates an email or phone number and marks it as confirmed
      *
      * @param input Either the email or the phone and the confirmation code
@@ -848,7 +856,7 @@ var AuthenticationApi = function () {
         return this.apiContext.post('/auth/signup/reset-email', input);
     };
     /**
-     * Obtain a seaters ession by passing an oauth code for a given provider
+     * Obtain a seaters session by passing an oauth code for a given provider
      * Examples that should work are github, facebook. For your specific provider name
      * please refer to a seaters developer.
      */
@@ -3076,11 +3084,23 @@ var SessionService = function () {
             password: password,
             firstName: firstname,
             lastName: lastname,
-            language: language || 'en' // TODO: refer to config setting for default language
+            language: language || 'en'
         }).then(function () {
             return _this.doEmailPasswordLogin(email, password);
         }).catch(function (e) {
             return console.error('Error doing email password signup', e);
+        });
+    };
+    SessionService.prototype.doEmailSignUp = function (email, fanGroupId, language) {
+        var _this = this;
+        return this.seatersApi.authentication.signupAnonymous({
+            email: email,
+            fanGroupId: fanGroupId,
+            language: language || 'en'
+        }).then(function (authSuccess) {
+            return _this.finishLogin(authSuccess);
+        }).catch(function (e) {
+            return console.error('Error doing anonymous email signup', e);
         });
     };
     /**
