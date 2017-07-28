@@ -67,7 +67,7 @@ export class SessionService {
       email: email,
       password: password,
       mfaToken: mfaToken
-    }).then((r) => this.finishLogin(r)).catch((e) => console.error('Error logging in', e));
+    }).then((r) => this.finishLogin(r));
   }
 
   /**
@@ -80,7 +80,7 @@ export class SessionService {
     return this.seatersApi.authentication.storedTokenLogin({
       token: storedToken,
       mfaToken: mfaToken
-    }).then((r) => this.finishLogin(r)).catch((e) => console.error('Error logging in with stored token', e));
+    }).then((r) => this.finishLogin(r));
   }
 
   /**
@@ -93,14 +93,12 @@ export class SessionService {
     console.warn('[SessionService] doOAuthCodeLogin is deprecated and will be removed soon, use doOAuthCodeLoginV2 instead to retrieve the session');
     return this.seatersApi.authentication.loginWithOAuthCode(oauthProvider, code)
       .then((r) => this.finishLogin(r))
-      .then((session) => session.identity)
-      .catch((e) => console.error('Error doing OAuth code login', e));
+      .then((session) => session.identity);
   }
 
   doOAuthCodeLoginV2 (oauthProvider: string, code: string): Promise<session.Session> {
     return this.seatersApi.authentication.loginWithOAuthCode(oauthProvider, code)
-      .then((r) => this.finishLogin(r))
-      .catch((e) => console.error('Error doing v2 OAuth code login', e));
+      .then((r) => this.finishLogin(r));
   }
 
   doLogout () {
@@ -125,8 +123,7 @@ export class SessionService {
       lastName: lastname,
       language: language || 'en'
     })
-      .then(() => this.doEmailPasswordLogin(email, password))
-      .catch((e) => console.error('Error doing email password signup', e));
+      .then(() => this.doEmailPasswordLogin(email, password));
   }
 
   doEmailSignUp (
@@ -139,8 +136,7 @@ export class SessionService {
       fanGroupId: fanGroupId,
       language: language || 'en'
     })
-      .then((authSuccess) => this.finishLogin(authSuccess))
-      .catch((e) => console.error('Error doing anonymous email signup', e));
+      .then((authSuccess) => this.finishLogin(authSuccess));
   }
 
   /**
