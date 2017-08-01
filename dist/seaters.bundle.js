@@ -58,7 +58,7 @@ var SeatersSDK =
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "C:\\local_projects\\seaters\\seaters-js/dist";
+/******/ 	__webpack_require__.p = "/Users/sanderdecoster/local_projects/seaters/seaters-js/dist";
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 16);
@@ -437,8 +437,8 @@ var ApiEndpoint = function () {
         this.absoluteEndpoint = this.renderAbsoluteEndpoint();
     }
     ApiEndpoint.prototype.normalizeAbstractEndpoint = function (abstractEndpoint) {
-        return abstractEndpoint.replace(/^\//, '') // no prefixed '/'
-        .replace(/\/$/, ''); // no trailing '/'
+        return abstractEndpoint.replace(/^\//, '' // no prefixed '/'
+        ).replace(/\/$/, ''); // no trailing '/'
     };
     ApiEndpoint.prototype.renderEndpointParam = function (parameter) {
         if (!this.endpointParams.hasOwnProperty(parameter)) {
@@ -1476,7 +1476,7 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.version = '1.20.19';
+exports.version = '1.20.20';
 __export(__webpack_require__(17));
 var fan_types_1 = __webpack_require__(2);
 exports.fan = fan_types_1.fan;
@@ -3018,12 +3018,18 @@ var SessionService = function () {
      */
     SessionService.prototype.doEmailPasswordLogin = function (email, password, mfaToken) {
         var _this = this;
-        return this.seatersApi.authentication.emailPasswordLogin({
-            email: email,
-            password: password,
-            mfaToken: mfaToken
-        }).then(function (r) {
-            return _this.finishLogin(r);
+        return new Promise(function (resolve, reject) {
+            _this.seatersApi.authentication.emailPasswordLogin({
+                email: email,
+                password: password,
+                mfaToken: mfaToken
+            }).then(function (r) {
+                return _this.finishLogin(r);
+            }).then(function (r) {
+                return resolve(r);
+            }).catch(function (r) {
+                return reject(r);
+            });
         });
     };
     /**
@@ -3034,11 +3040,17 @@ var SessionService = function () {
      */
     SessionService.prototype.doStoredTokenLogin = function (storedToken, mfaToken) {
         var _this = this;
-        return this.seatersApi.authentication.storedTokenLogin({
-            token: storedToken,
-            mfaToken: mfaToken
-        }).then(function (r) {
-            return _this.finishLogin(r);
+        return new Promise(function (resolve, reject) {
+            _this.seatersApi.authentication.storedTokenLogin({
+                token: storedToken,
+                mfaToken: mfaToken
+            }).then(function (r) {
+                return _this.finishLogin(r);
+            }).then(function (r) {
+                return resolve(r);
+            }).catch(function (r) {
+                return reject(r);
+            });
         });
     };
     /**
@@ -3050,16 +3062,26 @@ var SessionService = function () {
     SessionService.prototype.doOAuthCodeLogin = function (oauthProvider, code) {
         var _this = this;
         console.warn('[SessionService] doOAuthCodeLogin is deprecated and will be removed soon, use doOAuthCodeLoginV2 instead to retrieve the session');
-        return this.seatersApi.authentication.loginWithOAuthCode(oauthProvider, code).then(function (r) {
-            return _this.finishLogin(r);
-        }).then(function (session) {
-            return session.identity;
+        return new Promise(function (resolve, reject) {
+            _this.seatersApi.authentication.loginWithOAuthCode(oauthProvider, code).then(function (r) {
+                return _this.finishLogin(r);
+            }).then(function (session) {
+                return resolve(session.identity);
+            }).catch(function (r) {
+                return reject(r);
+            });
         });
     };
     SessionService.prototype.doOAuthCodeLoginV2 = function (oauthProvider, code) {
         var _this = this;
-        return this.seatersApi.authentication.loginWithOAuthCode(oauthProvider, code).then(function (r) {
-            return _this.finishLogin(r);
+        return new Promise(function (resolve, reject) {
+            _this.seatersApi.authentication.loginWithOAuthCode(oauthProvider, code).then(function (r) {
+                return _this.finishLogin(r);
+            }).then(function (r) {
+                return resolve(r);
+            }).catch(function (r) {
+                return reject(r);
+            });
         });
     };
     SessionService.prototype.doLogout = function () {
@@ -3071,24 +3093,36 @@ var SessionService = function () {
     // TODO: handle error case
     SessionService.prototype.doEmailPasswordSignUp = function (email, password, firstname, lastname, language) {
         var _this = this;
-        return this.seatersApi.authentication.signup({
-            email: email,
-            password: password,
-            firstName: firstname,
-            lastName: lastname,
-            language: language || 'en'
-        }).then(function () {
-            return _this.doEmailPasswordLogin(email, password);
+        return new Promise(function (resolve, reject) {
+            _this.seatersApi.authentication.signup({
+                email: email,
+                password: password,
+                firstName: firstname,
+                lastName: lastname,
+                language: language || 'en'
+            }).then(function () {
+                return _this.doEmailPasswordLogin(email, password);
+            }).then(function (r) {
+                return resolve(r);
+            }).catch(function (r) {
+                return reject(r);
+            });
         });
     };
     SessionService.prototype.doEmailSignUp = function (email, fanGroupId, language) {
         var _this = this;
-        return this.seatersApi.authentication.signupAnonymous({
-            email: email,
-            fanGroupId: fanGroupId,
-            language: language || 'en'
-        }).then(function (authSuccess) {
-            return _this.finishLogin(authSuccess);
+        return new Promise(function (resolve, reject) {
+            _this.seatersApi.authentication.signupAnonymous({
+                email: email,
+                fanGroupId: fanGroupId,
+                language: language || 'en'
+            }).then(function (authSuccess) {
+                return _this.finishLogin(authSuccess);
+            }).then(function (r) {
+                return resolve(r);
+            }).catch(function (r) {
+                return reject(r);
+            });
         });
     };
     /**
@@ -3101,12 +3135,18 @@ var SessionService = function () {
      */
     SessionService.prototype.doEmailValidation = function (email, code) {
         var _this = this;
-        return this.seatersApi.authentication.validate({
-            email: email,
-            code: code
-        }).then(function () {
-            return _this.setCurrentFan();
-        }).catch(this.validationMessageMapper);
+        return new Promise(function (resolve, reject) {
+            _this.seatersApi.authentication.validate({
+                email: email,
+                code: code
+            }).then(function () {
+                return _this.setCurrentFan();
+            }).then(function (r) {
+                return resolve(r);
+            }).catch(function (r) {
+                return reject(_this.validationMessageMapper(r));
+            });
+        });
     };
     /**
      * Validate a phone number by providing a confirmation code
@@ -3117,19 +3157,33 @@ var SessionService = function () {
      * @see VALIDATION_ERRORS
      */
     SessionService.prototype.doMobilePhoneNumberValidation = function (phone, code) {
-        return this.seatersApi.authentication.validate({
-            mobile: phone,
-            code: code
-        }).catch(this.validationMessageMapper);
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.seatersApi.authentication.validate({
+                mobile: phone,
+                code: code
+            }).then(function (r) {
+                return resolve(r);
+            }).catch(function (r) {
+                return reject(_this.validationMessageMapper(r));
+            });
+        });
     };
     /**
      * Change the email associated to the current user
      * @param email new email address
      */
     SessionService.prototype.doEmailReset = function (email) {
-        return this.seatersApi.authentication.resetEmail({
-            email: email,
-            token: this.sessionToken
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.seatersApi.authentication.resetEmail({
+                email: email,
+                token: _this.sessionToken
+            }).then(function (r) {
+                return resolve();
+            }).catch(function (r) {
+                return reject(_this.validationMessageMapper(r));
+            });
         });
     };
     SessionService.prototype.checkStoredTokenValidity = function (authToken, applicationName, deviceId, applicationId) {
@@ -3156,22 +3210,28 @@ var SessionService = function () {
         if (!applicationName) {
             throw new Error('[SessionService] applicationName is mandatory to obtain a stored token');
         }
-        return this.seatersApi.authentication.getStoredTokens().then(function (storedTokens) {
-            // find the existing stored token, using the provided data to match
-            var storedToken = storedTokens.find(function (t) {
-                return _this.checkStoredTokenValidity(t, applicationName, deviceId, applicationId);
+        return new Promise(function (resolve, reject) {
+            _this.seatersApi.authentication.getStoredTokens().then(function (storedTokens) {
+                // find the existing stored token, using the provided data to match
+                var storedToken = storedTokens.find(function (t) {
+                    return _this.checkStoredTokenValidity(t, applicationName, deviceId, applicationId);
+                });
+                if (storedToken) {
+                    return storedToken;
+                } else {
+                    // if no acceptable token was found, create a new token
+                    var input = {
+                        applicationName: applicationName,
+                        deviceId: deviceId || 'SDK-device-' + util_1.uuidv4(),
+                        applicationId: applicationId || 'SDK-application-' + util_1.uuidv4()
+                    };
+                    return _this.seatersApi.authentication.createStoredToken(input);
+                }
+            }).then(function (r) {
+                return resolve(r);
+            }).catch(function (r) {
+                return reject(r);
             });
-            if (storedToken) {
-                return storedToken;
-            } else {
-                // if no acceptable token was found, create a new token
-                var input = {
-                    applicationName: applicationName,
-                    deviceId: deviceId || 'SDK-device-' + util_1.uuidv4(),
-                    applicationId: applicationId || 'SDK-application-' + util_1.uuidv4()
-                };
-                return _this.seatersApi.authentication.createStoredToken(input);
-            }
         });
     };
     /**
@@ -3205,17 +3265,24 @@ var SessionService = function () {
         });
     };
     SessionService.prototype.finishLogin = function (authSuccess) {
+        var _this = this;
         var expirationDate = util_1.normalizeLondonTimezoneDate(authSuccess.token.expirationDate);
         this.setSession({
             expirationDate: expirationDate,
             token: authSuccess.token.value
         });
-        return this.setCurrentFan().then(function (identity) {
-            return {
-                expiresOn: expirationDate,
-                identity: identity,
-                token: authSuccess.token.value
-            };
+        return new Promise(function (resolve, reject) {
+            _this.setCurrentFan().then(function (identity) {
+                return {
+                    expiresOn: expirationDate,
+                    identity: identity,
+                    token: authSuccess.token.value
+                };
+            }).then(function (r) {
+                return resolve(r);
+            }).catch(function (r) {
+                return reject(r);
+            });
         });
     };
     SessionService.prototype.setSession = function (session) {
@@ -3232,17 +3299,29 @@ var SessionService = function () {
     };
     SessionService.prototype.setCurrentFan = function () {
         var _this = this;
-        return this.seatersApi.fan.fan().then(function (fan) {
-            return _this.currentFan = fan;
+        return new Promise(function (resolve, reject) {
+            _this.seatersApi.fan.fan().then(function (fan) {
+                return _this.currentFan = fan;
+            }).then(function (r) {
+                return resolve(r);
+            }).catch(function (r) {
+                return reject(r);
+            });
         });
     };
     SessionService.prototype.doRefreshTokenLogin = function (refreshToken, mfaToken) {
         var _this = this;
-        return this.seatersApi.authentication.refreshTokenLogin({
-            token: refreshToken,
-            mfaToken: mfaToken
-        }).then(function (r) {
-            return _this.finishLogin(r);
+        return new Promise(function (resolve, reject) {
+            _this.seatersApi.authentication.refreshTokenLogin({
+                token: refreshToken,
+                mfaToken: mfaToken
+            }).then(function (r) {
+                return _this.finishLogin(r);
+            }).then(function (r) {
+                return resolve(r);
+            }).catch(function (r) {
+                return reject(r);
+            });
         });
     };
     return SessionService;

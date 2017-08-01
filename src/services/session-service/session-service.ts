@@ -63,11 +63,16 @@ export class SessionService {
    * @param mfaToken authenticator token
    */
   doEmailPasswordLogin (email: string, password: string, mfaToken?: string): Promise<session.Session> {
-    return this.seatersApi.authentication.emailPasswordLogin({
-      email: email,
-      password: password,
-      mfaToken: mfaToken
-    }).then((r) => this.finishLogin(r));
+    return new Promise((resolve, reject) => {
+      this.seatersApi.authentication.emailPasswordLogin({
+        email: email,
+        password: password,
+        mfaToken: mfaToken
+      })
+        .then((r) => this.finishLogin(r))
+        .then((r) => resolve(r))
+        .catch((r) => reject(r));
+    });
   }
 
   /**
@@ -77,10 +82,15 @@ export class SessionService {
    * @param mfaToken authenticator token
    */
   doStoredTokenLogin (storedToken: string, mfaToken?: string): Promise<session.Session> {
-    return this.seatersApi.authentication.storedTokenLogin({
-      token: storedToken,
-      mfaToken: mfaToken
-    }).then((r) => this.finishLogin(r));
+    return new Promise((resolve, reject) => {
+      this.seatersApi.authentication.storedTokenLogin({
+        token: storedToken,
+        mfaToken: mfaToken
+      })
+        .then((r) => this.finishLogin(r))
+        .then((r) => resolve(r))
+        .catch((r) => reject(r));
+    });
   }
 
   /**
@@ -91,14 +101,22 @@ export class SessionService {
    */
   doOAuthCodeLogin (oauthProvider: string, code: string): Promise<session.Fan> {
     console.warn('[SessionService] doOAuthCodeLogin is deprecated and will be removed soon, use doOAuthCodeLoginV2 instead to retrieve the session');
-    return this.seatersApi.authentication.loginWithOAuthCode(oauthProvider, code)
-      .then((r) => this.finishLogin(r))
-      .then((session) => session.identity);
+
+    return new Promise((resolve, reject) => {
+      this.seatersApi.authentication.loginWithOAuthCode(oauthProvider, code)
+        .then((r) => this.finishLogin(r))
+        .then((session) => resolve(session.identity))
+        .catch((r) => reject(r));
+    });
   }
 
   doOAuthCodeLoginV2 (oauthProvider: string, code: string): Promise<session.Session> {
-    return this.seatersApi.authentication.loginWithOAuthCode(oauthProvider, code)
-      .then((r) => this.finishLogin(r));
+    return new Promise((resolve, reject) => {
+      this.seatersApi.authentication.loginWithOAuthCode(oauthProvider, code)
+        .then((r) => this.finishLogin(r))
+        .then((r) => resolve(r))
+        .catch((r) => reject(r));
+    });
   }
 
   doLogout () {
@@ -116,14 +134,18 @@ export class SessionService {
     lastname: string,
     language?: string
   ): Promise<session.Session> {
-    return this.seatersApi.authentication.signup({
-      email: email,
-      password: password,
-      firstName: firstname,
-      lastName: lastname,
-      language: language || 'en'
-    })
-      .then(() => this.doEmailPasswordLogin(email, password));
+    return new Promise((resolve, reject) => {
+      this.seatersApi.authentication.signup({
+        email: email,
+        password: password,
+        firstName: firstname,
+        lastName: lastname,
+        language: language || 'en'
+      })
+        .then(() => this.doEmailPasswordLogin(email, password))
+        .then((r) => resolve(r))
+        .catch((r) => reject(r));
+    });
   }
 
   doEmailSignUp (
@@ -131,12 +153,16 @@ export class SessionService {
     fanGroupId: string,
     language?: string
   ): Promise<session.Session> {
-    return this.seatersApi.authentication.signupAnonymous({
-      email: email,
-      fanGroupId: fanGroupId,
-      language: language || 'en'
-    })
-      .then((authSuccess) => this.finishLogin(authSuccess));
+    return new Promise((resolve, reject) => {
+      this.seatersApi.authentication.signupAnonymous({
+        email: email,
+        fanGroupId: fanGroupId,
+        language: language || 'en'
+      })
+        .then((authSuccess) => this.finishLogin(authSuccess))
+        .then((r) => resolve(r))
+        .catch((r) => reject(r));
+    });
   }
 
   /**
@@ -148,12 +174,15 @@ export class SessionService {
    * @see VALIDATION_ERRORS
    */
   doEmailValidation (email: string, code: string): Promise<session.Fan> {
-    return this.seatersApi.authentication.validate({
-      email: email,
-      code: code
-    })
-      .then(() => this.setCurrentFan())
-      .catch(this.validationMessageMapper);
+    return new Promise((resolve, reject) => {
+      this.seatersApi.authentication.validate({
+        email: email,
+        code: code
+      })
+        .then(() => this.setCurrentFan())
+        .then((r) => resolve(r))
+        .catch((r) => reject(this.validationMessageMapper(r)));
+    });
   }
 
   /**
@@ -165,20 +194,28 @@ export class SessionService {
    * @see VALIDATION_ERRORS
    */
   doMobilePhoneNumberValidation (phone: session.PhoneNumber, code: string): Promise<session.Fan> {
-    return this.seatersApi.authentication.validate({
-      mobile: phone,
-      code: code
-    } as MobilePhoneValidationData).catch(this.validationMessageMapper);
+    return new Promise((resolve, reject) => {
+      this.seatersApi.authentication.validate({
+        mobile: phone,
+        code: code
+      } as MobilePhoneValidationData)
+        .then((r) => resolve(r))
+        .catch((r) => reject(this.validationMessageMapper(r)));
+    });
   }
 
   /**
    * Change the email associated to the current user
    * @param email new email address
    */
-  doEmailReset (email: string): Promise<void> {
-    return this.seatersApi.authentication.resetEmail({
-      email: email,
-      token: this.sessionToken
+  doEmailReset (email: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.seatersApi.authentication.resetEmail({
+        email: email,
+        token: this.sessionToken
+      })
+        .then((r) => resolve())
+        .catch((r) => reject(this.validationMessageMapper(r)));
     });
   }
 
@@ -206,22 +243,26 @@ export class SessionService {
     if (!applicationName) {
       throw new Error('[SessionService] applicationName is mandatory to obtain a stored token');
     }
-    return this.seatersApi.authentication.getStoredTokens()
-      .then((storedTokens) => {
-        // find the existing stored token, using the provided data to match
-        let storedToken = storedTokens.find((t) => this.checkStoredTokenValidity(t, applicationName, deviceId, applicationId));
-        if (storedToken) {
-          return storedToken;
-        } else {
-          // if no acceptable token was found, create a new token
-          let input = {
-            applicationName: applicationName,
-            deviceId: deviceId || ('SDK-device-' + uuidv4()),
-            applicationId: applicationId || ('SDK-application-' + uuidv4())
-          };
-          return this.seatersApi.authentication.createStoredToken(input);
-        }
-      });
+    return new Promise((resolve, reject) => {
+      this.seatersApi.authentication.getStoredTokens()
+        .then((storedTokens) => {
+          // find the existing stored token, using the provided data to match
+          let storedToken = storedTokens.find((t) => this.checkStoredTokenValidity(t, applicationName, deviceId, applicationId));
+          if (storedToken) {
+            return storedToken;
+          } else {
+            // if no acceptable token was found, create a new token
+            let input = {
+              applicationName: applicationName,
+              deviceId: deviceId || ('SDK-device-' + uuidv4()),
+              applicationId: applicationId || ('SDK-application-' + uuidv4())
+            };
+            return this.seatersApi.authentication.createStoredToken(input);
+          }
+        })
+        .then((r) => resolve(r))
+        .catch((r) => reject(r));
+    });
   }
 
   /**
@@ -264,12 +305,17 @@ export class SessionService {
       expirationDate: expirationDate,
       token: authSuccess.token.value
     });
-    return this.setCurrentFan().then((identity) => {
-      return {
-        expiresOn: expirationDate,
-        identity: identity,
-        token: authSuccess.token.value
-      };
+    return new Promise((resolve, reject) => {
+      this.setCurrentFan()
+        .then((identity) => {
+          return {
+            expiresOn: expirationDate,
+            identity: identity,
+            token: authSuccess.token.value
+          };
+        })
+        .then((r) => resolve(r))
+        .catch((r) => reject(r));
     });
   }
 
@@ -287,15 +333,24 @@ export class SessionService {
   }
 
   private setCurrentFan (): Promise<session.Fan> {
-    return this.seatersApi.fan.fan()
-      .then(fan => this.currentFan = fan);
+    return new Promise((resolve, reject) => {
+      this.seatersApi.fan.fan()
+        .then(fan => this.currentFan = fan)
+        .then((r) => resolve(r))
+        .catch((r) => reject(r));
+    });
   }
 
   private doRefreshTokenLogin (refreshToken: string, mfaToken?: string): Promise<session.Session> {
-    return this.seatersApi.authentication.refreshTokenLogin({
-      token: refreshToken,
-      mfaToken: mfaToken
-    }).then((r) => this.finishLogin(r));
+    return new Promise((resolve, reject) => {
+      this.seatersApi.authentication.refreshTokenLogin({
+        token: refreshToken,
+        mfaToken: mfaToken
+      })
+        .then((r) => this.finishLogin(r))
+        .then((r) => resolve(r))
+        .catch((r) => reject(r));
+    });
   }
 
 }
