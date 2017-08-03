@@ -60,6 +60,19 @@ export class PublicService {
       .then(result => this.convertAlgoliaResultSet<pub.SeatersContent>(result));
   }
 
+  searchWaitingListsInFanGroup (
+    fanGroupId: string,
+    query: string,
+    locale: string,
+    page?: PagingOptions
+  ): Promise<PagedResult<pub.WaitingList>> {
+    page = this.defaultPage(page);
+    return this.algoliaForSeatersService.searchWaitingListsInFanGroup(
+      fanGroupId, query, locale, page.maxPageSize, page.page
+    )
+      .then((result) => this.convertAlgoliaResultSet<pub.WaitingList>(result));
+  }
+
   getWaitingListsByKeywords (keywords: string[], page?: PagingOptions): Promise<PagedResult<pub.WaitingList>> {
     page = this.defaultPage(page);
     return this.algoliaForSeatersService.getWaitingListsByKeywords(

@@ -1,10 +1,11 @@
 import { AppService } from './../app-service';
-import { AlgoliaApi, SearchQuery, SearchResult } from '../../algolia-api';
+import { AlgoliaApi, SearchQuery, SearchResult, FacetFilter } from '../../algolia-api';
 import { RequestDriver } from '../../api';
 
 import { FanGroup, WaitingList, TypedSearchResult, FG_ALGOLIA_TYPE, WL_ALGOLIA_TYPE, TYPE_FIELD, TYPO_TOLERANCE_STRICT } from './algolia-for-seaters-types';
 
 const DEFAULT_LOCALE = 'en';
+const WL_FACET_FILTER: FacetFilter = { facet: TYPE_FIELD, value: WL_ALGOLIA_TYPE };
 
 export class AlgoliaForSeatersService {
 
@@ -52,14 +53,11 @@ export class AlgoliaForSeatersService {
     let q: SearchQuery = {
       query: '',
       typoTolerance: TYPO_TOLERANCE_STRICT,
-      facetFilters: [{
-        facet: TYPE_FIELD,
-        value: WL_ALGOLIA_TYPE
-      }],
+      facetFilters: [WL_FACET_FILTER],
       filters: fanGroupIdsFilter
     };
     return this.search(q)
-      .then(r => this.stripAlgoliaFieldsFromObject(r));
+      .then(r => this.stripAlgoliaFieldsFromSearchResultHits(r));
   }
 
   getWaitingListById (waitingListId: string): Promise<WaitingList> {
@@ -75,6 +73,27 @@ export class AlgoliaForSeatersService {
           .forEach((item) => this.patchWaitingList(item));
         return res;
       });
+  }
+  
+  searchWaitingListsInFanGroup (fanGroupId: string, query: string, locale: string, hitsPerPage: number, page: number): Promise<TypedSearchResult<WaitingList>> {
+    return this.getSearchableAttributes(locale).then((searchableAttributes) => {
+      let q: SearchQuery = {
+        query: query,
+        facetFilters: [
+          WL_FACET_FILTER,
+          // specific fangroup filter
+          {
+            facet: 'groupId',
+            value: fanGroupId
+          }
+        ],
+        restrictSearchableAttributes: searchableAttributes,
+        hitsPerPage: hitsPerPage,
+        page: page
+      };
+      return this.search(q)
+        .then((r) => this.stripAlgoliaFieldsFromSearchResultHits(r));
+    });
   }
 
   searchSeatersContent (query: string, locale: string, hitsPerPage: number, page: number): Promise<SearchResult> {
@@ -94,7 +113,7 @@ export class AlgoliaForSeatersService {
   getWaitingListsByKeywords (keywords: string[], hitsPerPage: number, page: number): Promise<SearchResult> {
     let q: SearchQuery = {
       query: '',
-      facetFilters: [{ facet: 'type', value: 'WAITING_LIST' }],
+      facetFilters: [WL_FACET_FILTER],
       hitsPerPage: hitsPerPage,
       page: page,
       tagFilters: keywords
@@ -127,7 +146,7 @@ export class AlgoliaForSeatersService {
   }
 
   private findExactlyOne<T> (searchQuery: SearchQuery, entityType: string, identifier: string): Promise<T> {
-    return this.findExactlyN(searchQuery, [identifier])
+    return this.findExactlyN<T>(searchQuery, [identifier])
       .then((results) => results[0]);
   }
 
