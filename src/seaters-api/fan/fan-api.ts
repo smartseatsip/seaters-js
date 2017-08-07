@@ -11,6 +11,8 @@ import {
   AttendeeInfo
 } from './fan-types';
 import { WaitingListRequest } from './waiting-list';
+import { ArrayMap } from '../../api/array-map';
+import { StringMap } from '../../api/string-map';
 
 export class FanApi {
 
@@ -180,14 +182,16 @@ export class FanApi {
     return this.apiContext.get(endpoint, endpointParams);
   }
 
-  joinWaitingList (waitingListId: string, numberOfSeats: number): Promise<WaitingList> {
+  joinWaitingList (waitingListId: string, numberOfSeats: number, additionalQueryParams: StringMap): Promise<WaitingList> {
     let endpoint = '/fan/waiting-lists/:waitingListId/position';
     let endpointParams = { waitingListId: waitingListId };
+    let queryParams = additionalQueryParams;
     let data = { numberOfSeats: numberOfSeats };
-    return this.apiContext.post(endpoint, data, endpointParams);
+    
+    return this.apiContext.post(endpoint, data, endpointParams, queryParams);
   }
 
-  joinProtectedWaitingList (wl: WaitingList, code: string, numberOfSeats: number): Promise<WaitingListRequest> {
+  joinProtectedWaitingList (wl: WaitingList, code: string, numberOfSeats: number, additionalQueryParams: StringMap): Promise<WaitingListRequest> {
     let data = {
       code: code,
       numberOfSeats: numberOfSeats
@@ -195,12 +199,13 @@ export class FanApi {
 
     let endpointParams = { waitingListId: wl.waitingListId };
     let endpoint = '/fan/waiting-lists/:waitingListId/request';
+    let queryParams = additionalQueryParams;
 
     if (!wl.request) {
 
-      return this.apiContext.post(endpoint, data, endpointParams);
+      return this.apiContext.post(endpoint, data, endpointParams, queryParams);
     } else {
-      return this.apiContext.put(endpoint, data, endpointParams);
+      return this.apiContext.put(endpoint, data, endpointParams, queryParams);
     }
   }
 

@@ -2,6 +2,7 @@
   "format": "stylish",
   "extends": "tslint-config-standard",
   "rules": {
-    "semicolon": true
+    "semicolon": true,
+    "no-trailing-whitespace": false
   }
 }

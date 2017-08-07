@@ -13,6 +13,7 @@ import { fan } from './fan-types';
 import { retryUntil, compareFlatObjects, timeoutPromise } from './../util';
 import { TranslationMap } from '../../seaters-api/translation-map';
 import { BraintreeToken } from '../../seaters-api/fan/braintree-token';
+import { StringMap } from '../../api/string-map';
 
 let WAITING_LIST_ACTION_STATUS = fan.WAITING_LIST_ACTION_STATUS;
 
@@ -81,17 +82,17 @@ export class WaitingListService {
       });
   }
 
-  joinWaitingList (waitingListId: string, numberOfSeats: number): Promise<fan.WaitingList> {
-    return this.api.fan.joinWaitingList(waitingListId, numberOfSeats)
+  joinWaitingList (waitingListId: string, numberOfSeats: number, additionalQueryParams: StringMap): Promise<fan.WaitingList> {
+    return this.api.fan.joinWaitingList(waitingListId, numberOfSeats, additionalQueryParams)
       .then(() => this.pollWaitingList(waitingListId, (wl) => wl.actionStatus !== WAITING_LIST_ACTION_STATUS.BOOK))
       // Wait for direct sales when applicable
       // TODO - remove unneeded cast - for now typescript seems to think wl is a WaitingList type rather than fan.WaitingList
       .then((wl) => this.waitForDirectSales((wl as fan.WaitingList)));
   }
 
-  joinProtectedWaitingList (waitingListId: string, code: string, numberOfSeats: number): Promise<fan.WaitingList> {
+  joinProtectedWaitingList (waitingListId: string, code: string, numberOfSeats: number, additionalQueryParams: StringMap): Promise<fan.WaitingList> {
     return this.getWaitingList(waitingListId)
-      .then(wl => this.api.fan.joinProtectedWaitingList(wl, code, numberOfSeats))
+      .then(wl => this.api.fan.joinProtectedWaitingList(wl, code, numberOfSeats, additionalQueryParams))
       // wait for request to be ACCEPTED
       .then(() => this.pollWaitingList(waitingListId, (wl) => this.checkUnlockStatus(wl)))
       // wait for action status not to be UNLOCK

@@ -10,6 +10,7 @@ import { PublicService } from '../public-service';
 import { Fan, PositionSalesTransactionInput, AttendeeInfo } from '../../seaters-api/fan/fan-types';
 import { BraintreeToken } from '../../seaters-api/fan/braintree-token';
 import { PhoneNumber } from '../../seaters-api/fan/fan';
+import { StringMap } from '../../api/string-map';
 
 export class FanService {
 
@@ -104,12 +105,12 @@ export class FanService {
     return this.waitingListService.getPositionBraintreePaymentInfo(waitingListId);
   }
 
-  joinWaitingList (waitingListId: string, numberOfSeats: number): Promise<fan.WaitingList> {
-    return this.waitingListService.joinWaitingList(waitingListId, numberOfSeats);
+  joinWaitingList (waitingListId: string, numberOfSeats: number, additionalQueryParams?: StringMap): Promise<fan.WaitingList> {
+    return this.waitingListService.joinWaitingList(waitingListId, numberOfSeats, Object.assign({}, additionalQueryParams));
   }
 
-  joinProtectedWaitingList (waitingListId: string, code: string, numberOfSeats: number): Promise<fan.WaitingList> {
-    return this.waitingListService.joinProtectedWaitingList(waitingListId, code, numberOfSeats);
+  joinProtectedWaitingList (waitingListId: string, code: string, numberOfSeats: number, additionalQueryParams?: StringMap): Promise<fan.WaitingList> {
+    return this.waitingListService.joinProtectedWaitingList(waitingListId, code, numberOfSeats, Object.assign({}, additionalQueryParams));
   }
 
   shareWaitingList (waitingListId: string): Promise<fan.WaitingList> {
