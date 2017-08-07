@@ -58,7 +58,7 @@ var SeatersSDK =
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/home/seaters/seaters-js/dist";
+/******/ 	__webpack_require__.p = "/Users/sanderdecoster/local_projects/seaters/seaters-js/dist";
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 16);
@@ -437,8 +437,8 @@ var ApiEndpoint = function () {
         this.absoluteEndpoint = this.renderAbsoluteEndpoint();
     }
     ApiEndpoint.prototype.normalizeAbstractEndpoint = function (abstractEndpoint) {
-        return abstractEndpoint.replace(/^\//, '') // no prefixed '/'
-        .replace(/\/$/, ''); // no trailing '/'
+        return abstractEndpoint.replace(/^\//, '' // no prefixed '/'
+        ).replace(/\/$/, ''); // no trailing '/'
     };
     ApiEndpoint.prototype.renderEndpointParam = function (parameter) {
         if (!this.endpointParams.hasOwnProperty(parameter)) {
@@ -669,23 +669,25 @@ var FanApi = function () {
         };
         return this.apiContext.get(endpoint, endpointParams);
     };
-    FanApi.prototype.joinWaitingList = function (waitingListId, numberOfSeats) {
+    FanApi.prototype.joinWaitingList = function (waitingListId, numberOfSeats, additionalQueryParams) {
         var endpoint = '/fan/waiting-lists/:waitingListId/position';
         var endpointParams = { waitingListId: waitingListId };
+        var queryParams = additionalQueryParams;
         var data = { numberOfSeats: numberOfSeats };
-        return this.apiContext.post(endpoint, data, endpointParams);
+        return this.apiContext.post(endpoint, data, endpointParams, queryParams);
     };
-    FanApi.prototype.joinProtectedWaitingList = function (wl, code, numberOfSeats) {
+    FanApi.prototype.joinProtectedWaitingList = function (wl, code, numberOfSeats, additionalQueryParams) {
         var data = {
             code: code,
             numberOfSeats: numberOfSeats
         };
         var endpointParams = { waitingListId: wl.waitingListId };
         var endpoint = '/fan/waiting-lists/:waitingListId/request';
+        var queryParams = additionalQueryParams;
         if (!wl.request) {
-            return this.apiContext.post(endpoint, data, endpointParams);
+            return this.apiContext.post(endpoint, data, endpointParams, queryParams);
         } else {
-            return this.apiContext.put(endpoint, data, endpointParams);
+            return this.apiContext.put(endpoint, data, endpointParams, queryParams);
         }
     };
     FanApi.prototype.shareWaitingList = function (waitingListId) {
@@ -959,9 +961,9 @@ var WaitingListService = function () {
             });
         });
     };
-    WaitingListService.prototype.joinWaitingList = function (waitingListId, numberOfSeats) {
+    WaitingListService.prototype.joinWaitingList = function (waitingListId, numberOfSeats, additionalQueryParams) {
         var _this = this;
-        return this.api.fan.joinWaitingList(waitingListId, numberOfSeats).then(function () {
+        return this.api.fan.joinWaitingList(waitingListId, numberOfSeats, additionalQueryParams).then(function () {
             return _this.pollWaitingList(waitingListId, function (wl) {
                 return wl.actionStatus !== WAITING_LIST_ACTION_STATUS.BOOK;
             });
@@ -969,10 +971,10 @@ var WaitingListService = function () {
             return _this.waitForDirectSales(wl);
         });
     };
-    WaitingListService.prototype.joinProtectedWaitingList = function (waitingListId, code, numberOfSeats) {
+    WaitingListService.prototype.joinProtectedWaitingList = function (waitingListId, code, numberOfSeats, additionalQueryParams) {
         var _this = this;
         return this.getWaitingList(waitingListId).then(function (wl) {
-            return _this.api.fan.joinProtectedWaitingList(wl, code, numberOfSeats);
+            return _this.api.fan.joinProtectedWaitingList(wl, code, numberOfSeats, additionalQueryParams);
         }).then(function () {
             return _this.pollWaitingList(waitingListId, function (wl) {
                 return _this.checkUnlockStatus(wl);
@@ -1476,7 +1478,7 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.version = '1.21.0';
+exports.version = '1.21.1';
 __export(__webpack_require__(17));
 var fan_types_1 = __webpack_require__(2);
 exports.fan = fan_types_1.fan;
@@ -2355,11 +2357,11 @@ var FanService = function () {
     FanService.prototype.getPositionBraintreePaymentInfo = function (waitingListId) {
         return this.waitingListService.getPositionBraintreePaymentInfo(waitingListId);
     };
-    FanService.prototype.joinWaitingList = function (waitingListId, numberOfSeats) {
-        return this.waitingListService.joinWaitingList(waitingListId, numberOfSeats);
+    FanService.prototype.joinWaitingList = function (waitingListId, numberOfSeats, additionalQueryParams) {
+        return this.waitingListService.joinWaitingList(waitingListId, numberOfSeats, Object.assign({}, additionalQueryParams));
     };
-    FanService.prototype.joinProtectedWaitingList = function (waitingListId, code, numberOfSeats) {
-        return this.waitingListService.joinProtectedWaitingList(waitingListId, code, numberOfSeats);
+    FanService.prototype.joinProtectedWaitingList = function (waitingListId, code, numberOfSeats, additionalQueryParams) {
+        return this.waitingListService.joinProtectedWaitingList(waitingListId, code, numberOfSeats, Object.assign({}, additionalQueryParams));
     };
     FanService.prototype.shareWaitingList = function (waitingListId) {
         return this.waitingListService.shareWaitingList(waitingListId);
