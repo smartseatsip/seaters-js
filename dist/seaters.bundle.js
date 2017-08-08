@@ -1478,7 +1478,7 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.version = '1.21.1';
+exports.version = '1.21.2';
 __export(__webpack_require__(17));
 var fan_types_1 = __webpack_require__(2);
 exports.fan = fan_types_1.fan;
@@ -3136,13 +3136,14 @@ var SessionService = function () {
             });
         });
     };
-    SessionService.prototype.doEmailSignUp = function (email, fanGroupId, language) {
+    SessionService.prototype.doEmailSignUp = function (email, fanGroupId, language, origin) {
         var _this = this;
         return new Promise(function (resolve, reject) {
             _this.seatersApi.authentication.signupAnonymous({
                 email: email,
                 fanGroupId: fanGroupId,
-                language: language || 'en'
+                language: language || 'en',
+                origin: origin
             }).then(function (authSuccess) {
                 return _this.finishLogin(authSuccess);
             }).then(function (r) {
