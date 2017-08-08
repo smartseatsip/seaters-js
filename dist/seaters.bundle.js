@@ -58,7 +58,7 @@ var SeatersSDK =
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/Users/sanderdecoster/local_projects/seaters/seaters-js/dist";
+/******/ 	__webpack_require__.p = "/home/seaters/seaters-js/dist";
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 16);
@@ -437,8 +437,8 @@ var ApiEndpoint = function () {
         this.absoluteEndpoint = this.renderAbsoluteEndpoint();
     }
     ApiEndpoint.prototype.normalizeAbstractEndpoint = function (abstractEndpoint) {
-        return abstractEndpoint.replace(/^\//, '' // no prefixed '/'
-        ).replace(/\/$/, ''); // no trailing '/'
+        return abstractEndpoint.replace(/^\//, '') // no prefixed '/'
+        .replace(/\/$/, ''); // no trailing '/'
     };
     ApiEndpoint.prototype.renderEndpointParam = function (parameter) {
         if (!this.endpointParams.hasOwnProperty(parameter)) {
@@ -1478,7 +1478,7 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.version = '1.21.2';
+exports.version = '1.22.0';
 __export(__webpack_require__(17));
 var fan_types_1 = __webpack_require__(2);
 exports.fan = fan_types_1.fan;
@@ -1524,6 +1524,35 @@ exports.getSeatersClient = function () {
         return client;
     };
 }();
+function wrapClient(promiseMiddleware, client) {
+    var wrappedClient = {
+        appService: {},
+        fanService: {},
+        publicService: {},
+        sessionService: {}
+    };
+    Object.keys(wrappedClient).forEach(function (serviceName) {
+        var wrappedService = wrappedClient[serviceName];
+        var service = client[serviceName];
+        Object.keys(service.__proto__).forEach(function (propertyName) {
+            var property = service[propertyName];
+            if (typeof property === 'function') {
+                wrappedService[propertyName] = function () {
+                    var res = property.apply(service, Array.prototype.slice.call(arguments));
+                    if (res instanceof Promise) {
+                        return promiseMiddleware(res);
+                    } else {
+                        return res;
+                    }
+                };
+            } else {
+                wrappedService[propertyName] = property;
+            }
+        });
+    });
+    return wrappedClient;
+}
+exports.wrapClient = wrapClient;
 
 /***/ }),
 /* 18 */

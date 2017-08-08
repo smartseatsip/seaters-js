@@ -2,6 +2,8 @@ import { REQUEST_DRIVER_TYPE, getRequestDriver } from './api';
 import { SeatersApi } from './seaters-api';
 import { FanService, PublicService, SessionService, AppService } from './services';
 
+export type PromiseMiddleware<T> = (promise: Promise<any>) => T;
+
 export interface SeatersClientOptions {
   apiPrefix: string;
   requestDriver?: REQUEST_DRIVER_TYPE;
@@ -14,7 +16,7 @@ export class SeatersClient {
     requestDriver: 'BROWSER'
   } as SeatersClientOptions;
 
-  public seatersApi: SeatersApi;
+  private seatersApi: SeatersApi;
 
   public sessionService: SessionService;
 
@@ -50,3 +52,35 @@ export let getSeatersClient: (options: SeatersClientOptions) => SeatersClient = 
     return client;
   };
 })();
+
+export function wrapClient<T> (promiseMiddleware: PromiseMiddleware<T>, client: SeatersClient): SeatersClient {
+
+  let wrappedClient = {
+    appService: {},
+    fanService: {},
+    publicService: {},
+    sessionService: {}
+  } as SeatersClient;
+
+  Object.keys(wrappedClient).forEach((serviceName) => {
+    let wrappedService = wrappedClient[serviceName];
+    let service = client[serviceName];
+    Object.keys(service.__proto__).forEach((propertyName) => {
+      let property = service[propertyName];
+      if(typeof(property) === 'function') {
+        wrappedService[propertyName] = function () {
+          let res = property.apply(service, Array.prototype.slice.call(arguments));
+          if(res instanceof Promise) {
+            return promiseMiddleware(res);
+          } else {
+            return res;
+          }
+        };
+      } else {
+        wrappedService[propertyName] = property;
+      }
+    });
+  });
+
+  return wrappedClient;
+}
