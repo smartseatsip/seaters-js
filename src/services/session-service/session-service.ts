@@ -151,13 +151,15 @@ export class SessionService {
   doEmailSignUp (
     email: string,
     fanGroupId: string,
-    language?: string
+    language?: string,
+    origin?: string
   ): Promise<session.Session> {
     return new Promise((resolve, reject) => {
       this.seatersApi.authentication.signupAnonymous({
         email: email,
         fanGroupId: fanGroupId,
-        language: language || 'en'
+        language: language || 'en',
+        origin
       })
         .then((authSuccess) => this.finishLogin(authSuccess))
         .then((r) => resolve(r))

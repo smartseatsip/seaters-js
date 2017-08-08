@@ -12,6 +12,7 @@ export interface AnonymousSignupData {
   email: string;
   language: string;
   fanGroupId: string;
+  origin: string;
 }
 
 export type ValidationData = EmailValidationData | MobilePhoneValidationData;
