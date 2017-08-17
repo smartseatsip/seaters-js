@@ -9,4 +9,3 @@ doc/
 
 dist/**/*
 !dist/seaters.bundle.js
-package-lock.json
