@@ -2,6 +2,8 @@ import { SeatersApi } from '../../seaters-api';
 import { FanGroup } from '../../seaters-api/fan';
 import { retryUntil } from './../util';
 import { fan } from './fan-types';
+import { PagedResult } from '../../seaters-api/paged-result';
+import { PagingOptions } from '../../seaters-api/paging-options';
 
 let FAN_GROUP_ACTION_STATUS = fan.FAN_GROUP_ACTION_STATUS;
 
@@ -60,6 +62,10 @@ export class FanGroupService {
       .then(() => this.pollFanGroup(fanGroupId, (fg) => fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_LEAVE));
 
   }
+
+  joinedFanGroups (pagingOptions: PagingOptions): Promise<PagedResult<fan.FanGroup>> {
+    return this.api.fan.joinedFanGroups(pagingOptions);
+  }  
 
   leaveFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
     return this.api.fan.leaveFanGroup(fanGroupId)

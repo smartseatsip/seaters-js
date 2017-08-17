@@ -65,6 +65,11 @@ export class FanService {
     return this.fanGroupService.shareFanGroup(fanGroupId);
   }
 
+  getJoinedFanGroups (pagingOptions: PagingOptions): Promise<PagedResult<fan.FanGroup>> {
+    return this.fanGroupService.joinedFanGroups(pagingOptions)
+      .then(r => this.convertPagedResult(r));
+  }  
+  
   /**
    *  WAITING LISTS
    */
