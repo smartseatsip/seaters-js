@@ -58,7 +58,7 @@ var SeatersSDK =
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/home/seaters/seaters-js/dist";
+/******/ 	__webpack_require__.p = "C:\\seaters\\seaters-js/dist";
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 16);
@@ -1388,6 +1388,9 @@ var FanGroupService = function () {
             });
         });
     };
+    FanGroupService.prototype.joinedFanGroups = function (pagingOptions) {
+        return this.api.fan.joinedFanGroups(pagingOptions);
+    };
     FanGroupService.prototype.leaveFanGroup = function (fanGroupId) {
         var _this = this;
         return this.api.fan.leaveFanGroup(fanGroupId).then(function () {
@@ -2352,6 +2355,12 @@ var FanService = function () {
     };
     FanService.prototype.shareFanGroup = function (fanGroupId) {
         return this.fanGroupService.shareFanGroup(fanGroupId);
+    };
+    FanService.prototype.getJoinedFanGroups = function (pagingOptions) {
+        var _this = this;
+        return this.fanGroupService.joinedFanGroups(pagingOptions).then(function (r) {
+            return _this.convertPagedResult(r);
+        });
     };
     /**
      *  WAITING LISTS
