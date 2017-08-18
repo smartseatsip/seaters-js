@@ -57,6 +57,10 @@ export class FanService {
     return this.fanGroupService.joinProtectedFanGroup(fanGroupId, code);
   }
 
+  requestToJoinPrivateFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
+    return this.fanGroupService.requestToJoinPrivateFanGroup(fanGroupId);
+  }
+
   leaveFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
     return this.fanGroupService.leaveFanGroup(fanGroupId);
   }

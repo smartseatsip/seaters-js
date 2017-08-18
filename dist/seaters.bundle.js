@@ -1388,6 +1388,16 @@ var FanGroupService = function () {
             });
         });
     };
+    FanGroupService.prototype.requestToJoinPrivateFanGroup = function (fanGroupId) {
+        var _this = this;
+        return this.getFanGroup(fanGroupId).then(function (fg) {
+            return _this.api.fan.joinProtectedFanGroup(fg, null);
+        }).then(function () {
+            return _this.pollFanGroup(fanGroupId, function (fg) {
+                return fg.actionStatus === FAN_GROUP_ACTION_STATUS.WAITING_FOR_APPROVAL;
+            });
+        });
+    };
     FanGroupService.prototype.joinedFanGroups = function (pagingOptions) {
         return this.api.fan.joinedFanGroups(pagingOptions);
     };
@@ -2349,6 +2359,9 @@ var FanService = function () {
     };
     FanService.prototype.joinProtectedFanGroup = function (fanGroupId, code) {
         return this.fanGroupService.joinProtectedFanGroup(fanGroupId, code);
+    };
+    FanService.prototype.requestToJoinPrivateFanGroup = function (fanGroupId) {
+        return this.fanGroupService.requestToJoinPrivateFanGroup(fanGroupId);
     };
     FanService.prototype.leaveFanGroup = function (fanGroupId) {
         return this.fanGroupService.leaveFanGroup(fanGroupId);

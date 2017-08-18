@@ -53,14 +53,19 @@ export class FanGroupService {
   }
 
   joinProtectedFanGroup (fanGroupId: string, code: string): Promise<fan.FanGroup> {
-
     return this.getFanGroup(fanGroupId)
       .then(fg => this.api.fan.joinProtectedFanGroup(fg, code))
       // wait for request to be ACCEPTED
       .then(() => this.pollFanGroup(fanGroupId, (fg) => this.checkUnlockStatus(fg)))
       // wait for action status CAN_LEAVE
       .then(() => this.pollFanGroup(fanGroupId, (fg) => fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_LEAVE));
-
+  }
+  
+  requestToJoinPrivateFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
+    return this.getFanGroup(fanGroupId)
+      .then(fg => this.api.fan.joinProtectedFanGroup(fg, null))
+      // wait for action status WAITING_FOR_APPROVAL
+      .then(() => this.pollFanGroup(fanGroupId, (fg) => fg.actionStatus === FAN_GROUP_ACTION_STATUS.WAITING_FOR_APPROVAL));
   }
 
   joinedFanGroups (pagingOptions: PagingOptions): Promise<PagedResult<fan.FanGroup>> {
