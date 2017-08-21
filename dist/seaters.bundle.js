@@ -1491,7 +1491,7 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.version = '1.22.0';
+exports.version = '1.22.2';
 __export(__webpack_require__(17));
 var fan_types_1 = __webpack_require__(2);
 exports.fan = fan_types_1.fan;
@@ -3169,7 +3169,7 @@ var SessionService = function () {
         this.sessionToken = undefined;
     };
     // TODO: handle error case
-    SessionService.prototype.doEmailPasswordSignUp = function (email, password, firstname, lastname, language) {
+    SessionService.prototype.doEmailPasswordSignUp = function (email, password, firstname, lastname, language, redirect) {
         var _this = this;
         return new Promise(function (resolve, reject) {
             _this.seatersApi.authentication.signup({
@@ -3177,7 +3177,8 @@ var SessionService = function () {
                 password: password,
                 firstName: firstname,
                 lastName: lastname,
-                language: language || 'en'
+                language: language || 'en',
+                confirmationReturnURLPath: redirect
             }).then(function () {
                 return _this.doEmailPasswordLogin(email, password);
             }).then(function (r) {
