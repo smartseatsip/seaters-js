@@ -132,7 +132,8 @@ export class SessionService {
     password: string,
     firstname: string,
     lastname: string,
-    language?: string
+    language?: string,
+    redirect?: string
   ): Promise<session.Session> {
     return new Promise((resolve, reject) => {
       this.seatersApi.authentication.signup({
@@ -140,7 +141,8 @@ export class SessionService {
         password: password,
         firstName: firstname,
         lastName: lastname,
-        language: language || 'en'
+        language: language || 'en',
+        confirmationReturnURLPath: redirect
       })
         .then(() => this.doEmailPasswordLogin(email, password))
         .then((r) => resolve(r))

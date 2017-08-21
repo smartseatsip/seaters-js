@@ -6,6 +6,7 @@ export interface SignupData {
   lastName: string;
   firstName: string;
   password: string;
+  confirmationReturnURLPath: string;  
 }
 
 export interface AnonymousSignupData {
