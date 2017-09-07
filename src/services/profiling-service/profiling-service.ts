@@ -3,6 +3,7 @@ import { SeatersApi } from '../../seaters-api';
 import { PagedResult, PagingOptions } from '../../shared-types';
 import { SessionService } from '../session-service';
 import { PublicService } from '../public-service';
+import { profiling } from './profiling-types';
 
 export class ProfilingService {
 
@@ -14,8 +15,12 @@ export class ProfilingService {
   }
 
   /**
-   *  PROFILING
+   *  CATEGORIES
    */
+
+  getCategories (): Promise<profiling.Category[]> {
+    return this.seatersApi.profiling.getCategories();
+  }
 
   /**
    *  HELPERS
