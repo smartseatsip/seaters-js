@@ -17,7 +17,6 @@ export class ProfilingService {
    *  PROFILING
    */
 
-
   /**
    *  HELPERS
    */
