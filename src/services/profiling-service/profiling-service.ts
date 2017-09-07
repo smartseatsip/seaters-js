@@ -23,6 +23,42 @@ export class ProfilingService {
   }
 
   /**
+   *  CATEGORY
+   */
+
+  /**
+   *  INTERESTS
+   */
+
+  /**
+   *  INTEREST
+   */
+
+  /**
+   *  EXTERNAL IDENTIFIERS
+   */
+
+  /**
+   *  EXTERNAL IDENTIFIER
+   */
+
+  /**
+   *  FAN ATTRIBUTES
+   */
+
+  /**
+   *  FAN ATTRIBUTE
+   */
+
+  /**
+   *  USERS
+   */
+
+  /**
+   *  USER
+   */
+
+  /**
    *  HELPERS
    */
   private convertPagedResult<T> (result: any): PagedResult<T> {
