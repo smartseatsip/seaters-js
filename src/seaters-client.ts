@@ -1,6 +1,7 @@
 import { REQUEST_DRIVER_TYPE, getRequestDriver } from './api';
 import { SeatersApi } from './seaters-api';
 import { FanService, PublicService, SessionService, AppService } from './services';
+import { ProfilingService } from './services/profiling-service/profiling-service';
 
 export type PromiseMiddleware<T> = (promise: Promise<any>) => T;
 
@@ -16,15 +17,13 @@ export class SeatersClient {
     requestDriver: 'BROWSER'
   } as SeatersClientOptions;
 
-  private seatersApi: SeatersApi;
-
   public sessionService: SessionService;
-
   public appService: AppService;
-
   public publicService: PublicService;
-
   public fanService: FanService;
+  public profilingService: ProfilingService;
+
+  private seatersApi: SeatersApi;
 
   constructor (options?: SeatersClientOptions) {
     options = Object.assign({}, SeatersClient.DEFAULT_OPTIONS, options);
@@ -35,6 +34,7 @@ export class SeatersClient {
     this.appService = new AppService(this.seatersApi);
     this.publicService = new PublicService(this.appService, requestDriver, this.seatersApi);
     this.fanService = new FanService(this.seatersApi, this.sessionService, this.publicService);
+    this.profilingService = new ProfilingService(this.seatersApi, this.sessionService, this.publicService);
   }
 
 }
@@ -67,10 +67,10 @@ export function wrapClient<T> (promiseMiddleware: PromiseMiddleware<T>, client: 
     let service = client[serviceName];
     Object.keys(service.__proto__).forEach((propertyName) => {
       let property = service[propertyName];
-      if(typeof(property) === 'function') {
+      if (typeof(property) === 'function') {
         wrappedService[propertyName] = function () {
           let res = property.apply(service, Array.prototype.slice.call(arguments));
-          if(res instanceof Promise) {
+          if (res instanceof Promise) {
             return promiseMiddleware(res);
           } else {
             return res;
