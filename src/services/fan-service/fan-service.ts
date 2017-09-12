@@ -11,11 +11,13 @@ import { Fan, PositionSalesTransactionInput, AttendeeInfo } from '../../seaters-
 import { BraintreeToken } from '../../seaters-api/fan/braintree-token';
 import { PhoneNumber } from '../../seaters-api/fan/fan';
 import { StringMap } from '../../api/string-map';
+import { FanProfilingService } from './fan-profiling-service';
 
 export class FanService {
 
   public waitingListService: WaitingListService;
   public fanGroupService: FanGroupService;
+  public fanProfilingService: FanProfilingService;
 
   constructor (
     private seatersApi: SeatersApi,
@@ -24,6 +26,7 @@ export class FanService {
   ) {
     this.waitingListService = new WaitingListService(seatersApi);
     this.fanGroupService = new FanGroupService(seatersApi);
+    this.fanProfilingService = new FanProfilingService(seatersApi);
   }
 
   /**
@@ -220,6 +223,26 @@ export class FanService {
             } as PagedResult<fan.WaitingList>;
           });
       });
+  }
+
+  /**
+   *  PROFILING
+   */
+
+  getProfilingCategories (): Promise<fan.ProfilingCategory[]> {
+    return this.fanProfilingService.getProfilingCategories();
+  }
+
+  getProfilingCategoryById (categoryId: string): Promise<fan.ProfilingCategory> {
+    return this.fanProfilingService.getProfilingCategoryById(categoryId);
+  }
+
+  createFanInterest (fanInterestCreateDTO: fan.FanInterestCreateDTO): Promise<fan.FanInterest> {
+    return this.fanProfilingService.createFanInterest(fanInterestCreateDTO);
+  }
+
+  updateFanInterest (fanInterestUpdateDTO: fan.FanInterestUpdateDTO): Promise<fan.FanInterest> {
+    return this.seatersApi.fan.updateFanInterest(fanInterestUpdateDTO);
   }
 
   /**

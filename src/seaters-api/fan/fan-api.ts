@@ -4,15 +4,19 @@ import { SeatersApiContext } from '../../seaters-api';
 import { PagedResult } from '../paged-result';
 import { PagingOptions } from '../paging-options';
 import { TranslationMap } from '../translation-map';
+
 import {
   Fan, FanGroup, WaitingList, FanGroupRequest, Position,
   Price, PaymentInfo, BraintreeToken, FanGroupLook,
   PositionSalesTransactionInput, PositionSalesTransaction,
-  AttendeeInfo
+  AttendeeInfo, ProfilingCategory, FanInterest, FanInterestCreateDTO, FanInterestUpdateDTO
 } from './fan-types';
+
 import { WaitingListRequest } from './waiting-list';
-import { ArrayMap } from '../../api/array-map';
 import { StringMap } from '../../api/string-map';
+
+// @TODO: remove once backend knows the user context
+const MOCKED_USER_ID = '40c2b8e7-a2b8-44d8-8163-e38138fe7fb4';
 
 export class FanApi {
 
@@ -182,16 +186,25 @@ export class FanApi {
     return this.apiContext.get(endpoint, endpointParams);
   }
 
-  joinWaitingList (waitingListId: string, numberOfSeats: number, additionalQueryParams: StringMap): Promise<WaitingList> {
+  joinWaitingList (
+    waitingListId: string,
+    numberOfSeats: number,
+    additionalQueryParams: StringMap
+  ): Promise<WaitingList> {
     let endpoint = '/fan/waiting-lists/:waitingListId/position';
     let endpointParams = { waitingListId: waitingListId };
     let queryParams = additionalQueryParams;
     let data = { numberOfSeats: numberOfSeats };
-    
+
     return this.apiContext.post(endpoint, data, endpointParams, queryParams);
   }
 
-  joinProtectedWaitingList (wl: WaitingList, code: string, numberOfSeats: number, additionalQueryParams: StringMap): Promise<WaitingListRequest> {
+  joinProtectedWaitingList (
+    wl: WaitingList,
+    code: string,
+    numberOfSeats: number,
+    additionalQueryParams: StringMap
+  ): Promise<WaitingListRequest> {
     let data = {
       code: code,
       numberOfSeats: numberOfSeats
@@ -302,6 +315,34 @@ export class FanApi {
       '/fan/waiting-lists/:waitingListId/translated-venue-conditions',
       { waitingListId: waitingListId }
     );
+  }
+
+  /**
+   *  PROFILING
+   */
+
+  getProfilingCategories (): Promise<ProfilingCategory[]> {
+    return this.apiContext.get('/profiling/v1/categories', {}, {});
+  }
+
+  getProfilingCategoryById (categoryId): Promise<ProfilingCategory> {
+    return this.apiContext.get(`/profiling/v1/category/${ categoryId }`, {}, {});
+  }
+
+  createFanInterest (userInterestCreateDTO: FanInterestCreateDTO): Promise<FanInterest> {
+
+    // @TODO: can be removed once user context is known
+    (userInterestCreateDTO as any).user_id = MOCKED_USER_ID;
+
+    return this.apiContext.post('/profiling/v1/user/interest', userInterestCreateDTO, {});
+  }
+
+  updateFanInterest (userInterestUpdateDTO: FanInterestUpdateDTO): Promise<FanInterest> {
+
+    // @TODO: can be removed once user context is known
+    (userInterestUpdateDTO as any).user_id = MOCKED_USER_ID;
+
+    return this.apiContext.put('/profiling/v1/user/interest', userInterestUpdateDTO, {});
   }
 
 }

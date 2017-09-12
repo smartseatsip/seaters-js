@@ -5,7 +5,14 @@ import {
   PaymentInfo as _PaymentInfo,
   AttendeesInfo as _AttendeesInfo,
   AttendeeInfo as _AttendeeInfo,
-  Fan as _Fan
+  Fan as _Fan,
+
+  ProfilingCategory as _ProfilingCategory,
+  ProfilingTimeStamp as _ProfilingTimestamp,
+
+  FanInterest as _FanInterest,
+  FanInterestCreateDTO as _FanInterestCreateDTO,
+  FanInterestUpdateDTO as _FanInterestUpdateDTO
 } from '../../seaters-api/fan';
 
 export namespace fan {
@@ -87,5 +94,16 @@ export namespace fan {
 
   export interface Fan extends _Fan {
   }
+
+  /**
+   *  PROFILING
+   */
+
+  export interface ProfilingTimestamp extends _ProfilingTimestamp {}
+  export interface ProfilingCategory extends _ProfilingCategory {}
+
+  export interface FanInterest extends _FanInterest {}
+  export interface FanInterestCreateDTO extends _FanInterestCreateDTO {}
+  export interface FanInterestUpdateDTO extends _FanInterestUpdateDTO {}
 
 }

@@ -2102,6 +2102,8 @@ exports.SeatersApi = SeatersApi;
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
+// @TODO: the user context should be known on the backend side already
+var MOCKED_USER_ID = '40c2b8e7-a2b8-44d8-8163-e38138fe7fb4';
 var ProfilingApi = function () {
     function ProfilingApi(apiContext) {
         this.apiContext = apiContext;
@@ -2117,6 +2119,19 @@ var ProfilingApi = function () {
      */
     ProfilingApi.prototype.getCategoryById = function (categoryId) {
         return this.apiContext.get("/profiling/v1/category/" + categoryId, {}, {});
+    };
+    /**
+     *  INTERESTS
+     */
+    ProfilingApi.prototype.createUserInterest = function (userInterestCreateDTO) {
+        // @TODO: can be removed once user context is known
+        userInterestCreateDTO.user_id = MOCKED_USER_ID;
+        return this.apiContext.post('/profiling/v1/user/interest', userInterestCreateDTO, {});
+    };
+    ProfilingApi.prototype.updateUserInterest = function (userInterestUpdateDTO) {
+        // @TODO: can be removed once user context is known
+        userInterestUpdateDTO.user_id = MOCKED_USER_ID;
+        return this.apiContext.put('/profiling/v1/user/interest', userInterestUpdateDTO, {});
     };
     return ProfilingApi;
 }();
@@ -3563,6 +3578,12 @@ var ProfilingService = function () {
   /**
    *  INTERESTS
    */
+  ProfilingService.prototype.createUserInterest = function (userInterestCreateDTO) {
+    return this.seatersApi.profiling.createUserInterest(userInterestCreateDTO);
+  };
+  ProfilingService.prototype.updateUserInterest = function (userInterestUpdateDTO) {
+    return this.seatersApi.profiling.updateUserInterest(userInterestUpdateDTO);
+  };
   /**
    *  INTEREST
    */
@@ -3577,12 +3598,6 @@ var ProfilingService = function () {
    */
   /**
    *  FAN ATTRIBUTE
-   */
-  /**
-   *  USERS
-   */
-  /**
-   *  USER
    */
   /**
    *  HELPERS
