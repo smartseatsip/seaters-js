@@ -755,29 +755,41 @@ var FanApi = function () {
     FanApi.prototype.getTranslatedVenueConditions = function (waitingListId) {
         return this.apiContext.get('/fan/waiting-lists/:waitingListId/translated-venue-conditions', { waitingListId: waitingListId });
     };
-    /**
-     *  PROFILING
-     */
+    // Profiling (public)
     FanApi.prototype.getProfilingCategories = function () {
         return this.apiContext.get('/profiling/v1/categories', {}, {});
     };
     FanApi.prototype.getProfilingCategoryById = function (categoryId) {
         return this.apiContext.get("/profiling/v1/category/" + categoryId, {}, {});
     };
-    FanApi.prototype.getFanInterests = function () {
+    FanApi.prototype.getProfilingFanAttributes = function (query) {
+        return this.apiContext.get('/profiling/v1/fan_attributes', {}, {
+            query: query
+        });
+    };
+    FanApi.prototype.getProfilingFanAttributeById = function (fanAttributeId) {
+        return this.apiContext.get("/profiling/v1/fan_attribute/" + fanAttributeId, {}, {});
+    };
+    // User (fan)
+    FanApi.prototype.getUserInterests = function () {
         // @TODO: can be removed once user context is known
         var userId = MOCKED_USER_ID;
         return this.apiContext.get("/profiling/v1/user/" + userId + "/interests", {}, {});
     };
-    FanApi.prototype.createFanInterest = function (userInterestCreateDTO) {
+    FanApi.prototype.createUserInterest = function (userInterestCreateDTO) {
         // @TODO: can be removed once user context is known
         userInterestCreateDTO.user_id = MOCKED_USER_ID;
         return this.apiContext.post('/profiling/v1/user/interest', userInterestCreateDTO, {});
     };
-    FanApi.prototype.updateFanInterest = function (userInterestUpdateDTO) {
+    FanApi.prototype.updateUserInterest = function (userInterestUpdateDTO) {
         // @TODO: can be removed once user context is known
         userInterestUpdateDTO.user_id = MOCKED_USER_ID;
         return this.apiContext.put('/profiling/v1/user/interest', userInterestUpdateDTO, {});
+    };
+    FanApi.prototype.getUserFanAttributes = function () {
+        // @TODO: can be removed once user context is known
+        var userId = MOCKED_USER_ID;
+        return this.apiContext.get("/profiling/v1/user/" + userId + "/fan_attributes", {}, {});
     };
     return FanApi;
 }();
@@ -2528,23 +2540,31 @@ var FanService = function () {
             });
         });
     };
-    /**
-     *  PROFILING
-     */
+    // Profiling (public)
     FanService.prototype.getProfilingCategories = function () {
         return this.fanProfilingService.getProfilingCategories();
     };
     FanService.prototype.getProfilingCategoryById = function (categoryId) {
         return this.fanProfilingService.getProfilingCategoryById(categoryId);
     };
-    FanService.prototype.getFanInterests = function () {
-        return this.fanProfilingService.getFanInterests();
+    FanService.prototype.getProfilingFanAttributes = function (query) {
+        return this.fanProfilingService.getProfilingFanAttributes(query);
     };
-    FanService.prototype.createFanInterest = function (fanInterestCreateDTO) {
-        return this.fanProfilingService.createFanInterest(fanInterestCreateDTO);
+    FanService.prototype.getProfilingFanAttributeById = function (fanAttributeId) {
+        return this.fanProfilingService.getProfilingFanAttributeById(fanAttributeId);
     };
-    FanService.prototype.updateFanInterest = function (fanInterestUpdateDTO) {
-        return this.fanProfilingService.updateFanInterest(fanInterestUpdateDTO);
+    // User (fan)
+    FanService.prototype.getUserInterests = function () {
+        return this.fanProfilingService.getUserInterests();
+    };
+    FanService.prototype.createUserInterest = function (userInterestCreateDTO) {
+        return this.fanProfilingService.createUserInterest(userInterestCreateDTO);
+    };
+    FanService.prototype.updateUserInterest = function (userInterestUpdateDTO) {
+        return this.fanProfilingService.updateUserInterest(userInterestUpdateDTO);
+    };
+    FanService.prototype.getUserFanAttributes = function () {
+        return this.fanProfilingService.getUserFanAttributes();
     };
     /**
      *  HELPERS
@@ -2574,29 +2594,31 @@ var FanProfilingService = function () {
     function FanProfilingService(seatersApi) {
         this.seatersApi = seatersApi;
     }
-    /**
-     *  CATEGORIES
-     */
+    // Profiling (public)
     FanProfilingService.prototype.getProfilingCategories = function () {
         return this.seatersApi.fan.getProfilingCategories();
     };
-    /**
-     *  CATEGORY
-     */
     FanProfilingService.prototype.getProfilingCategoryById = function (categoryId) {
         return this.seatersApi.fan.getProfilingCategoryById(categoryId);
     };
-    /**
-     *  INTERESTS
-     */
-    FanProfilingService.prototype.getFanInterests = function () {
-        return this.seatersApi.fan.getFanInterests();
+    FanProfilingService.prototype.getProfilingFanAttributes = function (query) {
+        return this.seatersApi.fan.getProfilingFanAttributes(query);
     };
-    FanProfilingService.prototype.createFanInterest = function (FanInterestCreateDTO) {
-        return this.seatersApi.fan.createFanInterest(FanInterestCreateDTO);
+    FanProfilingService.prototype.getProfilingFanAttributeById = function (fanAttributeId) {
+        return this.seatersApi.fan.getProfilingFanAttributeById(fanAttributeId);
     };
-    FanProfilingService.prototype.updateFanInterest = function (FanInterestUpdateDTO) {
-        return this.seatersApi.fan.updateFanInterest(FanInterestUpdateDTO);
+    // User (fan)
+    FanProfilingService.prototype.getUserInterests = function () {
+        return this.seatersApi.fan.getUserInterests();
+    };
+    FanProfilingService.prototype.createUserInterest = function (userInterestCreateDTO) {
+        return this.seatersApi.fan.createUserInterest(userInterestCreateDTO);
+    };
+    FanProfilingService.prototype.updateUserInterest = function (userInterestUpdateDTO) {
+        return this.seatersApi.fan.updateUserInterest(userInterestUpdateDTO);
+    };
+    FanProfilingService.prototype.getUserFanAttributes = function () {
+        return this.seatersApi.fan.getUserFanAttributes();
     };
     return FanProfilingService;
 }();

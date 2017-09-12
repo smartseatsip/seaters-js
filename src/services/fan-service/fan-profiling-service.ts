@@ -8,56 +8,48 @@ export class FanProfilingService {
   ) {
   }
 
-  /**
-   *  CATEGORIES
-   */
+  // Profiling (public)
 
   getProfilingCategories (): Promise<fan.ProfilingCategory[]> {
     return this.seatersApi.fan.getProfilingCategories();
   }
 
-  /**
-   *  CATEGORY
-   */
-
   getProfilingCategoryById (categoryId: string): Promise<fan.ProfilingCategory> {
     return this.seatersApi.fan.getProfilingCategoryById(categoryId);
   }
 
-  /**
-   *  INTERESTS
-   */
-
-  getFanInterests (): Promise<fan.FanInterest[]> {
-    return this.seatersApi.fan.getFanInterests();
+  getProfilingFanAttributes (query: string): Promise<fan.ProfilingFanAttribute[]> {
+    return this.seatersApi.fan.getProfilingFanAttributes(query);
   }
 
-  createFanInterest (FanInterestCreateDTO: fan.FanInterestCreateDTO): Promise<fan.FanInterest> {
-    return this.seatersApi.fan.createFanInterest(FanInterestCreateDTO);
+  getProfilingFanAttributeById (fanAttributeId: string): Promise<fan.ProfilingFanAttribute> {
+    return this.seatersApi.fan.getProfilingFanAttributeById(fanAttributeId);
   }
 
-  updateFanInterest (FanInterestUpdateDTO: fan.FanInterestUpdateDTO): Promise<fan.FanInterest> {
-    return this.seatersApi.fan.updateFanInterest(FanInterestUpdateDTO);
+  // User (fan)
+
+  getUserInterests (): Promise<fan.UserInterest[]> {
+    return this.seatersApi.fan.getUserInterests();
   }
 
-  /**
-   *  INTEREST
-   */
+  createUserInterest (userInterestCreateDTO: fan.UserInterestCreateDTO): Promise<fan.UserInterest> {
+    return this.seatersApi.fan.createUserInterest(userInterestCreateDTO);
+  }
 
-  /**
-   *  EXTERNAL IDENTIFIERS
-   */
+  updateUserInterest (userInterestUpdateDTO: fan.UserInterestUpdateDTO): Promise<fan.UserInterest> {
+    return this.seatersApi.fan.updateUserInterest(userInterestUpdateDTO);
+  }
 
-  /**
-   *  EXTERNAL IDENTIFIER
-   */
+  getUserFanAttributes (): Promise<fan.UserFanAttribute[]> {
+    return this.seatersApi.fan.getUserFanAttributes();
+  }
 
-  /**
-   *  FAN ATTRIBUTES
-   */
+  createUserFanAttribute (userFanAttributeCreateDTO: fan.UserFanAttributeCreateDTO): Promise<fan.UserFanAttribute> {
+    return this.seatersApi.fan.createUserFanAttribute(userFanAttributeCreateDTO);
+  }
 
-  /**
-   *  FAN ATTRIBUTE
-   */
+  updateUserFanAttribute (userFanAttributeId: string, userFanAttributeUpdateDTO: fan.UserFanAttributeUpdateDTO): Promise<fan.UserFanAttribute> {
+    return this.seatersApi.fan.updateUserFanAttribute(userFanAttributeId, userFanAttributeUpdateDTO);
+  }
 
 }

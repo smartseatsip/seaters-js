@@ -9,10 +9,17 @@ import {
 
   ProfilingCategory as _ProfilingCategory,
   ProfilingTimeStamp as _ProfilingTimestamp,
+  ProfilingInterest as _ProfilingInterest,
+  ProfilingExternalIdentifier as _ProfilingExternalIdentifier,
+  ProfilingFanAttribute as _ProfilingFanAttribute,
 
-  FanInterest as _FanInterest,
-  FanInterestCreateDTO as _FanInterestCreateDTO,
-  FanInterestUpdateDTO as _FanInterestUpdateDTO
+  UserInterest as _UserInterest,
+  UserInterestCreateDTO as _UserInterestCreateDTO,
+  UserInterestUpdateDTO as _UserInterestUpdateDTO,
+  UserFanAttribute as _UserFanAttribute,
+  UserFanAttributeCreateDTO as _UserFanAttributeCreateDTO,
+  UserFanAttributeUpdateDTO as _UserFanAttributeUpdateDTO
+
 } from '../../seaters-api/fan';
 
 export namespace fan {
@@ -99,11 +106,16 @@ export namespace fan {
    *  PROFILING
    */
 
-  export interface ProfilingTimestamp extends _ProfilingTimestamp {}
   export interface ProfilingCategory extends _ProfilingCategory {}
+  export interface ProfilingTimeStamp extends _ProfilingTimestamp {}
+  export interface ProfilingInterest extends _ProfilingInterest {}
+  export interface ProfilingExternalIdentifier extends _ProfilingExternalIdentifier {}
+  export interface ProfilingFanAttribute extends _ProfilingFanAttribute {}
 
-  export interface FanInterest extends _FanInterest {}
-  export interface FanInterestCreateDTO extends _FanInterestCreateDTO {}
-  export interface FanInterestUpdateDTO extends _FanInterestUpdateDTO {}
-
+  export interface UserInterest extends _UserInterest {}
+  export interface UserInterestCreateDTO extends _UserInterestCreateDTO {}
+  export interface UserInterestUpdateDTO extends _UserInterestUpdateDTO {}
+  export interface UserFanAttribute extends _UserFanAttribute {}
+  export interface UserFanAttributeCreateDTO extends _UserFanAttributeCreateDTO {}
+  export interface UserFanAttributeUpdateDTO extends _UserFanAttributeUpdateDTO {}
 }

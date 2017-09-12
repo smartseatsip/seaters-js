@@ -4,7 +4,7 @@ var client = new SeatersSDK.SeatersClient({
   requestDriver: 'NODE'
 });
 
-client.fanService.getFanInterests().then(function (response) {
+client.fanService.getInterests().then(function (response) {
   console.log('Fan interests = ', response);
 }).catch(function (err) {
   console.log(err);

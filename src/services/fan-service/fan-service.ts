@@ -225,9 +225,7 @@ export class FanService {
       });
   }
 
-  /**
-   *  PROFILING
-   */
+  // Profiling (public)
 
   getProfilingCategories (): Promise<fan.ProfilingCategory[]> {
     return this.fanProfilingService.getProfilingCategories();
@@ -237,16 +235,38 @@ export class FanService {
     return this.fanProfilingService.getProfilingCategoryById(categoryId);
   }
 
-  getFanInterests (): Promise<fan.FanInterest[]> {
-    return this.fanProfilingService.getFanInterests();
+  getProfilingFanAttributes (query: string): Promise<fan.ProfilingFanAttribute[]> {
+    return this.fanProfilingService.getProfilingFanAttributes(query);
   }
 
-  createFanInterest (fanInterestCreateDTO: fan.FanInterestCreateDTO): Promise<fan.FanInterest> {
-    return this.fanProfilingService.createFanInterest(fanInterestCreateDTO);
+  getProfilingFanAttributeById (fanAttributeId: string): Promise<fan.ProfilingFanAttribute> {
+    return this.fanProfilingService.getProfilingFanAttributeById(fanAttributeId);
   }
 
-  updateFanInterest (fanInterestUpdateDTO: fan.FanInterestUpdateDTO): Promise<fan.FanInterest> {
-    return this.fanProfilingService.updateFanInterest(fanInterestUpdateDTO);
+  // User (fan)
+
+  getUserInterests (): Promise<fan.UserInterest[]> {
+    return this.fanProfilingService.getUserInterests();
+  }
+
+  createUserInterest (userInterestCreateDTO: fan.UserInterestCreateDTO): Promise<fan.UserInterest> {
+    return this.fanProfilingService.createUserInterest(userInterestCreateDTO);
+  }
+
+  updateUserInterest (userInterestUpdateDTO: fan.UserInterestUpdateDTO): Promise<fan.UserInterest> {
+    return this.fanProfilingService.updateUserInterest(userInterestUpdateDTO);
+  }
+
+  getUserFanAttributes (): Promise<fan.UserFanAttribute[]> {
+    return this.fanProfilingService.getUserFanAttributes();
+  }
+
+  createUserFanAttribute (userFanAttributeCreateDTO: fan.UserFanAttributeCreateDTO): Promise<fan.UserFanAttribute> {
+    return this.fanProfilingService.createUserFanAttribute(userFanAttributeCreateDTO);
+  }
+
+  updateUserFanAttribute (userFanAttributeId: string, userFanAttributeCreateDTO: fan.UserFanAttributeUpdateDTO): Promise<fan.UserFanAttribute> {
+    return this.fanProfilingService.updateUserFanAttribute(userFanAttributeId, userFanAttributeCreateDTO);
   }
 
   /**

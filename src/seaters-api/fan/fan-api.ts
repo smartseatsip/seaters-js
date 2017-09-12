@@ -9,11 +9,12 @@ import {
   Fan, FanGroup, WaitingList, FanGroupRequest, Position,
   Price, PaymentInfo, BraintreeToken, FanGroupLook,
   PositionSalesTransactionInput, PositionSalesTransaction,
-  AttendeeInfo, ProfilingCategory, FanInterest, FanInterestCreateDTO, FanInterestUpdateDTO
+  AttendeeInfo, ProfilingCategory, UserInterestCreateDTO, UserInterestUpdateDTO, ProfilingFanAttribute, UserFanAttribute, UserFanAttributeCreateDTO, UserFanAttributeUpdateDTO
 } from './fan-types';
 
 import { WaitingListRequest } from './waiting-list';
 import { StringMap } from '../../api/string-map';
+import { UserInterest } from './profiling';
 
 // @TODO: remove once backend knows the user context
 const MOCKED_USER_ID = '40c2b8e7-a2b8-44d8-8163-e38138fe7fb4';
@@ -317,9 +318,7 @@ export class FanApi {
     );
   }
 
-  /**
-   *  PROFILING
-   */
+  // Profiling (public)
 
   getProfilingCategories (): Promise<ProfilingCategory[]> {
     return this.apiContext.get('/profiling/v1/categories', {}, {});
@@ -329,28 +328,62 @@ export class FanApi {
     return this.apiContext.get(`/profiling/v1/category/${ categoryId }`, {}, {});
   }
 
-  getFanInterests (): Promise<FanInterest[]> {
+  getProfilingFanAttributes (query: string): Promise<ProfilingFanAttribute[]> {
+    return this.apiContext.get('/profiling/v1/fan_attributes', {}, {
+      query: query
+    });
+  }
+
+  getProfilingFanAttributeById (fanAttributeId: string): Promise<ProfilingFanAttribute> {
+    return this.apiContext.get(`/profiling/v1/fan_attribute/${ fanAttributeId }`, {}, {});
+  }
+
+  // User (fan)
+
+  getUserInterests (): Promise<UserInterest[]> {
 
     // @TODO: can be removed once user context is known
     const userId = MOCKED_USER_ID;
-
     return this.apiContext.get(`/profiling/v1/user/${ userId }/interests`, {}, {});
   }
 
-  createFanInterest (userInterestCreateDTO: FanInterestCreateDTO): Promise<FanInterest> {
+  createUserInterest (userInterestCreateDTO: UserInterestCreateDTO): Promise<UserInterest> {
 
     // @TODO: can be removed once user context is known
     (userInterestCreateDTO as any).user_id = MOCKED_USER_ID;
-
     return this.apiContext.post('/profiling/v1/user/interest', userInterestCreateDTO, {});
   }
 
-  updateFanInterest (userInterestUpdateDTO: FanInterestUpdateDTO): Promise<FanInterest> {
+  updateUserInterest (userInterestUpdateDTO: UserInterestUpdateDTO): Promise<UserInterest> {
 
     // @TODO: can be removed once user context is known
     (userInterestUpdateDTO as any).user_id = MOCKED_USER_ID;
-
     return this.apiContext.put('/profiling/v1/user/interest', userInterestUpdateDTO, {});
+  }
+
+  getUserFanAttributes (): Promise<UserFanAttribute[]> {
+
+    // @TODO: can be removed once user context is known
+    const userId = MOCKED_USER_ID;
+    return this.apiContext.get(`/profiling/v1/user/${ userId }/fan_attributes`, {}, {});
+  }
+
+  createUserFanAttribute (userFanAttributeCreateDTO: UserFanAttributeCreateDTO): Promise<UserFanAttribute> {
+
+    // @TODO: can be removed once user context is known
+    const userId = MOCKED_USER_ID;
+    // @TODO: can be removed once user context is known
+    (userFanAttributeCreateDTO as any).user_id = MOCKED_USER_ID;
+    return this.apiContext.post(`/profiling/v1/user/${ userId }/fan_attribute`, userFanAttributeCreateDTO, {});
+  }
+
+  updateUserFanAttribute (userFanAttributeId: string, userFanAttributeUpdateDTO: UserFanAttributeUpdateDTO): Promise<UserFanAttribute> {
+
+    // @TODO: can be removed once user context is known
+    const userId = MOCKED_USER_ID;
+    // @TODO: can be removed once user context is known
+    (userFanAttributeUpdateDTO as any).user_id = MOCKED_USER_ID;
+    return this.apiContext.post(`/profiling/v1/user/${ userId }/fan_attribute/${ userFanAttributeId }`, userFanAttributeUpdateDTO, {});
   }
 
 }
