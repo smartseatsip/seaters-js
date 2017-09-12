@@ -386,6 +386,14 @@ export class FanApi {
     return this.apiContext.post(`/profiling/v1/user/${ userId }/fan_attribute/${ userFanAttributeId }`, userFanAttributeUpdateDTO, {});
   }
 
+  removeUserFanAttribute (userFanAttributeId: string): Promise<UserFanAttribute> {
+
+    // @TODO: can be removed once user context is known
+    const userId = MOCKED_USER_ID;
+
+    return this.apiContext.delete(`/profiling/v1/user/${ userId }/fan_attribute/${ userFanAttributeId }`, {}, {});
+  }
+
 }
 
 /* tslint:enable:no-floating-promises */

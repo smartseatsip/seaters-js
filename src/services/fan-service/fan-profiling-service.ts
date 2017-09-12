@@ -52,4 +52,8 @@ export class FanProfilingService {
     return this.seatersApi.fan.updateUserFanAttribute(userFanAttributeId, userFanAttributeUpdateDTO);
   }
 
+  removeUserFanAttribute (userFanAttributeId: string): Promise<fan.UserFanAttribute> {
+    return this.seatersApi.fan.removeUserFanAttribute(userFanAttributeId);
+  }
+
 }

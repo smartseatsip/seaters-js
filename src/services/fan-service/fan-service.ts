@@ -269,6 +269,10 @@ export class FanService {
     return this.fanProfilingService.updateUserFanAttribute(userFanAttributeId, userFanAttributeCreateDTO);
   }
 
+  removeUserFanAttribute (userFanAttributeId: string): Promise<fan.UserFanAttribute> {
+    return this.fanProfilingService.removeUserFanAttribute(userFanAttributeId);
+  }
+
   /**
    *  HELPERS
    */
