@@ -101,8 +101,8 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(__webpack_require__(29));
 __export(__webpack_require__(4));
-__export(__webpack_require__(34));
 __export(__webpack_require__(35));
+__export(__webpack_require__(36));
 __export(__webpack_require__(9));
 __export(__webpack_require__(12));
 __export(__webpack_require__(8));
@@ -1473,8 +1473,8 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(46));
 __export(__webpack_require__(47));
+__export(__webpack_require__(48));
 exports.TYPE_FIELD = 'type';
 exports.TYPO_TOLERANCE_STRICT = 'strict';
 
@@ -1506,7 +1506,8 @@ exports.fan = fan_types_1.fan;
 Object.defineProperty(exports, "__esModule", { value: true });
 var api_1 = __webpack_require__(3);
 var seaters_api_1 = __webpack_require__(1);
-var services_1 = __webpack_require__(36);
+var services_1 = __webpack_require__(37);
+var profiling_service_1 = __webpack_require__(53);
 var SeatersClient = function () {
     function SeatersClient(options) {
         options = Object.assign({}, SeatersClient.DEFAULT_OPTIONS, options);
@@ -1516,6 +1517,7 @@ var SeatersClient = function () {
         this.appService = new services_1.AppService(this.seatersApi);
         this.publicService = new services_1.PublicService(this.appService, requestDriver, this.seatersApi);
         this.fanService = new services_1.FanService(this.seatersApi, this.sessionService, this.publicService);
+        this.profilingService = new profiling_service_1.ProfilingService(this.seatersApi, this.sessionService, this.publicService);
     }
     return SeatersClient;
 }();
@@ -2073,8 +2075,9 @@ exports.default = default_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 var app_api_1 = __webpack_require__(8);
 var fan_api_1 = __webpack_require__(9);
-var admin_1 = __webpack_require__(30);
-var health_1 = __webpack_require__(33);
+var profiling_api_1 = __webpack_require__(30);
+var admin_1 = __webpack_require__(31);
+var health_1 = __webpack_require__(34);
 var authentication_api_1 = __webpack_require__(12);
 var seaters_api_context_1 = __webpack_require__(4);
 var SeatersApi = function () {
@@ -2082,6 +2085,7 @@ var SeatersApi = function () {
         this.apiContext = new seaters_api_context_1.SeatersApiContext(prefix, requestDriver);
         this.app = new app_api_1.AppApi(this.apiContext);
         this.fan = new fan_api_1.FanApi(this.apiContext);
+        this.profiling = new profiling_api_1.ProfilingApi(this.apiContext);
         this.admin = new admin_1.AdminApi(this.apiContext);
         this.health = new health_1.HealthApi(this.apiContext);
         this.authentication = new authentication_api_1.AuthenticationApi(this.apiContext);
@@ -2097,16 +2101,44 @@ exports.SeatersApi = SeatersApi;
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", { value: true });
+var ProfilingApi = function () {
+    function ProfilingApi(apiContext) {
+        this.apiContext = apiContext;
+    }
+    /**
+     *  CATEGORIES
+     */
+    ProfilingApi.prototype.getCategories = function () {
+        return this.apiContext.get('/profiling/v1/categories', {}, {});
+    };
+    /**
+     *  CATEGORY
+     */
+    ProfilingApi.prototype.getCategoryById = function (categoryId) {
+        return this.apiContext.get("/profiling/v1/category/" + categoryId, {}, {});
+    };
+    return ProfilingApi;
+}();
+exports.ProfilingApi = ProfilingApi;
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 function __export(m) {
     for (var p in m) {
         if (!exports.hasOwnProperty(p)) exports[p] = m[p];
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(31));
+__export(__webpack_require__(32));
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2131,7 +2163,7 @@ var __extends = undefined && undefined.__extends || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 /* tslint:disable:no-floating-promises */
 var seaters_api_1 = __webpack_require__(1);
-var seaters_api_controller_1 = __webpack_require__(32);
+var seaters_api_controller_1 = __webpack_require__(33);
 var AdminApi = function (_super) {
     __extends(AdminApi, _super);
     function AdminApi(apiContext) {
@@ -2172,7 +2204,7 @@ exports.AdminApi = AdminApi;
 /* tslint:enable:no-floating-promises */
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2199,7 +2231,7 @@ var SeatersApiController = function () {
 exports.SeatersApiController = SeatersApiController;
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2215,7 +2247,7 @@ __export(__webpack_require__(10));
 __export(__webpack_require__(11));
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2247,7 +2279,7 @@ var PagingOptions = function () {
 exports.PagingOptions = PagingOptions;
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2281,25 +2313,6 @@ function seatersExceptionV1MessageMapper(mapping) {
 exports.seatersExceptionV1MessageMapper = seatersExceptionV1MessageMapper;
 
 /***/ }),
-/* 36 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-function __export(m) {
-    for (var p in m) {
-        if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-    }
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(37));
-__export(__webpack_require__(39));
-__export(__webpack_require__(48));
-__export(__webpack_require__(50));
-__export(__webpack_require__(0));
-
-/***/ }),
 /* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2313,12 +2326,31 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(__webpack_require__(38));
+__export(__webpack_require__(40));
+__export(__webpack_require__(49));
+__export(__webpack_require__(51));
+__export(__webpack_require__(0));
+
+/***/ }),
+/* 38 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function __export(m) {
+    for (var p in m) {
+        if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+    }
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(39));
 __export(__webpack_require__(2));
 __export(__webpack_require__(13));
 __export(__webpack_require__(14));
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2517,7 +2549,7 @@ var FanService = function () {
 exports.FanService = FanService;
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2529,10 +2561,10 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(40));
+__export(__webpack_require__(41));
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2541,7 +2573,7 @@ __export(__webpack_require__(40));
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var algolia_for_seaters_1 = __webpack_require__(41);
+var algolia_for_seaters_1 = __webpack_require__(42);
 var PublicService = function () {
     function PublicService(appService, requestDriver, seatersApi) {
         this.seatersApi = seatersApi;
@@ -2619,7 +2651,7 @@ var PublicService = function () {
 exports.PublicService = PublicService;
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2631,18 +2663,18 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(42));
+__export(__webpack_require__(43));
 __export(__webpack_require__(15));
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var algolia_api_1 = __webpack_require__(43);
+var algolia_api_1 = __webpack_require__(44);
 var algolia_for_seaters_types_1 = __webpack_require__(15);
 var DEFAULT_LOCALE = 'en';
 var WL_FACET_FILTER = { facet: algolia_for_seaters_types_1.TYPE_FIELD, value: algolia_for_seaters_types_1.WL_ALGOLIA_TYPE };
@@ -2866,7 +2898,7 @@ var AlgoliaForSeatersService = function () {
 exports.AlgoliaForSeatersService = AlgoliaForSeatersService;
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2878,10 +2910,10 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(44));
+__export(__webpack_require__(45));
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2905,7 +2937,7 @@ var __extends = undefined && undefined.__extends || function () {
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
 var api_1 = __webpack_require__(3);
-var indices_api_1 = __webpack_require__(45);
+var indices_api_1 = __webpack_require__(46);
 var APP_ID_HEADER = 'X-Algolia-Application-Id';
 var API_KEY_HEADER = 'X-Algolia-API-Key';
 var API_LOCATION_INFIX = '-dsn.algolia.net/1/';
@@ -2928,7 +2960,7 @@ var AlgoliaApi = function (_super) {
 exports.AlgoliaApi = AlgoliaApi;
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3002,7 +3034,7 @@ var IndicesApi = function () {
 exports.IndicesApi = IndicesApi;
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3012,7 +3044,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FG_ALGOLIA_TYPE = 'FAN_GROUP';
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3022,7 +3054,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.WL_ALGOLIA_TYPE = 'WAITING_LIST';
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3034,10 +3066,10 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(49));
+__export(__webpack_require__(50));
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3409,7 +3441,7 @@ var SessionService = function () {
 exports.SessionService = SessionService;
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3421,10 +3453,10 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(51));
+__export(__webpack_require__(52));
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3501,6 +3533,72 @@ var AppService = function () {
     return AppService;
 }();
 exports.AppService = AppService;
+
+/***/ }),
+/* 53 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var ProfilingService = function () {
+  function ProfilingService(seatersApi, sessionService, publicService) {
+    this.seatersApi = seatersApi;
+    this.sessionService = sessionService;
+    this.publicService = publicService;
+  }
+  /**
+   *  CATEGORIES
+   */
+  ProfilingService.prototype.getCategories = function () {
+    return this.seatersApi.profiling.getCategories();
+  };
+  /**
+   *  CATEGORY
+   */
+  ProfilingService.prototype.getCategoryById = function (categoryId) {
+    return this.seatersApi.profiling.getCategoryById(categoryId);
+  };
+  /**
+   *  INTERESTS
+   */
+  /**
+   *  INTEREST
+   */
+  /**
+   *  EXTERNAL IDENTIFIERS
+   */
+  /**
+   *  EXTERNAL IDENTIFIER
+   */
+  /**
+   *  FAN ATTRIBUTES
+   */
+  /**
+   *  FAN ATTRIBUTE
+   */
+  /**
+   *  USERS
+   */
+  /**
+   *  USER
+   */
+  /**
+   *  HELPERS
+   */
+  ProfilingService.prototype.convertPagedResult = function (result) {
+    return {
+      items: result.items,
+      itemOffset: result.itemOffset,
+      maxPageSize: result.maxPageSize,
+      page: Math.round(result.itemOffset / result.maxPageSize),
+      totalSize: result.totalSize
+    };
+  };
+  return ProfilingService;
+}();
+exports.ProfilingService = ProfilingService;
 
 /***/ })
 /******/ ]);

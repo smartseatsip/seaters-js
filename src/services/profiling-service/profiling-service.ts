@@ -26,6 +26,10 @@ export class ProfilingService {
    *  CATEGORY
    */
 
+  getCategoryById (categoryId): Promise<profiling.Category> {
+    return this.seatersApi.profiling.getCategoryById(categoryId);
+  }
+
   /**
    *  INTERESTS
    */

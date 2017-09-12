@@ -11,12 +11,16 @@ export class ProfilingApi {
    */
 
   getCategories (): Promise<Category[]> {
-    return this.apiContext.get('/v1/categories', {}, {});
+    return this.apiContext.get('/profiling/v1/categories', {}, {});
   }
 
   /**
    *  CATEGORY
    */
+
+  getCategoryById (categoryId): Promise<Category> {
+    return this.apiContext.get(`/profiling/v1/category/${ categoryId }`, {}, {});
+  }
 
   /**
    *  INTERESTS
