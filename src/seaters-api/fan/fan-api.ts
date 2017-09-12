@@ -17,7 +17,8 @@ import { StringMap } from '../../api/string-map';
 import { UserInterest } from './profiling';
 
 // @TODO: remove once backend knows the user context
-const MOCKED_USER_ID = '40c2b8e7-a2b8-44d8-8163-e38138fe7fb4';
+// dev: const MOCKED_USER_ID = '40c2b8e7-a2b8-44d8-8163-e38138fe7fb4';
+const MOCKED_USER_ID = 'cacc522e-1766-4ccb-a5eb-ec61fe2b6a97';
 
 export class FanApi {
 

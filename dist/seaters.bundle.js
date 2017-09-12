@@ -574,7 +574,8 @@ exports.AppApi = AppApi;
 Object.defineProperty(exports, "__esModule", { value: true });
 var seaters_api_1 = __webpack_require__(1);
 // @TODO: remove once backend knows the user context
-var MOCKED_USER_ID = '40c2b8e7-a2b8-44d8-8163-e38138fe7fb4';
+// dev: const MOCKED_USER_ID = '40c2b8e7-a2b8-44d8-8163-e38138fe7fb4';
+var MOCKED_USER_ID = 'cacc522e-1766-4ccb-a5eb-ec61fe2b6a97';
 var FanApi = function () {
     function FanApi(apiContext) {
         this.apiContext = apiContext;
@@ -790,6 +791,25 @@ var FanApi = function () {
         // @TODO: can be removed once user context is known
         var userId = MOCKED_USER_ID;
         return this.apiContext.get("/profiling/v1/user/" + userId + "/fan_attributes", {}, {});
+    };
+    FanApi.prototype.createUserFanAttribute = function (userFanAttributeCreateDTO) {
+        // @TODO: can be removed once user context is known
+        var userId = MOCKED_USER_ID;
+        // @TODO: can be removed once user context is known
+        userFanAttributeCreateDTO.user_id = MOCKED_USER_ID;
+        return this.apiContext.post("/profiling/v1/user/" + userId + "/fan_attribute", userFanAttributeCreateDTO, {});
+    };
+    FanApi.prototype.updateUserFanAttribute = function (userFanAttributeId, userFanAttributeUpdateDTO) {
+        // @TODO: can be removed once user context is known
+        var userId = MOCKED_USER_ID;
+        // @TODO: can be removed once user context is known
+        userFanAttributeUpdateDTO.user_id = MOCKED_USER_ID;
+        return this.apiContext.post("/profiling/v1/user/" + userId + "/fan_attribute/" + userFanAttributeId, userFanAttributeUpdateDTO, {});
+    };
+    FanApi.prototype.removeUserFanAttribute = function (userFanAttributeId) {
+        // @TODO: can be removed once user context is known
+        var userId = MOCKED_USER_ID;
+        return this.apiContext.delete("/profiling/v1/user/" + userId + "/fan_attribute/" + userFanAttributeId, {}, {});
     };
     return FanApi;
 }();
@@ -2566,6 +2586,15 @@ var FanService = function () {
     FanService.prototype.getUserFanAttributes = function () {
         return this.fanProfilingService.getUserFanAttributes();
     };
+    FanService.prototype.createUserFanAttribute = function (userFanAttributeCreateDTO) {
+        return this.fanProfilingService.createUserFanAttribute(userFanAttributeCreateDTO);
+    };
+    FanService.prototype.updateUserFanAttribute = function (userFanAttributeId, userFanAttributeCreateDTO) {
+        return this.fanProfilingService.updateUserFanAttribute(userFanAttributeId, userFanAttributeCreateDTO);
+    };
+    FanService.prototype.removeUserFanAttribute = function (userFanAttributeId) {
+        return this.fanProfilingService.removeUserFanAttribute(userFanAttributeId);
+    };
     /**
      *  HELPERS
      */
@@ -2619,6 +2648,15 @@ var FanProfilingService = function () {
     };
     FanProfilingService.prototype.getUserFanAttributes = function () {
         return this.seatersApi.fan.getUserFanAttributes();
+    };
+    FanProfilingService.prototype.createUserFanAttribute = function (userFanAttributeCreateDTO) {
+        return this.seatersApi.fan.createUserFanAttribute(userFanAttributeCreateDTO);
+    };
+    FanProfilingService.prototype.updateUserFanAttribute = function (userFanAttributeId, userFanAttributeUpdateDTO) {
+        return this.seatersApi.fan.updateUserFanAttribute(userFanAttributeId, userFanAttributeUpdateDTO);
+    };
+    FanProfilingService.prototype.removeUserFanAttribute = function (userFanAttributeId) {
+        return this.seatersApi.fan.removeUserFanAttribute(userFanAttributeId);
     };
     return FanProfilingService;
 }();
