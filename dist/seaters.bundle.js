@@ -764,6 +764,11 @@ var FanApi = function () {
     FanApi.prototype.getProfilingCategoryById = function (categoryId) {
         return this.apiContext.get("/profiling/v1/category/" + categoryId, {}, {});
     };
+    FanApi.prototype.getFanInterests = function () {
+        // @TODO: can be removed once user context is known
+        var userId = MOCKED_USER_ID;
+        return this.apiContext.get("/profiling/v1/user/" + userId + "/interests", {}, {});
+    };
     FanApi.prototype.createFanInterest = function (userInterestCreateDTO) {
         // @TODO: can be removed once user context is known
         userInterestCreateDTO.user_id = MOCKED_USER_ID;
@@ -2532,11 +2537,14 @@ var FanService = function () {
     FanService.prototype.getProfilingCategoryById = function (categoryId) {
         return this.fanProfilingService.getProfilingCategoryById(categoryId);
     };
+    FanService.prototype.getFanInterests = function () {
+        return this.fanProfilingService.getFanInterests();
+    };
     FanService.prototype.createFanInterest = function (fanInterestCreateDTO) {
         return this.fanProfilingService.createFanInterest(fanInterestCreateDTO);
     };
     FanService.prototype.updateFanInterest = function (fanInterestUpdateDTO) {
-        return this.seatersApi.fan.updateFanInterest(fanInterestUpdateDTO);
+        return this.fanProfilingService.updateFanInterest(fanInterestUpdateDTO);
     };
     /**
      *  HELPERS
@@ -2581,6 +2589,9 @@ var FanProfilingService = function () {
     /**
      *  INTERESTS
      */
+    FanProfilingService.prototype.getFanInterests = function () {
+        return this.seatersApi.fan.getFanInterests();
+    };
     FanProfilingService.prototype.createFanInterest = function (FanInterestCreateDTO) {
         return this.seatersApi.fan.createFanInterest(FanInterestCreateDTO);
     };

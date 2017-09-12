@@ -329,6 +329,14 @@ export class FanApi {
     return this.apiContext.get(`/profiling/v1/category/${ categoryId }`, {}, {});
   }
 
+  getFanInterests (): Promise<FanInterest[]> {
+
+    // @TODO: can be removed once user context is known
+    const userId = MOCKED_USER_ID;
+
+    return this.apiContext.get(`/profiling/v1/user/${ userId }/interests`, {}, {});
+  }
+
   createFanInterest (userInterestCreateDTO: FanInterestCreateDTO): Promise<FanInterest> {
 
     // @TODO: can be removed once user context is known

@@ -28,6 +28,10 @@ export class FanProfilingService {
    *  INTERESTS
    */
 
+  getFanInterests (): Promise<fan.FanInterest[]> {
+    return this.seatersApi.fan.getFanInterests();
+  }
+
   createFanInterest (FanInterestCreateDTO: fan.FanInterestCreateDTO): Promise<fan.FanInterest> {
     return this.seatersApi.fan.createFanInterest(FanInterestCreateDTO);
   }

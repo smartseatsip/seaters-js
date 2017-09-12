@@ -4,12 +4,8 @@ var client = new SeatersSDK.SeatersClient({
   requestDriver: 'NODE'
 });
 
-client.profilingService.updateUserInterest({
-  id: '63897b62-547f-4f70-ba91-a928e88420b7',
-  state: 'like',
-  version: 1
-}).then(function (response) {
-  console.log('Created interest', response);
+client.fanService.getFanInterests().then(function (response) {
+  console.log('Fan interests = ', response);
 }).catch(function (err) {
   console.log(err);
 });

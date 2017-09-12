@@ -75,8 +75,8 @@ export class FanService {
   getJoinedFanGroups (pagingOptions: PagingOptions): Promise<PagedResult<fan.FanGroup>> {
     return this.fanGroupService.joinedFanGroups(pagingOptions)
       .then(r => this.convertPagedResult(r));
-  }  
-  
+  }
+
   /**
    *  WAITING LISTS
    */
@@ -237,12 +237,16 @@ export class FanService {
     return this.fanProfilingService.getProfilingCategoryById(categoryId);
   }
 
+  getFanInterests (): Promise<fan.FanInterest[]> {
+    return this.fanProfilingService.getFanInterests();
+  }
+
   createFanInterest (fanInterestCreateDTO: fan.FanInterestCreateDTO): Promise<fan.FanInterest> {
     return this.fanProfilingService.createFanInterest(fanInterestCreateDTO);
   }
 
   updateFanInterest (fanInterestUpdateDTO: fan.FanInterestUpdateDTO): Promise<fan.FanInterest> {
-    return this.seatersApi.fan.updateFanInterest(fanInterestUpdateDTO);
+    return this.fanProfilingService.updateFanInterest(fanInterestUpdateDTO);
   }
 
   /**
