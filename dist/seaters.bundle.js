@@ -101,8 +101,8 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(__webpack_require__(29));
 __export(__webpack_require__(4));
+__export(__webpack_require__(34));
 __export(__webpack_require__(35));
-__export(__webpack_require__(36));
 __export(__webpack_require__(9));
 __export(__webpack_require__(12));
 __export(__webpack_require__(8));
@@ -573,6 +573,8 @@ exports.AppApi = AppApi;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var seaters_api_1 = __webpack_require__(1);
+// @TODO: remove once backend knows the user context
+var MOCKED_USER_ID = '40c2b8e7-a2b8-44d8-8163-e38138fe7fb4';
 var FanApi = function () {
     function FanApi(apiContext) {
         this.apiContext = apiContext;
@@ -752,6 +754,25 @@ var FanApi = function () {
     };
     FanApi.prototype.getTranslatedVenueConditions = function (waitingListId) {
         return this.apiContext.get('/fan/waiting-lists/:waitingListId/translated-venue-conditions', { waitingListId: waitingListId });
+    };
+    /**
+     *  PROFILING
+     */
+    FanApi.prototype.getProfilingCategories = function () {
+        return this.apiContext.get('/profiling/v1/categories', {}, {});
+    };
+    FanApi.prototype.getProfilingCategoryById = function (categoryId) {
+        return this.apiContext.get("/profiling/v1/category/" + categoryId, {}, {});
+    };
+    FanApi.prototype.createFanInterest = function (userInterestCreateDTO) {
+        // @TODO: can be removed once user context is known
+        userInterestCreateDTO.user_id = MOCKED_USER_ID;
+        return this.apiContext.post('/profiling/v1/user/interest', userInterestCreateDTO, {});
+    };
+    FanApi.prototype.updateFanInterest = function (userInterestUpdateDTO) {
+        // @TODO: can be removed once user context is known
+        userInterestUpdateDTO.user_id = MOCKED_USER_ID;
+        return this.apiContext.put('/profiling/v1/user/interest', userInterestUpdateDTO, {});
     };
     return FanApi;
 }();
@@ -1506,8 +1527,7 @@ exports.fan = fan_types_1.fan;
 Object.defineProperty(exports, "__esModule", { value: true });
 var api_1 = __webpack_require__(3);
 var seaters_api_1 = __webpack_require__(1);
-var services_1 = __webpack_require__(37);
-var profiling_service_1 = __webpack_require__(53);
+var services_1 = __webpack_require__(36);
 var SeatersClient = function () {
     function SeatersClient(options) {
         options = Object.assign({}, SeatersClient.DEFAULT_OPTIONS, options);
@@ -1517,7 +1537,6 @@ var SeatersClient = function () {
         this.appService = new services_1.AppService(this.seatersApi);
         this.publicService = new services_1.PublicService(this.appService, requestDriver, this.seatersApi);
         this.fanService = new services_1.FanService(this.seatersApi, this.sessionService, this.publicService);
-        this.profilingService = new profiling_service_1.ProfilingService(this.seatersApi, this.sessionService, this.publicService);
     }
     return SeatersClient;
 }();
@@ -2075,9 +2094,8 @@ exports.default = default_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 var app_api_1 = __webpack_require__(8);
 var fan_api_1 = __webpack_require__(9);
-var profiling_api_1 = __webpack_require__(30);
-var admin_1 = __webpack_require__(31);
-var health_1 = __webpack_require__(34);
+var admin_1 = __webpack_require__(30);
+var health_1 = __webpack_require__(33);
 var authentication_api_1 = __webpack_require__(12);
 var seaters_api_context_1 = __webpack_require__(4);
 var SeatersApi = function () {
@@ -2085,7 +2103,6 @@ var SeatersApi = function () {
         this.apiContext = new seaters_api_context_1.SeatersApiContext(prefix, requestDriver);
         this.app = new app_api_1.AppApi(this.apiContext);
         this.fan = new fan_api_1.FanApi(this.apiContext);
-        this.profiling = new profiling_api_1.ProfilingApi(this.apiContext);
         this.admin = new admin_1.AdminApi(this.apiContext);
         this.health = new health_1.HealthApi(this.apiContext);
         this.authentication = new authentication_api_1.AuthenticationApi(this.apiContext);
@@ -2101,59 +2118,16 @@ exports.SeatersApi = SeatersApi;
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", { value: true });
-// @TODO: the user context should be known on the backend side already
-var MOCKED_USER_ID = '40c2b8e7-a2b8-44d8-8163-e38138fe7fb4';
-var ProfilingApi = function () {
-    function ProfilingApi(apiContext) {
-        this.apiContext = apiContext;
-    }
-    /**
-     *  CATEGORIES
-     */
-    ProfilingApi.prototype.getCategories = function () {
-        return this.apiContext.get('/profiling/v1/categories', {}, {});
-    };
-    /**
-     *  CATEGORY
-     */
-    ProfilingApi.prototype.getCategoryById = function (categoryId) {
-        return this.apiContext.get("/profiling/v1/category/" + categoryId, {}, {});
-    };
-    /**
-     *  INTERESTS
-     */
-    ProfilingApi.prototype.createUserInterest = function (userInterestCreateDTO) {
-        // @TODO: can be removed once user context is known
-        userInterestCreateDTO.user_id = MOCKED_USER_ID;
-        return this.apiContext.post('/profiling/v1/user/interest', userInterestCreateDTO, {});
-    };
-    ProfilingApi.prototype.updateUserInterest = function (userInterestUpdateDTO) {
-        // @TODO: can be removed once user context is known
-        userInterestUpdateDTO.user_id = MOCKED_USER_ID;
-        return this.apiContext.put('/profiling/v1/user/interest', userInterestUpdateDTO, {});
-    };
-    return ProfilingApi;
-}();
-exports.ProfilingApi = ProfilingApi;
-
-/***/ }),
-/* 31 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
 function __export(m) {
     for (var p in m) {
         if (!exports.hasOwnProperty(p)) exports[p] = m[p];
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(32));
+__export(__webpack_require__(31));
 
 /***/ }),
-/* 32 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2178,7 +2152,7 @@ var __extends = undefined && undefined.__extends || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 /* tslint:disable:no-floating-promises */
 var seaters_api_1 = __webpack_require__(1);
-var seaters_api_controller_1 = __webpack_require__(33);
+var seaters_api_controller_1 = __webpack_require__(32);
 var AdminApi = function (_super) {
     __extends(AdminApi, _super);
     function AdminApi(apiContext) {
@@ -2219,7 +2193,7 @@ exports.AdminApi = AdminApi;
 /* tslint:enable:no-floating-promises */
 
 /***/ }),
-/* 33 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2246,7 +2220,7 @@ var SeatersApiController = function () {
 exports.SeatersApiController = SeatersApiController;
 
 /***/ }),
-/* 34 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2262,7 +2236,7 @@ __export(__webpack_require__(10));
 __export(__webpack_require__(11));
 
 /***/ }),
-/* 35 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2294,7 +2268,7 @@ var PagingOptions = function () {
 exports.PagingOptions = PagingOptions;
 
 /***/ }),
-/* 36 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2328,6 +2302,25 @@ function seatersExceptionV1MessageMapper(mapping) {
 exports.seatersExceptionV1MessageMapper = seatersExceptionV1MessageMapper;
 
 /***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function __export(m) {
+    for (var p in m) {
+        if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+    }
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(37));
+__export(__webpack_require__(40));
+__export(__webpack_require__(49));
+__export(__webpack_require__(51));
+__export(__webpack_require__(0));
+
+/***/ }),
 /* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2341,31 +2334,12 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(__webpack_require__(38));
-__export(__webpack_require__(40));
-__export(__webpack_require__(49));
-__export(__webpack_require__(51));
-__export(__webpack_require__(0));
-
-/***/ }),
-/* 38 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-function __export(m) {
-    for (var p in m) {
-        if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-    }
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(39));
 __export(__webpack_require__(2));
 __export(__webpack_require__(13));
 __export(__webpack_require__(14));
 
 /***/ }),
-/* 39 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2375,6 +2349,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var waiting_list_service_1 = __webpack_require__(13);
 var fan_group_service_1 = __webpack_require__(14);
 var util_1 = __webpack_require__(0);
+var fan_profiling_service_1 = __webpack_require__(39);
 var FanService = function () {
     function FanService(seatersApi, sessionService, publicService) {
         this.seatersApi = seatersApi;
@@ -2382,6 +2357,7 @@ var FanService = function () {
         this.publicService = publicService;
         this.waitingListService = new waiting_list_service_1.WaitingListService(seatersApi);
         this.fanGroupService = new fan_group_service_1.FanGroupService(seatersApi);
+        this.fanProfilingService = new fan_profiling_service_1.FanProfilingService(seatersApi);
     }
     /**
      *  FAN GROUPS
@@ -2548,6 +2524,21 @@ var FanService = function () {
         });
     };
     /**
+     *  PROFILING
+     */
+    FanService.prototype.getProfilingCategories = function () {
+        return this.fanProfilingService.getProfilingCategories();
+    };
+    FanService.prototype.getProfilingCategoryById = function (categoryId) {
+        return this.fanProfilingService.getProfilingCategoryById(categoryId);
+    };
+    FanService.prototype.createFanInterest = function (fanInterestCreateDTO) {
+        return this.fanProfilingService.createFanInterest(fanInterestCreateDTO);
+    };
+    FanService.prototype.updateFanInterest = function (fanInterestUpdateDTO) {
+        return this.seatersApi.fan.updateFanInterest(fanInterestUpdateDTO);
+    };
+    /**
      *  HELPERS
      */
     FanService.prototype.convertPagedResult = function (result) {
@@ -2562,6 +2553,43 @@ var FanService = function () {
     return FanService;
 }();
 exports.FanService = FanService;
+
+/***/ }),
+/* 39 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var FanProfilingService = function () {
+    function FanProfilingService(seatersApi) {
+        this.seatersApi = seatersApi;
+    }
+    /**
+     *  CATEGORIES
+     */
+    FanProfilingService.prototype.getProfilingCategories = function () {
+        return this.seatersApi.fan.getProfilingCategories();
+    };
+    /**
+     *  CATEGORY
+     */
+    FanProfilingService.prototype.getProfilingCategoryById = function (categoryId) {
+        return this.seatersApi.fan.getProfilingCategoryById(categoryId);
+    };
+    /**
+     *  INTERESTS
+     */
+    FanProfilingService.prototype.createFanInterest = function (FanInterestCreateDTO) {
+        return this.seatersApi.fan.createFanInterest(FanInterestCreateDTO);
+    };
+    FanProfilingService.prototype.updateFanInterest = function (FanInterestUpdateDTO) {
+        return this.seatersApi.fan.updateFanInterest(FanInterestUpdateDTO);
+    };
+    return FanProfilingService;
+}();
+exports.FanProfilingService = FanProfilingService;
 
 /***/ }),
 /* 40 */
@@ -3548,72 +3576,6 @@ var AppService = function () {
     return AppService;
 }();
 exports.AppService = AppService;
-
-/***/ }),
-/* 53 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var ProfilingService = function () {
-  function ProfilingService(seatersApi, sessionService, publicService) {
-    this.seatersApi = seatersApi;
-    this.sessionService = sessionService;
-    this.publicService = publicService;
-  }
-  /**
-   *  CATEGORIES
-   */
-  ProfilingService.prototype.getCategories = function () {
-    return this.seatersApi.profiling.getCategories();
-  };
-  /**
-   *  CATEGORY
-   */
-  ProfilingService.prototype.getCategoryById = function (categoryId) {
-    return this.seatersApi.profiling.getCategoryById(categoryId);
-  };
-  /**
-   *  INTERESTS
-   */
-  ProfilingService.prototype.createUserInterest = function (userInterestCreateDTO) {
-    return this.seatersApi.profiling.createUserInterest(userInterestCreateDTO);
-  };
-  ProfilingService.prototype.updateUserInterest = function (userInterestUpdateDTO) {
-    return this.seatersApi.profiling.updateUserInterest(userInterestUpdateDTO);
-  };
-  /**
-   *  INTEREST
-   */
-  /**
-   *  EXTERNAL IDENTIFIERS
-   */
-  /**
-   *  EXTERNAL IDENTIFIER
-   */
-  /**
-   *  FAN ATTRIBUTES
-   */
-  /**
-   *  FAN ATTRIBUTE
-   */
-  /**
-   *  HELPERS
-   */
-  ProfilingService.prototype.convertPagedResult = function (result) {
-    return {
-      items: result.items,
-      itemOffset: result.itemOffset,
-      maxPageSize: result.maxPageSize,
-      page: Math.round(result.itemOffset / result.maxPageSize),
-      totalSize: result.totalSize
-    };
-  };
-  return ProfilingService;
-}();
-exports.ProfilingService = ProfilingService;
 
 /***/ })
 /******/ ]);

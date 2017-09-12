@@ -1,7 +1,6 @@
 import { REQUEST_DRIVER_TYPE, getRequestDriver } from './api';
 import { SeatersApi } from './seaters-api';
 import { FanService, PublicService, SessionService, AppService } from './services';
-import { ProfilingService } from './services/profiling-service/profiling-service';
 
 export type PromiseMiddleware<T> = (promise: Promise<any>) => T;
 
@@ -21,7 +20,6 @@ export class SeatersClient {
   public appService: AppService;
   public publicService: PublicService;
   public fanService: FanService;
-  public profilingService: ProfilingService;
 
   private seatersApi: SeatersApi;
 
@@ -34,7 +32,6 @@ export class SeatersClient {
     this.appService = new AppService(this.seatersApi);
     this.publicService = new PublicService(this.appService, requestDriver, this.seatersApi);
     this.fanService = new FanService(this.seatersApi, this.sessionService, this.publicService);
-    this.profilingService = new ProfilingService(this.seatersApi, this.sessionService, this.publicService);
   }
 
 }
