@@ -439,7 +439,7 @@ export class WaitingListService {
       .then(() => {
         return this.pollWaitingList(
           wl.waitingListId,
-          (wl) => this.hasPreviousPayment(wl),
+          (wl) => !this.hasPreviousPayment(wl),
           60,
           1000
         );
@@ -458,6 +458,12 @@ export class WaitingListService {
           60,
           1000
         );
+      })
+      .then((wl:any) => {
+        if (this.hasFailedPayment(wl)) {
+          return Promise.reject('Payment Failed!');
+        }
+        return wl;
       });
   }
 
@@ -465,4 +471,7 @@ export class WaitingListService {
     return wl.position && ['FAILURE', 'COMPLETED'].indexOf(wl.position.transactionStatus) >= 0;
   }
 
+  private hasFailedPayment (wl: fan.WaitingList): boolean {
+    return wl.position && wl.position.transactionStatus === 'FAILURE';
+  }  
 }
