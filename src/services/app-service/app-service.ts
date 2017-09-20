@@ -79,4 +79,16 @@ export class AppService {
       });
   }
 
+  /**
+   * Based on the Accept-Language header this request will obtain
+   * the best suited locale seaters has available for the user.
+   * This method requires the actual request library to populate the
+   * Accept-Language header; by default XHR populates this for most browsers.
+   * It will work even without the header, but it will always return Seater's
+   * default locale in this case.
+   */
+  getUserDefaultLocale (): Promise<String> {
+    return this.seatersApi.app.userDefaultLocale();
+  }
+
 }

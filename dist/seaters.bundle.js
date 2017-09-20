@@ -58,7 +58,7 @@ var SeatersSDK =
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/Users/sanderdecoster/local_projects/seaters/seaters-js/dist";
+/******/ 	__webpack_require__.p = "/home/seaters/seaters-js/dist";
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 16);
@@ -557,6 +557,12 @@ var AppApi = function () {
             queryParams.lang = language;
         }
         return seaters_api_context_1.SeatersApiContext.convertPagedResultToArray(this.apiContext.get('/app/translations', null, queryParams));
+    };
+    AppApi.prototype.userDefaultLocale = function () {
+        return this.apiContext.doSeatersRequest({
+            method: 'GET',
+            abstractEndpoint: '/app/user-default-locale'
+        });
     };
     return AppApi;
 }();
@@ -3497,6 +3503,17 @@ var AppService = function () {
             console.error('Seaters API under maintenance', err);
             return true;
         });
+    };
+    /**
+     * Based on the Accept-Language header this request will obtain
+     * the best suited locale seaters has available for the user.
+     * This method requires the actual request library to populate the
+     * Accept-Language header; by default XHR populates this for most browsers.
+     * It will work even without the header, but it will always return Seater's
+     * default locale in this case.
+     */
+    AppService.prototype.getUserDefaultLocale = function () {
+        return this.seatersApi.app.userDefaultLocale();
     };
     return AppService;
 }();
