@@ -1497,7 +1497,7 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.version = '1.23.1';
+exports.version = '1.23.3';
 __export(__webpack_require__(17));
 var fan_types_1 = __webpack_require__(2);
 exports.fan = fan_types_1.fan;
@@ -2864,7 +2864,12 @@ var AlgoliaForSeatersService = function () {
                 fee: wl.fee,
                 formattedFee: wl.formattedFee,
                 total: wl.total,
-                formattedTotal: wl.formattedTotal
+                formattedTotal: wl.formattedTotal,
+                originalPrice: wl.originalPrice,
+                discountAmount: wl.discountAmount,
+                discountPercentage: wl.discountPercentage,
+                formattedOriginalPrice: wl.formattedOriginalPrice,
+                formattedDiscountAmount: wl.formattedDiscountAmount
             };
         }
         return wl;
