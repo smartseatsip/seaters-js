@@ -47,6 +47,32 @@ export interface WaitingList {
   price: Price;
 
   /**
+   * Original price of a single ticket
+   * To be used when calculating the discount (done at backend side)
+   */
+  originalPrice: Price;
+
+  /**
+   * Discount amount
+   */
+  discountAmount: Price;
+
+  /**
+   * % discount based on price / discount price
+   */
+  discountPercentage: number;
+
+  /**
+   * Formatted original price
+   */
+  formattedOriginalPrice: string;
+
+  /**
+   * Formatted discount
+   */
+  formattedDiscountAmount: string;
+
+  /**
    * Wether direct sales is enabled for this WL, meaning the fan can receive his
    * seats immediately if available, without the need for manual distribution.
    */

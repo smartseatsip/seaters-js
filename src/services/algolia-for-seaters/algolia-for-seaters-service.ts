@@ -223,7 +223,12 @@ export class AlgoliaForSeatersService {
         fee: wl.fee,
         formattedFee: wl.formattedFee,
         total: wl.total,
-        formattedTotal: wl.formattedTotal
+        formattedTotal: wl.formattedTotal,
+        originalPrice: wl.originalPrice,
+        discountAmount: wl.discountAmount,
+        discountPercentage: wl.discountPercentage,
+        formattedOriginalPrice: wl.formattedOriginalPrice,
+        formattedDiscountAmount: wl.formattedDiscountAmount
       };
     }
     return wl;
