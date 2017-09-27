@@ -2695,7 +2695,9 @@ var AlgoliaForSeatersService = function () {
             query: '',
             typoTolerance: algolia_for_seaters_types_1.TYPO_TOLERANCE_STRICT,
             facetFilters: [WL_FACET_FILTER],
-            filters: fanGroupIdsFilter
+            filters: fanGroupIdsFilter,
+            page: page,
+            hitsPerPage: hitsPerPage
         };
         return this.search(q).then(function (r) {
             return _this.stripAlgoliaFieldsFromSearchResultHits(r);
