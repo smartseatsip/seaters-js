@@ -39,6 +39,11 @@ export interface WaitingList {
   accessMode: WL_ACCESS_MODE;
   directSalesEnabled: boolean;
   price: Price;
+  originalPrice: Price;
+  discountAmount: Price;
+  discountPercentage: number;
+  formattedOriginalPrice: string;
+  formattedDiscountAmount: string;
 
   displayName: string;
 
