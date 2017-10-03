@@ -70,4 +70,29 @@ export interface Price {
    */
   formattedTotal: string;
 
+  /**
+   * Original price of a single ticket
+   * To be used when calculating the discount (done at backend side)
+   */
+  originalPrice: Price;
+
+  /**
+   * Discount amount
+   */
+  discountAmount: Price;
+
+  /**
+   * % discount based on price / discount price
+   */
+  discountPercentage: number;
+
+  /**
+   * Formatted original price
+   */
+  formattedOriginalPrice: string;
+
+  /**
+   * Formatted discount
+   */
+  formattedDiscountAmount: string;
 }

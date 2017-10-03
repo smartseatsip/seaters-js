@@ -558,6 +558,12 @@ var AppApi = function () {
         }
         return seaters_api_context_1.SeatersApiContext.convertPagedResultToArray(this.apiContext.get('/app/translations', null, queryParams));
     };
+    AppApi.prototype.userDefaultLocale = function () {
+        return this.apiContext.doSeatersRequest({
+            method: 'GET',
+            abstractEndpoint: '/app/user-default-locale'
+        });
+    };
     return AppApi;
 }();
 exports.AppApi = AppApi;
@@ -1549,7 +1555,7 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.version = '1.22.2';
+exports.version = '1.23.3';
 __export(__webpack_require__(17));
 var fan_types_1 = __webpack_require__(2);
 exports.fan = fan_types_1.fan;
@@ -2835,7 +2841,9 @@ var AlgoliaForSeatersService = function () {
             query: '',
             typoTolerance: algolia_for_seaters_types_1.TYPO_TOLERANCE_STRICT,
             facetFilters: [WL_FACET_FILTER],
-            filters: fanGroupIdsFilter
+            filters: fanGroupIdsFilter,
+            page: page,
+            hitsPerPage: hitsPerPage
         };
         return this.search(q).then(function (r) {
             return _this.stripAlgoliaFieldsFromSearchResultHits(r);
@@ -3002,7 +3010,12 @@ var AlgoliaForSeatersService = function () {
                 fee: wl.fee,
                 formattedFee: wl.formattedFee,
                 total: wl.total,
-                formattedTotal: wl.formattedTotal
+                formattedTotal: wl.formattedTotal,
+                originalPrice: wl.originalPrice,
+                discountAmount: wl.discountAmount,
+                discountPercentage: wl.discountPercentage,
+                formattedOriginalPrice: wl.formattedOriginalPrice,
+                formattedDiscountAmount: wl.formattedDiscountAmount
             };
         }
         return wl;
@@ -3643,6 +3656,17 @@ var AppService = function () {
             console.error('Seaters API under maintenance', err);
             return true;
         });
+    };
+    /**
+     * Based on the Accept-Language header this request will obtain
+     * the best suited locale seaters has available for the user.
+     * This method requires the actual request library to populate the
+     * Accept-Language header; by default XHR populates this for most browsers.
+     * It will work even without the header, but it will always return Seater's
+     * default locale in this case.
+     */
+    AppService.prototype.getUserDefaultLocale = function () {
+        return this.seatersApi.app.userDefaultLocale();
     };
     return AppService;
 }();

@@ -54,7 +54,9 @@ export class AlgoliaForSeatersService {
       query: '',
       typoTolerance: TYPO_TOLERANCE_STRICT,
       facetFilters: [WL_FACET_FILTER],
-      filters: fanGroupIdsFilter
+      filters: fanGroupIdsFilter,
+      page: page,
+      hitsPerPage: hitsPerPage
     };
     return this.search(q)
       .then(r => this.stripAlgoliaFieldsFromSearchResultHits(r));
@@ -74,7 +76,7 @@ export class AlgoliaForSeatersService {
         return res;
       });
   }
-  
+
   searchWaitingListsInFanGroup (fanGroupId: string, query: string, locale: string, hitsPerPage: number, page: number): Promise<TypedSearchResult<WaitingList>> {
     return this.getSearchableAttributes(locale).then((searchableAttributes) => {
       let q: SearchQuery = {
@@ -221,7 +223,12 @@ export class AlgoliaForSeatersService {
         fee: wl.fee,
         formattedFee: wl.formattedFee,
         total: wl.total,
-        formattedTotal: wl.formattedTotal
+        formattedTotal: wl.formattedTotal,
+        originalPrice: wl.originalPrice,
+        discountAmount: wl.discountAmount,
+        discountPercentage: wl.discountPercentage,
+        formattedOriginalPrice: wl.formattedOriginalPrice,
+        formattedDiscountAmount: wl.formattedDiscountAmount
       };
     }
     return wl;

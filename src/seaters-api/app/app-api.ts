@@ -41,6 +41,13 @@ export class AppApi {
     return SeatersApiContext.convertPagedResultToArray(this.apiContext.get('/app/translations', null, queryParams));
   }
 
+  userDefaultLocale (): Promise<string> {
+    return this.apiContext.doSeatersRequest({
+      method: 'GET',
+      abstractEndpoint: '/app/user-default-locale'
+    });
+  }
+
 }
 
 /* tslint:enable:no-floating-promises */
