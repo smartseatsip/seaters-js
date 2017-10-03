@@ -16,10 +16,6 @@ import { WaitingListRequest } from './waiting-list';
 import { StringMap } from '../../api/string-map';
 import { UserInterest } from './profiling';
 
-// @TODO: remove once backend knows the user context
-// dev: const MOCKED_USER_ID = '40c2b8e7-a2b8-44d8-8163-e38138fe7fb4';
-const MOCKED_USER_ID = 'cacc522e-1766-4ccb-a5eb-ec61fe2b6a97';
-
 export class FanApi {
 
   constructor (private apiContext: SeatersApiContext) {
@@ -342,57 +338,31 @@ export class FanApi {
   // User (fan)
 
   getUserInterests (): Promise<UserInterest[]> {
-
-    // @TODO: can be removed once user context is known
-    const userId = MOCKED_USER_ID;
-    return this.apiContext.get(`/profiling/v1/user/${ userId }/interests`, {}, {});
+    return this.apiContext.get(`/profiling/v1/user/interests`, {}, {});
   }
 
   createUserInterest (userInterestCreateDTO: UserInterestCreateDTO): Promise<UserInterest> {
-
-    // @TODO: can be removed once user context is known
-    (userInterestCreateDTO as any).user_id = MOCKED_USER_ID;
     return this.apiContext.post('/profiling/v1/user/interest', userInterestCreateDTO, {});
   }
 
   updateUserInterest (userInterestUpdateDTO: UserInterestUpdateDTO): Promise<UserInterest> {
-
-    // @TODO: can be removed once user context is known
-    (userInterestUpdateDTO as any).user_id = MOCKED_USER_ID;
     return this.apiContext.put('/profiling/v1/user/interest', userInterestUpdateDTO, {});
   }
 
   getUserFanAttributes (): Promise<UserFanAttribute[]> {
-
-    // @TODO: can be removed once user context is known
-    const userId = MOCKED_USER_ID;
-    return this.apiContext.get(`/profiling/v1/user/${ userId }/fan_attributes`, {}, {});
+    return this.apiContext.get(`/profiling/v1/user/fan_attributes`, {}, {});
   }
 
   createUserFanAttribute (userFanAttributeCreateDTO: UserFanAttributeCreateDTO): Promise<UserFanAttribute> {
-
-    // @TODO: can be removed once user context is known
-    const userId = MOCKED_USER_ID;
-    // @TODO: can be removed once user context is known
-    (userFanAttributeCreateDTO as any).user_id = MOCKED_USER_ID;
-    return this.apiContext.post(`/profiling/v1/user/${ userId }/fan_attribute`, userFanAttributeCreateDTO, {});
+    return this.apiContext.post(`/profiling/v1/user/fan_attribute`, userFanAttributeCreateDTO, {});
   }
 
   updateUserFanAttribute (userFanAttributeId: string, userFanAttributeUpdateDTO: UserFanAttributeUpdateDTO): Promise<UserFanAttribute> {
-
-    // @TODO: can be removed once user context is known
-    const userId = MOCKED_USER_ID;
-    // @TODO: can be removed once user context is known
-    (userFanAttributeUpdateDTO as any).user_id = MOCKED_USER_ID;
-    return this.apiContext.post(`/profiling/v1/user/${ userId }/fan_attribute/${ userFanAttributeId }`, userFanAttributeUpdateDTO, {});
+    return this.apiContext.post(`/profiling/v1/user/fan_attribute/${ userFanAttributeId }`, userFanAttributeUpdateDTO, {});
   }
 
   removeUserFanAttribute (userFanAttributeId: string): Promise<UserFanAttribute> {
-
-    // @TODO: can be removed once user context is known
-    const userId = MOCKED_USER_ID;
-
-    return this.apiContext.delete(`/profiling/v1/user/${ userId }/fan_attribute/${ userFanAttributeId }`, {}, {});
+    return this.apiContext.delete(`/profiling/v1/user/fan_attribute/${ userFanAttributeId }`, {}, {});
   }
 
 }
