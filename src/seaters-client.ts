@@ -1,6 +1,6 @@
 import { REQUEST_DRIVER_TYPE, getRequestDriver } from './api';
 import { SeatersApi } from './seaters-api';
-import { FanService, PublicService, SessionService, AppService } from './services';
+import { FanService, PublicService, SessionService, AppService, AdminService } from './services';
 
 export type PromiseMiddleware<T> = (promise: Promise<any>) => T;
 
@@ -26,6 +26,8 @@ export class SeatersClient {
 
   public fanService: FanService;
 
+  public adminService: AdminService;
+
   constructor (options?: SeatersClientOptions) {
     options = Object.assign({}, SeatersClient.DEFAULT_OPTIONS, options);
     let requestDriver = getRequestDriver(options.requestDriver);
@@ -35,6 +37,7 @@ export class SeatersClient {
     this.appService = new AppService(this.seatersApi);
     this.publicService = new PublicService(this.appService, requestDriver, this.seatersApi);
     this.fanService = new FanService(this.seatersApi, this.sessionService, this.publicService);
+    this.adminService = new AdminService(this.seatersApi);
   }
 
 }
@@ -59,7 +62,8 @@ export function wrapClient<T> (promiseMiddleware: PromiseMiddleware<T>, client: 
     appService: {},
     fanService: {},
     publicService: {},
-    sessionService: {}
+    sessionService: {},
+    adminService: {}
   } as SeatersClient;
 
   Object.keys(wrappedClient).forEach((serviceName) => {
