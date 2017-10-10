@@ -7,6 +7,7 @@ import {
   AttendeesInfo as _AttendeesInfo,
   AttendeeInfo as _AttendeeInfo,
   FanGroupShare as _FanGroupShare,
+  WaitingListShare as _WaitingListShare,
   Fan as _Fan
 } from '../../seaters-api/fan';
 
@@ -95,6 +96,9 @@ export namespace fan {
   }
 
   export interface FanGroupShare extends _FanGroupShare {
+  }
+
+  export interface WaitingListShare extends _WaitingListShare {
   }
 
 }

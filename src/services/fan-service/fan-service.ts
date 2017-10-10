@@ -108,6 +108,7 @@ export class FanService {
       .then(r => this.convertPagedResult(r));
   }
 
+  //TODO: cleanup duplicate method (see getTranslatedVenueConditionsForWaitingList)
   getWaitingListTranslatedVenueDescription (waitingListId: string): Promise<string> {
     return this.waitingListService.getWaitingListTranslatedVenueDescription(waitingListId);
   }
@@ -124,7 +125,7 @@ export class FanService {
     return this.waitingListService.joinProtectedWaitingList(waitingListId, code, numberOfSeats, Object.assign({}, additionalQueryParams));
   }
 
-  shareWaitingList (waitingListId: string): Promise<fan.WaitingList> {
+  shareWaitingList (waitingListId: string): Promise<fan.WaitingListShare> {
     return this.waitingListService.shareWaitingList(waitingListId);
   }
 
@@ -165,7 +166,7 @@ export class FanService {
       .then(translationMap => new LocalizableText(translationMap));
   }
 
-  getTranslatedEventDescriptionForWaitingList (waitingListId: string): Promise<LocalizableText> {
+  getTranslatedEventDescriptionForWaitingList (waitingListId: string): Promise<string> {
     return this.waitingListService.getTranslatedEventDescriptionForWaitingList(waitingListId);
   }
 
@@ -174,7 +175,7 @@ export class FanService {
       .then(translationMap => new LocalizableText(translationMap));
   }
 
-  getTranslatedVenueConditionsForWaitingList (waitingListId: string): Promise<LocalizableText> {
+  getTranslatedVenueConditionsForWaitingList (waitingListId: string): Promise<string> {
     return this.waitingListService.getTranslatedVenueConditionsForWaitingList(waitingListId);
   }
 

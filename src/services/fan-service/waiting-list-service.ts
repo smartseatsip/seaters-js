@@ -102,7 +102,7 @@ export class WaitingListService {
       .then((wl) => this.waitForDirectSales(wl));
   }
 
-  shareWaitingList (waitingListId: string): Promise<fan.WaitingList> {
+  shareWaitingList (waitingListId: string): Promise<fan.WaitingListShare> {
     return this.api.fan.shareWaitingList(waitingListId);
   }
 
@@ -172,7 +172,7 @@ export class WaitingListService {
     return this.api.fan.getVenueConditions(waitingListId);
   }
 
-  getTranslatedVenueConditionsForWaitingList (waitingListId: string): Promise<TranslationMap> {
+  getTranslatedVenueConditionsForWaitingList (waitingListId: string): Promise<string> {
     return this.api.fan.getTranslatedVenueConditions(waitingListId);
   }
 
