@@ -32,7 +32,7 @@ export class FanGroupService {
       }));
   }
 
-  getFanGroupLookBySlug (slug: string): Promise<fan.FanGroup> {
+  getFanGroupLookBySlug (slug: string): Promise<fan.FanGroupLook> {
     return this.api.fan.fanGroupLookBySlug(slug);
   }
 

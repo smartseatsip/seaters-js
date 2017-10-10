@@ -42,7 +42,7 @@ export class FanApi {
     );
   }
 
-  fanGroupLookBySlug (slug: string): Promise<FanGroup> {
+  fanGroupLookBySlug (slug: string): Promise<FanGroupLook> {
     return this.apiContext.get(
       '/fan/fangroups-by-slug/:slug/look',
       { slug: slug }

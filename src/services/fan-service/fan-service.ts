@@ -41,7 +41,7 @@ export class FanService {
     return this.fanGroupService.getFanGroupBySlug(slug);
   }
 
-  getFanGroupLookBySlug (slug: string): Promise<fan.FanGroup> {
+  getFanGroupLookBySlug (slug: string): Promise<fan.FanGroupLook> {
     return this.fanGroupService.getFanGroupLookBySlug(slug);
   }
 
