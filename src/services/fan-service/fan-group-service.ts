@@ -15,7 +15,7 @@ export class FanGroupService {
 
   getFanGroups (fanGroupIds: string[]): Promise<fan.FanGroup[]> {
     return this.api.fan.fanGroups(fanGroupIds)
-      .then(fgs => fgs.map(fg => this.extendRawWaitingList(fg)));
+      .then(fgs => fgs.map(fg => this.extendRawFanGroup(fg)));
   }
 
   getFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
@@ -69,7 +69,8 @@ export class FanGroupService {
   }
 
   joinedFanGroups (pagingOptions: PagingOptions): Promise<PagedResult<fan.FanGroup>> {
-    return this.api.fan.joinedFanGroups(pagingOptions);
+    return this.api.fan.joinedFanGroups(pagingOptions)
+      .then(fgs => this.extendRawFanGroups(fgs));
   }  
 
   leaveFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
@@ -98,9 +99,15 @@ export class FanGroupService {
     }
   }
 
-  private extendRawWaitingList (fg: FanGroup): fan.FanGroup {
+  private extendRawFanGroup (fg: FanGroup): fan.FanGroup {
     return Object.assign(fg, {
       actionStatus: this.getFanGroupActionStatus(fg)
+    });
+  }
+
+  private extendRawFanGroups (fgs: PagedResult<FanGroup>): PagedResult<fan.FanGroup> {
+    return Object.assign(fgs, {
+      items: fgs.items.map(fg => this.extendRawFanGroup(fg))
     });
   }
 
