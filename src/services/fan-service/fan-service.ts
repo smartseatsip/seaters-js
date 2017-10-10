@@ -71,7 +71,7 @@ export class FanService {
 
   getJoinedFanGroups (pagingOptions: PagingOptions): Promise<PagedResult<fan.FanGroup>> {
     return this.fanGroupService.joinedFanGroups(pagingOptions)
-      .then(r => this.convertPagedResult(r));
+      .then(r => this.convertPagedResult<fan.FanGroup>(r));
   }  
   
   /**
@@ -87,7 +87,7 @@ export class FanService {
 
   getWaitingListsInFanGroup (fanGroupId: string, pagingOptions: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
     return this.waitingListService.getWaitingListsInFanGroup(fanGroupId, pagingOptions)
-      .then(r => this.convertPagedResult(r));
+      .then(r => this.convertPagedResult<fan.WaitingList>(r));
   }
 
   getWaitingListsInFanGroups (
@@ -95,7 +95,7 @@ export class FanService {
     pagingOptions: PagingOptions
   ): Promise<PagedResult<fan.WaitingList>> {
     return this.waitingListService.getWaitingListsInFanGroups(fanGroupIds, pagingOptions)
-      .then(r => this.convertPagedResult(r));
+      .then(r => this.convertPagedResult<fan.WaitingList>(r));
   }
 
   getMyWaitingListsWithoutSeat (page: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
