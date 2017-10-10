@@ -54,7 +54,7 @@ export class WaitingListService {
       .then(res => this.extendRawWaitingLists(res));
   }
 
-  getWaitingListTranslatedVenueDescription (waitingListId: string): Promise<fan.WaitingList> {
+  getWaitingListTranslatedVenueDescription (waitingListId: string): Promise<string> {
     return this.api.fan.waitingListTranslatedVenueDescription(waitingListId);
   }
 
@@ -164,7 +164,7 @@ export class WaitingListService {
     return this.api.fan.getEventDescription(waitingListId);
   }
 
-  getTranslatedEventDescriptionForWaitingList (waitingListId: string): Promise<TranslationMap> {
+  getTranslatedEventDescriptionForWaitingList (waitingListId: string): Promise<string> {
     return this.api.fan.getTranslatedEventDescription(waitingListId);
   }
 

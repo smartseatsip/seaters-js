@@ -106,7 +106,7 @@ export class FanService {
     return this.waitingListService.getMyWaitingListsWithSeat(page);
   }
 
-  getWaitingListTranslatedVenueDescription (waitingListId: string): Promise<fan.WaitingList> {
+  getWaitingListTranslatedVenueDescription (waitingListId: string): Promise<string> {
     return this.waitingListService.getWaitingListTranslatedVenueDescription(waitingListId);
   }
 

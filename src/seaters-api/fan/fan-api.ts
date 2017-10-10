@@ -153,7 +153,7 @@ export class FanApi {
     );
   }
 
-  waitingListTranslatedVenueDescription (waitingListId: string): Promise<WaitingList> {
+  waitingListTranslatedVenueDescription (waitingListId: string): Promise<string> {
     return this.apiContext.get(
       '/fan/waiting-lists/:waitingListId/translated-venue-conditions',
       { waitingListId: waitingListId }
@@ -290,14 +290,14 @@ export class FanApi {
     );
   }
 
-  getTranslatedEventDescription (waitingListId: string): Promise<TranslationMap> {
+  getTranslatedEventDescription (waitingListId: string): Promise<string> {
     return this.apiContext.get(
       '/fan/waiting-lists/:waitingListId/translated-event-description',
       { waitingListId: waitingListId }
     );
   }
 
-  getTranslatedVenueConditions (waitingListId: string): Promise<TranslationMap> {
+  getTranslatedVenueConditions (waitingListId: string): Promise<string> {
     return this.apiContext.get(
       '/fan/waiting-lists/:waitingListId/translated-venue-conditions',
       { waitingListId: waitingListId }
