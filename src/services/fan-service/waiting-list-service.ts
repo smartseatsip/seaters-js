@@ -1,5 +1,4 @@
-import { PagedResult, PagingOptions } from '../../shared-types';
-import { SeatersApi } from '../../seaters-api';
+import { SeatersApi, PagedResult, PagingOptions } from '../../seaters-api';
 import {
   WaitingList,
   TRANSACTION_STATUS,
@@ -36,21 +35,23 @@ export class WaitingListService {
   }
 
   getWaitingListsInFanGroup (fanGroupId: string, pagingOptions: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
-    return this.api.fan.waitingListsInFanGroup(fanGroupId, pagingOptions);
+    return this.api.fan.waitingListsInFanGroup(fanGroupId, pagingOptions)
+      .then(wls => this.extendRawWaitingLists(wls));
   }
 
   getWaitingListsInFanGroups (fanGroupIds: string[], pagingOptions: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
-    return this.api.fan.waitingListsInFanGroups(fanGroupIds, pagingOptions);
+    return this.api.fan.waitingListsInFanGroups(fanGroupIds, pagingOptions)
+      .then(wls => this.extendRawWaitingLists(wls));
   }
 
-  getMyWaitingListsWithoutSeat (page: PagingOptions): Promise<PagedResult<WaitingList>> {
+  getMyWaitingListsWithoutSeat (page: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
     return this.api.fan.joinedWaitingListsWithoutSeat(page)
-      .then(res => this.extendRawWaitingLists(res as any));
+      .then(res => this.extendRawWaitingLists(res));
   }
 
   getMyWaitingListsWithSeat (page: PagingOptions): Promise<PagedResult<WaitingList>> {
     return this.api.fan.joinedWaitingListsWithSeat(page)
-      .then(res => this.extendRawWaitingLists(res as any));
+      .then(res => this.extendRawWaitingLists(res));
   }
 
   getWaitingListTranslatedVenueDescription (waitingListId: string): Promise<fan.WaitingList> {
@@ -239,7 +240,7 @@ export class WaitingListService {
     });
   }
 
-  private extendRawWaitingLists (wls: PagedResult<fan.WaitingList>): PagedResult<fan.WaitingList> {
+  private extendRawWaitingLists (wls: PagedResult<WaitingList>): PagedResult<fan.WaitingList> {
     wls.items = wls.items.map(wl => this.extendRawWaitingList(wl));
     return wls as PagedResult<fan.WaitingList>;
   }
