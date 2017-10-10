@@ -1143,10 +1143,12 @@ var WaitingListService = function () {
         });
         return wls;
     };
-    WaitingListService.prototype.pollWaitingList = function (waitingListId, condition, limit, delayInMs, useRaw) {
+    WaitingListService.prototype.pollWaitingList = function (waitingListId, condition, limit, delayInMs, useRawWaitingList) {
         var _this = this;
-        return util_1.retryUntil(function () {
-            return useRaw ? _this.getRawWaitingList(waitingListId) : _this.getWaitingList(waitingListId);
+        return util_1.retryUntil(
+        // We use the raw waitinglist data instead to prevent an infinite loop when re-fetching the waiting list
+        function () {
+            return useRawWaitingList ? _this.getRawWaitingList(waitingListId) : _this.getWaitingList(waitingListId);
         }, condition, limit || 10, delayInMs || 1000);
     };
     WaitingListService.prototype.getWaitingListActionStatus = function (waitingList) {
@@ -1245,34 +1247,27 @@ var WaitingListService = function () {
     };
     WaitingListService.prototype.waitForVoucher = function (wl) {
         var _this = this;
-        console.log('Waiting for voucher', wl);
         // If there is no seat, skip
         if (!wl || !wl.seat || !wl.seat.status) {
-            console.log('no seat');
             return Promise.resolve(wl);
         }
         // If the seat has not been accepted yet, skip
         if (wl.seat.status !== 'ACCEPTED') {
-            console.log('status not accepted');
             return Promise.resolve(wl);
         }
         // If there is no voucher, skip
         if (!this.hasVoucher(wl)) {
-            console.log('doesnt have a voucher');
             return Promise.resolve(wl);
         }
-        console.log('started polling');
         // Wait for voucher number to come though
         return this.pollWaitingList(wl.waitingListId, function (updatedWl) {
             return _this.seatHasVoucherNumber(updatedWl);
         }, 60, 1000, true);
     };
     WaitingListService.prototype.hasVoucher = function (wl) {
-        console.log('has voucher number = ', wl);
         return wl.seatDistributionMode === 'VOUCHER' && wl.seat && wl.seat.voucherNumber && wl.seat.voucherNumber !== '';
     };
     WaitingListService.prototype.seatHasVoucherNumber = function (wl) {
-        console.log('checking', wl);
         return wl.seat.voucherNumber !== '' && wl.seat.voucherNumber !== '/' && wl.seat.voucherNumber !== null && wl.seat.voucherNumber !== undefined;
     };
     WaitingListService.prototype.hasTicket = function (wl) {
