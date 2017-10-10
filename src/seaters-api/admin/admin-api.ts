@@ -3,7 +3,7 @@ import { SeatersApiContext } from '../../seaters-api';
 import { PagedResult } from '../paged-result';
 import { PagingOptions } from '../paging-options';
 import { SeatersApiController } from '../seaters-api-controller';
-import { User, UserSearchQuery, FanGroupOwnership } from './admin-types';
+import { User, UserSearchQuery, FanGroupOwnership, FanGroup } from './admin-types';
 
 export class AdminApi extends SeatersApiController {
 
@@ -77,6 +77,13 @@ export class AdminApi extends SeatersApiController {
     return this.apiContext.delete(
       '/seaters-admin/users/:userId/ownerships/:fanGroupId',
       { userId: ownership.userId, fanGroupId: ownership.fanGroupId }
+    );
+  }
+
+  getFanGroup (fanGroupId: string): Promise<FanGroup> {
+    return this.apiContext.get(
+      '/seaters-admin/fan-groups/:id',
+      {id: fanGroupId}
     );
   }
 
