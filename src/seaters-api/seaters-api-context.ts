@@ -29,7 +29,7 @@ export class SeatersApiContext extends ApiContext {
       promise
         .then(function (response) {
           if (response.items === undefined) {
-            resolve(response);
+            resolve(response as any);
           }
           resolve(response.items);
         }).catch(reject);
