@@ -1,5 +1,4 @@
-import { PagedResult, PagingOptions } from '../../shared-types';
-import { SeatersApi } from '../../seaters-api';
+import { SeatersApi, PagedResult, PagingOptions } from '../../seaters-api';
 import {
   WaitingList,
   TRANSACTION_STATUS,
@@ -36,24 +35,26 @@ export class WaitingListService {
   }
 
   getWaitingListsInFanGroup (fanGroupId: string, pagingOptions: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
-    return this.api.fan.waitingListsInFanGroup(fanGroupId, pagingOptions);
+    return this.api.fan.waitingListsInFanGroup(fanGroupId, pagingOptions)
+      .then(wls => this.extendRawWaitingLists(wls));
   }
 
   getWaitingListsInFanGroups (fanGroupIds: string[], pagingOptions: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
-    return this.api.fan.waitingListsInFanGroups(fanGroupIds, pagingOptions);
+    return this.api.fan.waitingListsInFanGroups(fanGroupIds, pagingOptions)
+      .then(wls => this.extendRawWaitingLists(wls));
   }
 
-  getMyWaitingListsWithoutSeat (page: PagingOptions): Promise<PagedResult<WaitingList>> {
+  getMyWaitingListsWithoutSeat (page: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
     return this.api.fan.joinedWaitingListsWithoutSeat(page)
-      .then(res => this.extendRawWaitingLists(res as any));
+      .then(res => this.extendRawWaitingLists(res));
   }
 
-  getMyWaitingListsWithSeat (page: PagingOptions): Promise<PagedResult<WaitingList>> {
+  getMyWaitingListsWithSeat (page: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
     return this.api.fan.joinedWaitingListsWithSeat(page)
-      .then(res => this.extendRawWaitingLists(res as any));
+      .then(res => this.extendRawWaitingLists(res));
   }
 
-  getWaitingListTranslatedVenueDescription (waitingListId: string): Promise<fan.WaitingList> {
+  getWaitingListTranslatedVenueDescription (waitingListId: string): Promise<string> {
     return this.api.fan.waitingListTranslatedVenueDescription(waitingListId);
   }
 
@@ -101,7 +102,7 @@ export class WaitingListService {
       .then((wl) => this.waitForDirectSales(wl));
   }
 
-  shareWaitingList (waitingListId: string): Promise<fan.WaitingList> {
+  shareWaitingList (waitingListId: string): Promise<fan.WaitingListShare> {
     return this.api.fan.shareWaitingList(waitingListId);
   }
 
@@ -163,7 +164,7 @@ export class WaitingListService {
     return this.api.fan.getEventDescription(waitingListId);
   }
 
-  getTranslatedEventDescriptionForWaitingList (waitingListId: string): Promise<TranslationMap> {
+  getTranslatedEventDescriptionForWaitingList (waitingListId: string): Promise<string> {
     return this.api.fan.getTranslatedEventDescription(waitingListId);
   }
 
@@ -171,7 +172,7 @@ export class WaitingListService {
     return this.api.fan.getVenueConditions(waitingListId);
   }
 
-  getTranslatedVenueConditionsForWaitingList (waitingListId: string): Promise<TranslationMap> {
+  getTranslatedVenueConditionsForWaitingList (waitingListId: string): Promise<string> {
     return this.api.fan.getTranslatedVenueConditions(waitingListId);
   }
 
@@ -239,7 +240,7 @@ export class WaitingListService {
     });
   }
 
-  private extendRawWaitingLists (wls: PagedResult<fan.WaitingList>): PagedResult<fan.WaitingList> {
+  private extendRawWaitingLists (wls: PagedResult<WaitingList>): PagedResult<fan.WaitingList> {
     wls.items = wls.items.map(wl => this.extendRawWaitingList(wl));
     return wls as PagedResult<fan.WaitingList>;
   }

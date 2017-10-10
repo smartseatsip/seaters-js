@@ -9,3 +9,5 @@ export * from './braintree-token';
 export * from './position-sales-transaction';
 export * from './position-sales-transaction-input';
 export * from './attendee-info';
+export * from './fan-group-share';
+export * from './waiting-list-share';

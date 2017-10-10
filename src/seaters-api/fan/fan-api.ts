@@ -8,7 +8,7 @@ import {
   Fan, FanGroup, WaitingList, FanGroupRequest, Position,
   Price, PaymentInfo, BraintreeToken, FanGroupLook,
   PositionSalesTransactionInput, PositionSalesTransaction,
-  AttendeeInfo
+  AttendeeInfo, FanGroupShare, WaitingListShare
 } from './fan-types';
 import { WaitingListRequest } from './waiting-list';
 import { ArrayMap } from '../../api/array-map';
@@ -42,14 +42,14 @@ export class FanApi {
     );
   }
 
-  fanGroupLookBySlug (slug: string): Promise<FanGroup> {
+  fanGroupLookBySlug (slug: string): Promise<FanGroupLook> {
     return this.apiContext.get(
       '/fan/fangroups-by-slug/:slug/look',
       { slug: slug }
     );
   }
 
-  fanGroupTranslatedDescription (fanGroupId: string): Promise<FanGroup> {
+  fanGroupTranslatedDescription (fanGroupId: string): Promise<string> {
     return this.apiContext.get(
       '/fan/groups/:fanGroupId/translated-description',
       { fanGroupId: fanGroupId }
@@ -99,7 +99,7 @@ export class FanApi {
     );
   }
 
-  shareFanGroup (fanGroupId: string): Promise<FanGroup> {
+  shareFanGroup (fanGroupId: string): Promise<FanGroupShare> {
     return this.apiContext.get(
       '/fan/groups/:fanGroupId/share',
       { fanGroupId: fanGroupId }
@@ -153,7 +153,7 @@ export class FanApi {
     );
   }
 
-  waitingListTranslatedVenueDescription (waitingListId: string): Promise<WaitingList> {
+  waitingListTranslatedVenueDescription (waitingListId: string): Promise<string> {
     return this.apiContext.get(
       '/fan/waiting-lists/:waitingListId/translated-venue-conditions',
       { waitingListId: waitingListId }
@@ -209,7 +209,7 @@ export class FanApi {
     }
   }
 
-  shareWaitingList (waitingListId: string): Promise<WaitingList> {
+  shareWaitingList (waitingListId: string): Promise<WaitingListShare> {
     return this.apiContext.get(
       '/fan/waiting-lists/:waitingListId/share',
       { waitingListId: waitingListId }
@@ -290,14 +290,14 @@ export class FanApi {
     );
   }
 
-  getTranslatedEventDescription (waitingListId: string): Promise<TranslationMap> {
+  getTranslatedEventDescription (waitingListId: string): Promise<string> {
     return this.apiContext.get(
       '/fan/waiting-lists/:waitingListId/translated-event-description',
       { waitingListId: waitingListId }
     );
   }
 
-  getTranslatedVenueConditions (waitingListId: string): Promise<TranslationMap> {
+  getTranslatedVenueConditions (waitingListId: string): Promise<string> {
     return this.apiContext.get(
       '/fan/waiting-lists/:waitingListId/translated-venue-conditions',
       { waitingListId: waitingListId }

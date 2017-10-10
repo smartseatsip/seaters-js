@@ -1,4 +1,4 @@
-import { SeatersApi } from '../../seaters-api';
+import { SeatersApi, PagedResult as ApiPagedResult } from '../../seaters-api';
 import { WaitingListService } from './waiting-list-service';
 import { FanGroupService } from './fan-group-service';
 import { fan } from './fan-types';
@@ -41,11 +41,11 @@ export class FanService {
     return this.fanGroupService.getFanGroupBySlug(slug);
   }
 
-  getFanGroupLookBySlug (slug: string): Promise<fan.FanGroup> {
+  getFanGroupLookBySlug (slug: string): Promise<fan.FanGroupLook> {
     return this.fanGroupService.getFanGroupLookBySlug(slug);
   }
 
-  getFanGroupTranslatedDescription (fanGroupId: string): Promise<fan.FanGroup> {
+  getFanGroupTranslatedDescription (fanGroupId: string): Promise<string> {
     return this.fanGroupService.getFanGroupTranslatedDescription(fanGroupId);
   }
 
@@ -65,7 +65,7 @@ export class FanService {
     return this.fanGroupService.leaveFanGroup(fanGroupId);
   }
 
-  shareFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
+  shareFanGroup (fanGroupId: string): Promise<fan.FanGroupShare> {
     return this.fanGroupService.shareFanGroup(fanGroupId);
   }
 
@@ -99,14 +99,17 @@ export class FanService {
   }
 
   getMyWaitingListsWithoutSeat (page: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
-    return this.waitingListService.getMyWaitingListsWithoutSeat(page);
+    return this.waitingListService.getMyWaitingListsWithoutSeat(page)
+      .then(r => this.convertPagedResult(r));
   }
 
   getMyWaitingListsWithSeat (page: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
-    return this.waitingListService.getMyWaitingListsWithSeat(page);
+    return this.waitingListService.getMyWaitingListsWithSeat(page)
+      .then(r => this.convertPagedResult(r));
   }
 
-  getWaitingListTranslatedVenueDescription (waitingListId: string): Promise<fan.WaitingList> {
+  //TODO: cleanup duplicate method (see getTranslatedVenueConditionsForWaitingList)
+  getWaitingListTranslatedVenueDescription (waitingListId: string): Promise<string> {
     return this.waitingListService.getWaitingListTranslatedVenueDescription(waitingListId);
   }
 
@@ -122,7 +125,7 @@ export class FanService {
     return this.waitingListService.joinProtectedWaitingList(waitingListId, code, numberOfSeats, Object.assign({}, additionalQueryParams));
   }
 
-  shareWaitingList (waitingListId: string): Promise<fan.WaitingList> {
+  shareWaitingList (waitingListId: string): Promise<fan.WaitingListShare> {
     return this.waitingListService.shareWaitingList(waitingListId);
   }
 
@@ -163,7 +166,7 @@ export class FanService {
       .then(translationMap => new LocalizableText(translationMap));
   }
 
-  getTranslatedEventDescriptionForWaitingList (waitingListId: string): Promise<LocalizableText> {
+  getTranslatedEventDescriptionForWaitingList (waitingListId: string): Promise<string> {
     return this.waitingListService.getTranslatedEventDescriptionForWaitingList(waitingListId);
   }
 
@@ -172,7 +175,7 @@ export class FanService {
       .then(translationMap => new LocalizableText(translationMap));
   }
 
-  getTranslatedVenueConditionsForWaitingList (waitingListId: string): Promise<LocalizableText> {
+  getTranslatedVenueConditionsForWaitingList (waitingListId: string): Promise<string> {
     return this.waitingListService.getTranslatedVenueConditionsForWaitingList(waitingListId);
   }
 
@@ -226,7 +229,7 @@ export class FanService {
    *  HELPERS
    */
 
-  private convertPagedResult<T> (result: any): PagedResult<T> {
+  private convertPagedResult<T> (result: ApiPagedResult<T>): PagedResult<T> {
     return {
       items: result.items,
       itemOffset: result.itemOffset,

@@ -15,7 +15,7 @@ export class FanGroupService {
 
   getFanGroups (fanGroupIds: string[]): Promise<fan.FanGroup[]> {
     return this.api.fan.fanGroups(fanGroupIds)
-      .then(fgs => fgs.map(fg => this.extendRawWaitingList(fg)));
+      .then(fgs => fgs.map(fg => this.extendRawFanGroup(fg)));
   }
 
   getFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
@@ -32,11 +32,11 @@ export class FanGroupService {
       }));
   }
 
-  getFanGroupLookBySlug (slug: string): Promise<fan.FanGroup> {
+  getFanGroupLookBySlug (slug: string): Promise<fan.FanGroupLook> {
     return this.api.fan.fanGroupLookBySlug(slug);
   }
 
-  getFanGroupTranslatedDescription (fanGroupId: string): Promise<fan.FanGroup> {
+  getFanGroupTranslatedDescription (fanGroupId: string): Promise<string> {
     return this.api.fan.fanGroupTranslatedDescription(fanGroupId);
   }
 
@@ -69,7 +69,8 @@ export class FanGroupService {
   }
 
   joinedFanGroups (pagingOptions: PagingOptions): Promise<PagedResult<fan.FanGroup>> {
-    return this.api.fan.joinedFanGroups(pagingOptions);
+    return this.api.fan.joinedFanGroups(pagingOptions)
+      .then(fgs => this.extendRawFanGroups(fgs));
   }  
 
   leaveFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
@@ -77,7 +78,7 @@ export class FanGroupService {
       .then(() => this.pollFanGroup(fanGroupId, (fg) => fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_JOIN));
   }
 
-  shareFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
+  shareFanGroup (fanGroupId: string): Promise<fan.FanGroupShare> {
     return this.api.fan.shareFanGroup(fanGroupId);
   }
 
@@ -98,9 +99,15 @@ export class FanGroupService {
     }
   }
 
-  private extendRawWaitingList (fg: FanGroup): fan.FanGroup {
+  private extendRawFanGroup (fg: FanGroup): fan.FanGroup {
     return Object.assign(fg, {
       actionStatus: this.getFanGroupActionStatus(fg)
+    });
+  }
+
+  private extendRawFanGroups (fgs: PagedResult<FanGroup>): PagedResult<fan.FanGroup> {
+    return Object.assign(fgs, {
+      items: fgs.items.map(fg => this.extendRawFanGroup(fg))
     });
   }
 

@@ -1,10 +1,13 @@
 import {
   WaitingList as _WaitingList,
   FanGroup as _FanGroup,
+  FanGroupLook as _FanGroupLook,
   Price as _Price,
   PaymentInfo as _PaymentInfo,
   AttendeesInfo as _AttendeesInfo,
   AttendeeInfo as _AttendeeInfo,
+  FanGroupShare as _FanGroupShare,
+  WaitingListShare as _WaitingListShare,
   Fan as _Fan
 } from '../../seaters-api/fan';
 
@@ -36,6 +39,10 @@ export namespace fan {
 
   export enum FAN_GROUP_ACTION_STATUS {
     CAN_JOIN, CAN_LEAVE, CAN_UNLOCK, CAN_REQUEST, WAITING_FOR_APPROVAL
+  }
+
+  export interface FanGroupLook extends _FanGroupLook {
+
   }
 
   export interface FanGroup extends _FanGroup {
@@ -86,6 +93,12 @@ export namespace fan {
   }
 
   export interface Fan extends _Fan {
+  }
+
+  export interface FanGroupShare extends _FanGroupShare {
+  }
+
+  export interface WaitingListShare extends _WaitingListShare {
   }
 
 }
