@@ -45,7 +45,7 @@ export class FanService {
     return this.fanGroupService.getFanGroupLookBySlug(slug);
   }
 
-  getFanGroupTranslatedDescription (fanGroupId: string): Promise<fan.FanGroup> {
+  getFanGroupTranslatedDescription (fanGroupId: string): Promise<string> {
     return this.fanGroupService.getFanGroupTranslatedDescription(fanGroupId);
   }
 
