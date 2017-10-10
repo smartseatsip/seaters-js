@@ -1,4 +1,4 @@
-import { SeatersApi } from '../../seaters-api';
+import { SeatersApi, PagedResult as ApiPagedResult } from '../../seaters-api';
 import { WaitingListService } from './waiting-list-service';
 import { FanGroupService } from './fan-group-service';
 import { fan } from './fan-types';
@@ -71,7 +71,7 @@ export class FanService {
 
   getJoinedFanGroups (pagingOptions: PagingOptions): Promise<PagedResult<fan.FanGroup>> {
     return this.fanGroupService.joinedFanGroups(pagingOptions)
-      .then(r => this.convertPagedResult<fan.FanGroup>(r));
+      .then(r => this.convertPagedResult(r));
   }  
   
   /**
@@ -87,7 +87,7 @@ export class FanService {
 
   getWaitingListsInFanGroup (fanGroupId: string, pagingOptions: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
     return this.waitingListService.getWaitingListsInFanGroup(fanGroupId, pagingOptions)
-      .then(r => this.convertPagedResult<fan.WaitingList>(r));
+      .then(r => this.convertPagedResult(r));
   }
 
   getWaitingListsInFanGroups (
@@ -95,15 +95,17 @@ export class FanService {
     pagingOptions: PagingOptions
   ): Promise<PagedResult<fan.WaitingList>> {
     return this.waitingListService.getWaitingListsInFanGroups(fanGroupIds, pagingOptions)
-      .then(r => this.convertPagedResult<fan.WaitingList>(r));
+      .then(r => this.convertPagedResult(r));
   }
 
   getMyWaitingListsWithoutSeat (page: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
-    return this.waitingListService.getMyWaitingListsWithoutSeat(page);
+    return this.waitingListService.getMyWaitingListsWithoutSeat(page)
+      .then(r => this.convertPagedResult(r));
   }
 
   getMyWaitingListsWithSeat (page: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
-    return this.waitingListService.getMyWaitingListsWithSeat(page);
+    return this.waitingListService.getMyWaitingListsWithSeat(page)
+      .then(r => this.convertPagedResult(r));
   }
 
   getWaitingListTranslatedVenueDescription (waitingListId: string): Promise<string> {
@@ -226,7 +228,7 @@ export class FanService {
    *  HELPERS
    */
 
-  private convertPagedResult<T> (result: any): PagedResult<T> {
+  private convertPagedResult<T> (result: ApiPagedResult<T>): PagedResult<T> {
     return {
       items: result.items,
       itemOffset: result.itemOffset,

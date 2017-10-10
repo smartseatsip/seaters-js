@@ -49,7 +49,7 @@ export class WaitingListService {
       .then(res => this.extendRawWaitingLists(res));
   }
 
-  getMyWaitingListsWithSeat (page: PagingOptions): Promise<PagedResult<WaitingList>> {
+  getMyWaitingListsWithSeat (page: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
     return this.api.fan.joinedWaitingListsWithSeat(page)
       .then(res => this.extendRawWaitingLists(res));
   }
