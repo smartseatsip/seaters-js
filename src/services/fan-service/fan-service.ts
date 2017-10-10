@@ -65,7 +65,7 @@ export class FanService {
     return this.fanGroupService.leaveFanGroup(fanGroupId);
   }
 
-  shareFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
+  shareFanGroup (fanGroupId: string): Promise<fan.FanGroupShare> {
     return this.fanGroupService.shareFanGroup(fanGroupId);
   }
 

@@ -6,6 +6,7 @@ import {
   PaymentInfo as _PaymentInfo,
   AttendeesInfo as _AttendeesInfo,
   AttendeeInfo as _AttendeeInfo,
+  FanGroupShare as _FanGroupShare,
   Fan as _Fan
 } from '../../seaters-api/fan';
 
@@ -40,7 +41,7 @@ export namespace fan {
   }
 
   export interface FanGroupLook extends _FanGroupLook {
-    
+
   }
 
   export interface FanGroup extends _FanGroup {
@@ -91,6 +92,9 @@ export namespace fan {
   }
 
   export interface Fan extends _Fan {
+  }
+
+  export interface FanGroupShare extends _FanGroupShare {
   }
 
 }

@@ -78,7 +78,7 @@ export class FanGroupService {
       .then(() => this.pollFanGroup(fanGroupId, (fg) => fg.actionStatus === FAN_GROUP_ACTION_STATUS.CAN_JOIN));
   }
 
-  shareFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
+  shareFanGroup (fanGroupId: string): Promise<fan.FanGroupShare> {
     return this.api.fan.shareFanGroup(fanGroupId);
   }
 

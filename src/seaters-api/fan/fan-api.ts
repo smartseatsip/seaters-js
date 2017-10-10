@@ -8,7 +8,7 @@ import {
   Fan, FanGroup, WaitingList, FanGroupRequest, Position,
   Price, PaymentInfo, BraintreeToken, FanGroupLook,
   PositionSalesTransactionInput, PositionSalesTransaction,
-  AttendeeInfo
+  AttendeeInfo, FanGroupShare
 } from './fan-types';
 import { WaitingListRequest } from './waiting-list';
 import { ArrayMap } from '../../api/array-map';
@@ -99,7 +99,7 @@ export class FanApi {
     );
   }
 
-  shareFanGroup (fanGroupId: string): Promise<FanGroup> {
+  shareFanGroup (fanGroupId: string): Promise<FanGroupShare> {
     return this.apiContext.get(
       '/fan/groups/:fanGroupId/share',
       { fanGroupId: fanGroupId }
