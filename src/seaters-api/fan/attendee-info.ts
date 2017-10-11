@@ -12,27 +12,17 @@ import { TITLE, PhoneNumber, Address } from './fan';
  */
 export interface AttendeeInfo {
   /**
-   * Attendee's title
-   */
-  title: TITLE;
-
-  /**
-   * Attendee's first name
-   */
-  firstName: string;
-
-  /**
-   * Attendee's last name/surname/family name
-   */
-  lastName: string;
-
-  /**
    * Attendee's well-structured email
    *
    * Possible validation errors:
    * - invalid formatting (TODO)
    */
   email: string;
+
+  /**
+   * Attendee's title
+   */
+  title: TITLE;
 
   /**
    * Attendee's phone number.
@@ -47,30 +37,40 @@ export interface AttendeeInfo {
   phoneNumber: PhoneNumber;
 
   /**
-   * Attendee's date of birth. Should be supplied in the attendee's proper timezone.
-   *
-   * @format ISO-8601
-   *
-   * Possible validation errors:
-   * - in the future (TODO)
-   */
-  dateOfBirth: string;
-
-  /**
-   * Attendee's address
-   */
-  address: Address;
-
-  /**
    * Attendee's citizenship country
    * @format alpha-2 country code
    */
   citizenshipCountryCode: string;
 
   /**
+   * Attendee's last name/surname/family name
+   */
+  lastName: string;
+
+  /**
+   * Attendee's first name
+   */
+  firstName: string;
+
+  /**
+   * Attendee's birth date. Should be supplied in the attendee's proper timezone.
+   *
+   * @format ISO-8601
+   *
+   * Possible validation errors:
+   * - in the future (TODO)
+   */
+  birthDate: string;
+
+  /**
    * Attendee's passport / ID-card number - free text field
    */
   idNumber: string;
+
+  /**
+   * Attendee's address
+   */
+  address: Address;
 }
 
 /**
