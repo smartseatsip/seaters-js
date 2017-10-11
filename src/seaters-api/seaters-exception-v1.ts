@@ -11,9 +11,9 @@ export interface SeatersExceptionV1 {
  * @param mapping A mapping of V1 error messages to values of the given type
  * @return Returns an Promise that rejects with the mapped error
  */
-export function seatersExceptionV1MessageMapper<T> (mapping: { [key: string]: T }): (err: any) => Promise<any> {
-  return function (err: SeatersApiException): Promise<any> {
-    if (typeof(err as any) !== 'object') {
+export function seatersExceptionV1MessageMapper<T>(mapping: { [key: string]: T }): (err: any) => Promise<any> {
+  return (err: SeatersApiException): Promise<any> => {
+    if (typeof (err as any) !== 'object') {
       console.error('[seatersExceptionV1MessageMapper] Uncaught Exception', err);
       throw err;
     } else if (err.type !== 'validation_error_v1') {

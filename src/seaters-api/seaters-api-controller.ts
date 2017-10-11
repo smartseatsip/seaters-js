@@ -1,20 +1,16 @@
 import { PagingOptions } from './paging-options';
 
 export abstract class SeatersApiController {
-
-  protected buildParams (obj: Object): Map<string, string> {
-
-    let map = new Map<string, string>();
+  protected buildParams(obj: object): Map<string, string> {
+    const map = new Map<string, string>();
     Object.keys(obj).forEach(k => map.set(k, obj[k]));
     return map;
-
   }
 
-  protected buildPagingQueryParams (pagingOptions: PagingOptions): Map<string, string> {
+  protected buildPagingQueryParams(pagingOptions: PagingOptions): Map<string, string> {
     return this.buildParams({
       maxPageSize: pagingOptions.maxPageSize,
       itemOffset: pagingOptions.itemOffset
     });
   }
-
 }

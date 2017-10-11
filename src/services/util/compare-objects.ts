@@ -15,7 +15,7 @@ export interface ComparisonOptions {
   looseComparison: boolean;
 }
 
-let DEFAULT_COMPARISON_OPTIONS: ComparisonOptions = {
+const DEFAULT_COMPARISON_OPTIONS: ComparisonOptions = {
   ignoreNullFields: false,
   ignoreUndefinedFields: false,
   looseComparison: false
@@ -27,7 +27,7 @@ let DEFAULT_COMPARISON_OPTIONS: ComparisonOptions = {
  * @param p an Object
  * @param options
  */
-export function compareObjects (o, p, options?: ComparisonOptions) {
+export function compareObjects(o, p, options?: ComparisonOptions) {
   let i;
   let keysO = Object.keys(o).sort();
   let keysP = Object.keys(p).sort();
@@ -69,7 +69,7 @@ export function compareObjects (o, p, options?: ComparisonOptions) {
       if (!(p[keysO[i]] instanceof Date)) {
         return false;
       }
-      if (('' + o[keysO[i]]) !== ('' + p[keysO[i]])) {
+      if ('' + o[keysO[i]] !== '' + p[keysO[i]]) {
         return false;
       }
     } else if (o[keysO[i]] instanceof Function) {
@@ -81,13 +81,14 @@ export function compareObjects (o, p, options?: ComparisonOptions) {
       if (!(p[keysO[i]] instanceof Object)) {
         return false;
       }
-      if (o[keysO[i]] === o) {// (s)elf reference?
+      if (o[keysO[i]] === o) {
+        // (s)elf reference?
         if (p[keysO[i]] !== p) {
           return false;
         }
       } else if (compareObjects(o[keysO[i]], p[keysO[i]], options) === false) {
         return false;
-      }// (W)ARNING: does not deal with circular refs other than ^^
+      } // (W)ARNING: does not deal with circular refs other than ^^
     }
     if (options.looseComparison) {
       if (o[keysO[i]].toString() !== p[keysO[i]].toString()) {
