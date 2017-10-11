@@ -1,6 +1,10 @@
 {
   "format": "stylish",
-  "extends": "tslint-config-standard",
+  "extends": [
+    "tslint-config-standard",
+    "tslint:latest",
+    "tslint-config-prettier"
+  ],
   "rules": {
     "semicolon": true,
     "no-trailing-whitespace": false
