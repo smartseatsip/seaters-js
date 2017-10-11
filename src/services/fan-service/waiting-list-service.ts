@@ -256,7 +256,7 @@ export class WaitingListService {
   ): Promise<fan.WaitingList> {
     return retryUntil<fan.WaitingList>(
       // We use the raw waitinglist data instead to prevent an infinite loop when re-fetching the waiting list
-      () => useRawWaitingList ? this.getRawWaitingList(waitingListId) : this.getWaitingList(waitingListId),
+      () => (useRawWaitingList ? this.getRawWaitingList(waitingListId) : this.getWaitingList(waitingListId)) as Promise<fan.WaitingList>,
       condition,
       limit || 10,
       delayInMs || 1000
