@@ -8,15 +8,15 @@
     "build": "gulp build",
     "serve": "gulp serve",
     "precommit": "lint-staged",
-    "prettier": "node ./node_modules/prettier/bin/prettier.js --write \"{src}/**/*.{js,ts}\" --print-width=120 --tab-width=2 --use-tabs=false --single-quote=true --trailing-comma=none --jsx-bracket-same-line=false"
+    "prettier": "node ./node_modules/prettier/bin/prettier.js --write \"src/**/*.{js,ts}\" --print-width=120 --tab-width=2 --use-tabs=false --single-quote=true --trailing-comma=none --jsx-bracket-same-line=false"
   },
   "lint-staged": {
     "*.js": [
-      "node ./node_modules/prettier/bin/prettier.js --write \"{src}/**/*.js\" --print-width=120 --tab-width=2 --use-tabs=false --single-quote=true --trailing-comma=none --jsx-bracket-same-line=false",
+      "node ./node_modules/prettier/bin/prettier.js --write \"src/**/*.js\" --print-width=120 --tab-width=2 --use-tabs=false --single-quote=true --trailing-comma=none --jsx-bracket-same-line=false",
       "git add ."
     ],
     "*.ts": [
-      "node ./node_modules/prettier/bin/prettier.js --write \"{src}/**/*.ts\" --print-width=120 --tab-width=2 --use-tabs=false --single-quote=true --trailing-comma=none --jsx-bracket-same-line=false",
+      "node ./node_modules/prettier/bin/prettier.js --write \"src/**/*.ts\" --print-width=120 --tab-width=2 --use-tabs=false --single-quote=true --trailing-comma=none --jsx-bracket-same-line=false",
       "git add ."
     ]
   },
