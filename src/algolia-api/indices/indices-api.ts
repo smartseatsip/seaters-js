@@ -3,65 +3,62 @@ import { SearchQuery, FacetFilter } from './search-query';
 import { SearchResult } from './search-result';
 
 export class IndicesApi {
+  constructor(private apiContext: ApiContext) {}
 
-  constructor (private apiContext: ApiContext) {
-
+  searchIndex(index: string, searchQuery: SearchQuery): Promise<SearchResult> {
+    const abstractEndpoint = '/indexes/:index/query';
+    const endpointParams = { index };
+    const body = { params: this.serializeSearchQuery(searchQuery) };
+    return this.apiContext
+      .doRequest({
+        method: 'POST',
+        abstractEndpoint,
+        endpointParams,
+        body
+      })
+      .then(response => {
+        if (response.status !== 200) {
+          return Promise.reject({
+            error: 'Unexpected response status code',
+            response
+          }) as any;
+        }
+        try {
+          return JSON.parse(response.body) as SearchResult;
+        } catch (exception) {
+          return Promise.reject({
+            error: 'Unable to parse algolia response',
+            parseException: exception,
+            response
+          });
+        }
+      });
   }
 
-  searchIndex (index: string, searchQuery: SearchQuery): Promise<SearchResult> {
-    let abstractEndpoint = '/indexes/:index/query';
-    let endpointParams = { index: index };
-    let body = { params: this.serializeSearchQuery(searchQuery) };
-    return this.apiContext.doRequest({
-      method: 'POST',
-      abstractEndpoint: abstractEndpoint,
-      endpointParams: endpointParams,
-      body: body
-    }).then((response) => {
-      if (response.status !== 200) {
-        return Promise.reject({
-          error: 'Unexpected response status code',
-          response: response
-        }) as any;
-      }
-      try {
-        return JSON.parse(response.body) as SearchResult;
-      } catch (exception) {
-        return Promise.reject({
-          error: 'Unable to parse algolia response',
-          parseException: exception,
-          response: response
-        });
-      }
-    });
-  }
+  private serializeSearchQuery(searchQuery: SearchQuery): string {
+    const params = [];
 
-  private serializeSearchQuery (searchQuery: SearchQuery): string {
-    let params = [];
-
-    function defaultSerializer (item: any) {
+    function defaultSerializer(item: any) {
       return encodeURIComponent(item);
     }
 
-    function defaultArraySerializer (item: any[]) {
+    function defaultArraySerializer(item: any[]) {
       return defaultSerializer(JSON.stringify(item));
     }
 
-    let serializers: Object = {
+    const serializers: SearchQuery = {
       query: defaultSerializer as any,
       hitsPerPage: defaultSerializer as any,
       page: defaultSerializer as any,
       restrictSearchableAttributes: defaultArraySerializer as any,
-      facetFilters: function (facetFilters: FacetFilter[]) {
-        return defaultArraySerializer(facetFilters.map(
-          facet => facet.facet + ':' + facet.value
-        ));
-      } as any,
+      facetFilters: ((facetFilters: FacetFilter[]) => {
+        return defaultArraySerializer(facetFilters.map(facet => facet.facet + ':' + facet.value));
+      }) as any,
       typoTolerance: defaultSerializer as any,
       maxValuesPerFacet: defaultSerializer as any,
       tagFilters: defaultArraySerializer as any,
       filters: defaultSerializer as any
-    } as SearchQuery;
+    };
     Object.keys(searchQuery).forEach(key => {
       if (!serializers.hasOwnProperty(key)) {
         throw new Error('Unmapped SearchQuery property: ' + key);
@@ -70,5 +67,4 @@ export class IndicesApi {
     });
     return params.join('&');
   }
-
 }

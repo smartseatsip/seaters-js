@@ -5,22 +5,20 @@ export type PromiseFn<T> = () => Promise<T>;
 export type ConditionFn<T> = (t: T) => boolean;
 
 export class RetryUntilTimeoutError extends Error {
-
-  constructor (public limit: number) {
+  constructor(public limit: number) {
     super('retryUntil - maximum number of tries was reached (' + limit + ')');
   }
-
 }
 
-export function retryUntil<T> (
+export function retryUntil<T>(
   promiseFn: PromiseFn<T>,
   conditionFn: ConditionFn<T>,
   limit: number,
   delay: number
 ): Promise<T> {
-  let deferred = new DeferredPromise<T>();
+  const deferred = new DeferredPromise<T>();
 
-  function retry (attempt) {
+  function retry(attempt) {
     if (attempt > limit) {
       console.log('[retryUntil] - polling timeout');
       return deferred.reject(new RetryUntilTimeoutError(limit));
@@ -32,7 +30,7 @@ export function retryUntil<T> (
         conditionIsMet = conditionFn(result);
       } catch (e) {
         console.log('[retryUntil] - condition quit with an exception', e.message || e, e.stack || '<no stacktrace>');
-        deferred.reject(e.toString && e.toString() || e);
+        deferred.reject((e.toString && e.toString()) || e);
         return undefined;
       }
 
@@ -42,8 +40,7 @@ export function retryUntil<T> (
         return undefined;
       } else {
         // delay the next attempt if needed
-        return timeoutPromise(delay || 0)
-          .then(() => retry(attempt + 1));
+        return timeoutPromise(delay || 0).then(() => retry(attempt + 1));
       }
     });
     /* tslint:enable:no-floating-promises */
@@ -53,7 +50,7 @@ export function retryUntil<T> (
   return deferred.promise;
 }
 
-export function timeoutPromise (timeInMs): Promise<void> {
+export function timeoutPromise(timeInMs): Promise<void> {
   return new Promise<void>((resolve, reject) => {
     setTimeout(() => resolve(), timeInMs);
   });

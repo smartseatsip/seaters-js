@@ -11,7 +11,6 @@ import { TITLE, PhoneNumber, Address } from './fan';
  * @see WaitingList
  */
 export interface AttendeeInfo {
-
   /**
    * Attendee's title
    */
@@ -72,27 +71,24 @@ export interface AttendeeInfo {
    * Attendee's passport / ID-card number - free text field
    */
   idNumber: string;
-
 }
 
 /**
  * AttendeesInfo lists all attendees with the their stored AttendeeInfo
  */
-export type AttendeesInfo = {
-
+export interface AttendeesInfo {
   /**
    * Individual attendee data
    */
-  attendees: AttendeeInfo[]
-
-};
+  attendees: AttendeeInfo[];
+}
 
 /**
  * AttendeeInfo field names that have builtin validations by seaters.
  * Other attendee info can be stored but these have no server-side validation.
  */
 export type EVENT_REQUIRED_ATTENDEE_INFO =
-  'title'
+  | 'title'
   | 'firstName'
   | 'lastName'
   | 'email'

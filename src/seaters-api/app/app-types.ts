@@ -2,7 +2,7 @@ export interface AlgoliaConfiguration {
   appId: string;
   apiKey: string;
   indexName: string;
-  attributes: Object;
+  attributes: object;
 }
 
 export interface BuildInfo {
@@ -69,7 +69,6 @@ export interface TimeZone {
    * Time zone id (names found on https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
    */
   id: string;
-
 }
 
 export interface Language {
@@ -82,7 +81,7 @@ export interface Language {
   /**
    * Translation mapping of country of locale to the name of the language in that locale
    */
-  name: {[key: string]: string};
+  name: { [key: string]: string };
 }
 
 export interface Currency {
