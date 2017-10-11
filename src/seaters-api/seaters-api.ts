@@ -4,6 +4,7 @@ import { FanApi } from './fan/fan-api';
 import { AdminApi } from './admin';
 import { HealthApi } from './health';
 import { AuthenticationApi } from './authentication/authentication-api';
+import { TicketingApi } from './ticketing';
 
 import { SeatersApiException } from './seaters-api-exception';
 import { SeatersApiContext } from './seaters-api-context';
@@ -17,6 +18,7 @@ export class SeatersApi {
   public authentication: AuthenticationApi;
   public admin: AdminApi;
   public health: HealthApi;
+  public ticketing: TicketingApi;
 
   constructor (prefix: string, requestDriver: RequestDriver) {
     this.apiContext = new SeatersApiContext(prefix, requestDriver);
@@ -26,6 +28,7 @@ export class SeatersApi {
     this.admin = new AdminApi(this.apiContext);
     this.health = new HealthApi(this.apiContext);
     this.authentication = new AuthenticationApi(this.apiContext);
+    this.ticketing = new TicketingApi(this.apiContext);
   }
 
 }

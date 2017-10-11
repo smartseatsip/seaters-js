@@ -1,10 +1,9 @@
-import { SeatersApi, PagedResult as ApiPagedResult } from '../../seaters-api';
+import { SeatersApi, SeatersService, PagingOptions, PagedResult } from '../common';
 import { WaitingListService } from './waiting-list-service';
 import { FanGroupService } from './fan-group-service';
 import { fan } from './fan-types';
 import { LocalizableText } from '../util';
 
-import { PagedResult, PagingOptions } from '../../shared-types';
 import { SessionService } from '../session-service';
 import { PublicService } from '../public-service';
 import { Fan, PositionSalesTransactionInput, AttendeeInfo } from '../../seaters-api/fan/fan-types';
@@ -12,16 +11,17 @@ import { BraintreeToken } from '../../seaters-api/fan/braintree-token';
 import { PhoneNumber } from '../../seaters-api/fan/fan';
 import { StringMap } from '../../api/string-map';
 
-export class FanService {
+export class FanService extends SeatersService {
 
   public waitingListService: WaitingListService;
   public fanGroupService: FanGroupService;
 
   constructor (
-    private seatersApi: SeatersApi,
+    seatersApi: SeatersApi,
     private sessionService: SessionService,
     private publicService: PublicService
   ) {
+    super(seatersApi);
     this.waitingListService = new WaitingListService(seatersApi);
     this.fanGroupService = new FanGroupService(seatersApi);
   }
@@ -225,18 +225,6 @@ export class FanService {
       });
   }
 
-  /**
-   *  HELPERS
-   */
-
-  private convertPagedResult<T> (result: ApiPagedResult<T>): PagedResult<T> {
-    return {
-      items: result.items,
-      itemOffset: result.itemOffset,
-      maxPageSize: result.maxPageSize,
-      page: Math.round(result.itemOffset / result.maxPageSize),
-      totalSize: result.totalSize
-    };
-  }
+  
 
 }
