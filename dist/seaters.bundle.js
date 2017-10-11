@@ -1695,7 +1695,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.25.0';
+      exports.version = '1.25.1';
       __export(__webpack_require__(17));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
