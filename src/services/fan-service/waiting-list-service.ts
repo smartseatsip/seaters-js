@@ -26,6 +26,8 @@ export class WaitingListService {
 
   getWaitingList (waitingListId: string): Promise<fan.WaitingList> {
     return this.getRawWaitingList(waitingListId)
+      // TODO - remove unneeded cast - for now typescript seems to think wl is a WaitingList type rather than fan.WaitingList
+      .then((wl) => this.waitForVoucher(wl as fan.WaitingList))
       .then((wl) => this.extendRawWaitingList(wl));
   }
 
@@ -249,10 +251,12 @@ export class WaitingListService {
     waitingListId: string,
     condition: (wl: fan.WaitingList) => boolean,
     limit?: number,
-    delayInMs?: number
+    delayInMs?: number,
+    useRawWaitingList?: boolean
   ): Promise<fan.WaitingList> {
     return retryUntil<fan.WaitingList>(
-      () => this.getWaitingList(waitingListId),
+      // We use the raw waitinglist data instead to prevent an infinite loop when re-fetching the waiting list
+      () => useRawWaitingList ? this.getRawWaitingList(waitingListId) : this.getWaitingList(waitingListId),
       condition,
       limit || 10,
       delayInMs || 1000
@@ -358,11 +362,39 @@ export class WaitingListService {
     return timeoutPromise(1000).then(() => this.getWaitingList(wl.waitingListId));
   }
 
+  private waitForVoucher (wl: fan.WaitingList): Promise<fan.WaitingList> {
+
+    // If there is no seat, skip
+    if (!wl || !wl.seat || !wl.seat.status) {
+      return Promise.resolve(wl);
+    }
+
+    // If the seat has not been accepted yet, skip
+    if (wl.seat.status !== 'ACCEPTED') {
+      return Promise.resolve(wl);
+    }
+
+    // If there is no voucher, skip
+    if (!this.hasVoucher(wl)) {
+      return Promise.resolve(wl);
+    }
+
+    // Wait for voucher number to come though
+    return this.pollWaitingList(wl.waitingListId, (updatedWl) => this.seatHasVoucherNumber(updatedWl), 60, 1000, true);
+  }
+
   private hasVoucher (wl: fan.WaitingList): boolean {
     return wl.seatDistributionMode === 'VOUCHER'
       && wl.seat
       && wl.seat.voucherNumber
       && wl.seat.voucherNumber !== '';
+  }
+
+  private seatHasVoucherNumber (wl: fan.WaitingList): boolean {
+    return wl.seat.voucherNumber !== '' &&
+      wl.seat.voucherNumber !== '/' &&
+      wl.seat.voucherNumber !== null &&
+      wl.seat.voucherNumber !== undefined;
   }
 
   private hasTicket (wl: fan.WaitingList): boolean {

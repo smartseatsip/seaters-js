@@ -58,7 +58,7 @@ var SeatersSDK =
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/home/seaters/seaters-js/dist";
+/******/ 	__webpack_require__.p = "/Users/sanderdecoster/local_projects/seaters/seaters-js/dist";
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 16);
@@ -181,7 +181,7 @@ var __extends = undefined && undefined.__extends || function () {
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
 var api_1 = __webpack_require__(3);
-var SeatersApiContext = /** @class */function (_super) {
+var SeatersApiContext = function (_super) {
     __extends(SeatersApiContext, _super);
     function SeatersApiContext(prefix, requestDriver) {
         return _super.call(this, prefix, requestDriver) || this;
@@ -398,7 +398,7 @@ exports.SeatersApiContext = SeatersApiContext;
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Subject = /** @class */function () {
+var Subject = function () {
     function Subject() {
         this.observers = [];
     }
@@ -426,7 +426,7 @@ exports.Subject = Subject;
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var ApiEndpoint = /** @class */function () {
+var ApiEndpoint = function () {
     function ApiEndpoint(abstractEndpoint, endpointParams, queryParams, prefix) {
         this.endpointParams = endpointParams;
         this.queryParams = queryParams;
@@ -503,7 +503,7 @@ exports.ApiEndpoint = ApiEndpoint;
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var DeferredPromise = /** @class */function () {
+var DeferredPromise = function () {
     function DeferredPromise() {
         var _this = this;
         this.promise = new Promise(function (resolve, reject) {
@@ -525,7 +525,7 @@ exports.DeferredPromise = DeferredPromise;
 Object.defineProperty(exports, "__esModule", { value: true });
 /* tslint:disable:no-floating-promises */
 var seaters_api_context_1 = __webpack_require__(4);
-var AppApi = /** @class */function () {
+var AppApi = function () {
     function AppApi(apiContext) {
         this.apiContext = apiContext;
     }
@@ -579,7 +579,7 @@ exports.AppApi = AppApi;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var seaters_api_1 = __webpack_require__(1);
-var FanApi = /** @class */function () {
+var FanApi = function () {
     function FanApi(apiContext) {
         this.apiContext = apiContext;
     }
@@ -772,7 +772,7 @@ exports.FanApi = FanApi;
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var HealthApi = /** @class */function () {
+var HealthApi = function () {
     function HealthApi(apiContext) {
         this.apiContext = apiContext;
     }
@@ -804,7 +804,7 @@ exports.HEALTH_NODE_OK = 'OK';
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var AuthenticationApi = /** @class */function () {
+var AuthenticationApi = function () {
     function AuthenticationApi(apiContext) {
         this.apiContext = apiContext;
     }
@@ -905,13 +905,15 @@ var fan_types_1 = __webpack_require__(2);
 var util_1 = __webpack_require__(0);
 var WAITING_LIST_ACTION_STATUS = fan_types_1.fan.WAITING_LIST_ACTION_STATUS;
 var EXPORTABLE_TICKETING_SYSTEMS = ['UPLOAD', 'DIGITICK'];
-var WaitingListService = /** @class */function () {
+var WaitingListService = function () {
     function WaitingListService(api) {
         this.api = api;
     }
     WaitingListService.prototype.getWaitingList = function (waitingListId) {
         var _this = this;
         return this.getRawWaitingList(waitingListId).then(function (wl) {
+            return _this.waitForVoucher(wl);
+        }).then(function (wl) {
             return _this.extendRawWaitingList(wl);
         });
     };
@@ -1141,10 +1143,12 @@ var WaitingListService = /** @class */function () {
         });
         return wls;
     };
-    WaitingListService.prototype.pollWaitingList = function (waitingListId, condition, limit, delayInMs) {
+    WaitingListService.prototype.pollWaitingList = function (waitingListId, condition, limit, delayInMs, useRawWaitingList) {
         var _this = this;
-        return util_1.retryUntil(function () {
-            return _this.getWaitingList(waitingListId);
+        return util_1.retryUntil(
+        // We use the raw waitinglist data instead to prevent an infinite loop when re-fetching the waiting list
+        function () {
+            return useRawWaitingList ? _this.getRawWaitingList(waitingListId) : _this.getWaitingList(waitingListId);
         }, condition, limit || 10, delayInMs || 1000);
     };
     WaitingListService.prototype.getWaitingListActionStatus = function (waitingList) {
@@ -1241,8 +1245,30 @@ var WaitingListService = /** @class */function () {
             return _this.getWaitingList(wl.waitingListId);
         });
     };
+    WaitingListService.prototype.waitForVoucher = function (wl) {
+        var _this = this;
+        // If there is no seat, skip
+        if (!wl || !wl.seat || !wl.seat.status) {
+            return Promise.resolve(wl);
+        }
+        // If the seat has not been accepted yet, skip
+        if (wl.seat.status !== 'ACCEPTED') {
+            return Promise.resolve(wl);
+        }
+        // If there is no voucher, skip
+        if (!this.hasVoucher(wl)) {
+            return Promise.resolve(wl);
+        }
+        // Wait for voucher number to come though
+        return this.pollWaitingList(wl.waitingListId, function (updatedWl) {
+            return _this.seatHasVoucherNumber(updatedWl);
+        }, 60, 1000, true);
+    };
     WaitingListService.prototype.hasVoucher = function (wl) {
         return wl.seatDistributionMode === 'VOUCHER' && wl.seat && wl.seat.voucherNumber && wl.seat.voucherNumber !== '';
+    };
+    WaitingListService.prototype.seatHasVoucherNumber = function (wl) {
+        return wl.seat.voucherNumber !== '' && wl.seat.voucherNumber !== '/' && wl.seat.voucherNumber !== null && wl.seat.voucherNumber !== undefined;
     };
     WaitingListService.prototype.hasTicket = function (wl) {
         return wl.seatDistributionMode === 'TICKET' && wl.seat && !!wl.seat.ticketingSystemType;
@@ -1342,7 +1368,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var util_1 = __webpack_require__(0);
 var fan_types_1 = __webpack_require__(2);
 var FAN_GROUP_ACTION_STATUS = fan_types_1.fan.FAN_GROUP_ACTION_STATUS;
-var FanGroupService = /** @class */function () {
+var FanGroupService = function () {
     function FanGroupService(api) {
         this.api = api;
     }
@@ -1514,7 +1540,7 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.version = '1.23.3';
+exports.version = '1.24.1';
 __export(__webpack_require__(17));
 var fan_types_1 = __webpack_require__(2);
 exports.fan = fan_types_1.fan;
@@ -1530,7 +1556,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var api_1 = __webpack_require__(3);
 var seaters_api_1 = __webpack_require__(1);
 var services_1 = __webpack_require__(36);
-var SeatersClient = /** @class */function () {
+var SeatersClient = function () {
     function SeatersClient(options) {
         options = Object.assign({}, SeatersClient.DEFAULT_OPTIONS, options);
         var requestDriver = api_1.getRequestDriver(options.requestDriver);
@@ -1540,12 +1566,12 @@ var SeatersClient = /** @class */function () {
         this.publicService = new services_1.PublicService(this.appService, requestDriver, this.seatersApi);
         this.fanService = new services_1.FanService(this.seatersApi, this.sessionService, this.publicService);
     }
-    SeatersClient.DEFAULT_OPTIONS = {
-        apiPrefix: 'https://api.dev-seaters.com/api',
-        requestDriver: 'BROWSER'
-    };
     return SeatersClient;
 }();
+SeatersClient.DEFAULT_OPTIONS = {
+    apiPrefix: 'https://api.dev-seaters.com/api',
+    requestDriver: 'BROWSER'
+};
 exports.SeatersClient = SeatersClient;
 /**
  * Obtain a seaters client. This will only instantiate the client with the given options the first time you invoke it.
@@ -1600,7 +1626,7 @@ exports.wrapClient = wrapClient;
 Object.defineProperty(exports, "__esModule", { value: true });
 var subject_1 = __webpack_require__(5);
 var api_endpoint_1 = __webpack_require__(6);
-var ApiContext = /** @class */function () {
+var ApiContext = function () {
     function ApiContext(apiPrefix, requestDriver) {
         this.apiPrefix = apiPrefix;
         this.requestDriver = requestDriver;
@@ -1760,7 +1786,7 @@ var __extends = undefined && undefined.__extends || function () {
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
 var deferred_promise_1 = __webpack_require__(7);
-var RetryUntilTimeoutError = /** @class */function (_super) {
+var RetryUntilTimeoutError = function (_super) {
     __extends(RetryUntilTimeoutError, _super);
     function RetryUntilTimeoutError(limit) {
         var _this = _super.call(this, 'retryUntil - maximum number of tries was reached (' + limit + ')') || this;
@@ -1966,7 +1992,7 @@ exports.compareFlatObjects = compareFlatObjects;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var SEATERS_DEFAULT_LOCALE = 'en';
-var LocalizableText = /** @class */function () {
+var LocalizableText = function () {
     function LocalizableText(translationMap) {
         var _this = this;
         Object.keys(translationMap).forEach(function (k) {
@@ -2100,7 +2126,7 @@ var admin_1 = __webpack_require__(30);
 var health_1 = __webpack_require__(33);
 var authentication_api_1 = __webpack_require__(12);
 var seaters_api_context_1 = __webpack_require__(4);
-var SeatersApi = /** @class */function () {
+var SeatersApi = function () {
     function SeatersApi(prefix, requestDriver) {
         this.apiContext = new seaters_api_context_1.SeatersApiContext(prefix, requestDriver);
         this.app = new app_api_1.AppApi(this.apiContext);
@@ -2155,7 +2181,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /* tslint:disable:no-floating-promises */
 var seaters_api_1 = __webpack_require__(1);
 var seaters_api_controller_1 = __webpack_require__(32);
-var AdminApi = /** @class */function (_super) {
+var AdminApi = function (_super) {
     __extends(AdminApi, _super);
     function AdminApi(apiContext) {
         var _this = _super.call(this) || this;
@@ -2202,7 +2228,7 @@ exports.AdminApi = AdminApi;
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var SeatersApiController = /** @class */function () {
+var SeatersApiController = function () {
     function SeatersApiController() {}
     SeatersApiController.prototype.buildParams = function (obj) {
         var map = new Map();
@@ -2245,7 +2271,7 @@ __export(__webpack_require__(11));
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var PagingOptions = /** @class */function () {
+var PagingOptions = function () {
     function PagingOptions(itemOffset, maxPageSize) {
         this.itemOffset = itemOffset;
         this.maxPageSize = maxPageSize;
@@ -2351,7 +2377,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var waiting_list_service_1 = __webpack_require__(13);
 var fan_group_service_1 = __webpack_require__(14);
 var util_1 = __webpack_require__(0);
-var FanService = /** @class */function () {
+var FanService = function () {
     function FanService(seatersApi, sessionService, publicService) {
         this.seatersApi = seatersApi;
         this.sessionService = sessionService;
@@ -2572,7 +2598,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var algolia_for_seaters_1 = __webpack_require__(41);
-var PublicService = /** @class */function () {
+var PublicService = function () {
     function PublicService(appService, requestDriver, seatersApi) {
         this.seatersApi = seatersApi;
         this.algoliaForSeatersService = new algolia_for_seaters_1.AlgoliaForSeatersService(appService, requestDriver);
@@ -2676,7 +2702,7 @@ var algolia_api_1 = __webpack_require__(43);
 var algolia_for_seaters_types_1 = __webpack_require__(15);
 var DEFAULT_LOCALE = 'en';
 var WL_FACET_FILTER = { facet: algolia_for_seaters_types_1.TYPE_FIELD, value: algolia_for_seaters_types_1.WL_ALGOLIA_TYPE };
-var AlgoliaForSeatersService = /** @class */function () {
+var AlgoliaForSeatersService = function () {
     function AlgoliaForSeatersService(appService, requestDriver) {
         this.appService = appService;
         this.requestDriver = requestDriver;
@@ -2949,7 +2975,7 @@ var API_LOCATION_INFIX = '-dsn.algolia.net/1/';
 function apiPrefix(appId, apiKey) {
     return 'https://' + appId.toLowerCase() + API_LOCATION_INFIX;
 }
-var AlgoliaApi = /** @class */function (_super) {
+var AlgoliaApi = function (_super) {
     __extends(AlgoliaApi, _super);
     function AlgoliaApi(appId, apiKey, requestDriver) {
         var _this = _super.call(this, apiPrefix(appId, apiKey), requestDriver) || this;
@@ -2972,7 +2998,7 @@ exports.AlgoliaApi = AlgoliaApi;
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var IndicesApi = /** @class */function () {
+var IndicesApi = function () {
     function IndicesApi(apiContext) {
         this.apiContext = apiContext;
     }
@@ -3095,7 +3121,7 @@ var SESSION_STRATEGY;
     SESSION_STRATEGY[SESSION_STRATEGY["EXPIRE"] = 0] = "EXPIRE";
     SESSION_STRATEGY[SESSION_STRATEGY["EXTEND"] = 1] = "EXTEND";
 })(SESSION_STRATEGY = exports.SESSION_STRATEGY || (exports.SESSION_STRATEGY = {}));
-var SessionService = /** @class */function () {
+var SessionService = function () {
     function SessionService(seatersApi, sessionStrategy) {
         this.seatersApi = seatersApi;
         this.sessionToken = '';
@@ -3474,7 +3500,7 @@ var ALL_LANGUAGES_PAGE_SIZE = 1000;
 var ALL_CURRENCIES_PAGE_SIZE = 1000;
 var ALL_TIME_ZONES_PAGE_SIZE = 1000;
 var ALL_TRANSLATIONS_PAGE_SIZE = 20000;
-var AppService = /** @class */function () {
+var AppService = function () {
     function AppService(seatersApi) {
         this.seatersApi = seatersApi;
     }
