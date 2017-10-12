@@ -18,7 +18,7 @@ export class ApiContext {
 
   constructor (
     private apiPrefix: string,
-    private requestDriver: RequestDriver
+    public requestDriver: RequestDriver
   ) {
     this.requestsSubject = new Subject<ApiRequest>();
     this.headers = new Map<string, string>();

@@ -5,7 +5,7 @@ import { PagingOptions } from '../paging-options';
 import { SeatersApiController } from '../seaters-api-controller';
 import {
   User, UserSearchQuery, FanGroupOwnership, FanGroup,
-  FanGroupProtectionCode
+  FanGroupProtectionCode, OneTimeFile
 } from './admin-types';
 
 export class AdminApi extends SeatersApiController {
@@ -111,6 +111,42 @@ export class AdminApi extends SeatersApiController {
       '/seaters-admin/fan-groups/:id/protection-codes/:code',
       { id: fanGroupId, code: code }
     );
+  }
+
+  importFanGroupProtectionCodes (fanGroupId: string, fileId: string): Promise<any> {
+    return this.apiContext.put(
+      '/seaters-admin/fan-groups/:id/import-protection-codes/:fileId',
+      null,
+      { id: fanGroupId, fileId: fileId }
+    );
+  }
+
+  requestOneTimeFileUpload (fileName?: string): Promise<OneTimeFile> {
+    return this.apiContext.put(
+      '/seaters-admin/request-one-time-upload',
+      null,
+      null,
+      fileName ? { fileName: fileName } : null
+    );
+  }
+
+  /**
+   * For browser, we expect HTMLInputElement containing a file
+   * @param oneTimeFileUrl url of a OneTimeFile returned by requestOneTimeFileUpload
+   * @param data for browsers: HTMLInputElement, for node: not supported
+   */
+  uploadOneTimeFile (oneTimeFileUrl: string, data: any): Promise<any> {
+    return this.apiContext.requestDriver({
+      method: 'POST',
+      url: oneTimeFileUrl,
+      formData: data
+    }).then((res) => {
+      if (res.status === 200) {
+        return;
+      } else {
+        throw res as any;
+      }
+    });
   }
 
 }

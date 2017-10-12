@@ -3,6 +3,7 @@ import { DeferredPromise } from './../services/util';
 
 declare const window: any;
 declare type XMLHttpRequest = any;
+declare type HTMLInputElement = any;
 
 const READY_STATE_DONE = 4; // xhr readyState 4 means the request is done.
 
@@ -17,6 +18,12 @@ function buildServerResponse (xhr: XMLHttpRequest): ServerResponse {
   };
 }
 
+function formDataBody (filesInputElement: HTMLInputElement) {
+  let formData = new window.FormData();
+  formData.append('file', filesInputElement.files[0]);
+  return formData;
+}
+
 function buildXhr (options: RequestOptions): XMLHttpRequest {
   let xhr = new window.XMLHttpRequest();
   xhr.open(options.method, options.url);
@@ -27,7 +34,9 @@ function buildXhr (options: RequestOptions): XMLHttpRequest {
       xhr.setRequestHeader(header, value);
     });
   }
-  xhr.send(options.body);
+  var body = options.formData ? formDataBody(options.formData) : options.body;
+  console.log('%s %s', options.method, options.url, body);//DEBUG
+  xhr.send(body);
   return xhr;
 }
 

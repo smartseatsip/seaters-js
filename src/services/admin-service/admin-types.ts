@@ -6,4 +6,6 @@ export namespace admin {
 
     export interface FanGroupProtectionCode extends types.FanGroupProtectionCode {}
 
+    export interface OneTimeFile extends types.OneTimeFile {}
+
 }
