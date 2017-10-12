@@ -3,7 +3,10 @@ import { SeatersApiContext } from '../../seaters-api';
 import { PagedResult } from '../paged-result';
 import { PagingOptions } from '../paging-options';
 import { SeatersApiController } from '../seaters-api-controller';
-import { User, UserSearchQuery, FanGroupOwnership, FanGroup } from './admin-types';
+import {
+  User, UserSearchQuery, FanGroupOwnership, FanGroup,
+  FanGroupProtectionCode
+} from './admin-types';
 
 export class AdminApi extends SeatersApiController {
 
@@ -84,6 +87,29 @@ export class AdminApi extends SeatersApiController {
     return this.apiContext.get(
       '/seaters-admin/fan-groups/:id',
       {id: fanGroupId}
+    );
+  }
+
+  getFanGroupProtectionCodes (fanGroupId: string, page: PagingOptions): Promise<PagedResult<FanGroupProtectionCode>> {
+    return this.apiContext.get(
+      '/seaters-admin/fan-groups/:id/protection-codes',
+      { id: fanGroupId },
+      SeatersApiContext.buildPagingQueryParams(page)
+    );
+  }
+  
+  createFanGroupProtectionCode (fanGroupId: string, code: string, maxTimesUsed: number): Promise<FanGroupProtectionCode> {
+    return this.apiContext.post(
+      '/seaters-admin/fan-groups/:id/protection-codes',
+      { code: code, maxTimesUsed: maxTimesUsed },
+      { id: fanGroupId }
+    );
+  }
+
+  deleteFanGroupProtectionCode (fanGroupId: string, code: string): Promise<any> {
+    return this.apiContext.delete(
+      '/seaters-admin/fan-groups/:id/protection-codes/:code',
+      { id: fanGroupId, code: code }
     );
   }
 
