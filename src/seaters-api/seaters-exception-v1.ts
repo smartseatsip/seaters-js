@@ -18,10 +18,10 @@ export function seatersExceptionV1MessageMapper<T> (mapping: { [key: string]: T 
       throw err;
     } else if (err.type !== 'validation_error_v1') {
       console.error('[seatersExceptionV1MessageMapper] invoked with non-v1 exception', err);
-      throw err;
+      return Promise.reject(err);
     } else if (!mapping.hasOwnProperty(err.message)) {
       console.error('[seatersExceptionV1MessageMapper] unmapped v1 error: %s', err.message, err);
-      throw err;
+      return Promise.reject(err);
     } else {
       return Promise.reject(mapping[err.message]);
     }
