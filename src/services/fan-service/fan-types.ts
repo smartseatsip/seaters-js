@@ -1,17 +1,27 @@
 import {
   WaitingList as _WaitingList,
   FanGroup as _FanGroup,
+  FanGroupLook as _FanGroupLook,
   Price as _Price,
   PaymentInfo as _PaymentInfo,
   AttendeesInfo as _AttendeesInfo,
   AttendeeInfo as _AttendeeInfo,
-  Fan as _Fan
+  FanGroupShare as _FanGroupShare,
+  WaitingListShare as _WaitingListShare,
+  Fan as _Fan,
+  Address as _Address,
+  PhoneNumber as _PhoneNumber
 } from '../../seaters-api/fan';
 
 export namespace fan {
-
   export enum WAITING_LIST_ACTION_STATUS {
-    UNLOCK, SOON, BOOK, WAIT, CONFIRM, GO_LIVE, ERROR
+    UNLOCK,
+    SOON,
+    BOOK,
+    WAIT,
+    CONFIRM,
+    GO_LIVE,
+    ERROR
   }
 
   export interface WaitingList extends _WaitingList {
@@ -31,12 +41,17 @@ export namespace fan {
     shouldProvideAttendeesInfo: boolean;
   }
 
-  export interface Price extends _Price {
-  }
+  export interface Price extends _Price {}
 
   export enum FAN_GROUP_ACTION_STATUS {
-    CAN_JOIN, CAN_LEAVE, CAN_UNLOCK, CAN_REQUEST, WAITING_FOR_APPROVAL
+    CAN_JOIN,
+    CAN_LEAVE,
+    CAN_UNLOCK,
+    CAN_REQUEST,
+    WAITING_FOR_APPROVAL
   }
+
+  export interface FanGroupLook extends _FanGroupLook {}
 
   export interface FanGroup extends _FanGroup {
     /**
@@ -45,12 +60,9 @@ export namespace fan {
     actionStatus: FAN_GROUP_ACTION_STATUS;
   }
 
-  export interface PaymentInfo extends _PaymentInfo {
-
-  }
+  export interface PaymentInfo extends _PaymentInfo {}
 
   export interface BraintreePaymentInfo {
-
     /**
      * Braintree Payment token used to setup the braintree SDK.
      * It identifies the fan to braintree and allows seaters to
@@ -76,16 +88,19 @@ export namespace fan {
      * The total amount to pay (with double precision)
      */
     total: string;
-
   }
 
-  export interface AttendeeInfo extends _AttendeeInfo {
-  }
+  export interface AttendeeInfo extends _AttendeeInfo {}
 
-  export interface AttendeesInfo extends _AttendeesInfo {
-  }
+  export interface AttendeesInfo extends _AttendeesInfo {}
 
-  export interface Fan extends _Fan {
-  }
+  export interface Fan extends _Fan {}
 
+  export interface FanGroupShare extends _FanGroupShare {}
+
+  export interface WaitingListShare extends _WaitingListShare {}
+
+  export interface Address extends _Address {}
+
+  export interface PhoneNumber extends _PhoneNumber {}
 }

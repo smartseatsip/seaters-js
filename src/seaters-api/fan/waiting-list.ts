@@ -3,7 +3,6 @@ import { ExtendedPosition } from './extended-position';
 import { EVENT_REQUIRED_ATTENDEE_INFO } from './attendee-info';
 
 export interface WaitingList {
-
   /**
    * Waiting List ID
    */
@@ -139,6 +138,11 @@ export interface WaitingList {
    * Event image URL
    */
   eventImageUrl: string;
+
+  /**
+   * Waiting list image URL
+   */
+  waitingListImageUrl: string;
 
   /**
    * True if Waiting List is free, false otherwise.
@@ -283,6 +287,11 @@ export interface WaitingList {
    * (random distribution only) URL to the terms and conditions PDF file
    */
   termsAndConditionFileURL: string;
+
+  /**
+   * Always-populated voucher text
+   */
+  voucherText: string;
 }
 
 export type WL_ACCESS_MODE = 'PUBLIC' | 'CODE_PROTECTED';

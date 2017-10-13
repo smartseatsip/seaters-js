@@ -1,8 +1,5 @@
 export class PagingOptions {
-  constructor (public itemOffset?: number, public maxPageSize?: number) {
-  }
-
-  static toQueryParams (pagingOptions: PagingOptions, queryParams?: Map<string, string>): Map<string, string> {
+  static toQueryParams(pagingOptions: PagingOptions, queryParams?: Map<string, string>): Map<string, string> {
     if (!queryParams) {
       queryParams = new Map<string, string>();
     }
@@ -18,4 +15,5 @@ export class PagingOptions {
     return queryParams;
   }
 
+  constructor(public itemOffset?: number, public maxPageSize?: number) {}
 }
