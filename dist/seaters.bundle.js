@@ -58,7 +58,7 @@ var SeatersSDK =
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/Users/sanderdecoster/local_projects/seaters/seaters-js/dist";
+/******/ 	__webpack_require__.p = "C:\\local_projects\\seaters\\seaters-js/dist";
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 16);
@@ -2275,10 +2275,10 @@ function seatersExceptionV1MessageMapper(mapping) {
             throw err;
         } else if (err.type !== 'validation_error_v1') {
             console.error('[seatersExceptionV1MessageMapper] invoked with non-v1 exception', err);
-            throw err;
+            return Promise.reject(err);
         } else if (!mapping.hasOwnProperty(err.message)) {
             console.error('[seatersExceptionV1MessageMapper] unmapped v1 error: %s', err.message, err);
-            throw err;
+            return Promise.reject(err);
         } else {
             return Promise.reject(mapping[err.message]);
         }
