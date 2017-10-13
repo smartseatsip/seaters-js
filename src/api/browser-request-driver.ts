@@ -2,6 +2,7 @@ import { ServerResponse, RequestOptions } from './request-driver';
 import { DeferredPromise } from './../services/util';
 
 declare const window: any;
+declare const console: any;
 declare type XMLHttpRequest = any;
 declare type HTMLInputElement = any;
 
@@ -35,7 +36,7 @@ function buildXhr (options: RequestOptions): XMLHttpRequest {
     });
   }
   var body = options.formData ? formDataBody(options.formData) : options.body;
-  console.log('%s %s', options.method, options.url, body);//DEBUG
+  console.debug('%s %s', options.method, options.url, body);
   xhr.send(body);
   return xhr;
 }

@@ -47,7 +47,7 @@ export class AdminService extends SeatersService {
   }
 
   private uploadOneTimeFile (data: any, fileName?: string): Promise<admin.OneTimeFile> {
-    return this.seatersApi.admin.requestOneTimeFileUpload(fileName)
+    return this.seatersApi.admin.requestOneTimeFileUpload(fileName || (new Date()).toISOString())
       .then((otf) => this.seatersApi.admin.uploadOneTimeFile(otf.url, data).then(() => otf));
   }
 

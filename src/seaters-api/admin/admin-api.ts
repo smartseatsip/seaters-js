@@ -131,22 +131,12 @@ export class AdminApi extends SeatersApiController {
   }
 
   /**
-   * For browser, we expect HTMLInputElement containing a file
+   * Upload a onetime file
    * @param oneTimeFileUrl url of a OneTimeFile returned by requestOneTimeFileUpload
    * @param data for browsers: HTMLInputElement, for node: not supported
    */
   uploadOneTimeFile (oneTimeFileUrl: string, data: any): Promise<any> {
-    return this.apiContext.requestDriver({
-      method: 'POST',
-      url: oneTimeFileUrl,
-      formData: data
-    }).then((res) => {
-      if (res.status === 200) {
-        return;
-      } else {
-        throw res as any;
-      }
-    });
+    return this.apiContext.uploadOneTimeFile(oneTimeFileUrl, data);
   }
 
 }
