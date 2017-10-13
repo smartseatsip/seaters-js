@@ -261,8 +261,8 @@ export class FanService {
     return this.fanProfilingService.getUserFanAttributes();
   }
 
-  createUserFanAttribute (userFanAttributeCreateDTO: fan.UserFanAttributeCreateDTO): Promise<fan.UserFanAttribute> {
-    return this.fanProfilingService.createUserFanAttribute(userFanAttributeCreateDTO);
+  createUserFanAttribute (userFanAttributeCreateDTO: fan.UserFanAttributeCreateDTO, relationsValidation: string): Promise<fan.UserFanAttribute> {
+    return this.fanProfilingService.createUserFanAttribute(userFanAttributeCreateDTO, relationsValidation);
   }
 
   updateUserFanAttribute (userFanAttributeId: string, userFanAttributeCreateDTO: fan.UserFanAttributeUpdateDTO): Promise<fan.UserFanAttribute> {

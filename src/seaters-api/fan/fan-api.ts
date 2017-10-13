@@ -353,8 +353,8 @@ export class FanApi {
     return this.apiContext.get(`/profiling/v1/user/fan_attributes`, {}, {});
   }
 
-  createUserFanAttribute (userFanAttributeCreateDTO: UserFanAttributeCreateDTO): Promise<UserFanAttribute> {
-    return this.apiContext.post(`/profiling/v1/user/fan_attribute`, userFanAttributeCreateDTO, {});
+  createUserFanAttribute (userFanAttributeCreateDTO: UserFanAttributeCreateDTO, relationsValidation: string): Promise<UserFanAttribute> {
+    return this.apiContext.post(`/profiling/v1/user/fan_attribute`, userFanAttributeCreateDTO, {}, { relations_validation : relationsValidation ? 'true' : 'false'});
   }
 
   updateUserFanAttribute (userFanAttributeId: string, userFanAttributeUpdateDTO: UserFanAttributeUpdateDTO): Promise<UserFanAttribute> {

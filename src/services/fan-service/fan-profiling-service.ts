@@ -44,10 +44,10 @@ export class FanProfilingService {
     return this.seatersApi.fan.getUserFanAttributes();
   }
 
-  createUserFanAttribute (userFanAttributeCreateDTO: fan.UserFanAttributeCreateDTO): Promise<fan.UserFanAttribute> {
-    return this.seatersApi.fan.createUserFanAttribute(userFanAttributeCreateDTO);
-  }
-
+  createUserFanAttribute (userFanAttributeCreateDTO: fan.UserFanAttributeCreateDTO, relationsValidation: string): Promise<fan.UserFanAttribute> {
+    return this.seatersApi.fan.createUserFanAttribute(userFanAttributeCreateDTO, relationsValidation);
+  };
+  
   updateUserFanAttribute (userFanAttributeId: string, userFanAttributeUpdateDTO: fan.UserFanAttributeUpdateDTO): Promise<fan.UserFanAttribute> {
     return this.seatersApi.fan.updateUserFanAttribute(userFanAttributeId, userFanAttributeUpdateDTO);
   }
