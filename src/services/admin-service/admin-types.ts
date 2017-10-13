@@ -8,4 +8,6 @@ export namespace admin {
 
     export interface OneTimeFile extends types.OneTimeFile {}
 
+    export interface WaitingList extends types.WaitingList {}
+
 }

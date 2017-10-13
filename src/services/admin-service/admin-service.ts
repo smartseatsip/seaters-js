@@ -18,6 +18,11 @@ export class AdminService extends SeatersService {
       .then(r => this.convertPagedResult(r));
   }
 
+  getFanGroupWaitingLists (fanGroupId: string, page: PagingOptions): Promise<PagedResult<admin.WaitingList>> {
+    return this.seatersApi.admin.getFanGroupWaitingLists(fanGroupId, page)
+      .then(r => this.convertPagedResult(r));
+  }
+
   /**
    * Add a new protection code to a FanGroup
    * @param fanGroupId the id of the fangroup that can be unlocked with the code
@@ -46,9 +51,35 @@ export class AdminService extends SeatersService {
       });
   }
 
+  updateFanGroupBackgroundImage (fanGroupId: string, data: any, fileName?: string): Promise<admin.FanGroup> {
+    return this.seatersApi.admin.requestFanGroupBackgroundImageUpload(fanGroupId, this.defaultFileName(fileName))
+      .then((otf) => this.seatersApi.admin.uploadOneTimeFile(otf.url, data))
+      .then(() => this.getFanGroup(fanGroupId));
+  }
+
+  updateFanGroupCoverImage (fanGroupId: string, data: any, fileName?: string): Promise<admin.FanGroup> {
+    return this.seatersApi.admin.requestFanGroupCoverImageUpload(fanGroupId, this.defaultFileName(fileName))
+      .then((otf) => this.seatersApi.admin.uploadOneTimeFile(otf.url, data))
+      .then(() => this.getFanGroup(fanGroupId));
+  }
+
+  updateFanGroupProfileImage (fanGroupId: string, data: any, fileName?: string): Promise<admin.FanGroup> {
+    return this.seatersApi.admin.requestFanGroupProfileImageUpload(fanGroupId, this.defaultFileName(fileName))
+      .then((otf) => this.seatersApi.admin.uploadOneTimeFile(otf.url, data))
+      .then(() => this.getFanGroup(fanGroupId));
+  }
+
   private uploadOneTimeFile (data: any, fileName?: string): Promise<admin.OneTimeFile> {
-    return this.seatersApi.admin.requestOneTimeFileUpload(fileName || (new Date()).toISOString())
+    return this.seatersApi.admin.requestOneTimeFileUpload(this.defaultFileName(fileName))
       .then((otf) => this.seatersApi.admin.uploadOneTimeFile(otf.url, data).then(() => otf));
+  }
+
+  private defaultFileName(fileName?: string): string {
+    if (fileName && fileName != '') {
+      return fileName;
+    } else {
+      return (new Date()).toISOString();
+    }
   }
 
 
