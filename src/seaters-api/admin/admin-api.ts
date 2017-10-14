@@ -102,6 +102,28 @@ export class AdminApi extends SeatersApiController {
       SeatersApiContext.buildPagingQueryParams(page)
     );
   }
+
+  getWaitingList (waitingListId: string): Promise<admin.WaitingList> {
+    return this.apiContext.get(
+      '/seaters-admin/waiting-lists/:id',
+      { id: waitingListId }
+    );
+  }
+
+  updateWaitingList (wl: admin.WaitingList): Promise<admin.WaitingList> {
+    return this.apiContext.put(
+      '/seaters-admin/waiting-lists/:id',
+      wl,
+      { id: wl.id }
+    );
+  }
+
+  deleteWaitingList (waitingListId: string): Promise<any> {
+    return this.apiContext.put(
+      '/seaters-admin/waiting-lists/:id',
+      { id: waitingListId }
+    );
+  }
   
   createFanGroupProtectionCode (fanGroupId: string, code: string, maxTimesUsed: number): Promise<admin.FanGroupProtectionCode> {
     return this.apiContext.post(

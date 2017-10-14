@@ -23,6 +23,18 @@ export class AdminService extends SeatersService {
       .then(r => this.convertPagedResult(r));
   }
 
+  getWaitingList (waitingListId: string): Promise<admin.WaitingList> {
+    return this.seatersApi.admin.getWaitingList(waitingListId);
+  }
+
+  updateWaitingList (waitingList: admin.WaitingList): Promise<admin.WaitingList> {
+    return this.seatersApi.admin.updateWaitingList(waitingList);
+  }
+
+  deleteWaitingList (waitingListId: string): Promise<any> {
+    return this.seatersApi.admin.deleteWaitingList(waitingListId);
+  }
+
   /**
    * Add a new protection code to a FanGroup
    * @param fanGroupId the id of the fangroup that can be unlocked with the code
