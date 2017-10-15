@@ -6,15 +6,15 @@ export interface BaseEntity {
   /**
    * Entity identity
    */
-  id?: string;
+  id: string;
 
   /**
    * Datestring
    */
-  createdDate?: string;
+  createdDate: string;
 
   /**
    * Datestring
    */
-  lastModifiedDate?: string;
+  lastModifiedDate: string;
 }

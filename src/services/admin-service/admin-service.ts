@@ -1,5 +1,6 @@
 import { SeatersApi, PagedResult, PagingOptions, SeatersService } from '../common';
 import { admin } from './admin-types';
+import { mapWaitingList } from './waiting-list-mapper';
 
 export class AdminService extends SeatersService {
 
@@ -28,7 +29,7 @@ export class AdminService extends SeatersService {
   }
 
   updateWaitingList (waitingList: admin.WaitingList): Promise<admin.WaitingList> {
-    return this.seatersApi.admin.updateWaitingList(waitingList);
+    return this.seatersApi.admin.updateWaitingList(mapWaitingList(waitingList));
   }
 
   deleteWaitingList (waitingListId: string): Promise<any> {

@@ -110,7 +110,7 @@ export class AdminApi extends SeatersApiController {
     );
   }
 
-  updateWaitingList (wl: admin.WaitingList): Promise<admin.WaitingList> {
+  updateWaitingList (wl: admin.UpdateWaitingList): Promise<admin.WaitingList> {
     return this.apiContext.put(
       '/seaters-admin/waiting-lists/:id',
       wl,
