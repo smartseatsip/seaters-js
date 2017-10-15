@@ -1,8 +1,24 @@
 {
   "format": "stylish",
-  "extends": "tslint-config-standard",
+  "extends": [
+    "tslint-config-standard",
+    "tslint:latest",
+    "tslint-config-prettier"
+  ],
   "rules": {
     "semicolon": true,
-    "no-trailing-whitespace": false
+    "no-trailing-whitespace": false,
+    "ordered-imports": false,
+    "member-access": false,
+    "interface-name": false,
+    "no-bitwise": false,
+    "no-console": false,
+    "no-namespace": false,
+    "no-empty-interface": false,
+    "object-literal-sort-keys": false,
+    "no-var-requires": false,
+    "no-object-literal-type-assertion": false,
+    "comment-format": false
+
   }
 }

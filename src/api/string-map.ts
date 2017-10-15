@@ -1,3 +1,5 @@
 import { SimpleJSONPrimitive } from './simple-json-primitive';
 
-export type StringMap = { [key: string]: SimpleJSONPrimitive };
+export interface StringMap {
+  [key: string]: SimpleJSONPrimitive;
+}

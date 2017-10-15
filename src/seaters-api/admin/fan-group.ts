@@ -6,24 +6,24 @@ export type FAN_GROUP_VISIBILITY = 'VISIBLE' | 'INVISIBLE';
 export type FAN_GROUP_BILLING_MODE = 'FREE' | 'FAIR_PRICE';
 
 export interface FanGroupOperationParameters {
-    ticketingSystemId: string;
-    accessMode: FAN_GROUP_ACCESS_MODE;
-    visibility: FAN_GROUP_VISIBILITY;
-};
+  ticketingSystemId: string;
+  accessMode: FAN_GROUP_ACCESS_MODE;
+  visibility: FAN_GROUP_VISIBILITY;
+}
 
 export interface FanGroupBillingParametersBillingVariables {
-    distributionRate: number
-    minDistributionFee: number
-    maxDistributionFee: number
-    vatRate: number
-};
+  distributionRate: number;
+  minDistributionFee: number;
+  maxDistributionFee: number;
+  vatRate: number;
+}
 
 export interface FanGroupBillingParameters {
-    authorizedFanBillingModes: FAN_GROUP_BILLING_MODE[];
-    billingVariables: FanGroupBillingParametersBillingVariables;
-    paymentSystemId: string;
-    prepaidFee: boolean;
-};
+  authorizedFanBillingModes: FAN_GROUP_BILLING_MODE[];
+  billingVariables: FanGroupBillingParametersBillingVariables;
+  paymentSystemId: string;
+  prepaidFee: boolean;
+}
 
 export interface FanGroup {
   id: string;
@@ -46,4 +46,4 @@ export interface FanGroup {
   color1: string;
   description: TranslatedText;
   name: TranslatedText;
-};
+}

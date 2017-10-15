@@ -11,29 +11,25 @@ export type ResponseModifier = (res: ServerResponse) => any;
 export type RequestErrorModifier = (err: any) => any;
 
 export class ApiContext {
-
   private requestsSubject: Subject<ApiRequest>;
 
   private headers: Map<string, string>;
 
-  constructor (
-    private apiPrefix: string,
-    public requestDriver: RequestDriver
-  ) {
+  constructor(private apiPrefix: string, public requestDriver: RequestDriver) {
     this.requestsSubject = new Subject<ApiRequest>();
     this.headers = new Map<string, string>();
     this.headers.set('Content-Type', 'application/json');
   }
 
-  setHeader (header: string, value: string) {
+  setHeader(header: string, value: string) {
     this.headers.set(header, value);
   }
 
-  unsetHeader (header: string) {
+  unsetHeader(header: string) {
     this.headers.delete(header);
   }
 
-  createEndpoint (requestDefinition: ApiRequestDefinition): ApiEndpoint {
+  createEndpoint(requestDefinition: ApiRequestDefinition): ApiEndpoint {
     return new ApiEndpoint(
       requestDefinition.abstractEndpoint,
       requestDefinition.endpointParams || {},
@@ -42,24 +38,24 @@ export class ApiContext {
     );
   }
 
-  createRequestOptions (requestDefinition: ApiRequestDefinition, endpoint: ApiEndpoint): RequestOptions {
-    let headers = this.mergeHeaders(requestDefinition.headers);
-    let body = (requestDefinition.body as any) !== undefined ? JSON.stringify(requestDefinition.body) : null;
+  createRequestOptions(requestDefinition: ApiRequestDefinition, endpoint: ApiEndpoint): RequestOptions {
+    const headers = this.mergeHeaders(requestDefinition.headers);
+    const body = (requestDefinition.body as any) !== undefined ? JSON.stringify(requestDefinition.body) : null;
     return {
       url: endpoint.absoluteEndpoint,
       method: requestDefinition.method || 'GET',
-      headers: headers,
-      body: body
+      headers,
+      body
     };
   }
 
-  doRequest (requestDefinition: ApiRequestDefinition): Promise<ServerResponse> {
-    let endpoint = this.createEndpoint(requestDefinition);
-    let requestOptions = this.createRequestOptions(requestDefinition, endpoint);
-    let request = this.requestDriver(requestOptions);
-    let apiRequest: ApiRequest = {
-      requestDefinition: requestDefinition,
-      endpoint: endpoint,
+  doRequest(requestDefinition: ApiRequestDefinition): Promise<ServerResponse> {
+    const endpoint = this.createEndpoint(requestDefinition);
+    const requestOptions = this.createRequestOptions(requestDefinition, endpoint);
+    const request = this.requestDriver(requestOptions);
+    const apiRequest: ApiRequest = {
+      requestDefinition,
+      endpoint,
       rawRequest: {
         options: requestOptions,
         promise: request
@@ -71,10 +67,9 @@ export class ApiContext {
     return request as Promise<ServerResponse>;
   }
 
-  private mergeHeaders (otherHeaders: any) {
-    let merged = {};
-    this.headers.forEach((v, k) => merged[k] = v);
-    return Object.assign(merged, otherHeaders);
+  private mergeHeaders(otherHeaders: any) {
+    const merged = {};
+    this.headers.forEach((v, k) => (merged[k] = v));
+    return { ...merged, ...otherHeaders };
   }
-
 }

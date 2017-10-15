@@ -1,8 +1,12 @@
 import { REQUEST_DRIVER_TYPE, getRequestDriver } from './api';
 import { SeatersApi } from './seaters-api';
 import {
-  FanService, PublicService, SessionService,
-  AppService, AdminService, TicketingService,
+  FanService,
+  PublicService,
+  SessionService,
+  AppService,
+  AdminService,
+  TicketingService,
   PaymentService
 } from './services';
 
@@ -14,14 +18,6 @@ export interface SeatersClientOptions {
 }
 
 export class SeatersClient {
-
-  private static DEFAULT_OPTIONS = {
-    apiPrefix: '${api.location}',
-    requestDriver: 'BROWSER'
-  } as SeatersClientOptions;
-
-  private seatersApi: SeatersApi;
-
   public sessionService: SessionService;
 
   public appService: AppService;
@@ -36,9 +32,11 @@ export class SeatersClient {
 
   public paymentService: PaymentService;
 
-  constructor (options?: SeatersClientOptions) {
-    options = Object.assign({}, SeatersClient.DEFAULT_OPTIONS, options);
-    let requestDriver = getRequestDriver(options.requestDriver);
+  private seatersApi: SeatersApi;
+
+  constructor(options?: SeatersClientOptions) {
+    options = { ...SeatersClient.DEFAULT_OPTIONS, ...options };
+    const requestDriver = getRequestDriver(options.requestDriver);
 
     this.seatersApi = new SeatersApi(options.apiPrefix, requestDriver);
     this.sessionService = new SessionService(this.seatersApi);
@@ -50,6 +48,11 @@ export class SeatersClient {
     this.paymentService = new PaymentService(this.seatersApi);
   }
 
+  private static DEFAULT_OPTIONS = {
+    // tslint:disable-next-line
+    apiPrefix: '${api.location}',
+    requestDriver: 'BROWSER'
+  } as SeatersClientOptions;
 }
 
 /**
@@ -57,7 +60,7 @@ export class SeatersClient {
  * Calls made after the initial call will return the original instance.
  */
 export let getSeatersClient: (options: SeatersClientOptions) => SeatersClient = (() => {
-  let client: SeatersClient = undefined;
+  let client: SeatersClient;
   return (options?: SeatersClientOptions) => {
     if (!client) {
       client = new SeatersClient(options);
@@ -66,9 +69,8 @@ export let getSeatersClient: (options: SeatersClientOptions) => SeatersClient = 
   };
 })();
 
-export function wrapClient<T> (promiseMiddleware: PromiseMiddleware<T>, client: SeatersClient): SeatersClient {
-
-  let wrappedClient = {
+export function wrapClient<T>(promiseMiddleware: PromiseMiddleware<T>, client: SeatersClient): SeatersClient {
+  const wrappedClient = {
     appService: {},
     fanService: {},
     publicService: {},
@@ -78,15 +80,18 @@ export function wrapClient<T> (promiseMiddleware: PromiseMiddleware<T>, client: 
     paymentService: {}
   } as SeatersClient;
 
-  Object.keys(wrappedClient).forEach((serviceName) => {
-    let wrappedService = wrappedClient[serviceName];
-    let service = client[serviceName];
-    Object.keys(service.__proto__).forEach((propertyName) => {
-      let property = service[propertyName];
-      if(typeof(property) === 'function') {
-        wrappedService[propertyName] = function () {
-          let res = property.apply(service, Array.prototype.slice.call(arguments));
-          if(res instanceof Promise) {
+  // tslint:disable-next-line
+  Object.keys(wrappedClient).forEach(function(serviceName) {
+    const wrappedService = wrappedClient[serviceName];
+    const service = client[serviceName];
+    // tslint:disable-next-line
+    Object.keys(service.__proto__).forEach(function(propertyName) {
+      const property = service[propertyName];
+      if (typeof property === 'function') {
+        // tslint:disable-next-line
+        wrappedService[propertyName] = function() {
+          const res = property.apply(service, Array.prototype.slice.call(arguments));
+          if (res instanceof Promise) {
             return promiseMiddleware(res);
           } else {
             return res;

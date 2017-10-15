@@ -6,7 +6,7 @@ export interface ServerResponse {
   status: number;
   statusText: string;
   body: string;
-  headers: Object;
+  headers: object;
   driver: REQUEST_DRIVER_TYPE;
   raw: any;
 }
@@ -15,7 +15,7 @@ export interface RequestOptions {
   url: string;
   method: HTTP_METHOD;
   body?: string;
-  headers?: Object;
+  headers?: object;
   formData?: any;
 }
 
@@ -30,11 +30,11 @@ export type RequestDriver = (options: RequestOptions) => Promise<ServerResponse>
 /**
  * Obtain the request driver for the given type
  */
-export function getRequestDriver (type: REQUEST_DRIVER_TYPE): RequestDriver {
+export function getRequestDriver(type: REQUEST_DRIVER_TYPE): RequestDriver {
   switch (type) {
     case 'BROWSER':
-      return require('./browser-request-driver')['default'];
+      return require('./browser-request-driver').default;
     default:
-      return require('./node-request-driver')['default'];
+      return require('./node-request-driver').default;
   }
 }

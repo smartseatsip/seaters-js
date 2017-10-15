@@ -1,18 +1,7 @@
 const webpackMerge = require('webpack-merge');
+const TSLintPlugin = require('tslint-webpack-plugin');
 
 const sharedModules = [
-
-  // TSLint
-  {
-    test: /\.ts$/,
-    enforce: 'pre',
-    loader: 'tslint-loader',
-    options: {
-      configuration: require('./tslint.json'),
-      fix: true
-    }
-  },
-
   // ESLint
   {
     test: /\.js$/,
@@ -79,6 +68,15 @@ const sharedModules = [
   }
 ];
 
+const sharedPlugins = [
+  new TSLintPlugin({
+    config: './tslint.json',
+    files: ['./src/**/*.ts'],
+    format: 'stylish',
+    fix: true
+  })
+];
+
 const sharedConfig = {
   entry: './index',
   output: {
@@ -91,14 +89,13 @@ const sharedConfig = {
   devtool: 'source-map',
   module: {
     rules: sharedModules.concat([])
-  }
+  },
+  plugins: sharedPlugins
 };
 
 module.exports = [
-
   // Module
   webpackMerge(sharedConfig, {
-
     context: `${__dirname}/src`,
     target: 'node',
     output: {
@@ -109,7 +106,6 @@ module.exports = [
 
   // Bundle
   webpackMerge(sharedConfig, {
-
     context: `${__dirname}/src`,
     entry: './index',
     output: {

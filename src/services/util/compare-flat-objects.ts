@@ -1,7 +1,6 @@
-function createFlatArray (o, array) {
+function createFlatArray(o, array) {
   Object.keys(o).map(key => {
-
-    let value = o[key];
+    const value = o[key];
     if (value === undefined || value === null) {
       return;
     } else if (value instanceof Function) {
@@ -25,9 +24,9 @@ function createFlatArray (o, array) {
  * @param p {object}
  * @returns {boolean} whether or not the objects o and p are equal
  */
-export function compareFlatObjects (o: any, p: any) {
-  let oArray = createFlatArray(o, []);
-  let pArray = createFlatArray(p, []);
+export function compareFlatObjects(o: any, p: any) {
+  const oArray = createFlatArray(o, []);
+  const pArray = createFlatArray(p, []);
   oArray.sort();
   pArray.sort();
   return oArray.join('') === pArray.join('');
