@@ -48,7 +48,7 @@ export interface ProfilingExternalIdentifier {
  */
 
 export interface ProfilingFanAttribute {
-  external_identifier: ProfilingExternalIdentifier,
+  external_identifier: ProfilingExternalIdentifier;
   id: string;
   interest: ProfilingInterest;
   name: string;
@@ -87,7 +87,7 @@ export interface UserInterestUpdateDTO {
  */
 
 export interface UserFanAttribute {
-  fan_attribute: ProfilingFanAttribute,
+  fan_attribute: ProfilingFanAttribute;
   id: string;
   objectType: string;
   time_stamps: ProfilingTimeStamp;

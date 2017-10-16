@@ -1,4 +1,4 @@
-import { SeatersApi } from '../../seaters-api';
+import { SeatersApi, PagedResult as ApiPagedResult } from '../../seaters-api';
 import { WaitingListService } from './waiting-list-service';
 import { FanGroupService } from './fan-group-service';
 import { fan } from './fan-types';
@@ -14,12 +14,11 @@ import { StringMap } from '../../api/string-map';
 import { FanProfilingService } from './fan-profiling-service';
 
 export class FanService {
-
   public waitingListService: WaitingListService;
   public fanGroupService: FanGroupService;
   public fanProfilingService: FanProfilingService;
 
-  constructor (
+  constructor(
     private seatersApi: SeatersApi,
     private sessionService: SessionService,
     private publicService: PublicService
@@ -32,158 +31,173 @@ export class FanService {
   /**
    *  FAN GROUPS
    */
-  getFanGroups (fanGroupIds: string[]): Promise<fan.FanGroup[]> {
+  getFanGroups(fanGroupIds: string[]): Promise<fan.FanGroup[]> {
     return this.fanGroupService.getFanGroups(fanGroupIds);
   }
 
-  getFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
+  getFanGroup(fanGroupId: string): Promise<fan.FanGroup> {
     return this.fanGroupService.getFanGroup(fanGroupId);
   }
 
-  getFanGroupBySlug (slug: string): Promise<fan.FanGroup> {
+  getFanGroupBySlug(slug: string): Promise<fan.FanGroup> {
     return this.fanGroupService.getFanGroupBySlug(slug);
   }
 
-  getFanGroupLookBySlug (slug: string): Promise<fan.FanGroup> {
+  getFanGroupLookBySlug(slug: string): Promise<fan.FanGroupLook> {
     return this.fanGroupService.getFanGroupLookBySlug(slug);
   }
 
-  getFanGroupTranslatedDescription (fanGroupId: string): Promise<fan.FanGroup> {
+  getFanGroupTranslatedDescription(fanGroupId: string): Promise<string> {
     return this.fanGroupService.getFanGroupTranslatedDescription(fanGroupId);
   }
 
-  joinFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
+  joinFanGroup(fanGroupId: string): Promise<fan.FanGroup> {
     return this.fanGroupService.joinFanGroup(fanGroupId);
   }
 
-  joinProtectedFanGroup (fanGroupId: string, code: string): Promise<fan.FanGroup> {
+  joinProtectedFanGroup(fanGroupId: string, code: string): Promise<fan.FanGroup> {
     return this.fanGroupService.joinProtectedFanGroup(fanGroupId, code);
   }
 
-  requestToJoinPrivateFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
+  requestToJoinPrivateFanGroup(fanGroupId: string): Promise<fan.FanGroup> {
     return this.fanGroupService.requestToJoinPrivateFanGroup(fanGroupId);
   }
 
-  leaveFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
+  leaveFanGroup(fanGroupId: string): Promise<fan.FanGroup> {
     return this.fanGroupService.leaveFanGroup(fanGroupId);
   }
 
-  shareFanGroup (fanGroupId: string): Promise<fan.FanGroup> {
+  shareFanGroup(fanGroupId: string): Promise<fan.FanGroupShare> {
     return this.fanGroupService.shareFanGroup(fanGroupId);
   }
 
-  getJoinedFanGroups (pagingOptions: PagingOptions): Promise<PagedResult<fan.FanGroup>> {
-    return this.fanGroupService.joinedFanGroups(pagingOptions)
-      .then(r => this.convertPagedResult(r));
+  getJoinedFanGroups(pagingOptions: PagingOptions): Promise<PagedResult<fan.FanGroup>> {
+    return this.fanGroupService.joinedFanGroups(pagingOptions).then(r => this.convertPagedResult(r));
   }
 
   /**
    *  WAITING LISTS
    */
-  getWaitingList (waitingListId: string): Promise<fan.WaitingList> {
+  getWaitingList(waitingListId: string): Promise<fan.WaitingList> {
     return this.waitingListService.getWaitingList(waitingListId);
   }
 
-  getWaitingLists (waitingListIds: string[]): Promise<fan.WaitingList[]> {
+  getWaitingLists(waitingListIds: string[]): Promise<fan.WaitingList[]> {
     return this.waitingListService.getWaitingLists(waitingListIds);
   }
 
-  getWaitingListsInFanGroup (fanGroupId: string, pagingOptions: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
-    return this.waitingListService.getWaitingListsInFanGroup(fanGroupId, pagingOptions)
+  getWaitingListsInFanGroup(fanGroupId: string, pagingOptions: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
+    return this.waitingListService
+      .getWaitingListsInFanGroup(fanGroupId, pagingOptions)
       .then(r => this.convertPagedResult(r));
   }
 
-  getWaitingListsInFanGroups (
+  getWaitingListsInFanGroups(
     fanGroupIds: string[],
     pagingOptions: PagingOptions
   ): Promise<PagedResult<fan.WaitingList>> {
-    return this.waitingListService.getWaitingListsInFanGroups(fanGroupIds, pagingOptions)
+    return this.waitingListService
+      .getWaitingListsInFanGroups(fanGroupIds, pagingOptions)
       .then(r => this.convertPagedResult(r));
   }
 
-  getMyWaitingListsWithoutSeat (page: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
-    return this.waitingListService.getMyWaitingListsWithoutSeat(page);
+  getMyWaitingListsWithoutSeat(page: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
+    return this.waitingListService.getMyWaitingListsWithoutSeat(page).then(r => this.convertPagedResult(r));
   }
 
-  getMyWaitingListsWithSeat (page: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
-    return this.waitingListService.getMyWaitingListsWithSeat(page);
+  getMyWaitingListsWithSeat(page: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
+    return this.waitingListService.getMyWaitingListsWithSeat(page).then(r => this.convertPagedResult(r));
   }
 
-  getWaitingListTranslatedVenueDescription (waitingListId: string): Promise<fan.WaitingList> {
+  //TODO: cleanup duplicate method (see getTranslatedVenueConditionsForWaitingList)
+  getWaitingListTranslatedVenueDescription(waitingListId: string): Promise<string> {
     return this.waitingListService.getWaitingListTranslatedVenueDescription(waitingListId);
   }
 
-  getPositionBraintreePaymentInfo (waitingListId: string): Promise<fan.BraintreePaymentInfo> {
+  getPositionBraintreePaymentInfo(waitingListId: string): Promise<fan.BraintreePaymentInfo> {
     return this.waitingListService.getPositionBraintreePaymentInfo(waitingListId);
   }
 
-  joinWaitingList (waitingListId: string, numberOfSeats: number, additionalQueryParams?: StringMap): Promise<fan.WaitingList> {
-    return this.waitingListService.joinWaitingList(waitingListId, numberOfSeats, Object.assign({}, additionalQueryParams));
+  joinWaitingList(
+    waitingListId: string,
+    numberOfSeats: number,
+    additionalQueryParams?: StringMap
+  ): Promise<fan.WaitingList> {
+    return this.waitingListService.joinWaitingList(waitingListId, numberOfSeats, { ...additionalQueryParams });
   }
 
-  joinProtectedWaitingList (waitingListId: string, code: string, numberOfSeats: number, additionalQueryParams?: StringMap): Promise<fan.WaitingList> {
-    return this.waitingListService.joinProtectedWaitingList(waitingListId, code, numberOfSeats, Object.assign({}, additionalQueryParams));
+  joinProtectedWaitingList(
+    waitingListId: string,
+    code: string,
+    numberOfSeats: number,
+    additionalQueryParams?: StringMap
+  ): Promise<fan.WaitingList> {
+    return this.waitingListService.joinProtectedWaitingList(waitingListId, code, numberOfSeats, {
+      ...additionalQueryParams
+    });
   }
 
-  shareWaitingList (waitingListId: string): Promise<fan.WaitingList> {
+  shareWaitingList(waitingListId: string): Promise<fan.WaitingListShare> {
     return this.waitingListService.shareWaitingList(waitingListId);
   }
 
-  leaveWaitingList (waitingListId: string): Promise<fan.WaitingList> {
+  leaveWaitingList(waitingListId: string): Promise<fan.WaitingList> {
     return this.waitingListService.leaveWaitingList(waitingListId);
   }
 
-  getPositionPaymentInfo (waitingListId: string): Promise<fan.PaymentInfo> {
+  getPositionPaymentInfo(waitingListId: string): Promise<fan.PaymentInfo> {
     return this.waitingListService.getPositionPaymentInfo(waitingListId);
   }
 
-  payPosition (waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
+  payPosition(waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
     return this.waitingListService.payPosition(waitingListId, transaction);
   }
 
-  preauthorizePosition (waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
+  preauthorizePosition(waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
     return this.waitingListService.preauthorizePosition(waitingListId, transaction);
   }
 
-  saveAttendeesInfo (waitingListId: string, attendeesInfo: Array<AttendeeInfo>): Promise<fan.WaitingList> {
+  saveAttendeesInfo(waitingListId: string, attendeesInfo: AttendeeInfo[]): Promise<fan.WaitingList> {
     return this.waitingListService.saveAttendeesInfo(waitingListId, attendeesInfo);
   }
 
-  acceptSeats (waitingListId: string): Promise<fan.WaitingList> {
+  acceptSeats(waitingListId: string): Promise<fan.WaitingList> {
     return this.waitingListService.acceptSeats(waitingListId);
   }
 
-  rejectSeats (waitingListId: string): Promise<fan.WaitingList> {
+  rejectSeats(waitingListId: string): Promise<fan.WaitingList> {
     return this.waitingListService.rejectSeats(waitingListId);
   }
 
-  exportSeats (waitingListId: string): Promise<fan.WaitingList> {
+  exportSeats(waitingListId: string): Promise<fan.WaitingList> {
     return this.waitingListService.exportSeats(waitingListId);
   }
 
-  getEventDescriptionForWaitingList (waitingListId: string): Promise<LocalizableText> {
-    return this.waitingListService.getEventDescriptionForWaitingList(waitingListId)
+  getEventDescriptionForWaitingList(waitingListId: string): Promise<LocalizableText> {
+    return this.waitingListService
+      .getEventDescriptionForWaitingList(waitingListId)
       .then(translationMap => new LocalizableText(translationMap));
   }
 
-  getTranslatedEventDescriptionForWaitingList (waitingListId: string): Promise<LocalizableText> {
+  getTranslatedEventDescriptionForWaitingList(waitingListId: string): Promise<string> {
     return this.waitingListService.getTranslatedEventDescriptionForWaitingList(waitingListId);
   }
 
-  getVenueConditionsForWaitingList (waitingListId: string): Promise<LocalizableText> {
-    return this.waitingListService.getVenueConditionsForWaitingList(waitingListId)
+  getVenueConditionsForWaitingList(waitingListId: string): Promise<LocalizableText> {
+    return this.waitingListService
+      .getVenueConditionsForWaitingList(waitingListId)
       .then(translationMap => new LocalizableText(translationMap));
   }
 
-  getTranslatedVenueConditionsForWaitingList (waitingListId: string): Promise<LocalizableText> {
+  getTranslatedVenueConditionsForWaitingList(waitingListId: string): Promise<string> {
     return this.waitingListService.getTranslatedVenueConditionsForWaitingList(waitingListId);
   }
 
-  positionBraintreeToken (waitingListId: string): Promise<BraintreeToken> {
+  positionBraintreeToken(waitingListId: string): Promise<BraintreeToken> {
     return this.waitingListService.positionBraintreeToken(waitingListId);
   }
 
-  getWaitingListPrice (waitingListId: string, numberOfSeats: number): Promise<fan.Price> {
+  getWaitingListPrice(waitingListId: string, numberOfSeats: number): Promise<fan.Price> {
     return this.waitingListService.getWaitingListPrice(waitingListId, numberOfSeats);
   }
 
@@ -196,80 +210,83 @@ export class FanService {
    * @param phone
    * @returns {any}
    */
-  sendValidationCodeViaSMS (phone: PhoneNumber): Promise<Fan> {
+  sendValidationCodeViaSMS(phone: PhoneNumber): Promise<Fan> {
     return this.seatersApi.apiContext.put('/fan/mobile-phone-number', phone);
   }
 
   /**
    *  COMBINATIONS
    */
-  updateFan (fan: Fan): Promise<Fan> {
-    return this.seatersApi.fan.updateFan(fan)
-      .then(fan => this.sessionService.updateCurrentFan(fan));
+  updateFan(f: Fan): Promise<Fan> {
+    return this.seatersApi.fan.updateFan(f).then(updatedFan => this.sessionService.updateCurrentFan(updatedFan));
   }
 
-  getWaitingListsByKeywords (keywords: string[], page: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
-    return this.publicService.getWaitingListsByKeywords(keywords, page)
-      .then(pagedPublicWls => {
-        let waitingListIds = pagedPublicWls.items.map(wl => wl.waitingListId);
-        return this.getWaitingLists(waitingListIds)
-          .then(wls => {
-            return {
-              items: wls,
-              itemOffset: pagedPublicWls.itemOffset,
-              maxPageSize: pagedPublicWls.maxPageSize,
-              page: pagedPublicWls.page,
-              totalSize: pagedPublicWls.totalSize
-            } as PagedResult<fan.WaitingList>;
-          });
+  getWaitingListsByKeywords(keywords: string[], page: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
+    return this.publicService.getWaitingListsByKeywords(keywords, page).then(pagedPublicWls => {
+      const waitingListIds = pagedPublicWls.items.map(wl => wl.waitingListId);
+      return this.getWaitingLists(waitingListIds).then(wls => {
+        return {
+          items: wls,
+          itemOffset: pagedPublicWls.itemOffset,
+          maxPageSize: pagedPublicWls.maxPageSize,
+          page: pagedPublicWls.page,
+          totalSize: pagedPublicWls.totalSize
+        } as PagedResult<fan.WaitingList>;
       });
+    });
   }
 
   // Profiling (public)
 
-  getProfilingCategories (): Promise<fan.ProfilingCategory[]> {
+  getProfilingCategories(): Promise<fan.ProfilingCategory[]> {
     return this.fanProfilingService.getProfilingCategories();
   }
 
-  getProfilingCategoryById (categoryId: string): Promise<fan.ProfilingCategory> {
+  getProfilingCategoryById(categoryId: string): Promise<fan.ProfilingCategory> {
     return this.fanProfilingService.getProfilingCategoryById(categoryId);
   }
 
-  getProfilingFanAttributes (query: string): Promise<fan.ProfilingFanAttribute[]> {
+  getProfilingFanAttributes(query: string): Promise<fan.ProfilingFanAttribute[]> {
     return this.fanProfilingService.getProfilingFanAttributes(query);
   }
 
-  getProfilingFanAttributeById (fanAttributeId: string): Promise<fan.ProfilingFanAttribute> {
+  getProfilingFanAttributeById(fanAttributeId: string): Promise<fan.ProfilingFanAttribute> {
     return this.fanProfilingService.getProfilingFanAttributeById(fanAttributeId);
   }
 
   // User (fan)
 
-  getUserInterests (): Promise<fan.UserInterest[]> {
+  getUserInterests(): Promise<fan.UserInterest[]> {
     return this.fanProfilingService.getUserInterests();
   }
 
-  createUserInterest (userInterestCreateDTO: fan.UserInterestCreateDTO): Promise<fan.UserInterest> {
+  createUserInterest(userInterestCreateDTO: fan.UserInterestCreateDTO): Promise<fan.UserInterest> {
     return this.fanProfilingService.createUserInterest(userInterestCreateDTO);
   }
 
-  updateUserInterest (userInterestUpdateDTO: fan.UserInterestUpdateDTO): Promise<fan.UserInterest> {
+  updateUserInterest(userInterestUpdateDTO: fan.UserInterestUpdateDTO): Promise<fan.UserInterest> {
     return this.fanProfilingService.updateUserInterest(userInterestUpdateDTO);
   }
 
-  getUserFanAttributes (): Promise<fan.UserFanAttribute[]> {
+  getUserFanAttributes(): Promise<fan.UserFanAttribute[]> {
     return this.fanProfilingService.getUserFanAttributes();
   }
 
-  createUserFanAttribute (userFanAttributeCreateDTO: fan.UserFanAttributeCreateDTO, relationsValidation: string): Promise<fan.UserFanAttribute> {
+  createUserFanAttribute(
+    userFanAttributeCreateDTO: fan.UserFanAttributeCreateDTO,
+    relationsValidation: string
+  ): Promise<fan.UserFanAttribute> {
     return this.fanProfilingService.createUserFanAttribute(userFanAttributeCreateDTO, relationsValidation);
   }
 
-  updateUserFanAttribute (userFanAttributeId: string, userFanAttributeCreateDTO: fan.UserFanAttributeUpdateDTO): Promise<fan.UserFanAttribute> {
+  updateUserFanAttribute(
+    userFanAttributeId: string,
+    userFanAttributeCreateDTO: fan.UserFanAttributeUpdateDTO
+  ): Promise<fan.UserFanAttribute> {
     return this.fanProfilingService.updateUserFanAttribute(userFanAttributeId, userFanAttributeCreateDTO);
   }
 
-  removeUserFanAttribute (userFanAttributeId: string): Promise<fan.UserFanAttribute> {
+  removeUserFanAttribute(userFanAttributeId: string): Promise<fan.UserFanAttribute> {
     return this.fanProfilingService.removeUserFanAttribute(userFanAttributeId);
   }
 
@@ -277,7 +294,7 @@ export class FanService {
    *  HELPERS
    */
 
-  private convertPagedResult<T> (result: any): PagedResult<T> {
+  private convertPagedResult<T>(result: ApiPagedResult<T>): PagedResult<T> {
     return {
       items: result.items,
       itemOffset: result.itemOffset,
@@ -286,5 +303,4 @@ export class FanService {
       totalSize: result.totalSize
     };
   }
-
 }

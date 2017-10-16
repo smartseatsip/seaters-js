@@ -11,3 +11,4 @@ dist/**/*
 !dist/seaters.bundle.js
 
 test.js
+debug/

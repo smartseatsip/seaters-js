@@ -6,7 +6,7 @@ declare type XMLHttpRequest = any;
 
 const READY_STATE_DONE = 4; // xhr readyState 4 means the request is done.
 
-function buildServerResponse (xhr: XMLHttpRequest): ServerResponse {
+function buildServerResponse(xhr: XMLHttpRequest): ServerResponse {
   return {
     status: xhr.status,
     statusText: xhr.statusText,
@@ -17,13 +17,13 @@ function buildServerResponse (xhr: XMLHttpRequest): ServerResponse {
   };
 }
 
-function buildXhr (options: RequestOptions): XMLHttpRequest {
-  let xhr = new window.XMLHttpRequest();
+function buildXhr(options: RequestOptions): XMLHttpRequest {
+  const xhr = new window.XMLHttpRequest();
   xhr.open(options.method, options.url);
-  let headers = options.headers;
+  const headers = options.headers;
   if (headers) {
     Object.keys(headers).forEach(header => {
-      let value = headers[header];
+      const value = headers[header];
       xhr.setRequestHeader(header, value);
     });
   }
@@ -31,13 +31,12 @@ function buildXhr (options: RequestOptions): XMLHttpRequest {
   return xhr;
 }
 
-export default function (options: RequestOptions): Promise<ServerResponse> {
+export default function(options: RequestOptions): Promise<ServerResponse> {
+  const xhr = buildXhr(options);
 
-  let xhr = buildXhr(options);
+  const deferred = new DeferredPromise<ServerResponse>();
 
-  let deferred = new DeferredPromise<ServerResponse>();
-
-  xhr.onreadystatechange = function () {
+  xhr.onreadystatechange = () => {
     if (xhr.readyState === READY_STATE_DONE) {
       deferred.resolve(buildServerResponse(xhr));
     }
