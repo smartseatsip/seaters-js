@@ -63,7 +63,7 @@ var SeatersSDK = /******/ (function(modules) {
   /******/
   /******/ /******/ __webpack_require__.p = '/Users/sanderdecoster/local_projects/seaters/seaters-js/dist'; // Load entry module and return exports
   /******/
-  /******/ /******/ return __webpack_require__((__webpack_require__.s = 16));
+  /******/ /******/ return __webpack_require__((__webpack_require__.s = 18));
   /******/
 })(
   /************************************************************************/
@@ -78,14 +78,14 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(22));
-      __export(__webpack_require__(7));
-      __export(__webpack_require__(23));
       __export(__webpack_require__(24));
-      __export(__webpack_require__(5));
+      __export(__webpack_require__(9));
       __export(__webpack_require__(25));
       __export(__webpack_require__(26));
+      __export(__webpack_require__(7));
       __export(__webpack_require__(27));
+      __export(__webpack_require__(28));
+      __export(__webpack_require__(29));
 
       /***/
     },
@@ -99,18 +99,34 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(29));
-      __export(__webpack_require__(4));
-      __export(__webpack_require__(34));
-      __export(__webpack_require__(35));
-      __export(__webpack_require__(9));
-      __export(__webpack_require__(12));
-      __export(__webpack_require__(8));
+      __export(__webpack_require__(31));
+      __export(__webpack_require__(5));
+      __export(__webpack_require__(39));
+      __export(__webpack_require__(40));
+      __export(__webpack_require__(11));
+      __export(__webpack_require__(14));
       __export(__webpack_require__(10));
+      __export(__webpack_require__(12));
 
       /***/
     },
     /* 2 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      function __export(m) {
+        for (var p in m) {
+          if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+        }
+      }
+      Object.defineProperty(exports, '__esModule', { value: true });
+      __export(__webpack_require__(44));
+      var seaters_api_1 = __webpack_require__(1);
+      exports.SeatersApi = seaters_api_1.SeatersApi;
+
+      /***/
+    },
+    /* 3 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -139,7 +155,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 3 */
+    /* 4 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -149,14 +165,14 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(18));
-      __export(__webpack_require__(6));
-      __export(__webpack_require__(19));
       __export(__webpack_require__(20));
+      __export(__webpack_require__(8));
+      __export(__webpack_require__(21));
+      __export(__webpack_require__(22));
 
       /***/
     },
-    /* 4 */
+    /* 5 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -183,7 +199,7 @@ var SeatersSDK = /******/ (function(modules) {
           };
         })();
       Object.defineProperty(exports, '__esModule', { value: true });
-      var api_1 = __webpack_require__(3);
+      var api_1 = __webpack_require__(4);
       var SeatersApiContext = /** @class */ (function(_super) {
         __extends(SeatersApiContext, _super);
         function SeatersApiContext(prefix, requestDriver) {
@@ -264,6 +280,21 @@ var SeatersSDK = /******/ (function(modules) {
             abstractEndpoint: abstractEndpoint,
             endpointParams: endpointParams || {},
             queryParams: queryParams || {}
+          });
+        };
+        /**
+     * For browser, we expect HTMLInputElement containing a file
+     * @param oneTimeFileUrl url of a OneTimeFile returned by requestOneTimeFileUpload
+     * @param data for browsers: HTMLInputElement, for node: not supported
+     */
+        SeatersApiContext.prototype.uploadOneTimeFile = function(oneTimeFileUrl, data) {
+          var _this = this;
+          return this.requestDriver({
+            method: 'POST',
+            url: oneTimeFileUrl,
+            formData: data
+          }).then(function(err) {
+            return _this.handleServerResponse(err);
           });
         };
         SeatersApiContext.prototype.handleServerResponse = function(response) {
@@ -404,7 +435,33 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 5 */
+    /* 6 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      Object.defineProperty(exports, '__esModule', { value: true });
+      var SeatersApiController = /** @class */ (function() {
+        function SeatersApiController() {}
+        SeatersApiController.prototype.buildParams = function(obj) {
+          var map = new Map();
+          Object.keys(obj).forEach(function(k) {
+            return map.set(k, obj[k]);
+          });
+          return map;
+        };
+        SeatersApiController.prototype.buildPagingQueryParams = function(pagingOptions) {
+          return this.buildParams({
+            maxPageSize: pagingOptions.maxPageSize,
+            itemOffset: pagingOptions.itemOffset
+          });
+        };
+        return SeatersApiController;
+      })();
+      exports.SeatersApiController = SeatersApiController;
+
+      /***/
+    },
+    /* 7 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -431,7 +488,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 6 */
+    /* 8 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -510,7 +567,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 7 */
+    /* 9 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -529,13 +586,13 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 8 */
+    /* 10 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
       Object.defineProperty(exports, '__esModule', { value: true });
       /* tslint:disable:no-floating-promises */
-      var seaters_api_context_1 = __webpack_require__(4);
+      var seaters_api_context_1 = __webpack_require__(5);
       var AppApi = /** @class */ (function() {
         function AppApi(apiContext) {
           this.apiContext = apiContext;
@@ -592,7 +649,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 9 */
+    /* 11 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -823,7 +880,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 10 */
+    /* 12 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -844,7 +901,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 11 */
+    /* 13 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -853,7 +910,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 12 */
+    /* 14 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -949,7 +1006,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 13 */
+    /* 15 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -966,7 +1023,7 @@ var SeatersSDK = /******/ (function(modules) {
           return t;
         };
       Object.defineProperty(exports, '__esModule', { value: true });
-      var fan_types_1 = __webpack_require__(2);
+      var fan_types_1 = __webpack_require__(3);
       var util_1 = __webpack_require__(0);
       var WAITING_LIST_ACTION_STATUS = fan_types_1.fan.WAITING_LIST_ACTION_STATUS;
       var EXPORTABLE_TICKETING_SYSTEMS = ['UPLOAD', 'DIGITICK'];
@@ -1491,7 +1548,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 14 */
+    /* 16 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -1509,7 +1566,7 @@ var SeatersSDK = /******/ (function(modules) {
         };
       Object.defineProperty(exports, '__esModule', { value: true });
       var util_1 = __webpack_require__(0);
-      var fan_types_1 = __webpack_require__(2);
+      var fan_types_1 = __webpack_require__(3);
       var FAN_GROUP_ACTION_STATUS = fan_types_1.fan.FAN_GROUP_ACTION_STATUS;
       var FanGroupService = /** @class */ (function() {
         function FanGroupService(api) {
@@ -1666,7 +1723,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 15 */
+    /* 17 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -1676,14 +1733,14 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(46));
-      __export(__webpack_require__(47));
+      __export(__webpack_require__(52));
+      __export(__webpack_require__(53));
       exports.TYPE_FIELD = 'type';
       exports.TYPO_TOLERANCE_STRICT = 'strict';
 
       /***/
     },
-    /* 16 */
+    /* 18 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -1696,13 +1753,13 @@ var SeatersSDK = /******/ (function(modules) {
       //noinspection TsLint
       // tslint:disable-next-line
       exports.version = '1.25.6';
-      __export(__webpack_require__(17));
-      var fan_types_1 = __webpack_require__(2);
+      __export(__webpack_require__(19));
+      var fan_types_1 = __webpack_require__(3);
       exports.fan = fan_types_1.fan;
 
       /***/
     },
-    /* 17 */
+    /* 19 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -1719,9 +1776,9 @@ var SeatersSDK = /******/ (function(modules) {
           return t;
         };
       Object.defineProperty(exports, '__esModule', { value: true });
-      var api_1 = __webpack_require__(3);
+      var api_1 = __webpack_require__(4);
       var seaters_api_1 = __webpack_require__(1);
-      var services_1 = __webpack_require__(36);
+      var services_1 = __webpack_require__(41);
       var SeatersClient = /** @class */ (function() {
         function SeatersClient(options) {
           options = __assign({}, SeatersClient.DEFAULT_OPTIONS, options);
@@ -1731,6 +1788,9 @@ var SeatersSDK = /******/ (function(modules) {
           this.appService = new services_1.AppService(this.seatersApi);
           this.publicService = new services_1.PublicService(this.appService, requestDriver, this.seatersApi);
           this.fanService = new services_1.FanService(this.seatersApi, this.sessionService, this.publicService);
+          this.adminService = new services_1.AdminService(this.seatersApi);
+          this.ticketingService = new services_1.TicketingService(this.seatersApi);
+          this.paymentService = new services_1.PaymentService(this.seatersApi);
         }
         SeatersClient.DEFAULT_OPTIONS = {
           // tslint:disable-next-line
@@ -1758,7 +1818,10 @@ var SeatersSDK = /******/ (function(modules) {
           appService: {},
           fanService: {},
           publicService: {},
-          sessionService: {}
+          sessionService: {},
+          adminService: {},
+          ticketingService: {},
+          paymentService: {}
         };
         // tslint:disable-next-line
         Object.keys(wrappedClient).forEach(function(serviceName) {
@@ -1788,7 +1851,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 18 */
+    /* 20 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -1805,8 +1868,8 @@ var SeatersSDK = /******/ (function(modules) {
           return t;
         };
       Object.defineProperty(exports, '__esModule', { value: true });
-      var subject_1 = __webpack_require__(5);
-      var api_endpoint_1 = __webpack_require__(6);
+      var subject_1 = __webpack_require__(7);
+      var api_endpoint_1 = __webpack_require__(8);
       var ApiContext = /** @class */ (function() {
         function ApiContext(apiPrefix, requestDriver) {
           this.apiPrefix = apiPrefix;
@@ -1868,7 +1931,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 19 */
+    /* 21 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -1882,7 +1945,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 20 */
+    /* 22 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -1893,16 +1956,16 @@ var SeatersSDK = /******/ (function(modules) {
       function getRequestDriver(type) {
         switch (type) {
           case 'BROWSER':
-            return __webpack_require__(21).default;
+            return __webpack_require__(23).default;
           default:
-            return __webpack_require__(28).default;
+            return __webpack_require__(30).default;
         }
       }
       exports.getRequestDriver = getRequestDriver;
 
       /***/
     },
-    /* 21 */
+    /* 23 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -1919,6 +1982,11 @@ var SeatersSDK = /******/ (function(modules) {
           raw: xhr
         };
       }
+      function formDataBody(filesInputElement) {
+        var formData = new window.FormData();
+        formData.append('file', filesInputElement.files[0]);
+        return formData;
+      }
       function buildXhr(options) {
         var xhr = new window.XMLHttpRequest();
         xhr.open(options.method, options.url);
@@ -1929,7 +1997,9 @@ var SeatersSDK = /******/ (function(modules) {
             xhr.setRequestHeader(header, value);
           });
         }
-        xhr.send(options.body);
+        var body = options.formData ? formDataBody(options.formData) : options.body;
+        console.debug('%s %s', options.method, options.url, body);
+        xhr.send(body);
         return xhr;
       }
       function default_1(options) {
@@ -1946,7 +2016,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 22 */
+    /* 24 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -1973,7 +2043,7 @@ var SeatersSDK = /******/ (function(modules) {
           };
         })();
       Object.defineProperty(exports, '__esModule', { value: true });
-      var deferred_promise_1 = __webpack_require__(7);
+      var deferred_promise_1 = __webpack_require__(9);
       var RetryUntilTimeoutError = /** @class */ (function(_super) {
         __extends(RetryUntilTimeoutError, _super);
         function RetryUntilTimeoutError(limit) {
@@ -2033,7 +2103,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 23 */
+    /* 25 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2133,7 +2203,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 24 */
+    /* 26 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2185,7 +2255,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 25 */
+    /* 27 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2222,7 +2292,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 26 */
+    /* 28 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2240,7 +2310,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 27 */
+    /* 29 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2256,7 +2326,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 28 */
+    /* 30 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2329,17 +2399,19 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 29 */
+    /* 31 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
       Object.defineProperty(exports, '__esModule', { value: true });
-      var app_api_1 = __webpack_require__(8);
-      var fan_api_1 = __webpack_require__(9);
-      var admin_1 = __webpack_require__(30);
-      var health_1 = __webpack_require__(33);
-      var authentication_api_1 = __webpack_require__(12);
-      var seaters_api_context_1 = __webpack_require__(4);
+      var app_api_1 = __webpack_require__(10);
+      var fan_api_1 = __webpack_require__(11);
+      var admin_1 = __webpack_require__(32);
+      var health_1 = __webpack_require__(34);
+      var authentication_api_1 = __webpack_require__(14);
+      var ticketing_1 = __webpack_require__(35);
+      var payment_1 = __webpack_require__(37);
+      var seaters_api_context_1 = __webpack_require__(5);
       var SeatersApi = /** @class */ (function() {
         function SeatersApi(prefix, requestDriver) {
           this.apiContext = new seaters_api_context_1.SeatersApiContext(prefix, requestDriver);
@@ -2348,6 +2420,8 @@ var SeatersSDK = /******/ (function(modules) {
           this.admin = new admin_1.AdminApi(this.apiContext);
           this.health = new health_1.HealthApi(this.apiContext);
           this.authentication = new authentication_api_1.AuthenticationApi(this.apiContext);
+          this.ticketing = new ticketing_1.TicketingApi(this.apiContext);
+          this.payment = new payment_1.PaymentApi(this.apiContext);
         }
         return SeatersApi;
       })();
@@ -2355,7 +2429,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 30 */
+    /* 32 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2365,11 +2439,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(31));
+      __export(__webpack_require__(33));
 
       /***/
     },
-    /* 31 */
+    /* 33 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2398,7 +2472,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       /* tslint:disable:no-floating-promises */
       var seaters_api_1 = __webpack_require__(1);
-      var seaters_api_controller_1 = __webpack_require__(32);
+      var seaters_api_controller_1 = __webpack_require__(6);
       var AdminApi = /** @class */ (function(_super) {
         __extends(AdminApi, _super);
         function AdminApi(apiContext) {
@@ -2449,6 +2523,87 @@ var SeatersSDK = /******/ (function(modules) {
             fanGroupId: ownership.fanGroupId
           });
         };
+        AdminApi.prototype.getFanGroup = function(fanGroupId) {
+          return this.apiContext.get('/seaters-admin/fan-groups/:id', { id: fanGroupId });
+        };
+        AdminApi.prototype.getFanGroupProtectionCodes = function(fanGroupId, page) {
+          return this.apiContext.get(
+            '/seaters-admin/fan-groups/:id/protection-codes',
+            { id: fanGroupId },
+            seaters_api_1.SeatersApiContext.buildPagingQueryParams(page)
+          );
+        };
+        AdminApi.prototype.getFanGroupWaitingLists = function(fanGroupId, page) {
+          return this.apiContext.get(
+            '/seaters-admin/fan-groups/:id/waiting-lists',
+            { id: fanGroupId },
+            seaters_api_1.SeatersApiContext.buildPagingQueryParams(page)
+          );
+        };
+        AdminApi.prototype.getWaitingList = function(waitingListId) {
+          return this.apiContext.get('/seaters-admin/waiting-lists/:id', { id: waitingListId });
+        };
+        AdminApi.prototype.updateWaitingList = function(wl) {
+          return this.apiContext.put('/seaters-admin/waiting-lists/:id', wl, { id: wl.id });
+        };
+        AdminApi.prototype.deleteWaitingList = function(waitingListId) {
+          return this.apiContext.put('/seaters-admin/waiting-lists/:id', { id: waitingListId });
+        };
+        AdminApi.prototype.createFanGroupProtectionCode = function(fanGroupId, code, maxTimesUsed) {
+          return this.apiContext.post(
+            '/seaters-admin/fan-groups/:id/protection-codes',
+            { code: code, maxTimesUsed: maxTimesUsed },
+            { id: fanGroupId }
+          );
+        };
+        AdminApi.prototype.deleteFanGroupProtectionCode = function(fanGroupId, code) {
+          return this.apiContext.delete('/seaters-admin/fan-groups/:id/protection-codes/:code', {
+            id: fanGroupId,
+            code: code
+          });
+        };
+        AdminApi.prototype.importFanGroupProtectionCodes = function(fanGroupId, fileId) {
+          return this.apiContext.put('/seaters-admin/fan-groups/:id/import-protection-codes/:fileId', null, {
+            id: fanGroupId,
+            fileId: fileId
+          });
+        };
+        AdminApi.prototype.requestFanGroupBackgroundImageUpload = function(fanGroupId, fileName) {
+          return this.requestFanGroupImageUpload(fanGroupId, 'background-image', fileName);
+        };
+        AdminApi.prototype.requestFanGroupCoverImageUpload = function(fanGroupId, fileName) {
+          return this.requestFanGroupImageUpload(fanGroupId, 'coverimage', fileName);
+        };
+        AdminApi.prototype.requestFanGroupProfileImageUpload = function(fanGroupId, fileName) {
+          return this.requestFanGroupImageUpload(fanGroupId, 'profileimage', fileName);
+        };
+        AdminApi.prototype.requestOneTimeFileUpload = function(fileName) {
+          return this.apiContext.put(
+            '/seaters-admin/request-one-time-upload',
+            null,
+            null,
+            fileName ? { fileName: fileName } : null
+          );
+        };
+        /**
+     * Upload a onetime file
+     * @param oneTimeFileUrl url of a OneTimeFile returned by requestOneTimeFileUpload
+     * @param data for browsers: HTMLInputElement, for node: not supported
+     */
+        AdminApi.prototype.uploadOneTimeFile = function(oneTimeFileUrl, data) {
+          return this.apiContext.uploadOneTimeFile(oneTimeFileUrl, data);
+        };
+        /**
+     * HELPERS
+     */
+        AdminApi.prototype.requestFanGroupImageUpload = function(fanGroupId, endpoint, fileName) {
+          return this.apiContext.put(
+            '/seaters-admin/fan-groups/:id/' + endpoint,
+            null,
+            { id: fanGroupId },
+            { fileName: fileName }
+          );
+        };
         return AdminApi;
       })(seaters_api_controller_1.SeatersApiController);
       exports.AdminApi = AdminApi;
@@ -2456,33 +2611,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 32 */
-    /***/ function(module, exports, __webpack_require__) {
-      'use strict';
-
-      Object.defineProperty(exports, '__esModule', { value: true });
-      var SeatersApiController = /** @class */ (function() {
-        function SeatersApiController() {}
-        SeatersApiController.prototype.buildParams = function(obj) {
-          var map = new Map();
-          Object.keys(obj).forEach(function(k) {
-            return map.set(k, obj[k]);
-          });
-          return map;
-        };
-        SeatersApiController.prototype.buildPagingQueryParams = function(pagingOptions) {
-          return this.buildParams({
-            maxPageSize: pagingOptions.maxPageSize,
-            itemOffset: pagingOptions.itemOffset
-          });
-        };
-        return SeatersApiController;
-      })();
-      exports.SeatersApiController = SeatersApiController;
-
-      /***/
-    },
-    /* 33 */
+    /* 34 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2492,12 +2621,148 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(10));
-      __export(__webpack_require__(11));
+      __export(__webpack_require__(12));
+      __export(__webpack_require__(13));
 
       /***/
     },
-    /* 34 */
+    /* 35 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      function __export(m) {
+        for (var p in m) {
+          if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+        }
+      }
+      Object.defineProperty(exports, '__esModule', { value: true });
+      __export(__webpack_require__(36));
+
+      /***/
+    },
+    /* 36 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      var __extends =
+        (undefined && undefined.__extends) ||
+        (function() {
+          var extendStatics =
+            Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array &&
+              function(d, b) {
+                d.__proto__ = b;
+              }) ||
+            function(d, b) {
+              for (var p in b) {
+                if (b.hasOwnProperty(p)) d[p] = b[p];
+              }
+            };
+          return function(d, b) {
+            extendStatics(d, b);
+            function __() {
+              this.constructor = d;
+            }
+            d.prototype = b === null ? Object.create(b) : ((__.prototype = b.prototype), new __());
+          };
+        })();
+      Object.defineProperty(exports, '__esModule', { value: true });
+      /* tslint:disable:no-floating-promises */
+      var seaters_api_1 = __webpack_require__(1);
+      var seaters_api_controller_1 = __webpack_require__(6);
+      var TicketingApi = /** @class */ (function(_super) {
+        __extends(TicketingApi, _super);
+        function TicketingApi(apiContext) {
+          var _this = _super.call(this) || this;
+          _this.apiContext = apiContext;
+          return _this;
+        }
+        TicketingApi.prototype.getTicketingSystems = function(page) {
+          return this.apiContext.get(
+            '/ticketing/systems',
+            null,
+            seaters_api_1.SeatersApiContext.buildPagingQueryParams(page)
+          );
+        };
+        TicketingApi.prototype.getTicketingSystem = function(ticketingSystemId) {
+          return this.apiContext.get('/ticketing/systems/:id', { id: ticketingSystemId });
+        };
+        return TicketingApi;
+      })(seaters_api_controller_1.SeatersApiController);
+      exports.TicketingApi = TicketingApi;
+      /* tslint:enable:no-floating-promises */
+
+      /***/
+    },
+    /* 37 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      function __export(m) {
+        for (var p in m) {
+          if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+        }
+      }
+      Object.defineProperty(exports, '__esModule', { value: true });
+      __export(__webpack_require__(38));
+
+      /***/
+    },
+    /* 38 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      var __extends =
+        (undefined && undefined.__extends) ||
+        (function() {
+          var extendStatics =
+            Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array &&
+              function(d, b) {
+                d.__proto__ = b;
+              }) ||
+            function(d, b) {
+              for (var p in b) {
+                if (b.hasOwnProperty(p)) d[p] = b[p];
+              }
+            };
+          return function(d, b) {
+            extendStatics(d, b);
+            function __() {
+              this.constructor = d;
+            }
+            d.prototype = b === null ? Object.create(b) : ((__.prototype = b.prototype), new __());
+          };
+        })();
+      Object.defineProperty(exports, '__esModule', { value: true });
+      /* tslint:disable:no-floating-promises */
+      var seaters_api_1 = __webpack_require__(1);
+      var seaters_api_controller_1 = __webpack_require__(6);
+      var PaymentApi = /** @class */ (function(_super) {
+        __extends(PaymentApi, _super);
+        function PaymentApi(apiContext) {
+          var _this = _super.call(this) || this;
+          _this.apiContext = apiContext;
+          return _this;
+        }
+        PaymentApi.prototype.getPaymentSystems = function(page) {
+          return this.apiContext.get(
+            '/seaters-admin/payment-systems',
+            null,
+            seaters_api_1.SeatersApiContext.buildPagingQueryParams(page)
+          );
+        };
+        PaymentApi.prototype.getPaymentSystem = function(paymentSystemId) {
+          return this.apiContext.get('/seaters-admin/payment-systems/:id', { id: paymentSystemId });
+        };
+        return PaymentApi;
+      })(seaters_api_controller_1.SeatersApiController);
+      exports.PaymentApi = PaymentApi;
+      /* tslint:enable:no-floating-promises */
+
+      /***/
+    },
+    /* 39 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2528,7 +2793,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 35 */
+    /* 40 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2570,7 +2835,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 36 */
+    /* 41 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2580,15 +2845,18 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(37));
-      __export(__webpack_require__(39));
-      __export(__webpack_require__(48));
-      __export(__webpack_require__(50));
+      __export(__webpack_require__(42));
+      __export(__webpack_require__(45));
+      __export(__webpack_require__(54));
+      __export(__webpack_require__(56));
+      __export(__webpack_require__(58));
+      __export(__webpack_require__(61));
+      __export(__webpack_require__(63));
       __export(__webpack_require__(0));
 
       /***/
     },
-    /* 37 */
+    /* 42 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2598,17 +2866,39 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(38));
-      __export(__webpack_require__(2));
-      __export(__webpack_require__(13));
-      __export(__webpack_require__(14));
+      __export(__webpack_require__(43));
+      __export(__webpack_require__(3));
+      __export(__webpack_require__(15));
+      __export(__webpack_require__(16));
 
       /***/
     },
-    /* 38 */
+    /* 43 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
+      var __extends =
+        (undefined && undefined.__extends) ||
+        (function() {
+          var extendStatics =
+            Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array &&
+              function(d, b) {
+                d.__proto__ = b;
+              }) ||
+            function(d, b) {
+              for (var p in b) {
+                if (b.hasOwnProperty(p)) d[p] = b[p];
+              }
+            };
+          return function(d, b) {
+            extendStatics(d, b);
+            function __() {
+              this.constructor = d;
+            }
+            d.prototype = b === null ? Object.create(b) : ((__.prototype = b.prototype), new __());
+          };
+        })();
       var __assign =
         (undefined && undefined.__assign) ||
         Object.assign ||
@@ -2622,16 +2912,19 @@ var SeatersSDK = /******/ (function(modules) {
           return t;
         };
       Object.defineProperty(exports, '__esModule', { value: true });
-      var waiting_list_service_1 = __webpack_require__(13);
-      var fan_group_service_1 = __webpack_require__(14);
+      var common_1 = __webpack_require__(2);
+      var waiting_list_service_1 = __webpack_require__(15);
+      var fan_group_service_1 = __webpack_require__(16);
       var util_1 = __webpack_require__(0);
-      var FanService = /** @class */ (function() {
+      var FanService = /** @class */ (function(_super) {
+        __extends(FanService, _super);
         function FanService(seatersApi, sessionService, publicService) {
-          this.seatersApi = seatersApi;
-          this.sessionService = sessionService;
-          this.publicService = publicService;
-          this.waitingListService = new waiting_list_service_1.WaitingListService(seatersApi);
-          this.fanGroupService = new fan_group_service_1.FanGroupService(seatersApi);
+          var _this = _super.call(this, seatersApi) || this;
+          _this.sessionService = sessionService;
+          _this.publicService = publicService;
+          _this.waitingListService = new waiting_list_service_1.WaitingListService(seatersApi);
+          _this.fanGroupService = new fan_group_service_1.FanGroupService(seatersApi);
+          return _this;
         }
         /**
      *  FAN GROUPS
@@ -2820,10 +3113,22 @@ var SeatersSDK = /******/ (function(modules) {
             });
           });
         };
-        /**
-     *  HELPERS
-     */
-        FanService.prototype.convertPagedResult = function(result) {
+        return FanService;
+      })(common_1.SeatersService);
+      exports.FanService = FanService;
+
+      /***/
+    },
+    /* 44 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      Object.defineProperty(exports, '__esModule', { value: true });
+      var SeatersService = /** @class */ (function() {
+        function SeatersService(seatersApi) {
+          this.seatersApi = seatersApi;
+        }
+        SeatersService.prototype.convertPagedResult = function(result) {
           return {
             items: result.items,
             itemOffset: result.itemOffset,
@@ -2832,13 +3137,13 @@ var SeatersSDK = /******/ (function(modules) {
             totalSize: result.totalSize
           };
         };
-        return FanService;
+        return SeatersService;
       })();
-      exports.FanService = FanService;
+      exports.SeatersService = SeatersService;
 
       /***/
     },
-    /* 39 */
+    /* 45 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2848,11 +3153,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(40));
+      __export(__webpack_require__(46));
 
       /***/
     },
-    /* 40 */
+    /* 46 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2868,7 +3173,7 @@ var SeatersSDK = /******/ (function(modules) {
             };
 
       Object.defineProperty(exports, '__esModule', { value: true });
-      var algolia_for_seaters_1 = __webpack_require__(41);
+      var algolia_for_seaters_1 = __webpack_require__(47);
       var PublicService = /** @class */ (function() {
         function PublicService(appService, requestDriver, seatersApi) {
           this.seatersApi = seatersApi;
@@ -2957,7 +3262,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 41 */
+    /* 47 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2967,18 +3272,18 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(42));
-      __export(__webpack_require__(15));
+      __export(__webpack_require__(48));
+      __export(__webpack_require__(17));
 
       /***/
     },
-    /* 42 */
+    /* 48 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
       Object.defineProperty(exports, '__esModule', { value: true });
-      var algolia_api_1 = __webpack_require__(43);
-      var algolia_for_seaters_types_1 = __webpack_require__(15);
+      var algolia_api_1 = __webpack_require__(49);
+      var algolia_for_seaters_types_1 = __webpack_require__(17);
       var DEFAULT_LOCALE = 'en';
       var WL_FACET_FILTER = {
         facet: algolia_for_seaters_types_1.TYPE_FIELD,
@@ -3236,7 +3541,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 43 */
+    /* 49 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3246,11 +3551,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(44));
+      __export(__webpack_require__(50));
 
       /***/
     },
-    /* 44 */
+    /* 50 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3277,8 +3582,8 @@ var SeatersSDK = /******/ (function(modules) {
           };
         })();
       Object.defineProperty(exports, '__esModule', { value: true });
-      var api_1 = __webpack_require__(3);
-      var indices_api_1 = __webpack_require__(45);
+      var api_1 = __webpack_require__(4);
+      var indices_api_1 = __webpack_require__(51);
       var APP_ID_HEADER = 'X-Algolia-Application-Id';
       var API_KEY_HEADER = 'X-Algolia-API-Key';
       var API_LOCATION_INFIX = '-dsn.algolia.net/1/';
@@ -3302,7 +3607,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 45 */
+    /* 51 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3379,7 +3684,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 46 */
+    /* 52 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3388,7 +3693,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 47 */
+    /* 53 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3397,7 +3702,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 48 */
+    /* 54 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3407,11 +3712,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(49));
+      __export(__webpack_require__(55));
 
       /***/
     },
-    /* 49 */
+    /* 55 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3854,7 +4159,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 50 */
+    /* 56 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3864,16 +4169,16 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(51));
+      __export(__webpack_require__(57));
 
       /***/
     },
-    /* 51 */
+    /* 57 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
       Object.defineProperty(exports, '__esModule', { value: true });
-      var health_types_1 = __webpack_require__(11);
+      var health_types_1 = __webpack_require__(13);
       var ALL_COUNTRIES_PAGE_SIZE = 1000;
       var ALL_LANGUAGES_PAGE_SIZE = 1000;
       var ALL_CURRENCIES_PAGE_SIZE = 1000;
@@ -3960,6 +4265,310 @@ var SeatersSDK = /******/ (function(modules) {
         return AppService;
       })();
       exports.AppService = AppService;
+
+      /***/
+    },
+    /* 58 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      function __export(m) {
+        for (var p in m) {
+          if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+        }
+      }
+      Object.defineProperty(exports, '__esModule', { value: true });
+      __export(__webpack_require__(59));
+
+      /***/
+    },
+    /* 59 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      var __extends =
+        (undefined && undefined.__extends) ||
+        (function() {
+          var extendStatics =
+            Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array &&
+              function(d, b) {
+                d.__proto__ = b;
+              }) ||
+            function(d, b) {
+              for (var p in b) {
+                if (b.hasOwnProperty(p)) d[p] = b[p];
+              }
+            };
+          return function(d, b) {
+            extendStatics(d, b);
+            function __() {
+              this.constructor = d;
+            }
+            d.prototype = b === null ? Object.create(b) : ((__.prototype = b.prototype), new __());
+          };
+        })();
+      Object.defineProperty(exports, '__esModule', { value: true });
+      var common_1 = __webpack_require__(2);
+      var waiting_list_mapper_1 = __webpack_require__(60);
+      var AdminService = /** @class */ (function(_super) {
+        __extends(AdminService, _super);
+        function AdminService(seatersApi) {
+          return _super.call(this, seatersApi) || this;
+        }
+        AdminService.prototype.getFanGroup = function(fanGroupId) {
+          return this.seatersApi.admin.getFanGroup(fanGroupId);
+        };
+        AdminService.prototype.getFanGroupProtectionCodes = function(fanGroupId, page) {
+          var _this = this;
+          return this.seatersApi.admin.getFanGroupProtectionCodes(fanGroupId, page).then(function(r) {
+            return _this.convertPagedResult(r);
+          });
+        };
+        AdminService.prototype.getFanGroupWaitingLists = function(fanGroupId, page) {
+          var _this = this;
+          return this.seatersApi.admin.getFanGroupWaitingLists(fanGroupId, page).then(function(r) {
+            return _this.convertPagedResult(r);
+          });
+        };
+        AdminService.prototype.getWaitingList = function(waitingListId) {
+          return this.seatersApi.admin.getWaitingList(waitingListId);
+        };
+        AdminService.prototype.updateWaitingList = function(waitingList) {
+          return this.seatersApi.admin.updateWaitingList(waiting_list_mapper_1.mapWaitingList(waitingList));
+        };
+        AdminService.prototype.deleteWaitingList = function(waitingListId) {
+          return this.seatersApi.admin.deleteWaitingList(waitingListId);
+        };
+        /**
+     * Add a new protection code to a FanGroup
+     * @param fanGroupId the id of the fangroup that can be unlocked with the code
+     * @param code a text that can be used to unlock the fangroup
+     * @param maxTimesUsed use 0 to describe unlimited code
+     */
+        AdminService.prototype.createFanGroupProtectionCode = function(fanGroupId, code, maxTimesUsed) {
+          return this.seatersApi.admin.createFanGroupProtectionCode(fanGroupId, code, maxTimesUsed);
+        };
+        AdminService.prototype.deleteFanGroupProtectionCode = function(fanGroupId, code) {
+          return this.seatersApi.admin.deleteFanGroupProtectionCode(fanGroupId, code);
+        };
+        /**
+     * Import protection codes into a FanGroup. This upload should be a CSV with following format:
+     * - column 1: the actual code that can unlock the FG
+     * - column 2: how many times the code can be used - use 0 for infinite usage
+     * @param fanGroupId The FG to import codes into
+     * @param data For browser an HTMLInputElement containing a file, node: not supported
+     */
+        AdminService.prototype.importFanGroupProtectionCodes = function(fanGroupId, data, fileName) {
+          var _this = this;
+          return this.uploadOneTimeFile(data, fileName).then(function(otf) {
+            return _this.seatersApi.admin.importFanGroupProtectionCodes(fanGroupId, otf.fileId);
+          });
+        };
+        AdminService.prototype.updateFanGroupBackgroundImage = function(fanGroupId, data, fileName) {
+          var _this = this;
+          return this.seatersApi.admin
+            .requestFanGroupBackgroundImageUpload(fanGroupId, this.defaultFileName(fileName))
+            .then(function(otf) {
+              return _this.seatersApi.admin.uploadOneTimeFile(otf.url, data);
+            })
+            .then(function() {
+              return _this.getFanGroup(fanGroupId);
+            });
+        };
+        AdminService.prototype.updateFanGroupCoverImage = function(fanGroupId, data, fileName) {
+          var _this = this;
+          return this.seatersApi.admin
+            .requestFanGroupCoverImageUpload(fanGroupId, this.defaultFileName(fileName))
+            .then(function(otf) {
+              return _this.seatersApi.admin.uploadOneTimeFile(otf.url, data);
+            })
+            .then(function() {
+              return _this.getFanGroup(fanGroupId);
+            });
+        };
+        AdminService.prototype.updateFanGroupProfileImage = function(fanGroupId, data, fileName) {
+          var _this = this;
+          return this.seatersApi.admin
+            .requestFanGroupProfileImageUpload(fanGroupId, this.defaultFileName(fileName))
+            .then(function(otf) {
+              return _this.seatersApi.admin.uploadOneTimeFile(otf.url, data);
+            })
+            .then(function() {
+              return _this.getFanGroup(fanGroupId);
+            });
+        };
+        AdminService.prototype.uploadOneTimeFile = function(data, fileName) {
+          var _this = this;
+          return this.seatersApi.admin.requestOneTimeFileUpload(this.defaultFileName(fileName)).then(function(otf) {
+            return _this.seatersApi.admin.uploadOneTimeFile(otf.url, data).then(function() {
+              return otf;
+            });
+          });
+        };
+        AdminService.prototype.defaultFileName = function(fileName) {
+          if (fileName && fileName !== '') {
+            return fileName;
+          } else {
+            return new Date().toISOString();
+          }
+        };
+        return AdminService;
+      })(common_1.SeatersService);
+      exports.AdminService = AdminService;
+
+      /***/
+    },
+    /* 60 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      var __assign =
+        (undefined && undefined.__assign) ||
+        Object.assign ||
+        function(t) {
+          for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) {
+              if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+            }
+          }
+          return t;
+        };
+      Object.defineProperty(exports, '__esModule', { value: true });
+      function mapWaitingList(wl) {
+        return __assign({}, wl, {
+          distributionRate: wl.billingVariables.distributionRate,
+          vatRate: wl.billingVariables.vatRate,
+          minDistributionFee: wl.billingVariables.minDistributionFee,
+          maxDistributionFee: wl.billingVariables.maxDistributionFee
+        });
+      }
+      exports.mapWaitingList = mapWaitingList;
+
+      /***/
+    },
+    /* 61 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      function __export(m) {
+        for (var p in m) {
+          if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+        }
+      }
+      Object.defineProperty(exports, '__esModule', { value: true });
+      __export(__webpack_require__(62));
+
+      /***/
+    },
+    /* 62 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      var __extends =
+        (undefined && undefined.__extends) ||
+        (function() {
+          var extendStatics =
+            Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array &&
+              function(d, b) {
+                d.__proto__ = b;
+              }) ||
+            function(d, b) {
+              for (var p in b) {
+                if (b.hasOwnProperty(p)) d[p] = b[p];
+              }
+            };
+          return function(d, b) {
+            extendStatics(d, b);
+            function __() {
+              this.constructor = d;
+            }
+            d.prototype = b === null ? Object.create(b) : ((__.prototype = b.prototype), new __());
+          };
+        })();
+      Object.defineProperty(exports, '__esModule', { value: true });
+      var common_1 = __webpack_require__(2);
+      var TicketingService = /** @class */ (function(_super) {
+        __extends(TicketingService, _super);
+        function TicketingService(seatersApi) {
+          return _super.call(this, seatersApi) || this;
+        }
+        TicketingService.prototype.getTicketingSystems = function(page) {
+          var _this = this;
+          return this.seatersApi.ticketing.getTicketingSystems(page).then(function(r) {
+            return _this.convertPagedResult(r);
+          });
+        };
+        TicketingService.prototype.getTicketingSystem = function(ticketingSystemId) {
+          return this.seatersApi.ticketing.getTicketingSystem(ticketingSystemId);
+        };
+        return TicketingService;
+      })(common_1.SeatersService);
+      exports.TicketingService = TicketingService;
+
+      /***/
+    },
+    /* 63 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      function __export(m) {
+        for (var p in m) {
+          if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+        }
+      }
+      Object.defineProperty(exports, '__esModule', { value: true });
+      __export(__webpack_require__(64));
+
+      /***/
+    },
+    /* 64 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      var __extends =
+        (undefined && undefined.__extends) ||
+        (function() {
+          var extendStatics =
+            Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array &&
+              function(d, b) {
+                d.__proto__ = b;
+              }) ||
+            function(d, b) {
+              for (var p in b) {
+                if (b.hasOwnProperty(p)) d[p] = b[p];
+              }
+            };
+          return function(d, b) {
+            extendStatics(d, b);
+            function __() {
+              this.constructor = d;
+            }
+            d.prototype = b === null ? Object.create(b) : ((__.prototype = b.prototype), new __());
+          };
+        })();
+      Object.defineProperty(exports, '__esModule', { value: true });
+      var common_1 = __webpack_require__(2);
+      var PaymentService = /** @class */ (function(_super) {
+        __extends(PaymentService, _super);
+        function PaymentService(seatersApi) {
+          return _super.call(this, seatersApi) || this;
+        }
+        PaymentService.prototype.getPaymentSystems = function(page) {
+          var _this = this;
+          return this.seatersApi.payment.getPaymentSystems(page).then(function(r) {
+            return _this.convertPagedResult(r);
+          });
+        };
+        PaymentService.prototype.getPaymentSystem = function(paymentSystemId) {
+          return this.seatersApi.payment.getPaymentSystem(paymentSystemId);
+        };
+        return PaymentService;
+      })(common_1.SeatersService);
+      exports.PaymentService = PaymentService;
 
       /***/
     }
