@@ -1,6 +1,7 @@
 import { FanGroupCategory } from './fan-group';
 import { ExtendedPosition } from './extended-position';
 import { EVENT_REQUIRED_ATTENDEE_INFO } from './attendee-info';
+import { LanguageCode } from '../app/app-types';
 
 export interface WaitingList {
   /**
@@ -291,7 +292,7 @@ export interface WaitingList {
   /**
    * Always-populated voucher text
    */
-  voucherText: string;
+  voucherText: LanguageCode;
 }
 
 export type WL_ACCESS_MODE = 'PUBLIC' | 'CODE_PROTECTED';
