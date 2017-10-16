@@ -1783,6 +1783,7 @@ var SeatersSDK = /******/ (function(modules) {
           this.fanService = new services_1.FanService(this.seatersApi, this.sessionService, this.publicService);
         }
         SeatersClient.DEFAULT_OPTIONS = {
+          // tslint:disable-next-line
           apiPrefix: 'https://api.dev-seaters.com/api',
           requestDriver: 'BROWSER'
         };
