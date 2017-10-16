@@ -71,6 +71,10 @@ export interface TimeZone {
   id: string;
 }
 
+export interface LanguageCode {
+  [key: string]: string;
+}
+
 export interface Language {
   /**
    * Country of the Language (not a proper locale)
@@ -81,7 +85,7 @@ export interface Language {
   /**
    * Translation mapping of country of locale to the name of the language in that locale
    */
-  name: { [key: string]: string };
+  name: LanguageCode;
 }
 
 export interface Currency {
