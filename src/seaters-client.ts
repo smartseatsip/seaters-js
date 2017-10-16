@@ -11,6 +11,7 @@ export interface SeatersClientOptions {
 
 export class SeatersClient {
   private static DEFAULT_OPTIONS = {
+    // tslint:disable-next-line
     apiPrefix: '${api.location}',
     requestDriver: 'BROWSER'
   } as SeatersClientOptions;
