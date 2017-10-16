@@ -5,7 +5,6 @@ import { AdminApi } from './admin';
 import { HealthApi } from './health';
 import { AuthenticationApi } from './authentication/authentication-api';
 
-import { SeatersApiException } from './seaters-api-exception';
 import { SeatersApiContext } from './seaters-api-context';
 
 export class SeatersApi {

@@ -4,7 +4,15 @@ import { SeatersApiContext } from '../../seaters-api';
 import { PagedResult } from '../paged-result';
 import { PagingOptions } from '../paging-options';
 import { TranslationMap } from '../translation-map';
+
 import {
+  ProfilingCategory,
+  UserInterestCreateDTO,
+  UserInterestUpdateDTO,
+  ProfilingFanAttribute,
+  UserFanAttribute,
+  UserFanAttributeCreateDTO,
+  UserFanAttributeUpdateDTO,
   Fan,
   FanGroup,
   WaitingList,
@@ -20,9 +28,10 @@ import {
   FanGroupShare,
   WaitingListShare
 } from './fan-types';
+
 import { WaitingListRequest } from './waiting-list';
-import { ArrayMap } from '../../api/array-map';
 import { StringMap } from '../../api/string-map';
+import { UserInterest } from './profiling';
 
 export class FanApi {
   constructor(private apiContext: SeatersApiContext) {}
@@ -267,6 +276,75 @@ export class FanApi {
 
   getTranslatedVenueConditions(waitingListId: string): Promise<string> {
     return this.apiContext.get('/fan/waiting-lists/:waitingListId/translated-venue-conditions', { waitingListId });
+  }
+
+  // Profiling (public)
+
+  getProfilingCategories(): Promise<ProfilingCategory[]> {
+    return this.apiContext.get('/profiling/v1/categories', {}, {});
+  }
+
+  getProfilingCategoryById(categoryId): Promise<ProfilingCategory> {
+    return this.apiContext.get(`/profiling/v1/category/${categoryId}`, {}, {});
+  }
+
+  getProfilingFanAttributes(query: string): Promise<ProfilingFanAttribute[]> {
+    return this.apiContext.get(
+      '/profiling/v1/fan_attributes',
+      {},
+      {
+        query
+      }
+    );
+  }
+
+  getProfilingFanAttributeById(fanAttributeId: string): Promise<ProfilingFanAttribute> {
+    return this.apiContext.get(`/profiling/v1/fan_attribute/${fanAttributeId}`, {}, {});
+  }
+
+  // User (fan)
+
+  getUserInterests(): Promise<UserInterest[]> {
+    return this.apiContext.get(`/profiling/v1/user/interests`, {}, {});
+  }
+
+  createUserInterest(userInterestCreateDTO: UserInterestCreateDTO): Promise<UserInterest> {
+    return this.apiContext.post('/profiling/v1/user/interest', userInterestCreateDTO, {});
+  }
+
+  updateUserInterest(userInterestUpdateDTO: UserInterestUpdateDTO): Promise<UserInterest> {
+    return this.apiContext.put('/profiling/v1/user/interest', userInterestUpdateDTO, {});
+  }
+
+  getUserFanAttributes(): Promise<UserFanAttribute[]> {
+    return this.apiContext.get(`/profiling/v1/user/fan_attributes`, {}, {});
+  }
+
+  createUserFanAttribute(
+    userFanAttributeCreateDTO: UserFanAttributeCreateDTO,
+    relationsValidation: string
+  ): Promise<UserFanAttribute> {
+    return this.apiContext.post(
+      `/profiling/v1/user/fan_attribute`,
+      userFanAttributeCreateDTO,
+      {},
+      { relations_validation: relationsValidation ? 'true' : 'false' }
+    );
+  }
+
+  updateUserFanAttribute(
+    userFanAttributeId: string,
+    userFanAttributeUpdateDTO: UserFanAttributeUpdateDTO
+  ): Promise<UserFanAttribute> {
+    return this.apiContext.post(
+      `/profiling/v1/user/fan_attribute/${userFanAttributeId}`,
+      userFanAttributeUpdateDTO,
+      {}
+    );
+  }
+
+  removeUserFanAttribute(userFanAttributeId: string): Promise<UserFanAttribute> {
+    return this.apiContext.delete(`/profiling/v1/user/fan_attribute/${userFanAttributeId}`, {}, {});
   }
 }
 

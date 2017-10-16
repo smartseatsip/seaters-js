@@ -10,12 +10,14 @@ export interface SeatersClientOptions {
 }
 
 export class SeatersClient {
+  private static DEFAULT_OPTIONS = {
+    apiPrefix: '${api.location}',
+    requestDriver: 'BROWSER'
+  } as SeatersClientOptions;
+
   public sessionService: SessionService;
-
   public appService: AppService;
-
   public publicService: PublicService;
-
   public fanService: FanService;
 
   private seatersApi: SeatersApi;
@@ -30,12 +32,6 @@ export class SeatersClient {
     this.publicService = new PublicService(this.appService, requestDriver, this.seatersApi);
     this.fanService = new FanService(this.seatersApi, this.sessionService, this.publicService);
   }
-
-  private static DEFAULT_OPTIONS = {
-    // tslint:disable-next-line
-    apiPrefix: '${api.location}',
-    requestDriver: 'BROWSER'
-  } as SeatersClientOptions;
 }
 
 /**
