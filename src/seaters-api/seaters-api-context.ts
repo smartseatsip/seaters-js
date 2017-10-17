@@ -89,6 +89,19 @@ export class SeatersApiContext extends ApiContext {
     });
   }
 
+  /**
+   * For browser, we expect HTMLInputElement containing a file
+   * @param oneTimeFileUrl url of a OneTimeFile returned by requestOneTimeFileUpload
+   * @param data for browsers: HTMLInputElement, for node: not supported
+   */
+  uploadOneTimeFile(oneTimeFileUrl: string, data: any): Promise<any> {
+    return this.requestDriver({
+      method: 'POST',
+      url: oneTimeFileUrl,
+      formData: data
+    }).then(err => this.handleServerResponse(err));
+  }
+
   private handleServerResponse(response: ServerResponse): Promise<string> {
     switch (response.status) {
       case 200:

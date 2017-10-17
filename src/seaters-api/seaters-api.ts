@@ -4,11 +4,12 @@ import { FanApi } from './fan/fan-api';
 import { AdminApi } from './admin';
 import { HealthApi } from './health';
 import { AuthenticationApi } from './authentication/authentication-api';
+import { TicketingApi } from './ticketing';
+import { PaymentApi } from './payment';
 
 import { SeatersApiContext } from './seaters-api-context';
 
 export class SeatersApi {
-
   public apiContext: SeatersApiContext;
 
   public app: AppApi;
@@ -16,8 +17,10 @@ export class SeatersApi {
   public authentication: AuthenticationApi;
   public admin: AdminApi;
   public health: HealthApi;
+  public ticketing: TicketingApi;
+  public payment: PaymentApi;
 
-  constructor (prefix: string, requestDriver: RequestDriver) {
+  constructor(prefix: string, requestDriver: RequestDriver) {
     this.apiContext = new SeatersApiContext(prefix, requestDriver);
 
     this.app = new AppApi(this.apiContext);
@@ -25,6 +28,7 @@ export class SeatersApi {
     this.admin = new AdminApi(this.apiContext);
     this.health = new HealthApi(this.apiContext);
     this.authentication = new AuthenticationApi(this.apiContext);
+    this.ticketing = new TicketingApi(this.apiContext);
+    this.payment = new PaymentApi(this.apiContext);
   }
-
 }

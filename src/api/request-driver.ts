@@ -16,6 +16,7 @@ export interface RequestOptions {
   method: HTTP_METHOD;
   body?: string;
   headers?: object;
+  formData?: any;
 }
 
 /**

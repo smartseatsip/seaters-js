@@ -1,6 +1,6 @@
 {
   "name": "seaters",
-  "version": "1.25.7",
+  "version": "1.26.0",
   "description": "Seaters functionality in a box!",
   "main": "./dist/seaters.module.js",
   "typings": "./dist/index",
@@ -50,7 +50,7 @@
     "typedoc": "^0.9.0",
     "typescript": "^2.5.3",
     "url-loader": "^0.6.2",
-    "webpack": "^3.6.0",
+    "webpack": "^3.7.1",
     "webpack-merge": "^4.1.0"
   }
 }

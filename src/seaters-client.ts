@@ -1,6 +1,14 @@
 import { REQUEST_DRIVER_TYPE, getRequestDriver } from './api';
 import { SeatersApi } from './seaters-api';
-import { FanService, PublicService, SessionService, AppService } from './services';
+import {
+  FanService,
+  PublicService,
+  SessionService,
+  AppService,
+  AdminService,
+  TicketingService,
+  PaymentService
+} from './services';
 
 export type PromiseMiddleware<T> = (promise: Promise<any>) => T;
 
@@ -21,6 +29,12 @@ export class SeatersClient {
   public publicService: PublicService;
   public fanService: FanService;
 
+  public adminService: AdminService;
+
+  public ticketingService: TicketingService;
+
+  public paymentService: PaymentService;
+
   private seatersApi: SeatersApi;
 
   constructor(options?: SeatersClientOptions) {
@@ -32,6 +46,9 @@ export class SeatersClient {
     this.appService = new AppService(this.seatersApi);
     this.publicService = new PublicService(this.appService, requestDriver, this.seatersApi);
     this.fanService = new FanService(this.seatersApi, this.sessionService, this.publicService);
+    this.adminService = new AdminService(this.seatersApi);
+    this.ticketingService = new TicketingService(this.seatersApi);
+    this.paymentService = new PaymentService(this.seatersApi);
   }
 }
 
@@ -54,7 +71,10 @@ export function wrapClient<T>(promiseMiddleware: PromiseMiddleware<T>, client: S
     appService: {},
     fanService: {},
     publicService: {},
-    sessionService: {}
+    sessionService: {},
+    adminService: {},
+    ticketingService: {},
+    paymentService: {}
   } as SeatersClient;
 
   // tslint:disable-next-line

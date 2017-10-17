@@ -15,7 +15,7 @@ export class ApiContext {
 
   private headers: Map<string, string>;
 
-  constructor(private apiPrefix: string, private requestDriver: RequestDriver) {
+  constructor(private apiPrefix: string, public requestDriver: RequestDriver) {
     this.requestsSubject = new Subject<ApiRequest>();
     this.headers = new Map<string, string>();
     this.headers.set('Content-Type', 'application/json');
