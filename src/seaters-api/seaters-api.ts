@@ -7,11 +7,9 @@ import { AuthenticationApi } from './authentication/authentication-api';
 import { TicketingApi } from './ticketing';
 import { PaymentApi } from './payment';
 
-import { SeatersApiException } from './seaters-api-exception';
 import { SeatersApiContext } from './seaters-api-context';
 
 export class SeatersApi {
-
   public apiContext: SeatersApiContext;
 
   public app: AppApi;
@@ -22,7 +20,7 @@ export class SeatersApi {
   public ticketing: TicketingApi;
   public payment: PaymentApi;
 
-  constructor (prefix: string, requestDriver: RequestDriver) {
+  constructor(prefix: string, requestDriver: RequestDriver) {
     this.apiContext = new SeatersApiContext(prefix, requestDriver);
 
     this.app = new AppApi(this.apiContext);
@@ -33,5 +31,4 @@ export class SeatersApi {
     this.ticketing = new TicketingApi(this.apiContext);
     this.payment = new PaymentApi(this.apiContext);
   }
-
 }
