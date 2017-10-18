@@ -1,4 +1,5 @@
 import { Price } from './price';
+import { LanguageCode } from '../../seaters-api/app/app-types';
 
 export type WAITING_LIST_STATUS = 'PUBLISHED' | 'OPEN' | 'CLOSED';
 
@@ -42,11 +43,6 @@ export interface WaitingList {
   discountPercentage: number;
   formattedOriginalPrice: string;
   formattedDiscountAmount: string;
-
   displayName: string;
-
-  /**
-   * Map of language -> comma separated list of keywords
-   */
-  keywords: { [key: string]: string };
+  keywords: LanguageCode;
 }
