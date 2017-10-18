@@ -61,7 +61,7 @@ var SeatersSDK = /******/ (function(modules) {
     return Object.prototype.hasOwnProperty.call(object, property);
   }; // __webpack_public_path__
   /******/
-  /******/ /******/ __webpack_require__.p = '/home/seaters/seaters-js/dist'; // Load entry module and return exports
+  /******/ /******/ __webpack_require__.p = 'C:\\local_projects\\seaters\\seaters-js/dist'; // Load entry module and return exports
   /******/
   /******/ /******/ return __webpack_require__((__webpack_require__.s = 18));
   /******/
@@ -1802,7 +1802,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.26.0';
+      exports.version = '1.26.1';
       __export(__webpack_require__(19));
       var fan_types_1 = __webpack_require__(3);
       exports.fan = fan_types_1.fan;
@@ -2900,8 +2900,8 @@ var SeatersSDK = /******/ (function(modules) {
       __export(__webpack_require__(55));
       __export(__webpack_require__(57));
       __export(__webpack_require__(59));
-      __export(__webpack_require__(63));
-      __export(__webpack_require__(65));
+      __export(__webpack_require__(62));
+      __export(__webpack_require__(64));
       __export(__webpack_require__(0));
 
       /***/
@@ -4419,7 +4419,6 @@ var SeatersSDK = /******/ (function(modules) {
       }
       Object.defineProperty(exports, '__esModule', { value: true });
       __export(__webpack_require__(60));
-      __export(__webpack_require__(62));
 
       /***/
     },
@@ -4593,25 +4592,17 @@ var SeatersSDK = /******/ (function(modules) {
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
-      Object.defineProperty(exports, '__esModule', { value: true });
-
-      /***/
-    },
-    /* 63 */
-    /***/ function(module, exports, __webpack_require__) {
-      'use strict';
-
       function __export(m) {
         for (var p in m) {
           if (!exports.hasOwnProperty(p)) exports[p] = m[p];
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(64));
+      __export(__webpack_require__(63));
 
       /***/
     },
-    /* 64 */
+    /* 63 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4659,7 +4650,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 65 */
+    /* 64 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4669,11 +4660,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(66));
+      __export(__webpack_require__(65));
 
       /***/
     },
-    /* 66 */
+    /* 65 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
