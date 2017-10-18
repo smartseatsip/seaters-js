@@ -1,7 +1,8 @@
 import { FanGroupCategory } from './fan-group';
 import { ExtendedPosition } from './extended-position';
 import { EVENT_REQUIRED_ATTENDEE_INFO } from './attendee-info';
-import { LanguageCode } from '../app/app-types';
+import { LanguageCode, Translation } from '../app/app-types';
+import { TranslatedText } from '../admin/common';
 
 export interface WaitingList {
   /**
@@ -24,6 +25,11 @@ export interface WaitingList {
    * Translated text explaining how to obtain the code protecting this WL
    */
   protectionCodeExplanation: string;
+
+  /**
+   * Keywords related to the WL
+   */
+  keywords: LanguageCode;
 
   /**
    * The way to access this WL
