@@ -1,4 +1,4 @@
-import { SeatersApi, PagedResult, PagingOptions } from '../../seaters-api';
+import { SeatersApi, PagedResult, PagingOptions, SeatersExceptionV3 } from '../../seaters-api';
 import {
   WaitingList,
   TRANSACTION_STATUS,
@@ -160,6 +160,9 @@ export class WaitingListService {
     return (
       this.api.fan
         .updateAttendeesInfo(waitingListId, attendeesInfo)
+        .catch(e => {
+          throw SeatersExceptionV3.seatersExceptionV3Mapper(e);
+        })
         // wait for attendeeInfo to be updated in CQRS
         .then(() =>
           this.pollWaitingList(waitingListId, wl => {

@@ -168,7 +168,7 @@ export class SeatersApiContext extends ApiContext {
           {
             defaultMessage: data.message,
             errorCode: null,
-            reference: []
+            references: []
           } as ValidationError
         ]
       } as SeatersApiException);
