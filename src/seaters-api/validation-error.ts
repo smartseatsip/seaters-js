@@ -3,7 +3,6 @@
  * the given input which need to be solved to make the request succeed.
  */
 export interface ValidationError {
-
   /**
    * A key you can use to identify the actual error
    */
@@ -22,8 +21,7 @@ export interface ValidationError {
    * cause a specific error. For example a list of attendees, each one has a field 'email'; to identify
    * which attendee's email is invalid.
    */
-  reference: string[];
-
+  references: string[];
 }
 
 /**
@@ -33,6 +31,12 @@ export interface ValidationError {
  * unmapped is a special code used to convert api v1 endpoint errors into v2 endpoints
  */
 export type VALIDATION_ERROR_CODE =
-  'required_field_missing' | 'invalid_email' | 'invalid_title' |
-  'invalid_phone_number' | 'invalid_country_code' | 'invalid_date' |
-  'empty_field' | 'future_date' | 'unmapped';
+  | 'required_field_missing'
+  | 'invalid_email'
+  | 'invalid_title'
+  | 'invalid_phone_number'
+  | 'invalid_country_code'
+  | 'invalid_date'
+  | 'empty_field'
+  | 'future_date'
+  | 'unmapped';

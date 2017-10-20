@@ -153,6 +153,13 @@ export class FanService extends SeatersService {
     return this.waitingListService.preauthorizePosition(waitingListId, transaction);
   }
 
+  /**
+   * Submit attendee information. This will validate the submitted information. The returned promise will be
+   * resolved once the user can continue with the next step after submitting attendee information
+   * @param waitingListId WL for which attendee info needs to be validated and stored
+   * @param attendeesInfo The actual attendee information
+   * @throws SeatersApiException of type 'validation_error'
+   */
   saveAttendeesInfo(waitingListId: string, attendeesInfo: AttendeeInfo[]): Promise<fan.WaitingList> {
     return this.waitingListService.saveAttendeesInfo(waitingListId, attendeesInfo);
   }
