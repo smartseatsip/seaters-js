@@ -61,7 +61,7 @@ var SeatersSDK = /******/ (function(modules) {
     return Object.prototype.hasOwnProperty.call(object, property);
   }; // __webpack_public_path__
   /******/
-  /******/ /******/ __webpack_require__.p = '/home/seaters/seaters-js/dist'; // Load entry module and return exports
+  /******/ /******/ __webpack_require__.p = 'C:\\seaters\\seaters-js/dist'; // Load entry module and return exports
   /******/
   /******/ /******/ return __webpack_require__((__webpack_require__.s = 18));
   /******/
@@ -877,6 +877,9 @@ var SeatersSDK = /******/ (function(modules) {
         // Profiling (public)
         FanApi.prototype.getProfilingCategories = function() {
           return this.apiContext.get('/profiling/v1/categories', {}, {});
+        };
+        FanApi.prototype.getProfilingCategoriesOrder = function() {
+          return this.apiContext.get('/profiling/v1/categories/order', {}, {});
         };
         FanApi.prototype.getProfilingCategoryById = function(categoryId) {
           return this.apiContext.get('/profiling/v1/category/' + categoryId, {}, {});
@@ -2965,8 +2968,8 @@ var SeatersSDK = /******/ (function(modules) {
       __export(__webpack_require__(56));
       __export(__webpack_require__(58));
       __export(__webpack_require__(60));
-      __export(__webpack_require__(64));
-      __export(__webpack_require__(66));
+      __export(__webpack_require__(63));
+      __export(__webpack_require__(65));
       __export(__webpack_require__(1));
 
       /***/
@@ -3313,7 +3316,24 @@ var SeatersSDK = /******/ (function(modules) {
         }
         // Profiling (public)
         FanProfilingService.prototype.getProfilingCategories = function() {
-          return this.seatersApi.fan.getProfilingCategories();
+          var _this = this;
+          var categories = [];
+          return this.seatersApi.fan
+            .getProfilingCategories()
+            .then(function(results) {
+              categories = results;
+              return _this.seatersApi.fan.getProfilingCategoriesOrder();
+            })
+            .then(function(categoriesOrder) {
+              categories = categories.map(function(category) {
+                return (category.order = categoriesOrder.find(function(item) {
+                  return item.id === category.id;
+                }));
+              });
+              return categories.sort(function(item) {
+                return item.order;
+              });
+            });
         };
         FanProfilingService.prototype.getProfilingCategoryById = function(categoryId) {
           return this.seatersApi.fan.getProfilingCategoryById(categoryId);
@@ -4491,7 +4511,6 @@ var SeatersSDK = /******/ (function(modules) {
       }
       Object.defineProperty(exports, '__esModule', { value: true });
       __export(__webpack_require__(61));
-      __export(__webpack_require__(63));
 
       /***/
     },
@@ -4665,25 +4684,17 @@ var SeatersSDK = /******/ (function(modules) {
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
-      Object.defineProperty(exports, '__esModule', { value: true });
-
-      /***/
-    },
-    /* 64 */
-    /***/ function(module, exports, __webpack_require__) {
-      'use strict';
-
       function __export(m) {
         for (var p in m) {
           if (!exports.hasOwnProperty(p)) exports[p] = m[p];
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(65));
+      __export(__webpack_require__(64));
 
       /***/
     },
-    /* 65 */
+    /* 64 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4731,7 +4742,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 66 */
+    /* 65 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4741,11 +4752,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(67));
+      __export(__webpack_require__(66));
 
       /***/
     },
-    /* 67 */
+    /* 66 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
