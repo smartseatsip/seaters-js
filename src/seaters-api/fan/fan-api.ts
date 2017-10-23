@@ -284,6 +284,10 @@ export class FanApi {
     return this.apiContext.get('/profiling/v1/categories', {}, {});
   }
 
+  getProfilingCategoriesOrder(): Promise<ProfilingCategory[]> {
+    return this.apiContext.get('/profiling/v1/categories/order', {}, {});
+  }
+
   getProfilingCategoryById(categoryId): Promise<ProfilingCategory> {
     return this.apiContext.get(`/profiling/v1/category/${categoryId}`, {}, {});
   }

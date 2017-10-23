@@ -7,7 +7,19 @@ export class FanProfilingService {
   // Profiling (public)
 
   getProfilingCategories(): Promise<fan.ProfilingCategory[]> {
-    return this.seatersApi.fan.getProfilingCategories();
+    let categories = [];
+    return this.seatersApi.fan
+      .getProfilingCategories()
+      .then(results => {
+        categories = results;
+        return this.seatersApi.fan.getProfilingCategoriesOrder();
+      })
+      .then(categoriesOrder => {
+        categories = categories.map(category => {
+          return (category.order = categoriesOrder.find(item => item.id === category.id));
+        });
+        return categories.sort(item => item.order);
+      });
   }
 
   getProfilingCategoryById(categoryId: string): Promise<fan.ProfilingCategory> {
