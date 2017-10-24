@@ -18,7 +18,7 @@ export class FanProfilingService {
         categories = categories.map(category => {
           return (category.order = categoriesOrder.find(item => item.id === category.id));
         });
-        return categories.sort(item => item.order);
+        return categories.sort((a, b) => a.order - b.order);
       });
   }
 
