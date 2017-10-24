@@ -3330,8 +3330,8 @@ var SeatersSDK = /******/ (function(modules) {
                   return item.id === category.id;
                 }));
               });
-              return categories.sort(function(item) {
-                return item.order;
+              return categories.sort(function(a, b) {
+                return a.order - b.order;
               });
             });
         };
