@@ -14,9 +14,11 @@ export class FanProfilingService {
         categories = results;
         return this.seatersApi.fan.getProfilingCategoriesOrder();
       })
-      .then(categoriesOrder => {
+      .then((categoriesOrder: fan.ProfilingCategoryOrder[]) => {
         categories = categories.map(category => {
-          return (category.order = categoriesOrder.find(item => item.id === category.id));
+          const orderedData = categoriesOrder.find(item => item.id === category.id);
+          category.order = orderedData ? orderedData.order : undefined;
+          return category;
         });
         return categories.sort((a, b) => a.order - b.order);
       });

@@ -7,6 +7,7 @@ import {
   AttendeesInfo as _AttendeesInfo,
   AttendeeInfo as _AttendeeInfo,
   ProfilingCategory as _ProfilingCategory,
+  ProfilingCategoryOrder as _ProfilingCategoryOrder,
   ProfilingTimeStamp as _ProfilingTimestamp,
   ProfilingInterest as _ProfilingInterest,
   ProfilingExternalIdentifier as _ProfilingExternalIdentifier,
@@ -118,6 +119,7 @@ export namespace fan {
    */
 
   export interface ProfilingCategory extends _ProfilingCategory {}
+  export interface ProfilingCategoryOrder extends _ProfilingCategoryOrder {}
   export interface ProfilingTimeStamp extends _ProfilingTimestamp {}
   export interface ProfilingInterest extends _ProfilingInterest {}
   export interface ProfilingExternalIdentifier extends _ProfilingExternalIdentifier {}

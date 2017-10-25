@@ -19,6 +19,14 @@ export interface ProfilingCategory {
 }
 
 /**
+ *  PROFILING - CATEGORIES ORDER
+ */
+export interface ProfilingCategoryOrder {
+  id: string;
+  order: number;
+}
+
+/**
  *  PROFILING - INTERESTS
  */
 export interface ProfilingInterest {
