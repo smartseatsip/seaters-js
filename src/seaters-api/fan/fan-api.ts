@@ -7,6 +7,7 @@ import { TranslationMap } from '../translation-map';
 
 import {
   ProfilingCategory,
+  ProfilingCategoryOrder,
   UserInterestCreateDTO,
   UserInterestUpdateDTO,
   ProfilingFanAttribute,
@@ -284,7 +285,7 @@ export class FanApi {
     return this.apiContext.get('/profiling/v1/categories', {}, {});
   }
 
-  getProfilingCategoriesOrder(): Promise<ProfilingCategory[]> {
+  getProfilingCategoriesOrder(): Promise<ProfilingCategoryOrder[]> {
     return this.apiContext.get('/profiling/v1/categories/order', {}, {});
   }
 

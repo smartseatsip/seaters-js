@@ -3326,9 +3326,11 @@ var SeatersSDK = /******/ (function(modules) {
             })
             .then(function(categoriesOrder) {
               categories = categories.map(function(category) {
-                return (category.order = categoriesOrder.find(function(item) {
+                var orderedData = categoriesOrder.find(function(item) {
                   return item.id === category.id;
-                }));
+                });
+                category.order = orderedData ? orderedData.order : undefined;
+                return category;
               });
               return categories.sort(function(a, b) {
                 return a.order - b.order;
