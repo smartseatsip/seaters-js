@@ -293,12 +293,13 @@ export class FanApi {
     return this.apiContext.get(`/profiling/v1/category/${categoryId}`, {}, {});
   }
 
-  getProfilingFanAttributes(query: string): Promise<ProfilingFanAttribute[]> {
+  getProfilingFanAttributes(query: string, validated: boolean): Promise<ProfilingFanAttribute[]> {
     return this.apiContext.get(
       '/profiling/v1/fan_attributes',
       {},
       {
-        query
+        query,
+        validated: validated ? 'true' : 'false'
       }
     );
   }

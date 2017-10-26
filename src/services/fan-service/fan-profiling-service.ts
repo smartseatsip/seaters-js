@@ -28,8 +28,8 @@ export class FanProfilingService {
     return this.seatersApi.fan.getProfilingCategoryById(categoryId);
   }
 
-  getProfilingFanAttributes(query: string): Promise<fan.ProfilingFanAttribute[]> {
-    return this.seatersApi.fan.getProfilingFanAttributes(query);
+  getProfilingFanAttributes(query: string, validated: boolean): Promise<fan.ProfilingFanAttribute[]> {
+    return this.seatersApi.fan.getProfilingFanAttributes(query, validated);
   }
 
   getProfilingFanAttributeById(fanAttributeId: string): Promise<fan.ProfilingFanAttribute> {

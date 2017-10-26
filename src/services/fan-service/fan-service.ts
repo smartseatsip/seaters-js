@@ -249,8 +249,8 @@ export class FanService extends SeatersService {
     return this.fanProfilingService.getProfilingCategoryById(categoryId);
   }
 
-  getProfilingFanAttributes(query: string): Promise<fan.ProfilingFanAttribute[]> {
-    return this.fanProfilingService.getProfilingFanAttributes(query);
+  getProfilingFanAttributes(query: string, validated: boolean): Promise<fan.ProfilingFanAttribute[]> {
+    return this.fanProfilingService.getProfilingFanAttributes(query, validated);
   }
 
   getProfilingFanAttributeById(fanAttributeId: string): Promise<fan.ProfilingFanAttribute> {

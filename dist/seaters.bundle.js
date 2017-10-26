@@ -884,12 +884,13 @@ var SeatersSDK = /******/ (function(modules) {
         FanApi.prototype.getProfilingCategoryById = function(categoryId) {
           return this.apiContext.get('/profiling/v1/category/' + categoryId, {}, {});
         };
-        FanApi.prototype.getProfilingFanAttributes = function(query) {
+        FanApi.prototype.getProfilingFanAttributes = function(query, validated) {
           return this.apiContext.get(
             '/profiling/v1/fan_attributes',
             {},
             {
-              query: query
+              query: query,
+              validated: validated ? 'true' : 'false'
             }
           );
         };
@@ -3247,8 +3248,8 @@ var SeatersSDK = /******/ (function(modules) {
         FanService.prototype.getProfilingCategoryById = function(categoryId) {
           return this.fanProfilingService.getProfilingCategoryById(categoryId);
         };
-        FanService.prototype.getProfilingFanAttributes = function(query) {
-          return this.fanProfilingService.getProfilingFanAttributes(query);
+        FanService.prototype.getProfilingFanAttributes = function(query, validated) {
+          return this.fanProfilingService.getProfilingFanAttributes(query, validated);
         };
         FanService.prototype.getProfilingFanAttributeById = function(fanAttributeId) {
           return this.fanProfilingService.getProfilingFanAttributeById(fanAttributeId);
@@ -3340,8 +3341,8 @@ var SeatersSDK = /******/ (function(modules) {
         FanProfilingService.prototype.getProfilingCategoryById = function(categoryId) {
           return this.seatersApi.fan.getProfilingCategoryById(categoryId);
         };
-        FanProfilingService.prototype.getProfilingFanAttributes = function(query) {
-          return this.seatersApi.fan.getProfilingFanAttributes(query);
+        FanProfilingService.prototype.getProfilingFanAttributes = function(query, validated) {
+          return this.seatersApi.fan.getProfilingFanAttributes(query, validated);
         };
         FanProfilingService.prototype.getProfilingFanAttributeById = function(fanAttributeId) {
           return this.seatersApi.fan.getProfilingFanAttributeById(fanAttributeId);
