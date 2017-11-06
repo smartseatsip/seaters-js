@@ -32,7 +32,7 @@ import {
 
 import { WaitingListRequest } from './waiting-list';
 import { StringMap } from '../../api/string-map';
-import { UserInterest } from './profiling';
+import { ProfilingInterest, UserInterest } from './profiling';
 
 export class FanApi {
   constructor(private apiContext: SeatersApiContext) {}
@@ -351,6 +351,38 @@ export class FanApi {
 
   removeUserFanAttribute(userFanAttributeId: string): Promise<UserFanAttribute> {
     return this.apiContext.delete(`/profiling/v1/user/fan_attribute/${userFanAttributeId}`, {}, {});
+  }
+
+  getWaitingListInterests(waitingListId: string): Promise<ProfilingInterest[]> {
+    return this.apiContext.get(`/waitinglists/${waitingListId}/interests`, {}, {});
+  }
+
+  getWaitingListFanAttributes(waitingListId: string): Promise<ProfilingFanAttribute[]> {
+    return this.apiContext.get(`/waitinglists/${waitingListId}/fan_attributes`, {}, {});
+  }
+
+  linkWaitingListInterest(waitingListId: string, interestId: string): Promise<ProfilingInterest> {
+    return this.apiContext.post(`/waitinglists/${waitingListId}/interests/${interestId}`, {}, {});
+  }
+
+  linkWaitingListFanAttribute(waitingListId: string, fanAttributeId: string): Promise<ProfilingFanAttribute> {
+    return this.apiContext.post(`/waitinglists/${waitingListId}/fan_attributes/${fanAttributeId}`, {}, {});
+  }
+
+  unlinkWaitingListInterests(waitingListId: string): Promise<ProfilingInterest[]> {
+    return this.apiContext.delete(`/waitinglists/${waitingListId}/interests`, {}, {});
+  }
+
+  unlinkWaitingListFanAttributes(waitingListId: string): Promise<ProfilingFanAttribute[]> {
+    return this.apiContext.delete(`/waitinglists/${waitingListId}/fan_attributes`, {}, {});
+  }
+
+  unlinkWaitingListInterest(waitingListId: string, interestId: string): Promise<ProfilingInterest> {
+    return this.apiContext.delete(`/waitinglists/${waitingListId}/interests/${interestId}`, {}, {});
+  }
+
+  unlinkWaitingListFanAttribute(waitingListId: string, fanAttributeId: string): Promise<ProfilingFanAttribute> {
+    return this.apiContext.delete(`/waitinglists/${waitingListId}/fan_attributes/${fanAttributeId}`, {}, {});
   }
 }
 
