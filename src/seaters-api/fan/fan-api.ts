@@ -354,35 +354,39 @@ export class FanApi {
   }
 
   getWaitingListInterests(waitingListId: string): Promise<ProfilingInterest[]> {
-    return this.apiContext.get(`/waitinglists/${waitingListId}/interests`, {}, {});
+    return this.apiContext.get(`/profiling/v1/waitinglists/${waitingListId}/interests`, {}, {});
   }
 
   getWaitingListFanAttributes(waitingListId: string): Promise<ProfilingFanAttribute[]> {
-    return this.apiContext.get(`/waitinglists/${waitingListId}/fan_attributes`, {}, {});
+    return this.apiContext.get(`/profiling/v1/waitinglists/${waitingListId}/fan_attributes`, {}, {});
   }
 
   linkWaitingListInterest(waitingListId: string, interestId: string): Promise<ProfilingInterest> {
-    return this.apiContext.post(`/waitinglists/${waitingListId}/interests/${interestId}`, {}, {});
+    return this.apiContext.post(`/profiling/v1/waitinglists/${waitingListId}/interests/${interestId}`, {}, {});
   }
 
   linkWaitingListFanAttribute(waitingListId: string, fanAttributeId: string): Promise<ProfilingFanAttribute> {
-    return this.apiContext.post(`/waitinglists/${waitingListId}/fan_attributes/${fanAttributeId}`, {}, {});
+    return this.apiContext.post(`/profiling/v1/waitinglists/${waitingListId}/fan_attributes/${fanAttributeId}`, {}, {});
   }
 
-  unlinkWaitingListInterests(waitingListId: string): Promise<ProfilingInterest[]> {
-    return this.apiContext.delete(`/waitinglists/${waitingListId}/interests`, {}, {});
+  unlinkWaitingListInterests(waitingListId: string): Promise<void> {
+    return this.apiContext.delete(`/profiling/v1/waitinglists/${waitingListId}/interests`, {}, {});
   }
 
-  unlinkWaitingListFanAttributes(waitingListId: string): Promise<ProfilingFanAttribute[]> {
-    return this.apiContext.delete(`/waitinglists/${waitingListId}/fan_attributes`, {}, {});
+  unlinkWaitingListFanAttributes(waitingListId: string): Promise<void> {
+    return this.apiContext.delete(`/profiling/v1/waitinglists/${waitingListId}/fan_attributes`, {}, {});
   }
 
-  unlinkWaitingListInterest(waitingListId: string, interestId: string): Promise<ProfilingInterest> {
-    return this.apiContext.delete(`/waitinglists/${waitingListId}/interests/${interestId}`, {}, {});
+  unlinkWaitingListInterest(waitingListId: string, interestId: string): Promise<void> {
+    return this.apiContext.delete(`/profiling/v1/waitinglists/${waitingListId}/interests/${interestId}`, {}, {});
   }
 
-  unlinkWaitingListFanAttribute(waitingListId: string, fanAttributeId: string): Promise<ProfilingFanAttribute> {
-    return this.apiContext.delete(`/waitinglists/${waitingListId}/fan_attributes/${fanAttributeId}`, {}, {});
+  unlinkWaitingListFanAttribute(waitingListId: string, fanAttributeId: string): Promise<void> {
+    return this.apiContext.delete(
+      `/profiling/v1/waitinglists/${waitingListId}/fan_attributes/${fanAttributeId}`,
+      {},
+      {}
+    );
   }
 }
 
