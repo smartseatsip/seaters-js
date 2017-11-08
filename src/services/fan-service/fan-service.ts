@@ -309,19 +309,19 @@ export class FanService extends SeatersService {
     return this.waitingListService.linkWaitingListFanAttribute(waitingListId, fanAttributeId);
   }
 
-  unlinkWaitingListInterests(waitingListId: string): Promise<fan.ProfilingInterest[]> {
+  unlinkWaitingListInterests(waitingListId: string): Promise<void> {
     return this.waitingListService.unlinkWaitingListInterests(waitingListId);
   }
 
-  unlinkWaitingListFanAttributes(waitingListId: string): Promise<fan.ProfilingFanAttribute[]> {
+  unlinkWaitingListFanAttributes(waitingListId: string): Promise<void> {
     return this.waitingListService.unlinkWaitingListFanAttributes(waitingListId);
   }
 
-  unlinkWaitingListInterest(waitingListId: string, interestId: string): Promise<fan.ProfilingInterest> {
+  unlinkWaitingListInterest(waitingListId: string, interestId: string): Promise<void> {
     return this.waitingListService.unlinkWaitingListInterest(waitingListId, interestId);
   }
 
-  unlinkWaitingListFanAttribute(waitingListId: string, fanAttributeId: string): Promise<fan.ProfilingFanAttribute> {
+  unlinkWaitingListFanAttribute(waitingListId: string, fanAttributeId: string): Promise<void> {
     return this.waitingListService.unlinkWaitingListFanAttribute(waitingListId, fanAttributeId);
   }
 }

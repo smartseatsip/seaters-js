@@ -249,19 +249,19 @@ export class WaitingListService {
     return this.api.fan.linkWaitingListFanAttribute(waitingListId, fanAttributeId);
   }
 
-  unlinkWaitingListInterests(waitingListId: string): Promise<fan.ProfilingInterest[]> {
+  unlinkWaitingListInterests(waitingListId: string): Promise<void> {
     return this.api.fan.unlinkWaitingListInterests(waitingListId);
   }
 
-  unlinkWaitingListFanAttributes(waitingListId: string): Promise<fan.ProfilingFanAttribute[]> {
+  unlinkWaitingListFanAttributes(waitingListId: string): Promise<void> {
     return this.api.fan.unlinkWaitingListFanAttributes(waitingListId);
   }
 
-  unlinkWaitingListInterest(waitingListId: string, interestId: string): Promise<fan.ProfilingInterest> {
+  unlinkWaitingListInterest(waitingListId: string, interestId: string): Promise<void> {
     return this.api.fan.unlinkWaitingListInterest(waitingListId, interestId);
   }
 
-  unlinkWaitingListFanAttribute(waitingListId: string, fanAttributeId: string): Promise<fan.ProfilingFanAttribute> {
+  unlinkWaitingListFanAttribute(waitingListId: string, fanAttributeId: string): Promise<void> {
     return this.api.fan.unlinkWaitingListFanAttribute(waitingListId, fanAttributeId);
   }
 
