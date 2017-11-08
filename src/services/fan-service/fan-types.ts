@@ -18,6 +18,8 @@ import {
   UserFanAttribute as _UserFanAttribute,
   UserFanAttributeCreateDTO as _UserFanAttributeCreateDTO,
   UserFanAttributeUpdateDTO as _UserFanAttributeUpdateDTO,
+  WaitingListInterest as _WaitingListInterest,
+  WaitingListFanAttribute as _WaitingListFanAttribute,
   FanGroupShare as _FanGroupShare,
   WaitingListShare as _WaitingListShare,
   Fan as _Fan,
@@ -131,5 +133,7 @@ export namespace fan {
   export interface UserFanAttribute extends _UserFanAttribute {}
   export interface UserFanAttributeCreateDTO extends _UserFanAttributeCreateDTO {}
   export interface UserFanAttributeUpdateDTO extends _UserFanAttributeUpdateDTO {}
+  export interface WaitingListInterest extends _WaitingListInterest {}
+  export interface WaitingListFanAttribute extends _WaitingListFanAttribute {}
   export interface PhoneNumber extends _PhoneNumber {}
 }
