@@ -14,6 +14,8 @@ import {
   UserFanAttribute,
   UserFanAttributeCreateDTO,
   UserFanAttributeUpdateDTO,
+  WaitingListFanAttribute,
+  WaitingListInterest,
   Fan,
   FanGroup,
   WaitingList,
@@ -353,19 +355,19 @@ export class FanApi {
     return this.apiContext.delete(`/profiling/v1/user/fan_attribute/${userFanAttributeId}`, {}, {});
   }
 
-  getWaitingListInterests(waitingListId: string): Promise<ProfilingInterest[]> {
+  getWaitingListInterests(waitingListId: string): Promise<WaitingListInterest[]> {
     return this.apiContext.get(`/profiling/v1/waitinglists/${waitingListId}/interests`, {}, {});
   }
 
-  getWaitingListFanAttributes(waitingListId: string): Promise<ProfilingFanAttribute[]> {
+  getWaitingListFanAttributes(waitingListId: string): Promise<WaitingListFanAttribute[]> {
     return this.apiContext.get(`/profiling/v1/waitinglists/${waitingListId}/fan_attributes`, {}, {});
   }
 
-  linkWaitingListInterest(waitingListId: string, interestId: string): Promise<ProfilingInterest> {
+  linkWaitingListInterest(waitingListId: string, interestId: string): Promise<WaitingListInterest> {
     return this.apiContext.post(`/profiling/v1/waitinglists/${waitingListId}/interests/${interestId}`, {}, {});
   }
 
-  linkWaitingListFanAttribute(waitingListId: string, fanAttributeId: string): Promise<ProfilingFanAttribute> {
+  linkWaitingListFanAttribute(waitingListId: string, fanAttributeId: string): Promise<WaitingListFanAttribute> {
     return this.apiContext.post(`/profiling/v1/waitinglists/${waitingListId}/fan_attributes/${fanAttributeId}`, {}, {});
   }
 

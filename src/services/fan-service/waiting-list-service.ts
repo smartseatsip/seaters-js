@@ -233,19 +233,19 @@ export class WaitingListService {
   }
 
   // Profiling - FGO
-  getWaitingListInterests(waitingListId: string): Promise<fan.ProfilingInterest[]> {
+  getWaitingListInterests(waitingListId: string): Promise<fan.WaitingListInterest[]> {
     return this.api.fan.getWaitingListInterests(waitingListId);
   }
 
-  getWaitingListFanAttributes(waitingListId: string): Promise<fan.ProfilingFanAttribute[]> {
+  getWaitingListFanAttributes(waitingListId: string): Promise<fan.WaitingListFanAttribute[]> {
     return this.api.fan.getWaitingListFanAttributes(waitingListId);
   }
 
-  linkWaitingListInterest(waitingListId: string, interestId: string): Promise<fan.ProfilingInterest> {
+  linkWaitingListInterest(waitingListId: string, interestId: string): Promise<fan.WaitingListInterest> {
     return this.api.fan.linkWaitingListInterest(waitingListId, interestId);
   }
 
-  linkWaitingListFanAttribute(waitingListId: string, fanAttributeId: string): Promise<fan.ProfilingFanAttribute> {
+  linkWaitingListFanAttribute(waitingListId: string, fanAttributeId: string): Promise<fan.WaitingListFanAttribute> {
     return this.api.fan.linkWaitingListFanAttribute(waitingListId, fanAttributeId);
   }
 

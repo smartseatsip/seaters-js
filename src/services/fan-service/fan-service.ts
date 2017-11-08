@@ -293,19 +293,19 @@ export class FanService extends SeatersService {
     return this.fanProfilingService.removeUserFanAttribute(userFanAttributeId);
   }
 
-  getWaitingListInterests(waitingListId: string): Promise<fan.ProfilingInterest[]> {
+  getWaitingListInterests(waitingListId: string): Promise<fan.WaitingListInterest[]> {
     return this.waitingListService.getWaitingListInterests(waitingListId);
   }
 
-  getWaitingListFanAttributes(waitingListId: string): Promise<fan.ProfilingFanAttribute[]> {
+  getWaitingListFanAttributes(waitingListId: string): Promise<fan.WaitingListFanAttribute[]> {
     return this.waitingListService.getWaitingListFanAttributes(waitingListId);
   }
 
-  linkWaitingListInterest(waitingListId: string, interestId: string): Promise<fan.ProfilingInterest> {
+  linkWaitingListInterest(waitingListId: string, interestId: string): Promise<fan.WaitingListInterest> {
     return this.waitingListService.linkWaitingListInterest(waitingListId, interestId);
   }
 
-  linkWaitingListFanAttribute(waitingListId: string, fanAttributeId: string): Promise<fan.ProfilingFanAttribute> {
+  linkWaitingListFanAttribute(waitingListId: string, fanAttributeId: string): Promise<fan.WaitingListFanAttribute> {
     return this.waitingListService.linkWaitingListFanAttribute(waitingListId, fanAttributeId);
   }
 
