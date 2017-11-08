@@ -1,7 +1,6 @@
 import { StringMap } from './string-map';
 
 export class ApiEndpoint {
-
   public abstractEndpoint;
 
   public concreteEndpoint;
@@ -10,7 +9,7 @@ export class ApiEndpoint {
 
   public absoluteEndpoint;
 
-  constructor (
+  constructor(
     abstractEndpoint: string,
     private endpointParams: StringMap,
     private queryParams: StringMap,
@@ -22,13 +21,13 @@ export class ApiEndpoint {
     this.absoluteEndpoint = this.renderAbsoluteEndpoint();
   }
 
-  private normalizeAbstractEndpoint (abstractEndpoint: string): string {
+  private normalizeAbstractEndpoint(abstractEndpoint: string): string {
     return abstractEndpoint
       .replace(/^\//, '') // no prefixed '/'
       .replace(/\/$/, ''); // no trailing '/'
   }
 
-  private renderEndpointParam (parameter: string) {
+  private renderEndpointParam(parameter: string) {
     if (!this.endpointParams.hasOwnProperty(parameter)) {
       throw new Error('Unable to render endpoint param: ' + parameter);
     }
@@ -36,21 +35,23 @@ export class ApiEndpoint {
     return encodeURIComponent(this.endpointParams[parameter] as string);
   }
 
-  private renderConcreteEndpoint (): string {
-    let endpointParamRx = /:([a-zA-Z][a-zA-Z0-9]*)/g;
-    return this.abstractEndpoint.replace(endpointParamRx, (match) => {
+  private renderConcreteEndpoint(): string {
+    const endpointParamRx = /:([a-zA-Z][a-zA-Z0-9]*)/g;
+    return this.abstractEndpoint.replace(endpointParamRx, match => {
       return this.renderEndpointParam(match.substr(1));
     });
   }
 
-  private renderQueryParams (): string {
-    let paramsArray = Object.keys(this.queryParams).map(key => {
+  private renderQueryParams(): string {
+    const paramsArray = Object.keys(this.queryParams).map(key => {
       const value: string | string[] = this.queryParams[key] as string | string[];
       if (Array.isArray(value)) {
         const valueArray = value as string[];
-        return valueArray.map(param => {
-          return encodeURIComponent(key) + '=' + encodeURIComponent(param);
-        }).join('&');
+        return valueArray
+          .map(param => {
+            return encodeURIComponent(key) + '=' + encodeURIComponent(param);
+          })
+          .join('&');
       } else {
         const valueString = value as string;
         return encodeURIComponent(key) + '=' + encodeURIComponent(valueString);
@@ -59,7 +60,7 @@ export class ApiEndpoint {
     return paramsArray.join('&');
   }
 
-  private renderConcreteEndpointWithQueryParams (): string {
+  private renderConcreteEndpointWithQueryParams(): string {
     if (Object.keys(this.queryParams).length === 0) {
       return this.concreteEndpoint;
     }
@@ -76,10 +77,9 @@ export class ApiEndpoint {
     return res + this.renderQueryParams();
   }
 
-  private renderAbsoluteEndpoint () {
+  private renderAbsoluteEndpoint() {
     // remove trailing '/' from the prefix
-    let normalizedPrefix = this.prefix.replace(/\/$/, '');
+    const normalizedPrefix = this.prefix.replace(/\/$/, '');
     return normalizedPrefix + '/' + this.concreteEndpointWithQueryParams;
   }
-
 }

@@ -3,11 +3,10 @@ import { TranslationMap } from '../../seaters-api/translation-map';
 const SEATERS_DEFAULT_LOCALE = 'en';
 
 export class LocalizableText implements TranslationMap {
-
   [key: string]: string | any;
 
-  constructor (translationMap: TranslationMap) {
-    Object.keys(translationMap).forEach(k => this[k] = translationMap[k]);
+  constructor(translationMap: TranslationMap) {
+    Object.keys(translationMap).forEach(k => (this[k] = translationMap[k]));
   }
 
   /**
@@ -15,8 +14,7 @@ export class LocalizableText implements TranslationMap {
    * @param locale Locale to try to retrieve the translated text
    * @param fallbackLocale Fall back to a translation in this locale if preferred locale was not available
    */
-  localize (locale: string, fallbackLocale: string): string {
-
+  localize(locale: string, fallbackLocale: string): string {
     if (this.hasOwnProperty(locale)) {
       return this[locale];
     } else if (this.hasOwnProperty(fallbackLocale)) {
@@ -24,10 +22,9 @@ export class LocalizableText implements TranslationMap {
     } else if (this.hasOwnProperty(SEATERS_DEFAULT_LOCALE)) {
       return this[fallbackLocale];
     } else {
-      let err = 'LocalizableText - translation map is missing SEATERS_DEFAULT_LOCALE: ' + JSON.stringify(this);
+      const err = 'LocalizableText - translation map is missing SEATERS_DEFAULT_LOCALE: ' + JSON.stringify(this);
       console.error(err);
       throw err;
     }
   }
-
 }

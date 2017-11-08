@@ -1,5 +1,4 @@
 export interface Position {
-
   /**
    * Number of Seats
    */
@@ -48,6 +47,12 @@ export interface Position {
   rank: number;
 
   /**
+   * (Random distribution only) Original position rank
+   * The rank that was originally assigned to the user before the list of positions was shuffled
+   */
+  originalRank: number;
+
+  /**
    * Currency formatted total price for the requested # of tickets
    */
   formattedTotal: string;
@@ -57,11 +62,10 @@ export interface Position {
    * double precision
    */
   total: string;
-
 }
 
 export type TRANSACTION_STATUS =
-  'CREATING'
+  | 'CREATING'
   | 'FAILURE'
   | 'CREATED'
   | 'APPROVED'

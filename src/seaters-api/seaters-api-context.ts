@@ -1,7 +1,4 @@
-import {
-  ServerResponse, ApiContext, ApiRequestDefinition,
-  RequestDriver, StringMap, ArrayMap
-} from '../api';
+import { ServerResponse, ApiContext, ApiRequestDefinition, RequestDriver, StringMap, ArrayMap } from '../api';
 
 import { SeatersApiException } from './seaters-api-exception';
 import { SeatersExceptionV1 } from './seaters-exception-v1';
@@ -11,12 +8,7 @@ import { ClientError } from './client-error';
 import { PagedResult, PagingOptions } from '../shared-types';
 
 export class SeatersApiContext extends ApiContext {
-
-  constructor (prefix: string, requestDriver: RequestDriver) {
-    super(prefix, requestDriver);
-  }
-
-  public static buildPagingQueryParams (pagingOptions: PagingOptions): { [key: string]: any } {
+  public static buildPagingQueryParams(pagingOptions: PagingOptions): { [key: string]: any } {
     pagingOptions = pagingOptions || {};
     return {
       maxPageSize: pagingOptions.maxPageSize || 9999,
@@ -24,16 +16,21 @@ export class SeatersApiContext extends ApiContext {
     };
   }
 
-  public static convertPagedResultToArray (promise: Promise<PagedResult<any>>): Promise<Array<any>> {
-    return new Promise(function (resolve, reject) {
+  public static convertPagedResultToArray(promise: Promise<PagedResult<any>>): Promise<any[]> {
+    return new Promise((resolve, reject) => {
       promise
-        .then(function (response) {
+        .then(response => {
           if (response.items === undefined) {
-            resolve(response);
+            resolve(response as any);
           }
           resolve(response.items);
-        }).catch(reject);
+        })
+        .catch(reject);
     });
+  }
+
+  constructor(prefix: string, requestDriver: RequestDriver) {
+    super(prefix, requestDriver);
   }
 
   /**
@@ -44,76 +41,68 @@ export class SeatersApiContext extends ApiContext {
    *
    * @see SeatersApiException
    */
-  doSeatersRequest (requestDefinition: ApiRequestDefinition): Promise<string> {
-
-    return this.doRequest(requestDefinition)
-      .then(
-        (res) => this.handleServerResponse(res),
-        (err) => this.handleClientError(err)
-      );
+  doSeatersRequest(requestDefinition: ApiRequestDefinition): Promise<string> {
+    return this.doRequest(requestDefinition).then(
+      res => this.handleServerResponse(res),
+      err => this.handleClientError(err)
+    );
   }
 
-  doTypedSeatersRequest<T> (requestDefinition: ApiRequestDefinition): Promise<T> {
-    return this.doSeatersRequest(requestDefinition)
-      .then(body => this.parseResult(body));
+  doTypedSeatersRequest<T>(requestDefinition: ApiRequestDefinition): Promise<T> {
+    return this.doSeatersRequest(requestDefinition).then(body => this.parseResult(body));
   }
 
-  get (
-    abstractEndpoint: string,
-    endpointParams?: StringMap,
-    queryParams?: ArrayMap
-  ): Promise<any> {
+  get(abstractEndpoint: string, endpointParams?: StringMap, queryParams?: ArrayMap): Promise<any> {
     return this.doTypedSeatersRequest({
-      abstractEndpoint: abstractEndpoint,
+      abstractEndpoint,
       endpointParams: endpointParams || {},
       queryParams: queryParams || {}
     });
   }
 
-  put (
-    abstractEndpoint: string,
-    body?: any,
-    endpointParams?: StringMap,
-    queryParams?: ArrayMap
-  ): Promise<any> {
+  put(abstractEndpoint: string, body?: any, endpointParams?: StringMap, queryParams?: ArrayMap): Promise<any> {
     return this.doTypedSeatersRequest({
       method: 'PUT',
-      abstractEndpoint: abstractEndpoint,
+      abstractEndpoint,
       endpointParams: endpointParams || {},
       queryParams: queryParams || {},
-      body: body
+      body
     });
   }
 
-  post (
-    abstractEndpoint: string,
-    body?: any,
-    endpointParams?: StringMap,
-    queryParams?: ArrayMap
-  ): Promise<any> {
+  post(abstractEndpoint: string, body?: any, endpointParams?: StringMap, queryParams?: ArrayMap): Promise<any> {
     return this.doTypedSeatersRequest({
       method: 'POST',
-      abstractEndpoint: abstractEndpoint,
+      abstractEndpoint,
       endpointParams: endpointParams || {},
       queryParams: queryParams || {},
-      body: body
+      body
     });
   }
 
-  delete (
-    abstractEndpoint: string,
-    endpointParams?: StringMap,
-    queryParams?: ArrayMap
-  ): Promise<any> {
+  delete(abstractEndpoint: string, endpointParams?: StringMap, queryParams?: ArrayMap): Promise<any> {
     return this.doTypedSeatersRequest({
       method: 'DELETE',
-      abstractEndpoint: abstractEndpoint,
+      abstractEndpoint,
       endpointParams: endpointParams || {},
       queryParams: queryParams || {}
     });
   }
 
-  private handleServerResponse (response: ServerResponse): Promise<string> {
+  /**
+   * For browser, we expect HTMLInputElement containing a file
+   * @param oneTimeFileUrl url of a OneTimeFile returned by requestOneTimeFileUpload
+   * @param data for browsers: HTMLInputElement, for node: not supported
+   */
+  uploadOneTimeFile(oneTimeFileUrl: string, data: any): Promise<any> {
+    return this.requestDriver({
+      method: 'POST',
+      url: oneTimeFileUrl,
+      formData: data
+    }).then(err => this.handleServerResponse(err));
+  }
+
+  private handleServerResponse(response: ServerResponse): Promise<string> {
     switch (response.status) {
       case 200:
       case 201:
@@ -133,18 +122,18 @@ export class SeatersApiContext extends ApiContext {
     }
   }
 
-  private handle2XXResponse (response: ServerResponse): Promise<string> {
+  private handle2XXResponse(response: ServerResponse): Promise<string> {
     return Promise.resolve(response.body);
   }
 
-  private dataFromLegacyResponse (response: ServerResponse): Promise<SeatersExceptionV1> {
+  private dataFromLegacyResponse(response: ServerResponse): Promise<SeatersExceptionV1> {
     let data: SeatersExceptionV1;
     try {
       data = JSON.parse(response.body);
-      if (!data.message || typeof(data.message as any) !== 'string') {
+      if (!data.message || typeof (data.message as any) !== 'string') {
         throw new Error('error data did not contain a message string');
       }
-      if (!data.uuid || typeof(data.uuid as any) !== 'string') {
+      if (!data.uuid || typeof (data.uuid as any) !== 'string') {
         throw new Error('error data did not contain a uuid string');
       }
     } catch (err) {
@@ -152,12 +141,14 @@ export class SeatersApiContext extends ApiContext {
         type: 'server_error',
         message: 'Response was of type 400 but is not properly structured',
         uuid: null,
-        errors: [{
-          _rawResponse: { response: response, parseError: err },
-          message: response.body,
-          statusCode: response.status,
-          statusText: response.statusText
-        } as ServerError]
+        errors: [
+          {
+            _rawResponse: { response, parseError: err },
+            message: response.body,
+            statusCode: response.status,
+            statusText: response.statusText
+          } as ServerError
+        ]
       } as SeatersApiException) as any;
     }
     return Promise.resolve(data);
@@ -167,66 +158,61 @@ export class SeatersApiContext extends ApiContext {
    * (legacy) old endpoints return 400 with only a message string
    * This type of error is mapped to a proper SeatersApiException
    */
-  private handle400Response (response: ServerResponse): Promise<any> {
-
-    return this.dataFromLegacyResponse(response)
-      .then(data => {
-
-        return Promise.reject({
-          type: 'validation_error_v1',
-          message: data.message,
-          uuid: data.uuid,
-          errors: [{
+  private handle400Response(response: ServerResponse): Promise<any> {
+    return this.dataFromLegacyResponse(response).then(data => {
+      return Promise.reject({
+        type: 'validation_error_v1',
+        message: data.message,
+        uuid: data.uuid,
+        errors: [
+          {
             defaultMessage: data.message,
             errorCode: null,
-            reference: []
-          } as ValidationError]
-        } as SeatersApiException);
-
-      });
-
+            references: []
+          } as ValidationError
+        ]
+      } as SeatersApiException);
+    });
   }
 
-  private createServerError (response: ServerResponse, message: string): ServerError {
+  private createServerError(response: ServerResponse, message: string): ServerError {
     return {
       _rawResponse: response,
-      message: message,
+      message,
       statusCode: response.status,
       statusText: response.statusText
     };
   }
 
-  private handle401Response (response: ServerResponse): Promise<any> {
-    return this.dataFromLegacyResponse(response)
-      .then(data => {
-        return Promise.reject({
-          type: 'unauthorized',
-          message: data.message,
-          uuid: data.uuid,
-          errors: [this.createServerError(response, data.message)]
-        } as SeatersApiException);
-      });
+  private handle401Response(response: ServerResponse): Promise<any> {
+    return this.dataFromLegacyResponse(response).then(data => {
+      return Promise.reject({
+        type: 'unauthorized',
+        message: data.message,
+        uuid: data.uuid,
+        errors: [this.createServerError(response, data.message)]
+      } as SeatersApiException);
+    });
   }
 
-  private handle404Response (response: ServerResponse): Promise<any> {
-    return this.dataFromLegacyResponse(response)
-      .then(data => {
-        return Promise.reject({
-          type: 'not_found',
-          message: data.message,
-          uuid: data.uuid,
-          errors: [this.createServerError(response, data.message)]
-        } as SeatersApiException);
-      });
+  private handle404Response(response: ServerResponse): Promise<any> {
+    return this.dataFromLegacyResponse(response).then(data => {
+      return Promise.reject({
+        type: 'not_found',
+        message: data.message,
+        uuid: data.uuid,
+        errors: [this.createServerError(response, data.message)]
+      } as SeatersApiException);
+    });
   }
 
-  private handle422Response (response: ServerResponse): Promise<any> {
+  private handle422Response(response: ServerResponse): Promise<any> {
     // todo exception cases for v2/authentication endpoints
     // TODO - verify this format is returned
     return Promise.reject(response);
   }
 
-  private handleUnexpectedResponse (response: ServerResponse): Promise<any> {
+  private handleUnexpectedResponse(response: ServerResponse): Promise<any> {
     return Promise.reject({
       type: 'server_error',
       message: 'An unexpected response was given by the server',
@@ -235,17 +221,17 @@ export class SeatersApiContext extends ApiContext {
     } as SeatersApiException);
   }
 
-  private handleClientError<T> (error: any): Promise<string> {
+  private handleClientError<T>(error: any): Promise<string> {
     return Promise.reject({
       type: 'client_error',
       message: 'the api client failed to complete the request',
       uuid: null,
-      errors: [{ error: error } as ClientError]
+      errors: [{ error } as ClientError]
     } as SeatersApiException) as any;
   }
 
-  private parseResult (body: string): any {
-    if (typeof(body as any) === 'string' && body.length > 0) {
+  private parseResult(body: string): any {
+    if (typeof (body as any) === 'string' && body.length > 0) {
       try {
         return Promise.resolve(JSON.parse(body));
       } catch (e) {
@@ -256,5 +242,4 @@ export class SeatersApiContext extends ApiContext {
       return Promise.resolve(null);
     }
   }
-
 }

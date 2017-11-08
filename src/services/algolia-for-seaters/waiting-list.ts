@@ -1,14 +1,13 @@
 import { Price } from './price';
+import { LanguageCode } from '../../seaters-api/app/app-types';
 
-export type WAITING_LIST_STATUS =
-  'PUBLISHED' | 'OPEN' | 'CLOSED';
+export type WAITING_LIST_STATUS = 'PUBLISHED' | 'OPEN' | 'CLOSED';
 
 export const WL_ALGOLIA_TYPE = 'WAITING_LIST';
 
 export type WL_ACCESS_MODE = 'PUBLIC' | 'PRIVATE' | 'CODE_PROTECTED';
 
 export interface WaitingList {
-
   waitingListId: string;
 
   type: 'WAITING_LIST';
@@ -18,18 +17,18 @@ export interface WaitingList {
   groupName: string;
   groupProfileImageUrl: string;
 
-  eventName: Object;
-  eventShortName: Object;
+  eventName: object;
+  eventShortName: object;
   eventStartDate: string;
   eventEndDate: string;
   utcEventStartDate: string;
   utcEventEndDate: string;
-  eventDescription: Object;
+  eventDescription: object;
   eventImageUrl: string;
 
-  venueName: Object;
-  venueCity: Object;
-  venueCountry: Object;
+  venueName: object;
+  venueCity: object;
+  venueCountry: object;
   venueCurrencyCode: string;
   venueImageUrl: string;
 
@@ -39,12 +38,11 @@ export interface WaitingList {
   accessMode: WL_ACCESS_MODE;
   directSalesEnabled: boolean;
   price: Price;
-
+  originalPrice: Price;
+  discountAmount: Price;
+  discountPercentage: number;
+  formattedOriginalPrice: string;
+  formattedDiscountAmount: string;
   displayName: string;
-
-  /**
-   * Map of language -> comma separated list of keywords
-   */
-  keywords: { [key: string]: string };
-
+  keywords: LanguageCode;
 }

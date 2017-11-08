@@ -1,9 +1,10 @@
 import { FanGroupCategory } from './fan-group';
 import { ExtendedPosition } from './extended-position';
 import { EVENT_REQUIRED_ATTENDEE_INFO } from './attendee-info';
+import { LanguageCode, Translation } from '../app/app-types';
+import { TranslatedText } from '../admin/common';
 
 export interface WaitingList {
-
   /**
    * Waiting List ID
    */
@@ -26,6 +27,11 @@ export interface WaitingList {
   protectionCodeExplanation: string;
 
   /**
+   * Keywords related to the WL
+   */
+  keywords: LanguageCode;
+
+  /**
    * The way to access this WL
    */
   accessMode: WL_ACCESS_MODE;
@@ -45,6 +51,32 @@ export interface WaitingList {
    * Price breakdown for the # of ordered ticket(s) or for one single ticket
    */
   price: Price;
+
+  /**
+   * Original price of a single ticket
+   * To be used when calculating the discount (done at backend side)
+   */
+  originalPrice: Price;
+
+  /**
+   * Discount amount
+   */
+  discountAmount: Price;
+
+  /**
+   * % discount based on price / discount price
+   */
+  discountPercentage: number;
+
+  /**
+   * Formatted original price
+   */
+  formattedOriginalPrice: string;
+
+  /**
+   * Formatted discount
+   */
+  formattedDiscountAmount: string;
 
   /**
    * Wether direct sales is enabled for this WL, meaning the fan can receive his
@@ -113,6 +145,11 @@ export interface WaitingList {
    * Event image URL
    */
   eventImageUrl: string;
+
+  /**
+   * Waiting list image URL
+   */
+  waitingListImageUrl: string;
 
   /**
    * True if Waiting List is free, false otherwise.
@@ -235,6 +272,33 @@ export interface WaitingList {
    * tickets for this WL
    */
   eventRequiredAttendeeInfo: EVENT_REQUIRED_ATTENDEE_INFO[];
+
+  /**
+   * Distribution mode - how tickets are distributed
+   * - wl_positions_distribution_mode_fifs = default, rank based distribution
+   * - wl_positions_distribution_mode_random = random distribution
+   */
+  positionsDistributionMode: string;
+
+  /**
+   * (random distribution only) Fixed amount of tickets to be won by a fan
+   */
+  fixedNumberOfSeatsPerPosition: number;
+
+  /**
+   * (random distribution only) End date of contest
+   */
+  participationEndDate: string;
+
+  /**
+   * (random distribution only) URL to the terms and conditions PDF file
+   */
+  termsAndConditionFileURL: string;
+
+  /**
+   * Always-populated voucher text
+   */
+  voucherText: LanguageCode;
 }
 
 export type WL_ACCESS_MODE = 'PUBLIC' | 'CODE_PROTECTED';
