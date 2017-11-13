@@ -90,6 +90,18 @@ export namespace fan {
     threeDSEnabled: boolean;
 
     /**
+     * Let the user pay using masterpass service within braintree sdk,
+     * this property shows the masterpass button in the payment view
+     */
+    masterpassEnabled: boolean;
+
+    /**
+     * Let the user pay using ideal service within braintree sdk,
+     * this property shows the ideal button in the payment view
+     */
+    idealEnabled: boolean;
+
+    /**
      * Currency codes according to the ISO 4217 (3 uppercase characters)
      * e.g. EUR, USD, CAD
      * @see SeatersClient.appService.getCurrencies
