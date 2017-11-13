@@ -1159,10 +1159,11 @@ var SeatersSDK = /******/ (function(modules) {
                 total: paymentInfo.transactions[0].total,
                 currency: paymentInfo.transactions[0].currency,
                 threeDSEnabled: paymentInfo.braintreeConfig.threeDSEnabled,
-                idealEnabled: paymentInfo.braintreeConfig.paymentMethods.indexOf(GROUP_PAYMENT_METHODS.IDEAL) !== -1,
                 masterpassEnabled:
                   !paymentInfo.braintreeConfig.threeDSEnabled &&
                   paymentInfo.braintreeConfig.paymentMethods.indexOf(GROUP_PAYMENT_METHODS.MASTERPASS) !== -1,
+                // @TODO: Disable iDEAL payment until the backend is configred
+                // idealEnabled: paymentInfo.braintreeConfig.paymentMethods.indexOf(GROUP_PAYMENT_METHODS.IDEAL) !== -1,
                 token: braintreeToken.token
               };
             });
@@ -1612,7 +1613,8 @@ var SeatersSDK = /******/ (function(modules) {
             })
             .then(function(wl) {
               if (_this.hasFailedPayment(wl)) {
-                return Promise.reject('Payment Failed!');
+                var errorMessage = wl.position ? wl.position.paymentFailureMessage : 'Payment Failed!';
+                return Promise.reject(errorMessage);
               }
               return wl;
             });

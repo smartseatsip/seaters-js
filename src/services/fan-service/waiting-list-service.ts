@@ -538,7 +538,8 @@ export class WaitingListService {
       })
       .then((wl: any) => {
         if (this.hasFailedPayment(wl)) {
-          return Promise.reject('Payment Failed!');
+          const errorMessage = wl.position ? wl.position.paymentFailureMessage : 'Payment Failed!';
+          return Promise.reject(errorMessage);
         }
         return wl;
       });
