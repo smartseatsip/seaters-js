@@ -292,4 +292,36 @@ export class FanService extends SeatersService {
   removeUserFanAttribute(userFanAttributeId: string): Promise<fan.UserFanAttribute> {
     return this.fanProfilingService.removeUserFanAttribute(userFanAttributeId);
   }
+
+  getWaitingListInterests(waitingListId: string): Promise<fan.WaitingListInterest[]> {
+    return this.waitingListService.getWaitingListInterests(waitingListId);
+  }
+
+  getWaitingListFanAttributes(waitingListId: string): Promise<fan.WaitingListFanAttribute[]> {
+    return this.waitingListService.getWaitingListFanAttributes(waitingListId);
+  }
+
+  linkWaitingListInterest(waitingListId: string, interestId: string): Promise<fan.WaitingListInterest> {
+    return this.waitingListService.linkWaitingListInterest(waitingListId, interestId);
+  }
+
+  linkWaitingListFanAttribute(waitingListId: string, fanAttributeId: string): Promise<fan.WaitingListFanAttribute> {
+    return this.waitingListService.linkWaitingListFanAttribute(waitingListId, fanAttributeId);
+  }
+
+  unlinkWaitingListInterests(waitingListId: string): Promise<void> {
+    return this.waitingListService.unlinkWaitingListInterests(waitingListId);
+  }
+
+  unlinkWaitingListFanAttributes(waitingListId: string): Promise<void> {
+    return this.waitingListService.unlinkWaitingListFanAttributes(waitingListId);
+  }
+
+  unlinkWaitingListInterest(waitingListId: string, interestId: string): Promise<void> {
+    return this.waitingListService.unlinkWaitingListInterest(waitingListId, interestId);
+  }
+
+  unlinkWaitingListFanAttribute(waitingListId: string, fanAttributeId: string): Promise<void> {
+    return this.waitingListService.unlinkWaitingListFanAttribute(waitingListId, fanAttributeId);
+  }
 }

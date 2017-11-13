@@ -72,6 +72,7 @@ export interface ProfilingFanAttribute {
  */
 export interface UserInterest {
   id: string;
+  objectType: string;
   interest: ProfilingInterest | string;
   state: string; // 'like', 'unknown', 'dislike'
   time_stamps: ProfilingTimeStamp;
@@ -120,4 +121,30 @@ export interface UserFanAttributeUpdateDTO {
   time_stamps: ProfilingTimeStamp;
   user_id: string;
   validated: boolean;
+}
+
+/**
+ *  WAITING LIST - INTEREST
+ */
+
+export interface WaitingListInterest {
+  id: string;
+  objectType: string;
+  interest: ProfilingInterest | string;
+  time_stamps: ProfilingTimeStamp;
+  waitinglist_id: string;
+  version: number;
+}
+
+/**
+ *  WAITING LIST - FAN ATTRIBUTES
+ */
+
+export interface WaitingListFanAttribute {
+  fan_attribute: ProfilingFanAttribute;
+  id: string;
+  objectType: string;
+  time_stamps: ProfilingTimeStamp;
+  waitinglist_id: string;
+  version: number;
 }
