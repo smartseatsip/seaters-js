@@ -1816,7 +1816,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.26.3';
+      exports.version = '1.27.0';
       __export(__webpack_require__(19));
       var fan_types_1 = __webpack_require__(3);
       exports.fan = fan_types_1.fan;
@@ -1943,7 +1943,6 @@ var SeatersSDK = /******/ (function(modules) {
           this.headers['Content-Type'] = 'application/json';
         }
         ApiContext.prototype.setHeader = function(header, value) {
-          console.log('setting header', header, value);
           this.headers[header] = value;
         };
         ApiContext.prototype.unsetHeader = function(header) {
@@ -1959,7 +1958,6 @@ var SeatersSDK = /******/ (function(modules) {
         };
         ApiContext.prototype.createRequestOptions = function(requestDefinition, endpoint) {
           var headers = this.mergeHeaders(requestDefinition.headers);
-          console.log('merged headers', headers);
           var body = requestDefinition.body !== undefined ? JSON.stringify(requestDefinition.body) : null;
           return {
             url: endpoint.absoluteEndpoint,
