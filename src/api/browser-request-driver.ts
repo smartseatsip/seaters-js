@@ -36,7 +36,6 @@ function buildXhr(options: RequestOptions): XMLHttpRequest {
     });
   }
   const body = options.formData ? formDataBody(options.formData) : options.body;
-  console.error('%s %s', options.method, options.url, body);
   xhr.send(body);
   return xhr;
 }
