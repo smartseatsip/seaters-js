@@ -61,7 +61,7 @@ var SeatersSDK = /******/ (function(modules) {
     return Object.prototype.hasOwnProperty.call(object, property);
   }; // __webpack_public_path__
   /******/
-  /******/ /******/ __webpack_require__.p = '/Users/mahmoudalazzawi/projects/seaters-js/dist'; // Load entry module and return exports
+  /******/ /******/ __webpack_require__.p = '/Users/sanderdecoster/local_projects/seaters/seaters-js/dist'; // Load entry module and return exports
   /******/
   /******/ /******/ return __webpack_require__((__webpack_require__.s = 18));
   /******/
@@ -226,13 +226,13 @@ var SeatersSDK = /******/ (function(modules) {
           });
         };
         /**
-         * Returns a promise that either resolves with the requested resource
-         * or rejects on error with a SeatersApiException.
-         *
-         * @param requestDefinition Definition of which resource is requested
-         *
-         * @see SeatersApiException
-         */
+     * Returns a promise that either resolves with the requested resource
+     * or rejects on error with a SeatersApiException.
+     *
+     * @param requestDefinition Definition of which resource is requested
+     *
+     * @see SeatersApiException
+     */
         SeatersApiContext.prototype.doSeatersRequest = function(requestDefinition) {
           var _this = this;
           return this.doRequest(requestDefinition).then(
@@ -284,10 +284,10 @@ var SeatersSDK = /******/ (function(modules) {
           });
         };
         /**
-         * For browser, we expect HTMLInputElement containing a file
-         * @param oneTimeFileUrl url of a OneTimeFile returned by requestOneTimeFileUpload
-         * @param data for browsers: HTMLInputElement, for node: not supported
-         */
+     * For browser, we expect HTMLInputElement containing a file
+     * @param oneTimeFileUrl url of a OneTimeFile returned by requestOneTimeFileUpload
+     * @param data for browsers: HTMLInputElement, for node: not supported
+     */
         SeatersApiContext.prototype.uploadOneTimeFile = function(oneTimeFileUrl, data) {
           var _this = this;
           return this.requestDriver({
@@ -348,9 +348,9 @@ var SeatersSDK = /******/ (function(modules) {
           return Promise.resolve(data);
         };
         /**
-         * (legacy) old endpoints return 400 with only a message string
-         * This type of error is mapped to a proper SeatersApiException
-         */
+     * (legacy) old endpoints return 400 with only a message string
+     * This type of error is mapped to a proper SeatersApiException
+     */
         SeatersApiContext.prototype.handle400Response = function(response) {
           return this.dataFromLegacyResponse(response).then(function(data) {
             return Promise.reject({
@@ -1018,65 +1018,65 @@ var SeatersSDK = /******/ (function(modules) {
           this.apiContext = apiContext;
         }
         /**
-         * Login using email-password credentials
-         * @param credentials email, password and optionally MFA token
-         */
+     * Login using email-password credentials
+     * @param credentials email, password and optionally MFA token
+     */
         AuthenticationApi.prototype.emailPasswordLogin = function(credentials) {
           return this.apiContext.put('/v2/authentication/login', credentials);
         };
         /**
-         * Login using long-term stored token
-         * @param credentials long term stored token and optionally MFA token
-         */
+     * Login using long-term stored token
+     * @param credentials long term stored token and optionally MFA token
+     */
         AuthenticationApi.prototype.storedTokenLogin = function(credentials) {
           return this.apiContext.put('/v2/authentication/stored-token', credentials);
         };
         /**
-         * Extend your session with a refresh token
-         * @param credentials Refresh token
-         */
+     * Extend your session with a refresh token
+     * @param credentials Refresh token
+     */
         AuthenticationApi.prototype.refreshTokenLogin = function(credentials) {
           return this.apiContext.put('/v2/authentication/refresh-token', credentials);
         };
         /**
-         * Signs up a new user
-         * @param input
-         * @returns {any}
-         */
+     * Signs up a new user
+     * @param input
+     * @returns {any}
+     */
         AuthenticationApi.prototype.signup = function(input) {
           return this.apiContext.post('/v2/authentication/signup', input);
         };
         /**
-         * Signs up a new user without firstname / lastname / password
-         * @param input
-         * @returns {any}
-         */
+     * Signs up a new user without firstname / lastname / password
+     * @param input
+     * @returns {any}
+     */
         AuthenticationApi.prototype.signupAnonymous = function(input) {
           return this.apiContext.post('/v2/authentication/embedded/signup', input);
         };
         /**
-         * Validates an email or phone number and marks it as confirmed
-         *
-         * @param input Either the email or the phone and the confirmation code
-         * @returns Promise that resolves with the validated user or rejects with a SeatersApiException
-         * @see SeatersApiException
-         */
+     * Validates an email or phone number and marks it as confirmed
+     *
+     * @param input Either the email or the phone and the confirmation code
+     * @returns Promise that resolves with the validated user or rejects with a SeatersApiException
+     * @see SeatersApiException
+     */
         AuthenticationApi.prototype.validate = function(input) {
           return this.apiContext.put('/auth/validate', input);
         };
         /**
-         *
-         * @param input
-         * @returns {any}
-         */
+     *
+     * @param input
+     * @returns {any}
+     */
         AuthenticationApi.prototype.resetEmail = function(input) {
           return this.apiContext.post('/auth/signup/reset-email', input);
         };
         /**
-         * Obtain a seaters session by passing an oauth code for a given provider
-         * Examples that should work are github, facebook. For your specific provider name
-         * please refer to a seaters developer.
-         */
+     * Obtain a seaters session by passing an oauth code for a given provider
+     * Examples that should work are github, facebook. For your specific provider name
+     * please refer to a seaters developer.
+     */
         AuthenticationApi.prototype.loginWithOAuthCode = function(oauthProvider, code) {
           var endpoint = '/login/:oauthProvider';
           var endpointParams = { oauthProvider: oauthProvider };
@@ -1084,16 +1084,16 @@ var SeatersSDK = /******/ (function(modules) {
           return this.apiContext.get(endpoint, endpointParams, queryParams);
         };
         /**
-         * Create a new authentication token that can be stored and is valid for a longer time
-         * for the authenticated user.
-         */
+     * Create a new authentication token that can be stored and is valid for a longer time
+     * for the authenticated user.
+     */
         AuthenticationApi.prototype.createStoredToken = function(input) {
           var endpoint = '/auth/auth-tokens';
           return this.apiContext.post(endpoint, input, null, null);
         };
         /**
-         * Get all stored tokens for authenticated user
-         */
+     * Get all stored tokens for authenticated user
+     */
         AuthenticationApi.prototype.getStoredTokens = function() {
           var endpoint = '/auth/auth-tokens';
           return this.apiContext.get(endpoint);
@@ -1903,7 +1903,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.27.0';
+      exports.version = '1.27.1';
       __export(__webpack_require__(19));
       var fan_types_1 = __webpack_require__(3);
       exports.fan = fan_types_1.fan;
@@ -1952,9 +1952,9 @@ var SeatersSDK = /******/ (function(modules) {
       })();
       exports.SeatersClient = SeatersClient;
       /**
-       * Obtain a seaters client. This will only instantiate the client with the given options the first time you invoke it.
-       * Calls made after the initial call will return the original instance.
-       */
+ * Obtain a seaters client. This will only instantiate the client with the given options the first time you invoke it.
+ * Calls made after the initial call will return the original instance.
+ */
       exports.getSeatersClient = (function() {
         var client;
         return function(options) {
@@ -2099,8 +2099,8 @@ var SeatersSDK = /******/ (function(modules) {
 
       Object.defineProperty(exports, '__esModule', { value: true });
       /**
-       * Obtain the request driver for the given type
-       */
+ * Obtain the request driver for the given type
+ */
       function getRequestDriver(type) {
         switch (type) {
           case 'BROWSER':
@@ -2146,7 +2146,6 @@ var SeatersSDK = /******/ (function(modules) {
           });
         }
         var body = options.formData ? formDataBody(options.formData) : options.body;
-        console.error('%s %s', options.method, options.url, body);
         xhr.send(body);
         return xhr;
       }
@@ -2262,11 +2261,11 @@ var SeatersSDK = /******/ (function(modules) {
         looseComparison: false
       };
       /**
-       * Deep compare of 2 objects; matching the value of each key
-       * @param o an Object
-       * @param p an Object
-       * @param options
-       */
+ * Deep compare of 2 objects; matching the value of each key
+ * @param o an Object
+ * @param p an Object
+ * @param options
+ */
       function compareObjects(o, p, options) {
         var i;
         var keysO = Object.keys(o).sort();
@@ -2385,13 +2384,13 @@ var SeatersSDK = /******/ (function(modules) {
         return array;
       }
       /**
-       * This function stringifies and sorts all key-values in the array and compares them
-       * without any null or undefined values
-       *
-       * @param o {object}
-       * @param p {object}
-       * @returns {boolean} whether or not the objects o and p are equal
-       */
+ * This function stringifies and sorts all key-values in the array and compares them
+ * without any null or undefined values
+ *
+ * @param o {object}
+ * @param p {object}
+ * @returns {boolean} whether or not the objects o and p are equal
+ */
       function compareFlatObjects(o, p) {
         var oArray = createFlatArray(o, []);
         var pArray = createFlatArray(p, []);
@@ -2417,10 +2416,10 @@ var SeatersSDK = /******/ (function(modules) {
           });
         }
         /**
-         * Translate the text in the given locale. Will fall back to 'en' when neither locale neither fallbackLocale are available
-         * @param locale Locale to try to retrieve the translated text
-         * @param fallbackLocale Fall back to a translation in this locale if preferred locale was not available
-         */
+     * Translate the text in the given locale. Will fall back to 'en' when neither locale neither fallbackLocale are available
+     * @param locale Locale to try to retrieve the translated text
+     * @param fallbackLocale Fall back to a translation in this locale if preferred locale was not available
+     */
         LocalizableText.prototype.localize = function(locale, fallbackLocale) {
           if (this.hasOwnProperty(locale)) {
             return this[locale];
@@ -2464,9 +2463,9 @@ var SeatersSDK = /******/ (function(modules) {
 
       Object.defineProperty(exports, '__esModule', { value: true });
       /**
-       * Transforms this format "2017-07-27T17:18:33.994+0000" into "2017-07-27T17:19:38.182Z"
-       * Leaves the latter format alone
-       */
+ * Transforms this format "2017-07-27T17:18:33.994+0000" into "2017-07-27T17:19:38.182Z"
+ * Leaves the latter format alone
+ */
       function normalizeLondonTimezoneDate(date) {
         return date.replace(/\+0000$/, 'Z');
       }
@@ -2734,16 +2733,16 @@ var SeatersSDK = /******/ (function(modules) {
           );
         };
         /**
-         * Upload a onetime file
-         * @param oneTimeFileUrl url of a OneTimeFile returned by requestOneTimeFileUpload
-         * @param data for browsers: HTMLInputElement, for node: not supported
-         */
+     * Upload a onetime file
+     * @param oneTimeFileUrl url of a OneTimeFile returned by requestOneTimeFileUpload
+     * @param data for browsers: HTMLInputElement, for node: not supported
+     */
         AdminApi.prototype.uploadOneTimeFile = function(oneTimeFileUrl, data) {
           return this.apiContext.uploadOneTimeFile(oneTimeFileUrl, data);
         };
         /**
-         * HELPERS
-         */
+     * HELPERS
+     */
         AdminApi.prototype.requestFanGroupImageUpload = function(fanGroupId, endpoint, fileName) {
           return this.apiContext.put(
             '/seaters-admin/fan-groups/:id/' + endpoint,
@@ -2958,11 +2957,11 @@ var SeatersSDK = /******/ (function(modules) {
 
       Object.defineProperty(exports, '__esModule', { value: true });
       /**
-       * Map Seaters API V1 exceptions to a usuable format
-       *
-       * @param mapping A mapping of V1 error messages to values of the given type
-       * @return Returns an Promise that rejects with the mapped error
-       */
+ * Map Seaters API V1 exceptions to a usuable format
+ *
+ * @param mapping A mapping of V1 error messages to values of the given type
+ * @return Returns an Promise that rejects with the mapped error
+ */
       function seatersExceptionV1MessageMapper(mapping) {
         return function(err) {
           if ((typeof err === 'undefined' ? 'undefined' : _typeof(err)) !== 'object') {
@@ -2994,11 +2993,11 @@ var SeatersSDK = /******/ (function(modules) {
           return '[' + e.references.join(',') + '] ' + e.error.errorCode + ': ' + e.error.errorDescription;
         }
         /**
-         * Map Seaters API V3 exceptions to a consistent format. This is the error view designed by Daniel Di Luca
-         *
-         * @param mapping A mapping of V3 error messages to values of the given type
-         * @return Returns an Promise that rejects with the mapped error
-         */
+     * Map Seaters API V3 exceptions to a consistent format. This is the error view designed by Daniel Di Luca
+     *
+     * @param mapping A mapping of V3 error messages to values of the given type
+     * @return Returns an Promise that rejects with the mapped error
+     */
         function seatersExceptionV3Mapper(res) {
           try {
             var error = JSON.parse(res.body);
@@ -3135,8 +3134,8 @@ var SeatersSDK = /******/ (function(modules) {
           return _this;
         }
         /**
-         *  FAN GROUPS
-         */
+     *  FAN GROUPS
+     */
         FanService.prototype.getFanGroups = function(fanGroupIds) {
           return this.fanGroupService.getFanGroups(fanGroupIds);
         };
@@ -3174,8 +3173,8 @@ var SeatersSDK = /******/ (function(modules) {
           });
         };
         /**
-         *  WAITING LISTS
-         */
+     *  WAITING LISTS
+     */
         FanService.prototype.getWaitingList = function(waitingListId) {
           return this.waitingListService.getWaitingList(waitingListId);
         };
@@ -3249,12 +3248,12 @@ var SeatersSDK = /******/ (function(modules) {
           return this.waitingListService.preauthorizePosition(waitingListId, transaction);
         };
         /**
-         * Submit attendee information. This will validate the submitted information. The returned promise will be
-         * resolved once the user can continue with the next step after submitting attendee information
-         * @param waitingListId WL for which attendee info needs to be validated and stored
-         * @param attendeesInfo The actual attendee information
-         * @throws SeatersApiException of type 'validation_error'
-         */
+     * Submit attendee information. This will validate the submitted information. The returned promise will be
+     * resolved once the user can continue with the next step after submitting attendee information
+     * @param waitingListId WL for which attendee info needs to be validated and stored
+     * @param attendeesInfo The actual attendee information
+     * @throws SeatersApiException of type 'validation_error'
+     */
         FanService.prototype.saveAttendeesInfo = function(waitingListId, attendeesInfo) {
           return this.waitingListService.saveAttendeesInfo(waitingListId, attendeesInfo);
         };
@@ -3292,19 +3291,19 @@ var SeatersSDK = /******/ (function(modules) {
           return this.waitingListService.getWaitingListPrice(waitingListId, numberOfSeats);
         };
         /**
-         * FANS
-         */
+     * FANS
+     */
         /**
-         * Send a new SMS containing the code needed to validate email / phone.
-         * @param phone
-         * @returns {any}
-         */
+     * Send a new SMS containing the code needed to validate email / phone.
+     * @param phone
+     * @returns {any}
+     */
         FanService.prototype.sendValidationCodeViaSMS = function(phone) {
           return this.seatersApi.apiContext.put('/fan/mobile-phone-number', phone);
         };
         /**
-         *  COMBINATIONS
-         */
+     *  COMBINATIONS
+     */
         FanService.prototype.updateFan = function(f) {
           var _this = this;
           return this.seatersApi.fan.updateFan(f).then(function(updatedFan) {
@@ -4091,32 +4090,32 @@ var SeatersSDK = /******/ (function(modules) {
           this.sessionStrategy = sessionStrategy || SESSION_STRATEGY.EXTEND;
         }
         /**
-         * Configure the given session to be used. This method is intended for transitional
-         * phase where the SDK is not the one doing the login process (Seaters FanWebApp)
-         *
-         * @param session a valid session that is not expired
-         * @param fan a valid fan object
-         */
+     * Configure the given session to be used. This method is intended for transitional
+     * phase where the SDK is not the one doing the login process (Seaters FanWebApp)
+     *
+     * @param session a valid session that is not expired
+     * @param fan a valid fan object
+     */
         SessionService.prototype.configureSession = function(s, fan) {
           this.setSession(s);
           this.currentFan = fan;
         };
         /**
-         * Manually configure the fan (in case the current fan was changed / retrieved externally)
-         *
-         * @param fan latest fan object
-         */
+     * Manually configure the fan (in case the current fan was changed / retrieved externally)
+     *
+     * @param fan latest fan object
+     */
         SessionService.prototype.updateCurrentFan = function(fan) {
           this.currentFan = fan;
           return Promise.resolve(this.currentFan);
         };
         /**
-         * Log in using an email/password
-         *
-         * @param email valid email or seaters username
-         * @param password plain text password
-         * @param mfaToken authenticator token
-         */
+     * Log in using an email/password
+     *
+     * @param email valid email or seaters username
+     * @param password plain text password
+     * @param mfaToken authenticator token
+     */
         SessionService.prototype.doEmailPasswordLogin = function(email, password, mfaToken) {
           var _this = this;
           return new Promise(function(resolve, reject) {
@@ -4138,11 +4137,11 @@ var SeatersSDK = /******/ (function(modules) {
           });
         };
         /**
-         * Log in using a stored token (long term validity)
-         *
-         * @param storedToken long term token
-         * @param mfaToken authenticator token
-         */
+     * Log in using a stored token (long term validity)
+     *
+     * @param storedToken long term token
+     * @param mfaToken authenticator token
+     */
         SessionService.prototype.doStoredTokenLogin = function(storedToken, mfaToken) {
           var _this = this;
           return new Promise(function(resolve, reject) {
@@ -4163,11 +4162,11 @@ var SeatersSDK = /******/ (function(modules) {
           });
         };
         /**
-         * @deprecated Use doOAuthCodeLoginV2 instead to retrieve the session
-         * @param oauthProvider
-         * @param code
-         * @returns {Promise<TResult2|TResult1>}
-         */
+     * @deprecated Use doOAuthCodeLoginV2 instead to retrieve the session
+     * @param oauthProvider
+     * @param code
+     * @returns {Promise<TResult2|TResult1>}
+     */
         SessionService.prototype.doOAuthCodeLogin = function(oauthProvider, code) {
           var _this = this;
           console.warn(
@@ -4262,13 +4261,13 @@ var SeatersSDK = /******/ (function(modules) {
           });
         };
         /**
-         * Validate an email by providing a confirmation code
-         *
-         * @param email The email that you want to validate
-         * @param code The code that validates the email
-         * @returns a Promise that resolves with an updated fan or rejects with a VALIDATION_ERRORS
-         * @see VALIDATION_ERRORS
-         */
+     * Validate an email by providing a confirmation code
+     *
+     * @param email The email that you want to validate
+     * @param code The code that validates the email
+     * @returns a Promise that resolves with an updated fan or rejects with a VALIDATION_ERRORS
+     * @see VALIDATION_ERRORS
+     */
         SessionService.prototype.doEmailValidation = function(email, code) {
           var _this = this;
           return new Promise(function(resolve, reject) {
@@ -4289,13 +4288,13 @@ var SeatersSDK = /******/ (function(modules) {
           });
         };
         /**
-         * Validate a phone number by providing a confirmation code
-         *
-         * @param phone The phone number that you want to validate
-         * @param code The code that validates the email
-         * @returns a Promise that resolves with an updated fan or rejects with a VALIDATION_ERRORS
-         * @see VALIDATION_ERRORS
-         */
+     * Validate a phone number by providing a confirmation code
+     *
+     * @param phone The phone number that you want to validate
+     * @param code The code that validates the email
+     * @returns a Promise that resolves with an updated fan or rejects with a VALIDATION_ERRORS
+     * @see VALIDATION_ERRORS
+     */
         SessionService.prototype.doMobilePhoneNumberValidation = function(phone, code) {
           var _this = this;
           return new Promise(function(resolve, reject) {
@@ -4313,9 +4312,9 @@ var SeatersSDK = /******/ (function(modules) {
           });
         };
         /**
-         * Change the email associated to the current user
-         * @param email new email address
-         */
+     * Change the email associated to the current user
+     * @param email new email address
+     */
         SessionService.prototype.doEmailReset = function(email) {
           var _this = this;
           return new Promise(function(resolve, reject) {
@@ -4358,12 +4357,12 @@ var SeatersSDK = /******/ (function(modules) {
           return true;
         };
         /**
-         * Checks if there are any valid stored tokens and returns the first one. If there are none
-         * it will create a new token and return this
-         * @param applicationName the name of the application, e.g. "Seaters Embedded"
-         * @param deviceId defaults to "SDK-device-<random UUID>"
-         * @param applicationId defaults to "SDK-app-<random UUID>"
-         */
+     * Checks if there are any valid stored tokens and returns the first one. If there are none
+     * it will create a new token and return this
+     * @param applicationName the name of the application, e.g. "Seaters Embedded"
+     * @param deviceId defaults to "SDK-device-<random UUID>"
+     * @param applicationId defaults to "SDK-app-<random UUID>"
+     */
         SessionService.prototype.obtainStoredToken = function(applicationName, deviceId, applicationId) {
           var _this = this;
           if (!applicationName) {
@@ -4398,8 +4397,8 @@ var SeatersSDK = /******/ (function(modules) {
           });
         };
         /**
-         * Return the current logged in fan
-         */
+     * Return the current logged in fan
+     */
         SessionService.prototype.whoami = function() {
           return this.currentFan;
         };
@@ -4535,8 +4534,8 @@ var SeatersSDK = /******/ (function(modules) {
           this.seatersApi = seatersApi;
         }
         /**
-         * Fetch the application environment details
-         */
+     * Fetch the application environment details
+     */
         AppService.prototype.getEnv = function() {
           if (!this.envP) {
             this.envP = this.seatersApi.app.env();
@@ -4544,39 +4543,39 @@ var SeatersSDK = /******/ (function(modules) {
           return this.envP;
         };
         /**
-         * Fetch a list of countries
-         * @param page defaults to a page with maxPageSize set to anticipated maximum value
-         */
+     * Fetch a list of countries
+     * @param page defaults to a page with maxPageSize set to anticipated maximum value
+     */
         AppService.prototype.getCountries = function() {
           return this.seatersApi.app.countries({ page: 0, maxPageSize: ALL_COUNTRIES_PAGE_SIZE });
         };
         /**
-         * Fetch a list of languages
-         * @param page defaults to a page with maxPageSize set to anticipated maximum value
-         */
+     * Fetch a list of languages
+     * @param page defaults to a page with maxPageSize set to anticipated maximum value
+     */
         AppService.prototype.getLanguages = function() {
           return this.seatersApi.app.languages({ page: 0, maxPageSize: ALL_LANGUAGES_PAGE_SIZE });
         };
         /**
-         * Fetch a list of currencies
-         * @param page defaults to a page with maxPageSize set to anticipated maximum value
-         */
+     * Fetch a list of currencies
+     * @param page defaults to a page with maxPageSize set to anticipated maximum value
+     */
         AppService.prototype.getCurrencies = function() {
           return this.seatersApi.app.currencies({ page: 0, maxPageSize: ALL_CURRENCIES_PAGE_SIZE });
         };
         /**
-         * Fetch a list of time zones
-         * @param page defaults to a page with maxPageSize set to anticipated maximum value
-         */
+     * Fetch a list of time zones
+     * @param page defaults to a page with maxPageSize set to anticipated maximum value
+     */
         AppService.prototype.getTimeZones = function() {
           return this.seatersApi.app.timeZones({ page: 0, maxPageSize: ALL_TIME_ZONES_PAGE_SIZE });
         };
         /**
-         * Fetch a list of translations
-         * @param page defaults to a page with maxPageSize set to anticipated maximum value
-         * @param target restrict to translations for the given target application
-         * @param language restrict to translations in the given language (alpha-2 country code)
-         */
+     * Fetch a list of translations
+     * @param page defaults to a page with maxPageSize set to anticipated maximum value
+     * @param target restrict to translations for the given target application
+     * @param language restrict to translations in the given language (alpha-2 country code)
+     */
         AppService.prototype.getTranslations = function(target, language) {
           return this.seatersApi.app.translations(target, language, {
             page: 0,
@@ -4584,8 +4583,8 @@ var SeatersSDK = /******/ (function(modules) {
           });
         };
         /**
-         * Check if the API is in maintenance mode
-         */
+     * Check if the API is in maintenance mode
+     */
         AppService.prototype.isInMaintenance = function() {
           return this.seatersApi.health
             .node()
@@ -4598,13 +4597,13 @@ var SeatersSDK = /******/ (function(modules) {
             });
         };
         /**
-         * Based on the Accept-Language header this request will obtain
-         * the best suited locale seaters has available for the user.
-         * This method requires the actual request library to populate the
-         * Accept-Language header; by default XHR populates this for most browsers.
-         * It will work even without the header, but it will always return Seater's
-         * default locale in this case.
-         */
+     * Based on the Accept-Language header this request will obtain
+     * the best suited locale seaters has available for the user.
+     * This method requires the actual request library to populate the
+     * Accept-Language header; by default XHR populates this for most browsers.
+     * It will work even without the header, but it will always return Seater's
+     * default locale in this case.
+     */
         AppService.prototype.getUserDefaultLocale = function() {
           return this.seatersApi.app.userDefaultLocale();
         };
@@ -4687,11 +4686,11 @@ var SeatersSDK = /******/ (function(modules) {
           return this.seatersApi.admin.deleteWaitingList(waitingListId);
         };
         /**
-         * Add a new protection code to a FanGroup
-         * @param fanGroupId the id of the fangroup that can be unlocked with the code
-         * @param code a text that can be used to unlock the fangroup
-         * @param maxTimesUsed use 0 to describe unlimited code
-         */
+     * Add a new protection code to a FanGroup
+     * @param fanGroupId the id of the fangroup that can be unlocked with the code
+     * @param code a text that can be used to unlock the fangroup
+     * @param maxTimesUsed use 0 to describe unlimited code
+     */
         AdminService.prototype.createFanGroupProtectionCode = function(fanGroupId, code, maxTimesUsed) {
           return this.seatersApi.admin.createFanGroupProtectionCode(fanGroupId, code, maxTimesUsed);
         };
@@ -4699,12 +4698,12 @@ var SeatersSDK = /******/ (function(modules) {
           return this.seatersApi.admin.deleteFanGroupProtectionCode(fanGroupId, code);
         };
         /**
-         * Import protection codes into a FanGroup. This upload should be a CSV with following format:
-         * - column 1: the actual code that can unlock the FG
-         * - column 2: how many times the code can be used - use 0 for infinite usage
-         * @param fanGroupId The FG to import codes into
-         * @param data For browser an HTMLInputElement containing a file, node: not supported
-         */
+     * Import protection codes into a FanGroup. This upload should be a CSV with following format:
+     * - column 1: the actual code that can unlock the FG
+     * - column 2: how many times the code can be used - use 0 for infinite usage
+     * @param fanGroupId The FG to import codes into
+     * @param data For browser an HTMLInputElement containing a file, node: not supported
+     */
         AdminService.prototype.importFanGroupProtectionCodes = function(fanGroupId, data, fileName) {
           var _this = this;
           return this.uploadOneTimeFile(data, fileName).then(function(otf) {
