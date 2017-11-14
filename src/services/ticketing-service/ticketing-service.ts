@@ -2,20 +2,15 @@ import { SeatersApi, SeatersService, PagingOptions, PagedResult } from '../commo
 import { ticketing } from './ticketing-types';
 
 export class TicketingService extends SeatersService {
-
-  constructor (
-    seatersApi: SeatersApi
-  ) {
+  constructor(seatersApi: SeatersApi) {
     super(seatersApi);
   }
 
-  getTicketingSystems (page: PagingOptions): Promise<PagedResult<ticketing.TicketingSystem>> {
-      return this.seatersApi.ticketing.getTicketingSystems(page)
-        .then(r => this.convertPagedResult(r));
+  getTicketingSystems(page: PagingOptions): Promise<PagedResult<ticketing.TicketingSystem>> {
+    return this.seatersApi.ticketing.getTicketingSystems(page).then(r => this.convertPagedResult(r));
   }
 
-  getTicketingSystem (ticketingSystemId: string): Promise<ticketing.TicketingSystem> {
-      return this.seatersApi.ticketing.getTicketingSystem(ticketingSystemId);
+  getTicketingSystem(ticketingSystemId: string): Promise<ticketing.TicketingSystem> {
+    return this.seatersApi.ticketing.getTicketingSystem(ticketingSystemId);
   }
-
 }

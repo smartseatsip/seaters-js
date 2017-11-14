@@ -6,26 +6,17 @@ import { SeatersApiController } from '../seaters-api-controller';
 import { PaymentSystem } from './payment-types';
 
 export class PaymentApi extends SeatersApiController {
-
-  constructor (private apiContext: SeatersApiContext) {
+  constructor(private apiContext: SeatersApiContext) {
     super();
   }
 
-  getPaymentSystems (page: PagingOptions): Promise<PagedResult<PaymentSystem>> {
-    return this.apiContext.get(
-      '/seaters-admin/payment-systems',
-      null,
-      SeatersApiContext.buildPagingQueryParams(page)
-    );
+  getPaymentSystems(page: PagingOptions): Promise<PagedResult<PaymentSystem>> {
+    return this.apiContext.get('/seaters-admin/payment-systems', null, SeatersApiContext.buildPagingQueryParams(page));
   }
 
-  getPaymentSystem (paymentSystemId: string): Promise<PaymentSystem> {
-    return this.apiContext.get(
-      '/seaters-admin/payment-systems/:id',
-      { id: paymentSystemId }
-    );
+  getPaymentSystem(paymentSystemId: string): Promise<PaymentSystem> {
+    return this.apiContext.get('/seaters-admin/payment-systems/:id', { id: paymentSystemId });
   }
-
 }
 
 /* tslint:enable:no-floating-promises */

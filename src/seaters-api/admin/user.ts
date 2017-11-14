@@ -1,12 +1,11 @@
 import { BaseEntity, TranslatedText } from './common';
 
 export interface User extends BaseEntity {
-
   firstName: string;
   lastName: string;
   mobilePhoneNumber: {
-    localNumber: string,
-    countryCallingCode: string
+    localNumber: string;
+    countryCallingCode: string;
   };
   facebookId: string;
   status: USER_STATUS;
@@ -15,7 +14,6 @@ export interface User extends BaseEntity {
   confirmedMobilePhoneNumber: boolean;
   confirmedEmail: boolean;
   language: string;
-
 }
 
 export type USER_STATUS = 'ACTIVE' | 'DRAFT';

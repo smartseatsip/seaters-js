@@ -17,6 +17,11 @@ import { StringMap } from '../../api/string-map';
 const WAITING_LIST_ACTION_STATUS = fan.WAITING_LIST_ACTION_STATUS;
 
 const EXPORTABLE_TICKETING_SYSTEMS: TICKETING_SYSTEM_TYPE[] = ['UPLOAD', 'DIGITICK'];
+const GROUP_PAYMENT_METHODS = {
+  CREDIT_CARD: 'CREDIT_CARD',
+  IDEAL: 'IDEAL',
+  MASTERPASS: 'MASTERPASS'
+};
 
 export class WaitingListService {
   constructor(private api: SeatersApi) {}
@@ -80,6 +85,11 @@ export class WaitingListService {
           total: paymentInfo.transactions[0].total,
           currency: paymentInfo.transactions[0].currency,
           threeDSEnabled: paymentInfo.braintreeConfig.threeDSEnabled,
+          masterpassEnabled:
+            !paymentInfo.braintreeConfig.threeDSEnabled &&
+            paymentInfo.braintreeConfig.paymentMethods.indexOf(GROUP_PAYMENT_METHODS.MASTERPASS) !== -1,
+          // @TODO: Disable iDEAL payment until the backend is configred
+          // idealEnabled: paymentInfo.braintreeConfig.paymentMethods.indexOf(GROUP_PAYMENT_METHODS.IDEAL) !== -1,
           token: braintreeToken.token
         } as fan.BraintreePaymentInfo;
       });
@@ -546,7 +556,7 @@ export class WaitingListService {
       return Promise.resolve(wl);
     }
     return this.api.fan.deletePositionSalesTransaction(wl.waitingListId).then(() => {
-      return this.pollWaitingList(wl.waitingListId, updatedWl => this.hasPreviousPayment(updatedWl), 60, 1000);
+      return this.pollWaitingList(wl.waitingListId, updatedWl => !this.hasPreviousPayment(updatedWl), 60, 1000);
     });
   }
 
@@ -554,12 +564,25 @@ export class WaitingListService {
     waitingListId: string,
     transaction: PositionSalesTransactionInput
   ): Promise<fan.WaitingList> {
-    return this.api.fan.createPositionSalesTransaction(waitingListId, transaction).then(() => {
-      return this.pollWaitingList(waitingListId, wl => this.hasProcessedPayment(wl), 60, 1000);
-    });
+    return this.api.fan
+      .createPositionSalesTransaction(waitingListId, transaction)
+      .then(() => {
+        return this.pollWaitingList(waitingListId, wl => this.hasProcessedPayment(wl), 60, 1000);
+      })
+      .then((wl: any) => {
+        if (this.hasFailedPayment(wl)) {
+          const errorMessage = wl.position ? wl.position.paymentFailureMessage : 'Payment Failed!';
+          return Promise.reject(errorMessage);
+        }
+        return wl;
+      });
   }
 
   private hasProcessedPayment(wl: fan.WaitingList): boolean {
     return wl.position && ['FAILURE', 'COMPLETED'].indexOf(wl.position.transactionStatus) >= 0;
+  }
+
+  private hasFailedPayment(wl: fan.WaitingList): boolean {
+    return wl.position && wl.position.transactionStatus === 'FAILURE';
   }
 }

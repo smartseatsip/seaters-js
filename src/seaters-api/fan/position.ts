@@ -1,5 +1,4 @@
 export interface Position {
-
   /**
    * Number of Seats
    */
@@ -63,11 +62,10 @@ export interface Position {
    * double precision
    */
   total: string;
-
 }
 
 export type TRANSACTION_STATUS =
-  'CREATING'
+  | 'CREATING'
   | 'FAILURE'
   | 'CREATED'
   | 'APPROVED'

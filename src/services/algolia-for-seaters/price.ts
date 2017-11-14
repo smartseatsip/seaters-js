@@ -1,5 +1,4 @@
 export interface Price {
-
   /**
    * Facial price is the price that's printed on the face of the ticket
    * example: "10.00"
