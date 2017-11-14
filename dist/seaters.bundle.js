@@ -444,9 +444,12 @@ var SeatersSDK = /******/ (function(modules) {
       var SeatersApiController = /** @class */ (function() {
         function SeatersApiController() {}
         SeatersApiController.prototype.buildParams = function(obj) {
-          var map = new Map();
+          if (obj === void 0) {
+            obj = {};
+          }
+          var map = {};
           Object.keys(obj).forEach(function(k) {
-            return map.set(k, obj[k]);
+            return (map[k] = obj[k]);
           });
           return map;
         };
@@ -1976,7 +1979,7 @@ var SeatersSDK = /******/ (function(modules) {
           var wrappedService = wrappedClient[serviceName];
           var service = client[serviceName];
           // tslint:disable-next-line
-          Object.keys(service.__proto__).forEach(function(propertyName) {
+          Object.keys(Object.getPrototypeOf(service)).forEach(function(propertyName) {
             var property = service[propertyName];
             if (typeof property === 'function') {
               // tslint:disable-next-line
@@ -2023,14 +2026,14 @@ var SeatersSDK = /******/ (function(modules) {
           this.apiPrefix = apiPrefix;
           this.requestDriver = requestDriver;
           this.requestsSubject = new subject_1.Subject();
-          this.headers = new Map();
-          this.headers.set('Content-Type', 'application/json');
+          this.headers = {};
+          this.headers['Content-Type'] = 'application/json';
         }
         ApiContext.prototype.setHeader = function(header, value) {
-          this.headers.set(header, value);
+          this.headers[header] = value;
         };
         ApiContext.prototype.unsetHeader = function(header) {
-          this.headers.delete(header);
+          delete this.headers[header];
         };
         ApiContext.prototype.createEndpoint = function(requestDefinition) {
           return new api_endpoint_1.ApiEndpoint(
@@ -2067,10 +2070,7 @@ var SeatersSDK = /******/ (function(modules) {
           return request;
         };
         ApiContext.prototype.mergeHeaders = function(otherHeaders) {
-          var merged = {};
-          this.headers.forEach(function(v, k) {
-            return (merged[k] = v);
-          });
+          var merged = this.headers;
           return __assign({}, merged, otherHeaders);
         };
         return ApiContext;
@@ -2922,16 +2922,16 @@ var SeatersSDK = /******/ (function(modules) {
         }
         PagingOptions.toQueryParams = function(pagingOptions, queryParams) {
           if (!queryParams) {
-            queryParams = new Map();
+            queryParams = {};
           }
           if (!pagingOptions) {
             return queryParams;
           }
           if (pagingOptions.itemOffset) {
-            queryParams.set('itemOffset', pagingOptions.itemOffset.toString());
+            queryParams.itemOffset = pagingOptions.itemOffset.toString();
           }
           if (pagingOptions.maxPageSize) {
-            queryParams.set('maxPageSize', pagingOptions.maxPageSize.toString());
+            queryParams.maxPageSize = pagingOptions.maxPageSize.toString();
           }
           return queryParams;
         };

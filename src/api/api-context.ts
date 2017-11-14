@@ -13,20 +13,20 @@ export type RequestErrorModifier = (err: any) => any;
 export class ApiContext {
   private requestsSubject: Subject<ApiRequest>;
 
-  private headers: Map<string, string>;
+  private headers: object;
 
   constructor(private apiPrefix: string, public requestDriver: RequestDriver) {
     this.requestsSubject = new Subject<ApiRequest>();
-    this.headers = new Map<string, string>();
-    this.headers.set('Content-Type', 'application/json');
+    this.headers = {};
+    this.headers['Content-Type'] = 'application/json';
   }
 
   setHeader(header: string, value: string) {
-    this.headers.set(header, value);
+    this.headers[header] = value;
   }
 
   unsetHeader(header: string) {
-    this.headers.delete(header);
+    delete this.headers[header];
   }
 
   createEndpoint(requestDefinition: ApiRequestDefinition): ApiEndpoint {
@@ -68,8 +68,7 @@ export class ApiContext {
   }
 
   private mergeHeaders(otherHeaders: any) {
-    const merged = {};
-    this.headers.forEach((v, k) => (merged[k] = v));
+    const merged = this.headers;
     return { ...merged, ...otherHeaders };
   }
 }
