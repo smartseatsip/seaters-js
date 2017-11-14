@@ -2146,7 +2146,7 @@ var SeatersSDK = /******/ (function(modules) {
           });
         }
         var body = options.formData ? formDataBody(options.formData) : options.body;
-        console.debug('%s %s', options.method, options.url, body);
+        console.error('%s %s', options.method, options.url, body);
         xhr.send(body);
         return xhr;
       }
