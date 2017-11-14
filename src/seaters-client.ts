@@ -81,8 +81,10 @@ export function wrapClient<T>(promiseMiddleware: PromiseMiddleware<T>, client: S
   Object.keys(wrappedClient).forEach(function(serviceName) {
     const wrappedService = wrappedClient[serviceName];
     const service = client[serviceName];
+    console.log('prototype of', Object.getPrototypeOf(service));
+    console.log('__proto__', service.__proto__);
     // tslint:disable-next-line
-    Object.keys(service.__proto__).forEach(function(propertyName) {
+    Object.keys(Object.getPrototypeOf(service)).forEach(function(propertyName) {
       const property = service[propertyName];
       if (typeof property === 'function') {
         // tslint:disable-next-line
