@@ -1891,8 +1891,6 @@ var SeatersSDK = /******/ (function(modules) {
         Object.keys(wrappedClient).forEach(function(serviceName) {
           var wrappedService = wrappedClient[serviceName];
           var service = client[serviceName];
-          console.log('prototype of', Object.getPrototypeOf(service));
-          console.log('__proto__', service.__proto__);
           // tslint:disable-next-line
           Object.keys(Object.getPrototypeOf(service)).forEach(function(propertyName) {
             var property = service[propertyName];
@@ -1945,6 +1943,7 @@ var SeatersSDK = /******/ (function(modules) {
           this.headers['Content-Type'] = 'application/json';
         }
         ApiContext.prototype.setHeader = function(header, value) {
+          console.log('setting header', header, value);
           this.headers[header] = value;
         };
         ApiContext.prototype.unsetHeader = function(header) {
@@ -1960,6 +1959,7 @@ var SeatersSDK = /******/ (function(modules) {
         };
         ApiContext.prototype.createRequestOptions = function(requestDefinition, endpoint) {
           var headers = this.mergeHeaders(requestDefinition.headers);
+          console.log('merged headers', headers);
           var body = requestDefinition.body !== undefined ? JSON.stringify(requestDefinition.body) : null;
           return {
             url: endpoint.absoluteEndpoint,
