@@ -102,6 +102,11 @@ export interface FanGroup {
    * @format UUID
    */
   id: string;
+
+  /**
+   * Visibility of rank & likelihood indicator
+   */
+  rankAndLikelihoodHidden: boolean;
 }
 
 export type ACCESS_MODE = 'PUBLIC' | 'PRIVATE' | 'CODE_PROTECTED';
@@ -154,8 +159,7 @@ export interface Invitation {
   status: INVITATION_STATUS;
 }
 
-export type INVITATION_STATUS =
-  'PENDING' | 'IGNORED' | 'ACCEPTED';
+export type INVITATION_STATUS = 'PENDING' | 'IGNORED' | 'ACCEPTED';
 
 export interface FanGroupCategory {
   /**
@@ -188,5 +192,4 @@ export interface FanGroupRequest {
   status: FG_REQUEST_STATUS;
 }
 
-export type FG_REQUEST_STATUS =
-  'PENDING' | 'ACCEPTED' | 'REJECTED';
+export type FG_REQUEST_STATUS = 'PENDING' | 'ACCEPTED' | 'REJECTED';
