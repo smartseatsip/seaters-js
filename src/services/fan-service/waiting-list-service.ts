@@ -138,7 +138,15 @@ export class WaitingListService {
       this.api.fan
         .leaveWaitingList(waitingListId)
         // wait until the status is returned to BOOK
-        .then(() => this.pollWaitingList(waitingListId, wl => wl.actionStatus === WAITING_LIST_ACTION_STATUS.BOOK))
+        .then(() =>
+          this.pollWaitingList(waitingListId, wl => {
+            return (
+              wl.actionStatus !== WAITING_LIST_ACTION_STATUS.WAIT &&
+              wl.actionStatus !== WAITING_LIST_ACTION_STATUS.CONFIRM &&
+              wl.actionStatus !== WAITING_LIST_ACTION_STATUS.GO_LIVE
+            );
+          })
+        )
     );
   }
 

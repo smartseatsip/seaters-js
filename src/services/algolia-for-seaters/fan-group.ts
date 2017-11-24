@@ -14,4 +14,5 @@ export interface FanGroup {
   accessMode: FG_ACCESS_MODE;
   profileImageUrl: string;
   slug: string;
+  rankAndLikelihoodHidden: boolean;
 }

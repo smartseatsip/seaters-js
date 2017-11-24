@@ -20,6 +20,8 @@ export interface FanGroupLook {
 
   translatedDescription: string;
 
+  rankAndLikelihoodHidden: boolean;
+
   /**
    * Translation map
    */
@@ -31,5 +33,4 @@ export interface FanGroupLook {
    * Translation map
    */
   name: any;
-
 }
