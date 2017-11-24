@@ -1,4 +1,4 @@
-import { Price } from './price';
+import { Price } from '../../seaters-api/fan/price';
 import { LanguageCode } from '../../seaters-api/app/app-types';
 import { WL_ACCESS_MODE, WL_STATUS } from '../../seaters-api/fan/waiting-list';
 

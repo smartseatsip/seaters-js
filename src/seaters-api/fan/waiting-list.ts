@@ -2,8 +2,7 @@ import { FanGroupCategory } from './fan-group';
 import { ExtendedPosition } from './extended-position';
 import { EVENT_REQUIRED_ATTENDEE_INFO } from './attendee-info';
 import { LanguageCode, Translation } from '../app/app-types';
-import { TranslatedText } from '../admin/common';
-import { Price } from '../../services/algolia-for-seaters/price';
+import { Price } from './price';
 
 export interface WaitingList {
   /**
