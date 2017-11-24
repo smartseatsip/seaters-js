@@ -45,6 +45,28 @@ export interface WaitingList extends BaseEntity {
   price: string;
   distributedTickets: number;
   name: string;
+
+  /**
+   * Distribution mode - how tickets are distributed
+   * - wl_positions_distribution_mode_fifs = default, rank based distribution
+   * - wl_positions_distribution_mode_random = random distribution
+   */
+  positionsDistributionMode: string;
+
+  /**
+   * (random distribution only) Fixed amount of tickets to be won by a fan
+   */
+  fixedNumberOfSeatsPerPosition: number;
+
+  /**
+   * (random distribution only) End date of contest
+   */
+  participationEndDate: string;
+
+  /**
+   * (random distribution only) URL to the terms and conditions PDF file
+   */
+  termsAndConditionFileURL: string;
 }
 
 /**

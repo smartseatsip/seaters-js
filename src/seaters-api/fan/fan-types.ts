@@ -8,6 +8,7 @@ export * from './payment-info';
 export * from './braintree-token';
 export * from './position-sales-transaction';
 export * from './position-sales-transaction-input';
+export * from './price';
 export * from './attendee-info';
 export * from './profiling';
 export * from './fan-group-share';

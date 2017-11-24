@@ -2,7 +2,7 @@ import { FanGroupCategory } from './fan-group';
 import { ExtendedPosition } from './extended-position';
 import { EVENT_REQUIRED_ATTENDEE_INFO } from './attendee-info';
 import { LanguageCode, Translation } from '../app/app-types';
-import { TranslatedText } from '../admin/common';
+import { Price } from './price';
 
 export interface WaitingList {
   /**
@@ -14,7 +14,7 @@ export interface WaitingList {
    * Event name: { string => string }
    * @deprecated use translatedEventName instead
    */
-  eventName: any;
+  eventName: object;
 
   /**
    * Seat category
@@ -104,13 +104,13 @@ export interface WaitingList {
    * Event short name: { string => string }
    * @deprecated use translatedEventShortName
    */
-  eventShortName: any;
+  eventShortName: object;
 
   /**
    * Venue name: { string => string }
    * @deprecated use translatedVenueName
    */
-  venueName: any;
+  venueName: object;
 
   /**
    * Venue short name: { string => string }
@@ -122,7 +122,7 @@ export interface WaitingList {
    * Venue city: { string => string }
    * @deprecated use translatedVenueCity
    */
-  venueCity: any;
+  venueCity: object;
 
   /**
    * Fan Group ID
@@ -139,7 +139,7 @@ export interface WaitingList {
    * Fan Group name: { string => string }
    * @deprecated use translatedGroupName
    */
-  groupName: any;
+  groupName: string;
 
   /**
    * Event image URL
@@ -245,7 +245,7 @@ export interface WaitingList {
    * Venue country: {string =>string}
    * @deprecated use translatedVenueCountry
    */
-  venueCountry: any;
+  venueCountry: object;
 
   /**
    * Fan Group cover image URL
@@ -301,82 +301,9 @@ export interface WaitingList {
   voucherText: LanguageCode;
 }
 
-export type WL_ACCESS_MODE = 'PUBLIC' | 'CODE_PROTECTED';
+export type WL_ACCESS_MODE = 'PUBLIC' | 'PRIVATE' | 'CODE_PROTECTED';
 
 export type SEAT_DISTRIBUTION_MODE = 'VOUCHER' | 'TICKET';
-
-export interface Price {
-  /**
-   * Number of seats requested by the fan
-   */
-  numberOfSeats: number;
-
-  /**
-   * Seat's facial price
-   * double precision
-   */
-  facialPrice: string;
-
-  /**
-   * Total facial price of requested seats
-   * double precision
-   */
-  totalFacialPrice: string;
-
-  /**
-   * numberTotal fee
-   * double precision
-   */
-  fee: string;
-
-  /**
-   * Fee on total facial price excluding VAT
-   * double precision
-   */
-  feeExcVat: string;
-
-  /**
-   * VAT computed on fee
-   * double precision
-   */
-  feeVat: string;
-
-  /**
-   * Facial price formatted with currency
-   */
-  formattedFacialPrice: string;
-
-  /**
-   * Total Facial price formatted with currency
-   */
-  formattedTotalFacialPrice: string;
-
-  /**
-   * Fee excluding taxes formatted with currency
-   */
-  formattedFeeExcVat: string;
-
-  /**
-   * Taxes on the fee formatted with currency
-   */
-  formattedFeeVat: string;
-
-  /**
-   * Seaters Fee formatted with currency
-   */
-  formattedFee: string;
-
-  /**
-   * Total price formatted with currency
-   */
-  formattedTotal: string;
-
-  /**
-   * Total price for the requested seats
-   * double pricision
-   */
-  total: string;
-}
 
 export type WL_STATUS = 'SETUP' | 'DRAFT' | 'PUBLISHED' | 'OPEN' | 'CLOSED' | 'ARCHIVED';
 
