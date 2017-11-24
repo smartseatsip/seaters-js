@@ -1257,7 +1257,11 @@ var SeatersSDK = /******/ (function(modules) {
           var _this = this;
           return this.api.fan.leaveWaitingList(waitingListId).then(function() {
             return _this.pollWaitingList(waitingListId, function(wl) {
-              return wl.actionStatus === WAITING_LIST_ACTION_STATUS.BOOK;
+              return (
+                wl.actionStatus !== WAITING_LIST_ACTION_STATUS.WAIT &&
+                wl.actionStatus !== WAITING_LIST_ACTION_STATUS.CONFIRM &&
+                wl.actionStatus !== WAITING_LIST_ACTION_STATUS.GO_LIVE
+              );
             });
           });
         };
