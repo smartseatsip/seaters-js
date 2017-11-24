@@ -1,11 +1,8 @@
 import { Price } from './price';
 import { LanguageCode } from '../../seaters-api/app/app-types';
-
-export type WAITING_LIST_STATUS = 'PUBLISHED' | 'OPEN' | 'CLOSED';
+import { WL_ACCESS_MODE, WL_STATUS } from '../../seaters-api/fan/waiting-list';
 
 export const WL_ALGOLIA_TYPE = 'WAITING_LIST';
-
-export type WL_ACCESS_MODE = 'PUBLIC' | 'PRIVATE' | 'CODE_PROTECTED';
 
 export interface WaitingList {
   waitingListId: string;
@@ -14,9 +11,18 @@ export interface WaitingList {
 
   groupId: string;
   groupSlug: string;
+
+  /**
+   * Fan Group name: { string => string }
+   * @deprecated use translatedGroupName
+   */
   groupName: string;
   groupProfileImageUrl: string;
 
+  /**
+   * Event name: { string => string }
+   * @deprecated use translatedEventName instead
+   */
   eventName: object;
   eventShortName: object;
   eventStartDate: string;
@@ -26,15 +32,29 @@ export interface WaitingList {
   eventDescription: object;
   eventImageUrl: string;
 
+  /**
+   * Event name: { string => string }
+   * @deprecated use translatedVenueName instead
+   */
   venueName: object;
+
+  /**
+   * Event name: { string => string }
+   * @deprecated use translatedVenueCity instead
+   */
   venueCity: object;
+
+  /**
+   * Venue country: {string =>string}
+   * @deprecated use translatedVenueCountry
+   */
   venueCountry: object;
   venueCurrencyCode: string;
   venueImageUrl: string;
 
   maxNumberOfSeats: number;
   freeWaitingList: boolean;
-  waitingListStatus: WAITING_LIST_STATUS;
+  waitingListStatus: WL_STATUS;
   accessMode: WL_ACCESS_MODE;
   directSalesEnabled: boolean;
   price: Price;
