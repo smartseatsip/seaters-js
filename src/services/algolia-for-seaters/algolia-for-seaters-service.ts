@@ -14,6 +14,7 @@ import {
 
 const DEFAULT_LOCALE = 'en';
 const WL_FACET_FILTER: FacetFilter = { facet: TYPE_FIELD, value: WL_ALGOLIA_TYPE };
+const FAN_GROUP_FACET_FILTER: FacetFilter = { facet: TYPE_FIELD, value: FG_ALGOLIA_TYPE };
 
 export class AlgoliaForSeatersService {
   // tslint:disable-next-line
@@ -113,7 +114,14 @@ export class AlgoliaForSeatersService {
     });
   }
 
-  searchSeatersContent(query: string, locale: string, hitsPerPage: number, page: number): Promise<SearchResult> {
+  searchSeatersContent(
+    query: string,
+    locale: string,
+    hitsPerPage: number,
+    page: number,
+    onlyFanGroups?: boolean,
+    onlyWaitingLists?: boolean
+  ): Promise<SearchResult> {
     return this.getSearchableAttributes(locale).then(searchableAttributes => {
       const q: SearchQuery = {
         query,
@@ -122,6 +130,14 @@ export class AlgoliaForSeatersService {
         hitsPerPage,
         page
       };
+
+      if (onlyFanGroups) {
+        q.facetFilters.push(FAN_GROUP_FACET_FILTER);
+      }
+      if (onlyWaitingLists) {
+        q.facetFilters.push(WL_FACET_FILTER);
+      }
+
       return this.search(q).then(r => this.stripAlgoliaFieldsFromSearchResultHits(r));
     });
   }
