@@ -5,3 +5,8 @@ export * from '../../seaters-api/fan/price';
 
 export const TYPE_FIELD = 'type';
 export const TYPO_TOLERANCE_STRICT = 'strict';
+
+export interface SearchSeatersContentOptions {
+  onlyFanGroups?: boolean;
+  onlyWaitingLists?: boolean;
+}

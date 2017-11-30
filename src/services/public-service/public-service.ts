@@ -1,7 +1,7 @@
 import { RequestDriver } from '../../api';
 import { PagedResult, PagingOptions } from '../../shared-types';
 import { SeatersApi } from '../../seaters-api';
-import { AlgoliaForSeatersService, TypedSearchResult } from '../algolia-for-seaters';
+import { AlgoliaForSeatersService, TypedSearchResult, SearchSeatersContentOptions } from '../algolia-for-seaters';
 import { AppService } from '../app-service';
 import { pub } from './public-types';
 
@@ -51,12 +51,11 @@ export class PublicService {
     query: string,
     locale: string,
     page?: PagingOptions,
-    onlyFanGroups?: boolean,
-    onlyWaitingLists?: boolean
+    options?: SearchSeatersContentOptions
   ): Promise<PagedResult<pub.SeatersContent>> {
     page = this.defaultPage(page);
     return this.algoliaForSeatersService
-      .searchSeatersContent(query, locale, page.maxPageSize, page.page, onlyFanGroups, onlyWaitingLists)
+      .searchSeatersContent(query, locale, page.maxPageSize, page.page, options)
       .then(result => this.convertAlgoliaResultSet<pub.SeatersContent>(result));
   }
 

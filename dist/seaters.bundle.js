@@ -3559,11 +3559,11 @@ var SeatersSDK = /******/ (function(modules) {
         PublicService.prototype.getWaitingListPrice = function(waitingListId, numberOfSeats) {
           return this.seatersApi.fan.waitingListPrice(waitingListId, numberOfSeats);
         };
-        PublicService.prototype.searchSeatersContent = function(query, locale, page, onlyFanGroups, onlyWaitingLists) {
+        PublicService.prototype.searchSeatersContent = function(query, locale, page, options) {
           var _this = this;
           page = this.defaultPage(page);
           return this.algoliaForSeatersService
-            .searchSeatersContent(query, locale, page.maxPageSize, page.page, onlyFanGroups, onlyWaitingLists)
+            .searchSeatersContent(query, locale, page.maxPageSize, page.page, options)
             .then(function(result) {
               return _this.convertAlgoliaResultSet(result);
             });
@@ -3748,29 +3748,7 @@ var SeatersSDK = /******/ (function(modules) {
             });
           });
         };
-        AlgoliaForSeatersService.prototype.getFanGroups = function(query, locale, hitsPerPage, page) {
-          var _this = this;
-          return this.getSearchableAttributes(locale).then(function(searchableAttributes) {
-            var q = {
-              query: query,
-              facetFilters: [WL_FACET_FILTER],
-              restrictSearchableAttributes: searchableAttributes,
-              hitsPerPage: hitsPerPage,
-              page: page
-            };
-            return _this.search(q).then(function(r) {
-              return _this.stripAlgoliaFieldsFromSearchResultHits(r);
-            });
-          });
-        };
-        AlgoliaForSeatersService.prototype.searchSeatersContent = function(
-          query,
-          locale,
-          hitsPerPage,
-          page,
-          onlyFanGroups,
-          onlyWaitingLists
-        ) {
+        AlgoliaForSeatersService.prototype.searchSeatersContent = function(query, locale, hitsPerPage, page, options) {
           var _this = this;
           return this.getSearchableAttributes(locale).then(function(searchableAttributes) {
             var q = {
@@ -3780,10 +3758,10 @@ var SeatersSDK = /******/ (function(modules) {
               hitsPerPage: hitsPerPage,
               page: page
             };
-            if (onlyFanGroups) {
+            if (options.onlyFanGroups) {
               q.facetFilters.push(FAN_GROUP_FACET_FILTER);
             }
-            if (onlyWaitingLists) {
+            if (options.onlyWaitingLists) {
               q.facetFilters.push(WL_FACET_FILTER);
             }
             return _this.search(q).then(function(r) {
