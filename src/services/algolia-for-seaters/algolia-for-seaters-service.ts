@@ -9,11 +9,13 @@ import {
   FG_ALGOLIA_TYPE,
   WL_ALGOLIA_TYPE,
   TYPE_FIELD,
-  TYPO_TOLERANCE_STRICT
+  TYPO_TOLERANCE_STRICT,
+  SearchSeatersContentOptions
 } from './algolia-for-seaters-types';
 
 const DEFAULT_LOCALE = 'en';
 const WL_FACET_FILTER: FacetFilter = { facet: TYPE_FIELD, value: WL_ALGOLIA_TYPE };
+const FAN_GROUP_FACET_FILTER: FacetFilter = { facet: TYPE_FIELD, value: FG_ALGOLIA_TYPE };
 
 export class AlgoliaForSeatersService {
   // tslint:disable-next-line
@@ -112,8 +114,13 @@ export class AlgoliaForSeatersService {
       return this.search(q).then(r => this.stripAlgoliaFieldsFromSearchResultHits(r));
     });
   }
-
-  searchSeatersContent(query: string, locale: string, hitsPerPage: number, page: number): Promise<SearchResult> {
+  searchSeatersContent(
+    query: string,
+    locale: string,
+    hitsPerPage: number,
+    page: number,
+    options?: SearchSeatersContentOptions
+  ): Promise<SearchResult> {
     return this.getSearchableAttributes(locale).then(searchableAttributes => {
       const q: SearchQuery = {
         query,
@@ -122,6 +129,14 @@ export class AlgoliaForSeatersService {
         hitsPerPage,
         page
       };
+
+      if (options.onlyFanGroups) {
+        q.facetFilters.push(FAN_GROUP_FACET_FILTER);
+      }
+      if (options.onlyWaitingLists) {
+        q.facetFilters.push(WL_FACET_FILTER);
+      }
+
       return this.search(q).then(r => this.stripAlgoliaFieldsFromSearchResultHits(r));
     });
   }
