@@ -1,4 +1,8 @@
-import { FanGroup as _FanGroup, WaitingList as _WaitingList } from '../algolia-for-seaters';
+import {
+  FanGroup as _FanGroup,
+  WaitingList as _WaitingList,
+  SearchSeatersContentOptions as _SearchSeatersContentOptions
+} from '../algolia-for-seaters';
 import { Price as _Price, FanGroupLook as _FanGroupLook } from '../../seaters-api/fan';
 
 /**
@@ -7,19 +11,15 @@ import { Price as _Price, FanGroupLook as _FanGroupLook } from '../../seaters-ap
  * we chose 'pub' (as in "let's have a pint in the pub").
  */
 export namespace pub {
+  export interface FanGroup extends _FanGroup {}
 
-  export interface FanGroup extends _FanGroup {
-  }
+  export interface WaitingList extends _WaitingList {}
 
-  export interface WaitingList extends _WaitingList {
-  }
+  export interface Price extends _Price {}
 
-  export interface Price extends _Price {
-  }
+  export interface FanGroupLook extends _FanGroupLook {}
 
-  export interface FanGroupLook extends _FanGroupLook {
-  }
+  export interface SearchSeatersContentOptions extends _SearchSeatersContentOptions {}
 
   export type SeatersContent = FanGroup | WaitingList;
-
 }
