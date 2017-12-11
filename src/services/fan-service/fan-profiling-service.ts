@@ -1,4 +1,4 @@
-import { SeatersApi } from '../../seaters-api';
+import { SeatersApi, PagedSortedResult } from '../../seaters-api';
 import { fan } from './fan-types';
 
 export class FanProfilingService {
@@ -6,22 +6,8 @@ export class FanProfilingService {
 
   // Profiling (public)
 
-  getProfilingCategories(): Promise<fan.ProfilingCategory[]> {
-    let categories = [];
-    return this.seatersApi.fan
-      .getProfilingCategories()
-      .then(results => {
-        categories = results;
-        return this.seatersApi.fan.getProfilingCategoriesOrder();
-      })
-      .then((categoriesOrder: fan.ProfilingCategoryOrder[]) => {
-        categories = categories.map(category => {
-          const orderedData = categoriesOrder.find(item => item.id === category.id);
-          category.order = orderedData ? orderedData.order : undefined;
-          return category;
-        });
-        return categories.sort((a, b) => a.order - b.order);
-      });
+  getProfilingCategories(pagingOptions): Promise<PagedSortedResult<fan.ProfilingCategory>> {
+    return this.seatersApi.fan.getProfilingCategories(pagingOptions);
   }
 
   getProfilingCategoryById(categoryId: string): Promise<fan.ProfilingCategory> {

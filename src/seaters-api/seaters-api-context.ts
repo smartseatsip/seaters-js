@@ -16,6 +16,25 @@ export class SeatersApiContext extends ApiContext {
     };
   }
 
+  public static buildPagingSortingQueryParams(pagingOptions: PagingOptions): { [key: string]: any } {
+    pagingOptions = pagingOptions || {};
+
+    let options: any = {
+      size: pagingOptions.maxPageSize || 9999,
+      number: pagingOptions.page || 0
+    };
+
+    if (pagingOptions.sort) {
+      options.sort = pagingOptions.sort;
+    }
+
+    if (pagingOptions.filters) {
+      options = { ...options, ...pagingOptions.filters };
+    }
+
+    return options;
+  }
+
   public static convertPagedResultToArray(promise: Promise<PagedResult<any>>): Promise<any[]> {
     return new Promise((resolve, reject) => {
       promise

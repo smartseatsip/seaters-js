@@ -12,8 +12,11 @@ export class PagingOptions {
     if (pagingOptions.maxPageSize) {
       queryParams.maxPageSize = pagingOptions.maxPageSize.toString();
     }
+    if (pagingOptions.sort) {
+      queryParams.sort = pagingOptions.sort.toString();
+    }
     return queryParams;
   }
 
-  constructor(public itemOffset?: number, public maxPageSize?: number) {}
+  constructor(public itemOffset?: number, public maxPageSize?: number, public sort?: string) {}
 }

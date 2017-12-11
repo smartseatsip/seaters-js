@@ -199,6 +199,18 @@ var SeatersSDK = /******/ (function(modules) {
             d.prototype = b === null ? Object.create(b) : ((__.prototype = b.prototype), new __());
           };
         })();
+      var __assign =
+        (undefined && undefined.__assign) ||
+        Object.assign ||
+        function(t) {
+          for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) {
+              if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+            }
+          }
+          return t;
+        };
       Object.defineProperty(exports, '__esModule', { value: true });
       var api_1 = __webpack_require__(4);
       var SeatersApiContext = /** @class */ (function(_super) {
@@ -212,6 +224,20 @@ var SeatersSDK = /******/ (function(modules) {
             maxPageSize: pagingOptions.maxPageSize || 9999,
             itemOffset: pagingOptions.page || 0
           };
+        };
+        SeatersApiContext.buildPagingSortingQueryParams = function(pagingOptions) {
+          pagingOptions = pagingOptions || {};
+          var options = {
+            size: pagingOptions.maxPageSize || 9999,
+            number: pagingOptions.page || 0
+          };
+          if (pagingOptions.sort) {
+            options.sort = pagingOptions.sort;
+          }
+          if (pagingOptions.filters) {
+            options = __assign({}, options, pagingOptions.filters);
+          }
+          return options;
         };
         SeatersApiContext.convertPagedResultToArray = function(promise) {
           return new Promise(function(resolve, reject) {
@@ -878,14 +904,15 @@ var SeatersSDK = /******/ (function(modules) {
           });
         };
         // Profiling (public)
-        FanApi.prototype.getProfilingCategories = function() {
-          return this.apiContext.get('/profiling/v1/categories', {}, {});
-        };
-        FanApi.prototype.getProfilingCategoriesOrder = function() {
-          return this.apiContext.get('/profiling/v1/categories/order', {}, {});
+        FanApi.prototype.getProfilingCategories = function(pagingOptions) {
+          return this.apiContext.get(
+            'v2/fan/interests/categories',
+            null,
+            seaters_api_1.SeatersApiContext.buildPagingSortingQueryParams(pagingOptions)
+          );
         };
         FanApi.prototype.getProfilingCategoryById = function(categoryId) {
-          return this.apiContext.get('/profiling/v1/category/' + categoryId, {}, {});
+          return this.apiContext.get('v2/fan/interests/category/' + categoryId, {}, {});
         };
         FanApi.prototype.getProfilingFanAttributes = function(query, validated) {
           return this.apiContext.get(
@@ -2919,9 +2946,10 @@ var SeatersSDK = /******/ (function(modules) {
 
       Object.defineProperty(exports, '__esModule', { value: true });
       var PagingOptions = /** @class */ (function() {
-        function PagingOptions(itemOffset, maxPageSize) {
+        function PagingOptions(itemOffset, maxPageSize, sort) {
           this.itemOffset = itemOffset;
           this.maxPageSize = maxPageSize;
+          this.sort = sort;
         }
         PagingOptions.toQueryParams = function(pagingOptions, queryParams) {
           if (!queryParams) {
@@ -2935,6 +2963,9 @@ var SeatersSDK = /******/ (function(modules) {
           }
           if (pagingOptions.maxPageSize) {
             queryParams.maxPageSize = pagingOptions.maxPageSize.toString();
+          }
+          if (pagingOptions.sort) {
+            queryParams.sort = pagingOptions.sort.toString();
           }
           return queryParams;
         };
@@ -3332,8 +3363,11 @@ var SeatersSDK = /******/ (function(modules) {
           });
         };
         // Profiling (public)
-        FanService.prototype.getProfilingCategories = function() {
-          return this.fanProfilingService.getProfilingCategories();
+        FanService.prototype.getProfilingCategories = function(pagingOptions) {
+          var _this = this;
+          return this.fanProfilingService.getProfilingCategories(pagingOptions).then(function(pagedSortedResult) {
+            return _this.convertPagedSortedResult(pagedSortedResult);
+          });
         };
         FanService.prototype.getProfilingCategoryById = function(categoryId) {
           return this.fanProfilingService.getProfilingCategoryById(categoryId);
@@ -3414,6 +3448,15 @@ var SeatersSDK = /******/ (function(modules) {
             totalSize: result.totalSize
           };
         };
+        SeatersService.prototype.convertPagedSortedResult = function(result) {
+          return {
+            items: result.content,
+            itemOffset: result.number,
+            maxPageSize: result.size,
+            page: result.number,
+            totalSize: result.totalElements
+          };
+        };
         return SeatersService;
       })();
       exports.SeatersService = SeatersService;
@@ -3430,27 +3473,8 @@ var SeatersSDK = /******/ (function(modules) {
           this.seatersApi = seatersApi;
         }
         // Profiling (public)
-        FanProfilingService.prototype.getProfilingCategories = function() {
-          var _this = this;
-          var categories = [];
-          return this.seatersApi.fan
-            .getProfilingCategories()
-            .then(function(results) {
-              categories = results;
-              return _this.seatersApi.fan.getProfilingCategoriesOrder();
-            })
-            .then(function(categoriesOrder) {
-              categories = categories.map(function(category) {
-                var orderedData = categoriesOrder.find(function(item) {
-                  return item.id === category.id;
-                });
-                category.order = orderedData ? orderedData.order : undefined;
-                return category;
-              });
-              return categories.sort(function(a, b) {
-                return a.order - b.order;
-              });
-            });
+        FanProfilingService.prototype.getProfilingCategories = function(pagingOptions) {
+          return this.seatersApi.fan.getProfilingCategories(pagingOptions);
         };
         FanProfilingService.prototype.getProfilingCategoryById = function(categoryId) {
           return this.seatersApi.fan.getProfilingCategoryById(categoryId);
