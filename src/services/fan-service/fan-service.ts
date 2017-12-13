@@ -242,11 +242,7 @@ export class FanService extends SeatersService {
   // Profiling (public)
 
   getProfilingCategories(pagingOptions): Promise<PagedResult<fan.ProfilingCategory>> {
-    return this.fanProfilingService
-      .getProfilingCategories(pagingOptions)
-      .then((pagedSortedResult: PagedSortedResult<fan.ProfilingCategory>) => {
-        return this.convertPagedSortedResult(pagedSortedResult);
-      });
+    return this.fanProfilingService.getProfilingCategories(pagingOptions).then(this.convertPagedSortedResult);
   }
 
   getProfilingCategoryById(categoryId: string): Promise<fan.ProfilingCategory> {
@@ -263,8 +259,8 @@ export class FanService extends SeatersService {
 
   // User (fan)
 
-  getUserInterests(): Promise<fan.UserInterest[]> {
-    return this.fanProfilingService.getUserInterests();
+  getUserInterests(pagingOptions): Promise<PagedResult<fan.UserInterest>> {
+    return this.fanProfilingService.getUserInterests(pagingOptions).then(this.convertPagedSortedResult);
   }
 
   createUserInterest(userInterestCreateDTO: fan.UserInterestCreateDTO): Promise<fan.UserInterest> {

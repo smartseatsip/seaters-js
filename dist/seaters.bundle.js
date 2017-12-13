@@ -220,10 +220,17 @@ var SeatersSDK = /******/ (function(modules) {
         }
         SeatersApiContext.buildPagingQueryParams = function(pagingOptions) {
           pagingOptions = pagingOptions || {};
-          return {
+          var options = {
             maxPageSize: pagingOptions.maxPageSize || 9999,
             itemOffset: pagingOptions.page || 0
           };
+          if (pagingOptions.sort) {
+            options.sort = pagingOptions.sort;
+          }
+          if (pagingOptions.filters) {
+            options = __assign({}, options, pagingOptions.filters);
+          }
+          return options;
         };
         SeatersApiContext.buildPagingSortingQueryParams = function(pagingOptions) {
           pagingOptions = pagingOptions || {};
@@ -928,8 +935,12 @@ var SeatersSDK = /******/ (function(modules) {
           return this.apiContext.get('/profiling/v1/fan_attribute/' + fanAttributeId, {}, {});
         };
         // User (fan)
-        FanApi.prototype.getUserInterests = function() {
-          return this.apiContext.get('/profiling/v1/user/interests', {}, {});
+        FanApi.prototype.getUserInterests = function(pagingOptions) {
+          return this.apiContext.get(
+            'v2/fan/interests',
+            {},
+            seaters_api_1.SeatersApiContext.buildPagingSortingQueryParams(pagingOptions)
+          );
         };
         FanApi.prototype.createUserInterest = function(userInterestCreateDTO) {
           return this.apiContext.post('/profiling/v1/user/interest', userInterestCreateDTO, {});
@@ -3364,10 +3375,7 @@ var SeatersSDK = /******/ (function(modules) {
         };
         // Profiling (public)
         FanService.prototype.getProfilingCategories = function(pagingOptions) {
-          var _this = this;
-          return this.fanProfilingService.getProfilingCategories(pagingOptions).then(function(pagedSortedResult) {
-            return _this.convertPagedSortedResult(pagedSortedResult);
-          });
+          return this.fanProfilingService.getProfilingCategories(pagingOptions).then(this.convertPagedSortedResult);
         };
         FanService.prototype.getProfilingCategoryById = function(categoryId) {
           return this.fanProfilingService.getProfilingCategoryById(categoryId);
@@ -3379,8 +3387,8 @@ var SeatersSDK = /******/ (function(modules) {
           return this.fanProfilingService.getProfilingFanAttributeById(fanAttributeId);
         };
         // User (fan)
-        FanService.prototype.getUserInterests = function() {
-          return this.fanProfilingService.getUserInterests();
+        FanService.prototype.getUserInterests = function(pagingOptions) {
+          return this.fanProfilingService.getUserInterests(pagingOptions).then(this.convertPagedSortedResult);
         };
         FanService.prototype.createUserInterest = function(userInterestCreateDTO) {
           return this.fanProfilingService.createUserInterest(userInterestCreateDTO);
@@ -3486,8 +3494,8 @@ var SeatersSDK = /******/ (function(modules) {
           return this.seatersApi.fan.getProfilingFanAttributeById(fanAttributeId);
         };
         // User (fan)
-        FanProfilingService.prototype.getUserInterests = function() {
-          return this.seatersApi.fan.getUserInterests();
+        FanProfilingService.prototype.getUserInterests = function(pagingOptions) {
+          return this.seatersApi.fan.getUserInterests(pagingOptions);
         };
         FanProfilingService.prototype.createUserInterest = function(userInterestCreateDTO) {
           return this.seatersApi.fan.createUserInterest(userInterestCreateDTO);
