@@ -4,6 +4,7 @@ import { SeatersApi } from '../../seaters-api';
 import { AlgoliaForSeatersService, TypedSearchResult, SearchSeatersContentOptions } from '../algolia-for-seaters';
 import { AppService } from '../app-service';
 import { pub } from './public-types';
+import { fan } from '../fan-service/fan-types';
 
 export class PublicService {
   private algoliaForSeatersService: AlgoliaForSeatersService;
@@ -13,11 +14,17 @@ export class PublicService {
   }
 
   getFanGroup(fanGroupId: string): Promise<pub.FanGroup> {
-    return this.algoliaForSeatersService.getFanGroupById(fanGroupId);
+    return this.algoliaForSeatersService.getFanGroupById(fanGroupId).then(fg => ({
+      ...fg,
+      actionStatus: this.getFanGroupActionStatus(fg)
+    }));
   }
 
-  getFanGroupLookBySlug(slug: string): Promise<pub.FanGroupLook> {
-    return this.seatersApi.fan.fanGroupLook(slug);
+  getFanGroupLookBySlug(slug: string): Promise<fan.FanGroupLook> {
+    return this.seatersApi.fan.fanGroupLook(slug).then(fg => ({
+      ...fg,
+      actionStatus: this.getFanGroupActionStatus(fg)
+    }));
   }
 
   getFanGroups(fanGroupIds: string[]): Promise<pub.FanGroup[]> {
@@ -97,5 +104,15 @@ export class PublicService {
       maxPageSize: searchResult.hitsPerPage,
       totalSize: searchResult.nbHits
     };
+  }
+
+  private getFanGroupActionStatus(
+    fanGroup: pub.FanGroup | pub.FanGroupLook | fan.FanGroup | fan.FanGroupLook
+  ): fan.FAN_GROUP_ACTION_STATUS {
+    if (fanGroup.accessMode === 'CODE_PROTECTED' || fanGroup.accessMode === 'PRIVATE') {
+      return fan.FAN_GROUP_ACTION_STATUS.CAN_UNLOCK;
+    }
+
+    return fan.FAN_GROUP_ACTION_STATUS.CAN_JOIN;
   }
 }
