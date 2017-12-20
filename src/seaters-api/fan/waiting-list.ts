@@ -299,6 +299,11 @@ export interface WaitingList {
    * Always-populated voucher text
    */
   voucherText: LanguageCode;
+
+  /**
+   * Visibility of Rank and Likelihood at fan group level
+   */
+  groupRankAndLikelihoodHidden: boolean;
 }
 
 export type WL_ACCESS_MODE = 'PUBLIC' | 'PRIVATE' | 'CODE_PROTECTED';
