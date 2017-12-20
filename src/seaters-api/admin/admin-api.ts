@@ -4,6 +4,7 @@ import { PagedResult } from '../paged-result';
 import { PagingOptions } from '../paging-options';
 import { SeatersApiController } from '../seaters-api-controller';
 import * as admin from './admin-types';
+import { profiling } from '../../services/index';
 
 export class AdminApi extends SeatersApiController {
   constructor(private apiContext: SeatersApiContext) {
@@ -146,6 +147,83 @@ export class AdminApi extends SeatersApiController {
     fileName?: string
   ): Promise<admin.OneTimeFile> {
     return this.apiContext.put('/seaters-admin/fan-groups/:id/' + endpoint, null, { id: fanGroupId }, { fileName });
+  }
+
+  //  PROFILING
+  getCateogries(options: PagingOptions): Promise<PagedResult<profiling.ProfilingCategory>> {
+    return this.apiContext.get('v2/seaters-admin/categories', null, SeatersApiContext.buildPagingQueryParams(options));
+  }
+
+  getCategory(id: string): Promise<profiling.ProfilingCategory> {
+    return this.apiContext.get(`v2/seaters-admin/categories/${id}`);
+  }
+
+  createCategory(category: profiling.ProfilingCategory): Promise<profiling.ProfilingCategory> {
+    return this.apiContext.post(`v2/seaters-admin/categories`, category);
+  }
+
+  updateCategory(category: profiling.ProfilingCategory): Promise<profiling.ProfilingCategory> {
+    return this.apiContext.put(`v2/seaters-admin/categories/${category.id}`, category);
+  }
+
+  deleteCategory(id: string): Promise<any> {
+    return this.apiContext.delete(`v2/seaters-admin/categories/${id}`);
+  }
+
+  orderCategories(orderedCategoryIds: string[]): Promise<any> {
+    return this.apiContext.post(`v2/seaters-admin/categories/order`, orderedCategoryIds);
+  }
+
+  getInterests(options: PagingOptions): Promise<PagedResult<profiling.ProfilingCategory>> {
+    return this.apiContext.get('v2/seaters-admin/interests', null, SeatersApiContext.buildPagingQueryParams(options));
+  }
+
+  getInterest(id: string): Promise<profiling.ProfilingInterest> {
+    return this.apiContext.get(`v2/seaters-admin/interests/${id}`);
+  }
+
+  createInterest(interest: profiling.ProfilingInterest): Promise<profiling.ProfilingInterest> {
+    return this.apiContext.post(`v2/seaters-admin/interests`, interest);
+  }
+
+  updateInterest(interest: profiling.ProfilingInterest): Promise<profiling.ProfilingInterest> {
+    return this.apiContext.put(`v2/seaters-admin/interests/${interest.id}`, interest);
+  }
+
+  deleteInterest(id: string): Promise<any> {
+    return this.apiContext.delete(`v2/seaters-admin/interests/${id}`);
+  }
+
+  getFanAttributes(options: PagingOptions): Promise<PagedResult<profiling.ProfilingFanAttribute>> {
+    return this.apiContext.get(
+      'v2/seaters-admin/fan-attributes',
+      null,
+      SeatersApiContext.buildPagingQueryParams(options)
+    );
+  }
+
+  getFanAttribute(id: string): Promise<profiling.ProfilingFanAttribute> {
+    return this.apiContext.get(`v2/seaters-admin/fan-attributes/${id}`);
+  }
+
+  createFanAttribute(fanAttribute: profiling.ProfilingFanAttribute): Promise<profiling.ProfilingFanAttribute> {
+    return this.apiContext.post(`v2/seaters-admin/fan-attributes`, fanAttribute);
+  }
+
+  updateFanAttribute(fanAttribute: profiling.ProfilingFanAttribute): Promise<profiling.ProfilingFanAttribute> {
+    return this.apiContext.put(`v2/seaters-admin/fan-attributes/${fanAttribute.id}`, fanAttribute);
+  }
+
+  deleteFanAttribute(id: string): Promise<any> {
+    return this.apiContext.delete(`v2/seaters-admin/fan-attributes/${id}`);
+  }
+
+  validateFanAttribute(id: string): Promise<profiling.ProfilingFanAttribute> {
+    return this.apiContext.delete(`v2/seaters-admin/fan-attributes/${id}/unvalidate`);
+  }
+
+  addAliases(id: string, idsToConvert: string[]): Promise<profiling.ProfilingFanAttribute> {
+    return this.apiContext.post(`v2/seaters-admin/fan-attributes/${id}/add-alias`, idsToConvert);
   }
 }
 
