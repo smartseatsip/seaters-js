@@ -694,8 +694,6 @@ var SeatersSDK = /******/ (function(modules) {
             waitingListId: waitingListId
           });
         };
-        // @TODO create seperate Calls for admin
-        //  PROFILING : ADMIN
         // PROFILING : FAN
         /**
          * Gets complete list of categories
@@ -2909,6 +2907,73 @@ var SeatersSDK = /******/ (function(modules) {
         AdminApi.prototype.uploadOneTimeFile = function(oneTimeFileUrl, data) {
           return this.apiContext.uploadOneTimeFile(oneTimeFileUrl, data);
         };
+        //  PROFILING
+        AdminApi.prototype.getCategories = function(options) {
+          return this.apiContext.get(
+            '/v2/seaters-admin/categories',
+            null,
+            seaters_api_1.SeatersApiContext.buildPagingQueryParams(options)
+          );
+        };
+        AdminApi.prototype.getCategory = function(id) {
+          return this.apiContext.get('/v2/seaters-admin/categories/' + id);
+        };
+        AdminApi.prototype.createCategory = function(category) {
+          return this.apiContext.post('/v2/seaters-admin/categories', category);
+        };
+        AdminApi.prototype.updateCategory = function(category) {
+          return this.apiContext.put('/v2/seaters-admin/categories/' + category.id, category);
+        };
+        AdminApi.prototype.deleteCategory = function(id) {
+          return this.apiContext.delete('/v2/seaters-admin/categories/' + id);
+        };
+        AdminApi.prototype.orderCategories = function(orderedCategoryIds) {
+          return this.apiContext.post('/v2/seaters-admin/categories/order', { categoryIds: orderedCategoryIds });
+        };
+        AdminApi.prototype.getInterests = function(options) {
+          return this.apiContext.get(
+            '/v2/seaters-admin/interests',
+            null,
+            seaters_api_1.SeatersApiContext.buildPagingQueryParams(options)
+          );
+        };
+        AdminApi.prototype.getInterest = function(id) {
+          return this.apiContext.get('/v2/seaters-admin/interests/' + id);
+        };
+        AdminApi.prototype.createInterest = function(interest) {
+          return this.apiContext.post('/v2/seaters-admin/interests', interest);
+        };
+        AdminApi.prototype.updateInterest = function(interest) {
+          return this.apiContext.put('/v2/seaters-admin/interests/' + interest.id, interest);
+        };
+        AdminApi.prototype.deleteInterest = function(id) {
+          return this.apiContext.delete('/v2/seaters-admin/interests/' + id);
+        };
+        AdminApi.prototype.getFanAttributes = function(options) {
+          return this.apiContext.get(
+            '/v2/seaters-admin/fan-attributes',
+            null,
+            seaters_api_1.SeatersApiContext.buildPagingQueryParams(options)
+          );
+        };
+        AdminApi.prototype.getFanAttribute = function(id) {
+          return this.apiContext.get('/v2/seaters-admin/fan-attributes/' + id);
+        };
+        AdminApi.prototype.createFanAttribute = function(fanAttribute) {
+          return this.apiContext.post('/v2/seaters-admin/fan-attributes', fanAttribute);
+        };
+        AdminApi.prototype.updateFanAttribute = function(fanAttribute) {
+          return this.apiContext.put('/v2/seaters-admin/fan-attributes/' + fanAttribute.id, fanAttribute);
+        };
+        AdminApi.prototype.deleteFanAttribute = function(id) {
+          return this.apiContext.delete('/v2/seaters-admin/fan-attributes/' + id);
+        };
+        AdminApi.prototype.validateFanAttribute = function(id) {
+          return this.apiContext.delete('/v2/seaters-admin/fan-attributes/' + id + '/unvalidate');
+        };
+        AdminApi.prototype.addAliases = function(id, idsToConvert) {
+          return this.apiContext.post('/v2/seaters-admin/fan-attributes/' + id + '/add-alias', idsToConvert);
+        };
         /**
          * HELPERS
          */
@@ -4902,6 +4967,70 @@ var SeatersSDK = /******/ (function(modules) {
             .then(function() {
               return _this.getFanGroup(fanGroupId);
             });
+        };
+        // Profiling
+        AdminService.prototype.getCategories = function(options) {
+          var _this = this;
+          return this.seatersApi.admin.getCategories(options).then(function(r) {
+            return _this.convertPagedResult(r);
+          });
+        };
+        AdminService.prototype.getCategory = function(id) {
+          return this.seatersApi.admin.getCategory(id);
+        };
+        AdminService.prototype.createCategory = function(category) {
+          return this.seatersApi.admin.createCategory(category);
+        };
+        AdminService.prototype.updateCategory = function(category) {
+          return this.seatersApi.admin.updateCategory(category);
+        };
+        AdminService.prototype.deleteCategory = function(id) {
+          return this.seatersApi.admin.deleteCategory(id);
+        };
+        AdminService.prototype.orderCategories = function(orderedCategoryIds) {
+          return this.seatersApi.admin.orderCategories(orderedCategoryIds);
+        };
+        AdminService.prototype.getInterests = function(options) {
+          var _this = this;
+          return this.seatersApi.admin.getInterests(options).then(function(r) {
+            return _this.convertPagedResult(r);
+          });
+        };
+        AdminService.prototype.getInterest = function(id) {
+          return this.seatersApi.admin.getInterest(id);
+        };
+        AdminService.prototype.createInterest = function(interest) {
+          return this.seatersApi.admin.createInterest(interest);
+        };
+        AdminService.prototype.updateInterest = function(interest) {
+          return this.seatersApi.admin.updateInterest(interest);
+        };
+        AdminService.prototype.deleteInterest = function(id) {
+          return this.seatersApi.admin.deleteInterest(id);
+        };
+        AdminService.prototype.getFanAttributes = function(options) {
+          var _this = this;
+          return this.seatersApi.admin.getFanAttributes(options).then(function(r) {
+            return _this.convertPagedResult(r);
+          });
+        };
+        AdminService.prototype.getFanAttribute = function(id) {
+          return this.seatersApi.admin.getFanAttribute(id);
+        };
+        AdminService.prototype.createFanAttribute = function(fanAttribute) {
+          return this.seatersApi.admin.createFanAttribute(fanAttribute);
+        };
+        AdminService.prototype.updateFanAttribute = function(fanAttribute) {
+          return this.seatersApi.admin.updateFanAttribute(fanAttribute);
+        };
+        AdminService.prototype.deleteFanAttribute = function(id) {
+          return this.seatersApi.admin.deleteFanAttribute(id);
+        };
+        AdminService.prototype.validateFanAttribute = function(id) {
+          return this.seatersApi.admin.validateFanAttribute(id);
+        };
+        AdminService.prototype.addAliases = function(id, idsToConvert) {
+          return this.seatersApi.admin.addAliases(id, idsToConvert);
         };
         AdminService.prototype.uploadOneTimeFile = function(data, fileName) {
           var _this = this;
