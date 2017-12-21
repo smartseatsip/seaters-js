@@ -87,4 +87,9 @@ export interface WaitingList {
    * (random distribution only) URL to the terms and conditions PDF file
    */
   termsAndConditionFileURL: string;
+
+  /**
+   * Experience (description) (locale => value)
+   */
+  description: any;
 }
