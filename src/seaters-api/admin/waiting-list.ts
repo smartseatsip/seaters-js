@@ -47,6 +47,11 @@ export interface WaitingList extends BaseEntity {
   name: string;
 
   /**
+   * Experience (description) (locale => value)
+   */
+  description: any;
+
+  /**
    * Distribution mode - how tickets are distributed
    * - wl_positions_distribution_mode_fifs = default, rank based distribution
    * - wl_positions_distribution_mode_random = random distribution
