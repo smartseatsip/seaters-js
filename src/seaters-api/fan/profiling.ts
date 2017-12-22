@@ -1,127 +1,132 @@
 /**
- *  PROFILING - TIMESTAMP
- */
-export interface ProfilingTimeStamp {
-  creation_date: string;
-  deletion_date: string;
-  update_date: string;
-}
-
-/**
  *  PROFILING - CATEGORIES
  */
 export interface ProfilingCategory {
-  category_code: string;
-  id: string;
-  interests: string[];
-  time_stamps: ProfilingTimeStamp;
-  version: number;
-}
-
-/**
- *  PROFILING - CATEGORIES ORDER
- */
-export interface ProfilingCategoryOrder {
-  id: string;
+  id?: string;
   order: number;
+  name: Array<{ lang: string; text: string }>;
 }
 
 /**
  *  PROFILING - INTERESTS
  */
 export interface ProfilingInterest {
-  category_id: string;
-  id: string;
-  interest_code: string;
-  objectType: string;
-  time_stamps: ProfilingTimeStamp;
-  version: number;
-}
-
-/**
- *  PROFILING - EXTERNAL IDENTIFIERS
- */
-
-export interface ProfilingExternalIdentifier {
-  id: string;
-  identifier_id: string;
-  identifier_type: string;
-  objectType: string;
-  time_stamps: ProfilingTimeStamp;
-  version: number;
+  id?: string;
+  categoryId: string;
+  name: Array<{ lang: string; text: string }>;
 }
 
 /**
  *  PROFILING - FAN ATTRIBUTES
  */
 
+export enum ProfilingFanAttributeStatusEnum {
+  VALIDATED = 'VALIDATED',
+  UNVALIDATED = 'UNVALIDATED'
+}
+
+export enum ProfilingFanAttributeActionStatusEnum {
+  validate = 'validate',
+  unvalidate = 'unvalidate'
+}
+
+export type ProfilingFanAttributeStatus =
+  | ProfilingFanAttributeStatusEnum.VALIDATED
+  | ProfilingFanAttributeStatusEnum.UNVALIDATED;
+
+export type ProfilingFanAttributeActionStatus =
+  | ProfilingFanAttributeActionStatusEnum.validate
+  | ProfilingFanAttributeActionStatusEnum.unvalidate;
+
 export interface ProfilingFanAttribute {
-  external_identifier: ProfilingExternalIdentifier;
-  id: string;
-  interest: ProfilingInterest;
+  id?: string;
   name: string;
-  objectType: string;
-  time_stamps: ProfilingTimeStamp;
-  type: string; // 'private', 'general'
-  validated: boolean;
-  version: number;
+  externalIdType: string | null;
+  externalId: string | null;
+  interestId: string | null;
+  status: ProfilingFanAttributeStatus;
+  aliases: string[] | null[];
+}
+
+export interface FanAttributeCreateUpdateDTO {
+  externalIdType: string | null;
+  externalId: string | null;
+  interestId: string | null;
+  name: string | null;
+  aliases: string[] | null[];
 }
 
 /**
  *  USER - INTERESTS
  */
 export interface UserInterest {
-  id: string;
-  objectType: string;
-  interest: ProfilingInterest | string;
-  state: string; // 'like', 'unknown', 'dislike'
-  time_stamps: ProfilingTimeStamp;
-  user_id: string;
-  version: number;
-}
-
-export interface UserInterestCreateDTO {
-  interest_id: string;
-  state: string; // 'like', 'unknown', 'dislike'
+  userId: string;
+  interest: ProfilingInterest;
+  status: UserInterestStatus; // 'LIKE', 'UNKNOWN', 'NEUTRAL', 'DISLIKE'
 }
 
 export interface UserInterestUpdateDTO {
   id: string;
-  state: string; // 'like', 'unknown', 'dislike'
-  version: number;
+  status: UserInterestActionStatus; // 'like', 'neutral', 'dislike'
 }
+
+export enum UserInterestStatusEnum {
+  LIKE = 'LIKE',
+  DISLIKE = 'DISLIKE',
+  NEUTRAL = 'NEUTRAL',
+  UNKNOWN = 'UNKNOWN'
+}
+
+export enum UserInterestActionStatusEnum {
+  like = 'like',
+  dislike = 'dislike',
+  neutral = 'neutral'
+}
+
+export type UserInterestStatus =
+  | UserInterestStatusEnum.LIKE
+  | UserInterestStatusEnum.DISLIKE
+  | UserInterestStatusEnum.NEUTRAL
+  | UserInterestStatusEnum.UNKNOWN;
+
+export type UserInterestActionStatus =
+  | UserInterestActionStatusEnum.like
+  | UserInterestActionStatusEnum.dislike
+  | UserInterestActionStatusEnum.neutral;
 
 /**
  *  USER - FAN ATTRIBUTES
  */
 
 export interface UserFanAttribute {
-  fan_attribute: ProfilingFanAttribute;
-  id: string;
-  objectType: string;
-  time_stamps: ProfilingTimeStamp;
-  user_id: string;
-  version: number;
-}
-
-export interface UserFanAttributeCreateDTO {
-  external_identifier: string;
-  interest_id: string;
-  name: string;
-  objectType: string;
-  time_stamps: ProfilingTimeStamp;
-  type: string; // 'general', 'private'
-  validated: boolean;
+  userId: string;
+  fanAttribute: ProfilingFanAttribute;
+  status: UserFanAttributeStatus;
 }
 
 export interface UserFanAttributeUpdateDTO {
-  fan_attribute: ProfilingFanAttribute;
-  id: string;
-  objectType: string;
-  time_stamps: ProfilingTimeStamp;
-  user_id: string;
-  validated: boolean;
+  id?: string;
+  name?: string;
+  status: UserFanAttributeActionStatus; // 'link', 'unlink', 'link-by-name'
 }
+
+export enum UserFanAttributeStatusEnum {
+  UNLINKED = 'UNLINKED',
+  LINKED = 'LINKED'
+}
+
+export enum UserFanAttributeActionStatusEnum {
+  link = 'link', // Link to an existing fan attribute
+  unlink = 'unlink', // Unlink from an exsisting fan attribute
+  create = 'link-by-name' // create new fan attribute
+}
+
+export type UserFanAttributeStatus = UserFanAttributeStatusEnum.UNLINKED | UserFanAttributeStatusEnum.LINKED;
+
+export type UserFanAttributeActionStatus =
+  | UserFanAttributeActionStatusEnum.link
+  | UserFanAttributeActionStatusEnum.unlink
+  | UserFanAttributeActionStatusEnum.create;
 
 /**
  *  WAITING LIST - INTEREST
@@ -131,7 +136,6 @@ export interface WaitingListInterest {
   id: string;
   objectType: string;
   interest: ProfilingInterest | string;
-  time_stamps: ProfilingTimeStamp;
   waitinglist_id: string;
   version: number;
 }
@@ -144,7 +148,6 @@ export interface WaitingListFanAttribute {
   fan_attribute: ProfilingFanAttribute;
   id: string;
   objectType: string;
-  time_stamps: ProfilingTimeStamp;
   waitinglist_id: string;
   version: number;
 }

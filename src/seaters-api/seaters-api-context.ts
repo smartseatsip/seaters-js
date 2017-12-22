@@ -10,10 +10,40 @@ import { PagedResult, PagingOptions } from '../shared-types';
 export class SeatersApiContext extends ApiContext {
   public static buildPagingQueryParams(pagingOptions: PagingOptions): { [key: string]: any } {
     pagingOptions = pagingOptions || {};
-    return {
+
+    let options: any = {
       maxPageSize: pagingOptions.maxPageSize || 9999,
       itemOffset: pagingOptions.page || 0
     };
+
+    if (pagingOptions.sort) {
+      options.sort = pagingOptions.sort;
+    }
+
+    if (pagingOptions.filters) {
+      options = { ...options, ...pagingOptions.filters };
+    }
+
+    return options;
+  }
+
+  public static buildPagingSortingQueryParams(pagingOptions: PagingOptions): { [key: string]: any } {
+    pagingOptions = pagingOptions || {};
+
+    let options: any = {
+      size: pagingOptions.maxPageSize || 9999,
+      number: pagingOptions.page || 0
+    };
+
+    if (pagingOptions.sort) {
+      options.sort = pagingOptions.sort;
+    }
+
+    if (pagingOptions.filters) {
+      options = { ...options, ...pagingOptions.filters };
+    }
+
+    return options;
   }
 
   public static convertPagedResultToArray(promise: Promise<PagedResult<any>>): Promise<any[]> {

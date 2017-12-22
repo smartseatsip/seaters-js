@@ -1,4 +1,4 @@
-import { SeatersApi, PagedResult as ApiPagedResult } from '../seaters-api';
+import { SeatersApi, PagedResult as ApiPagedResult, PagedSortedResult as ApiPagedSortedResult } from '../seaters-api';
 import { PagedResult, PagingOptions } from '../shared-types';
 
 export abstract class SeatersService {
@@ -11,6 +11,15 @@ export abstract class SeatersService {
       maxPageSize: result.maxPageSize,
       page: Math.round(result.itemOffset / result.maxPageSize),
       totalSize: result.totalSize
+    };
+  }
+  protected convertPagedSortedResult<T>(result: ApiPagedSortedResult<T>): PagedResult<T> {
+    return {
+      items: result.content,
+      itemOffset: result.number,
+      maxPageSize: result.size,
+      page: result.number,
+      totalSize: result.totalElements
     };
   }
 }
