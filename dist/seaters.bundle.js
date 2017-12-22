@@ -115,22 +115,6 @@ var SeatersSDK = /******/ (function(modules) {
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
-      function __export(m) {
-        for (var p in m) {
-          if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-        }
-      }
-      Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(49));
-      var seaters_api_1 = __webpack_require__(0);
-      exports.SeatersApi = seaters_api_1.SeatersApi;
-
-      /***/
-    },
-    /* 3 */
-    /***/ function(module, exports, __webpack_require__) {
-      'use strict';
-
       Object.defineProperty(exports, '__esModule', { value: true });
       var fan;
       (function(fan) {
@@ -153,6 +137,22 @@ var SeatersSDK = /******/ (function(modules) {
           FAN_GROUP_ACTION_STATUS[(FAN_GROUP_ACTION_STATUS['WAITING_FOR_APPROVAL'] = 4)] = 'WAITING_FOR_APPROVAL';
         })((FAN_GROUP_ACTION_STATUS = fan.FAN_GROUP_ACTION_STATUS || (fan.FAN_GROUP_ACTION_STATUS = {})));
       })((fan = exports.fan || (exports.fan = {})));
+
+      /***/
+    },
+    /* 3 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      function __export(m) {
+        for (var p in m) {
+          if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+        }
+      }
+      Object.defineProperty(exports, '__esModule', { value: true });
+      __export(__webpack_require__(49));
+      var seaters_api_1 = __webpack_require__(0);
+      exports.SeatersApi = seaters_api_1.SeatersApi;
 
       /***/
     },
@@ -1219,7 +1219,7 @@ var SeatersSDK = /******/ (function(modules) {
         };
       Object.defineProperty(exports, '__esModule', { value: true });
       var seaters_api_1 = __webpack_require__(0);
-      var fan_types_1 = __webpack_require__(3);
+      var fan_types_1 = __webpack_require__(2);
       var util_1 = __webpack_require__(1);
       var WAITING_LIST_ACTION_STATUS = fan_types_1.fan.WAITING_LIST_ACTION_STATUS;
       var EXPORTABLE_TICKETING_SYSTEMS = ['UPLOAD', 'DIGITICK'];
@@ -1818,7 +1818,7 @@ var SeatersSDK = /******/ (function(modules) {
         };
       Object.defineProperty(exports, '__esModule', { value: true });
       var util_1 = __webpack_require__(1);
-      var fan_types_1 = __webpack_require__(3);
+      var fan_types_1 = __webpack_require__(2);
       var FAN_GROUP_ACTION_STATUS = fan_types_1.fan.FAN_GROUP_ACTION_STATUS;
       var FanGroupService = /** @class */ (function() {
         function FanGroupService(api) {
@@ -2004,9 +2004,9 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.28.2';
+      exports.version = '1.28.6';
       __export(__webpack_require__(21));
-      var fan_types_1 = __webpack_require__(3);
+      var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
       var profiling_types_1 = __webpack_require__(8);
       exports.profiling = profiling_types_1.profiling;
@@ -3324,7 +3324,7 @@ var SeatersSDK = /******/ (function(modules) {
       }
       Object.defineProperty(exports, '__esModule', { value: true });
       __export(__webpack_require__(48));
-      __export(__webpack_require__(3));
+      __export(__webpack_require__(2));
       __export(__webpack_require__(8));
       __export(__webpack_require__(17));
       __export(__webpack_require__(18));
@@ -3370,7 +3370,7 @@ var SeatersSDK = /******/ (function(modules) {
           return t;
         };
       Object.defineProperty(exports, '__esModule', { value: true });
-      var common_1 = __webpack_require__(2);
+      var common_1 = __webpack_require__(3);
       var waiting_list_service_1 = __webpack_require__(17);
       var fan_group_service_1 = __webpack_require__(18);
       var util_1 = __webpack_require__(1);
@@ -3746,18 +3746,37 @@ var SeatersSDK = /******/ (function(modules) {
                 : typeof obj;
             };
 
+      var __assign =
+        (undefined && undefined.__assign) ||
+        Object.assign ||
+        function(t) {
+          for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) {
+              if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+            }
+          }
+          return t;
+        };
       Object.defineProperty(exports, '__esModule', { value: true });
       var algolia_for_seaters_1 = __webpack_require__(53);
+      var fan_types_1 = __webpack_require__(2);
       var PublicService = /** @class */ (function() {
         function PublicService(appService, requestDriver, seatersApi) {
           this.seatersApi = seatersApi;
           this.algoliaForSeatersService = new algolia_for_seaters_1.AlgoliaForSeatersService(appService, requestDriver);
         }
         PublicService.prototype.getFanGroup = function(fanGroupId) {
-          return this.algoliaForSeatersService.getFanGroupById(fanGroupId);
+          var _this = this;
+          return this.algoliaForSeatersService.getFanGroupById(fanGroupId).then(function(fg) {
+            return __assign({}, fg, { actionStatus: _this.getFanGroupActionStatus(fg) });
+          });
         };
         PublicService.prototype.getFanGroupLookBySlug = function(slug) {
-          return this.seatersApi.fan.fanGroupLook(slug);
+          var _this = this;
+          return this.seatersApi.fan.fanGroupLook(slug).then(function(fg) {
+            return __assign({}, fg, { actionStatus: _this.getFanGroupActionStatus(fg) });
+          });
         };
         PublicService.prototype.getFanGroups = function(fanGroupIds) {
           return this.algoliaForSeatersService.getFanGroupsById(fanGroupIds);
@@ -3829,6 +3848,12 @@ var SeatersSDK = /******/ (function(modules) {
             maxPageSize: searchResult.hitsPerPage,
             totalSize: searchResult.nbHits
           };
+        };
+        PublicService.prototype.getFanGroupActionStatus = function(fanGroup) {
+          if (fanGroup.accessMode === 'CODE_PROTECTED' || fanGroup.accessMode === 'PRIVATE') {
+            return fan_types_1.fan.FAN_GROUP_ACTION_STATUS.CAN_UNLOCK;
+          }
+          return fan_types_1.fan.FAN_GROUP_ACTION_STATUS.CAN_JOIN;
         };
         return PublicService;
       })();
@@ -4893,7 +4918,7 @@ var SeatersSDK = /******/ (function(modules) {
           };
         })();
       Object.defineProperty(exports, '__esModule', { value: true });
-      var common_1 = __webpack_require__(2);
+      var common_1 = __webpack_require__(3);
       var waiting_list_mapper_1 = __webpack_require__(66);
       var AdminService = /** @class */ (function(_super) {
         __extends(AdminService, _super);
@@ -5140,7 +5165,7 @@ var SeatersSDK = /******/ (function(modules) {
           };
         })();
       Object.defineProperty(exports, '__esModule', { value: true });
-      var common_1 = __webpack_require__(2);
+      var common_1 = __webpack_require__(3);
       var TicketingService = /** @class */ (function(_super) {
         __extends(TicketingService, _super);
         function TicketingService(seatersApi) {
@@ -5202,7 +5227,7 @@ var SeatersSDK = /******/ (function(modules) {
           };
         })();
       Object.defineProperty(exports, '__esModule', { value: true });
-      var common_1 = __webpack_require__(2);
+      var common_1 = __webpack_require__(3);
       var PaymentService = /** @class */ (function(_super) {
         __extends(PaymentService, _super);
         function PaymentService(seatersApi) {
