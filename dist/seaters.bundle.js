@@ -867,6 +867,7 @@ var SeatersSDK = /******/ (function(modules) {
         profiling.USER_FAN_ATTRIBUTES_STATUS = fan_1.UserFanAttributeStatusEnum;
         profiling.USER_FAN_ATTRIBUTES_ACTION_STATUS = fan_1.UserFanAttributeActionStatusEnum;
         profiling.FAN_ATTRIBUTES_STATUS = fan_1.ProfilingFanAttributeStatusEnum;
+        profiling.FAN_ATTRIBUTES_ACTION_STATUS = fan_1.ProfilingFanAttributeActionStatusEnum;
       })((profiling = exports.profiling || (exports.profiling = {})));
 
       /***/
@@ -2708,6 +2709,14 @@ var SeatersSDK = /******/ (function(modules) {
         (ProfilingFanAttributeStatusEnum =
           exports.ProfilingFanAttributeStatusEnum || (exports.ProfilingFanAttributeStatusEnum = {}))
       );
+      var ProfilingFanAttributeActionStatusEnum;
+      (function(ProfilingFanAttributeActionStatusEnum) {
+        ProfilingFanAttributeActionStatusEnum['validate'] = 'validate';
+        ProfilingFanAttributeActionStatusEnum['unvalidate'] = 'unvalidate';
+      })(
+        (ProfilingFanAttributeActionStatusEnum =
+          exports.ProfilingFanAttributeActionStatusEnum || (exports.ProfilingFanAttributeActionStatusEnum = {}))
+      );
       var UserInterestStatusEnum;
       (function(UserInterestStatusEnum) {
         UserInterestStatusEnum['LIKE'] = 'LIKE';
@@ -2969,10 +2978,15 @@ var SeatersSDK = /******/ (function(modules) {
           return this.apiContext.delete('/v2/seaters-admin/fan-attributes/' + id);
         };
         AdminApi.prototype.validateFanAttribute = function(id) {
-          return this.apiContext.delete('/v2/seaters-admin/fan-attributes/' + id + '/unvalidate');
+          return this.apiContext.post('/v2/seaters-admin/fan-attributes/' + id + '/validate');
+        };
+        AdminApi.prototype.unvalidateFanAttribute = function(id) {
+          return this.apiContext.post('/v2/seaters-admin/fan-attributes/' + id + '/unvalidate');
         };
         AdminApi.prototype.addAliases = function(id, idsToConvert) {
-          return this.apiContext.post('/v2/seaters-admin/fan-attributes/' + id + '/add-alias', idsToConvert);
+          return this.apiContext.post('/v2/seaters-admin/fan-attributes/' + id + '/add-alias', {
+            fanAttributeIds: idsToConvert
+          });
         };
         /**
          * HELPERS
@@ -5027,6 +5041,9 @@ var SeatersSDK = /******/ (function(modules) {
           return this.seatersApi.admin.deleteFanAttribute(id);
         };
         AdminService.prototype.validateFanAttribute = function(id) {
+          return this.seatersApi.admin.validateFanAttribute(id);
+        };
+        AdminService.prototype.unvalidateFanAttribute = function(id) {
           return this.seatersApi.admin.validateFanAttribute(id);
         };
         AdminService.prototype.addAliases = function(id, idsToConvert) {

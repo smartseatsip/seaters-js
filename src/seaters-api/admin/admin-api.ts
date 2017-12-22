@@ -207,11 +207,15 @@ export class AdminApi extends SeatersApiController {
   }
 
   validateFanAttribute(id: string): Promise<profiling.ProfilingFanAttribute> {
-    return this.apiContext.delete(`/v2/seaters-admin/fan-attributes/${id}/unvalidate`);
+    return this.apiContext.post(`/v2/seaters-admin/fan-attributes/${id}/validate`);
+  }
+
+  unvalidateFanAttribute(id: string): Promise<profiling.ProfilingFanAttribute> {
+    return this.apiContext.post(`/v2/seaters-admin/fan-attributes/${id}/unvalidate`);
   }
 
   addAliases(id: string, idsToConvert: string[]): Promise<profiling.ProfilingFanAttribute> {
-    return this.apiContext.post(`/v2/seaters-admin/fan-attributes/${id}/add-alias`, idsToConvert);
+    return this.apiContext.post(`/v2/seaters-admin/fan-attributes/${id}/add-alias`, { fanAttributeIds: idsToConvert });
   }
 
   /**

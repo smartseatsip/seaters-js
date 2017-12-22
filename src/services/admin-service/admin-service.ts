@@ -156,6 +156,10 @@ export class AdminService extends SeatersService {
     return this.seatersApi.admin.validateFanAttribute(id);
   }
 
+  unvalidateFanAttribute(id: string): Promise<profiling.ProfilingFanAttribute> {
+    return this.seatersApi.admin.validateFanAttribute(id);
+  }
+
   addAliases(id: string, idsToConvert: string[]): Promise<profiling.ProfilingFanAttribute> {
     return this.seatersApi.admin.addAliases(id, idsToConvert);
   }
