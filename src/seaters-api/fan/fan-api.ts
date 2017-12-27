@@ -42,6 +42,10 @@ export class FanApi {
     return this.apiContext.get('/fan');
   }
 
+  updatePassword(password: string): Promise<Fan> {
+    return this.apiContext.put('/fan/password', password);
+  }
+
   updateFan(fan: Fan): Promise<Fan> {
     return this.apiContext.put('/fan', fan);
   }

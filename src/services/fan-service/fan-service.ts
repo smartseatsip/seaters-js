@@ -222,6 +222,12 @@ export class FanService extends SeatersService {
   /**
    *  COMBINATIONS
    */
+  updatePassword(password: string): Promise<Fan> {
+    return this.seatersApi.fan
+      .updatePassword(password)
+      .then(updatedFan => this.sessionService.updateCurrentFan(updatedFan));
+  }
+
   updateFan(f: Fan): Promise<Fan> {
     return this.seatersApi.fan.updateFan(f).then(updatedFan => this.sessionService.updateCurrentFan(updatedFan));
   }
