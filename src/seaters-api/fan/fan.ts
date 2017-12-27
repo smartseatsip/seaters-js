@@ -1,3 +1,6 @@
+import { Token } from 'marked';
+import { AuthToken } from '../authentication/authentication-types';
+
 export interface Fan {
   /**
    * Fan's notification preferences
@@ -131,7 +134,12 @@ export interface PersonalInfo {
 
 export type TITLE = 'MR' | 'MS';
 
-export interface ISendUpdateEmailDTO {
+export interface IUpdateEmailDTO {
   email: string;
   confirmationReturnURLPath: string;
+}
+
+export interface IUpdatePasswordDTO {
+  password: string;
+  token?: any;
 }

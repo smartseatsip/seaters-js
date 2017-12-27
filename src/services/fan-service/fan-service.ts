@@ -9,7 +9,7 @@ import { SessionService } from '../session-service';
 import { PublicService } from '../public-service';
 import { Fan, PositionSalesTransactionInput, AttendeeInfo } from '../../seaters-api/fan/fan-types';
 import { BraintreeToken } from '../../seaters-api/fan/braintree-token';
-import { ISendUpdateEmailDTO, PhoneNumber } from '../../seaters-api/fan/fan';
+import { IUpdateEmailDTO, IUpdatePasswordDTO, PhoneNumber } from '../../seaters-api/fan/fan';
 import { StringMap } from '../../api/string-map';
 import { FanProfilingService } from './fan-profiling-service';
 import { UserInterestUpdateDTO } from '../../seaters-api/fan';
@@ -222,13 +222,13 @@ export class FanService extends SeatersService {
   /**
    *  COMBINATIONS
    */
-  updateEmail(data: ISendUpdateEmailDTO): Promise<Fan> {
+  updateEmail(data: IUpdateEmailDTO): Promise<Fan> {
     return this.seatersApi.fan.updateEmail(data);
   }
 
-  updatePassword(password: string): Promise<Fan> {
+  updatePassword(data: IUpdatePasswordDTO): Promise<Fan> {
     return this.seatersApi.fan
-      .updatePassword(password)
+      .updatePassword(data)
       .then(updatedFan => this.sessionService.updateCurrentFan(updatedFan));
   }
 
