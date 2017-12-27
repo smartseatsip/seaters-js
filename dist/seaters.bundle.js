@@ -501,7 +501,7 @@ var SeatersSDK = /******/ (function(modules) {
           return this.apiContext.put('/fan/email', data);
         };
         FanApi.prototype.updatePassword = function(password) {
-          return this.apiContext.put('/fan/password', password);
+          return this.apiContext.put('/fan/update-password', password);
         };
         FanApi.prototype.updateFan = function(fan) {
           return this.apiContext.put('/fan', fan);
