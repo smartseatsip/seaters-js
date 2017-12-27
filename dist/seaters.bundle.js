@@ -2014,7 +2014,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.28.11';
+      exports.version = '1.28.12';
       __export(__webpack_require__(21));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
@@ -2158,7 +2158,6 @@ var SeatersSDK = /******/ (function(modules) {
         };
         ApiContext.prototype.createRequestOptions = function(requestDefinition, endpoint) {
           var headers = this.mergeHeaders(requestDefinition.headers);
-          console.log(requestDefinition);
           var body;
           if (requestDefinition.body === undefined) {
             body = null;
