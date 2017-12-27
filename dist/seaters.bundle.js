@@ -500,8 +500,8 @@ var SeatersSDK = /******/ (function(modules) {
         FanApi.prototype.updateEmail = function(data) {
           return this.apiContext.put('/fan/email', data);
         };
-        FanApi.prototype.updatePassword = function(password) {
-          return this.apiContext.put('/fan/update-password', password);
+        FanApi.prototype.updatePassword = function(data) {
+          return this.apiContext.put('/fan/update-password', data);
         };
         FanApi.prototype.updateFan = function(fan) {
           return this.apiContext.put('/fan', fan);
@@ -3566,9 +3566,9 @@ var SeatersSDK = /******/ (function(modules) {
         FanService.prototype.updateEmail = function(data) {
           return this.seatersApi.fan.updateEmail(data);
         };
-        FanService.prototype.updatePassword = function(password) {
+        FanService.prototype.updatePassword = function(data) {
           var _this = this;
-          return this.seatersApi.fan.updatePassword(password).then(function(updatedFan) {
+          return this.seatersApi.fan.updatePassword(data).then(function(updatedFan) {
             return _this.sessionService.updateCurrentFan(updatedFan);
           });
         };
