@@ -48,7 +48,7 @@ export class FanApi {
   }
 
   updatePassword(data: IUpdatePasswordDTO): Promise<Fan> {
-    return this.apiContext.put('/fan/update-password', data);
+    return this.apiContext.put('/v2/fan/update-password', data);
   }
 
   updateFan(fan: Fan): Promise<Fan> {
