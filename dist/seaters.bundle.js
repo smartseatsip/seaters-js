@@ -497,8 +497,11 @@ var SeatersSDK = /******/ (function(modules) {
         FanApi.prototype.fan = function() {
           return this.apiContext.get('/fan');
         };
+        FanApi.prototype.updateEmail = function(data) {
+          return this.apiContext.put('/fan/email', data);
+        };
         FanApi.prototype.updatePassword = function(password) {
-          return this.apiContext.put('/fan/password', password);
+          return this.apiContext.put('/fan/update-password', password);
         };
         FanApi.prototype.updateFan = function(fan) {
           return this.apiContext.put('/fan', fan);
@@ -2007,7 +2010,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.28.7';
+      exports.version = '1.28.8';
       __export(__webpack_require__(21));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
@@ -3560,6 +3563,9 @@ var SeatersSDK = /******/ (function(modules) {
         /**
      *  COMBINATIONS
      */
+        FanService.prototype.updateEmail = function(data) {
+          return this.seatersApi.fan.updateEmail(data);
+        };
         FanService.prototype.updatePassword = function(password) {
           var _this = this;
           return this.seatersApi.fan.updatePassword(password).then(function(updatedFan) {

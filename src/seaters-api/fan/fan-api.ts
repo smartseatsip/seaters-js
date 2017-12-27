@@ -34,6 +34,7 @@ import { ProfilingInterest, UserInterest } from './profiling';
 import { userInfo } from 'os';
 import { UserInterestStatus, UserFanAttributeUpdateDTO, UserFanAttributeActionStatusEnum } from './index';
 import { ENOPROTOOPT } from 'constants';
+import { ISendUpdateEmailDTO } from './fan';
 
 export class FanApi {
   constructor(private apiContext: SeatersApiContext) {}
@@ -42,8 +43,12 @@ export class FanApi {
     return this.apiContext.get('/fan');
   }
 
+  updateEmail(data: ISendUpdateEmailDTO): Promise<Fan> {
+    return this.apiContext.put('/fan/email', data);
+  }
+
   updatePassword(password: string): Promise<Fan> {
-    return this.apiContext.put('/fan/password', password);
+    return this.apiContext.put('/fan/update-password', password);
   }
 
   updateFan(fan: Fan): Promise<Fan> {
