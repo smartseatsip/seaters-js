@@ -2,6 +2,7 @@ import { uuidv4, normalizeLondonTimezoneDate } from '../util';
 import { SeatersApi, SeatersApiException, seatersExceptionV1MessageMapper } from '../../seaters-api';
 import { session } from './session-types';
 import { MobilePhoneValidationData, AuthenticationSuccess } from '../../seaters-api/authentication';
+import { IUpdatePasswordDTO } from '../../seaters-api/fan/fan';
 
 const AUTH_HEADER = 'Authorization';
 const AUTH_BEARER = 'SeatersBearer';
@@ -50,6 +51,17 @@ export class SessionService {
   updateCurrentFan(fan: session.Fan): Promise<session.Fan> {
     this.currentFan = fan;
     return Promise.resolve<session.Fan>(this.currentFan);
+  }
+
+  /**
+   * Update password
+   *
+   * @param fan latest fan object
+   */
+  updatePassword(data: IUpdatePasswordDTO): Promise<session.Fan> {
+    return new Promise((resolve, reject) => {
+      this.seatersApi.authentication.updatePassword(data);
+    });
   }
 
   /**

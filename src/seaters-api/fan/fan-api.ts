@@ -34,21 +34,12 @@ import { ProfilingInterest, UserInterest } from './profiling';
 import { userInfo } from 'os';
 import { UserInterestStatus, UserFanAttributeUpdateDTO, UserFanAttributeActionStatusEnum } from './index';
 import { ENOPROTOOPT } from 'constants';
-import { IUpdateEmailDTO, IUpdatePasswordDTO } from './fan';
 
 export class FanApi {
   constructor(private apiContext: SeatersApiContext) {}
 
   fan(): Promise<Fan> {
     return this.apiContext.get('/fan');
-  }
-
-  updateEmail(data: IUpdateEmailDTO): Promise<Fan> {
-    return this.apiContext.put('/fan/email', data);
-  }
-
-  updatePassword(data: IUpdatePasswordDTO): Promise<Fan> {
-    return this.apiContext.put('/v2/fan/update-password', data);
   }
 
   updateFan(fan: Fan): Promise<Fan> {

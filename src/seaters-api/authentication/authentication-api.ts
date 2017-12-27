@@ -16,6 +16,7 @@ import {
   AuthTokenInput,
   AuthToken
 } from './authentication-types';
+import { IUpdatePasswordDTO } from '../fan/fan';
 
 export class AuthenticationApi {
   constructor(private apiContext: SeatersApiContext) {}
@@ -109,5 +110,13 @@ export class AuthenticationApi {
   getStoredTokens(): Promise<AuthToken[]> {
     const endpoint = '/auth/auth-tokens';
     return this.apiContext.get(endpoint);
+  }
+
+  /**
+   * Update password
+   * @param data
+   */
+  updatePassword(data: IUpdatePasswordDTO): Promise<AuthenticationSuccess> {
+    return this.apiContext.put('/v2/authentication/update-password', data);
   }
 }
