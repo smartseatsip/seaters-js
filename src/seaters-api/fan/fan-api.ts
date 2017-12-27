@@ -30,10 +30,9 @@ import {
 
 import { WaitingListRequest } from './waiting-list';
 import { StringMap } from '../../api/string-map';
-import { ProfilingInterest, UserInterest } from './profiling';
-import { userInfo } from 'os';
-import { UserInterestStatus, UserFanAttributeUpdateDTO, UserFanAttributeActionStatusEnum } from './index';
-import { ENOPROTOOPT } from 'constants';
+import { UserInterest } from './profiling';
+import { UserFanAttributeUpdateDTO, UserFanAttributeActionStatusEnum } from './index';
+import { IUpdatePasswordDTO } from './fan';
 
 export class FanApi {
   constructor(private apiContext: SeatersApiContext) {}
@@ -44,6 +43,10 @@ export class FanApi {
 
   updateFan(fan: Fan): Promise<Fan> {
     return this.apiContext.put('/fan', fan);
+  }
+
+  updatePassword(data: IUpdatePasswordDTO): Promise<Fan> {
+    return this.apiContext.put('/fan/password', data.password);
   }
 
   fanGroup(fanGroupId: string): Promise<FanGroup> {
@@ -59,7 +62,7 @@ export class FanApi {
   }
 
   fanGroupTranslatedDescription(fanGroupId: string): Promise<string> {
-    return this.apiContext.get('/fan/groups/:fanGroupId/translated-description', { fanGroupId });
+    return this.apiContext.get('/fan/groups/:fa`nGroupId/translated-description', { fanGroupId });
   }
 
   fanGroups(fanGroupIds: string[]): Promise<FanGroup[]> {

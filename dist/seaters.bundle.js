@@ -500,6 +500,9 @@ var SeatersSDK = /******/ (function(modules) {
         FanApi.prototype.updateFan = function(fan) {
           return this.apiContext.put('/fan', fan);
         };
+        FanApi.prototype.updatePassword = function(data) {
+          return this.apiContext.put('/fan/password', data.password);
+        };
         FanApi.prototype.fanGroup = function(fanGroupId) {
           return this.apiContext.get('/fan/groups/:fanGroupId', { fanGroupId: fanGroupId });
         };
@@ -510,7 +513,7 @@ var SeatersSDK = /******/ (function(modules) {
           return this.apiContext.get('/fan/fangroups-by-slug/:slug/look', { slug: slug });
         };
         FanApi.prototype.fanGroupTranslatedDescription = function(fanGroupId) {
-          return this.apiContext.get('/fan/groups/:fanGroupId/translated-description', { fanGroupId: fanGroupId });
+          return this.apiContext.get('/fan/groups/:fa`nGroupId/translated-description', { fanGroupId: fanGroupId });
         };
         FanApi.prototype.fanGroups = function(fanGroupIds) {
           return this.apiContext.get(
@@ -2155,7 +2158,15 @@ var SeatersSDK = /******/ (function(modules) {
         };
         ApiContext.prototype.createRequestOptions = function(requestDefinition, endpoint) {
           var headers = this.mergeHeaders(requestDefinition.headers);
-          var body = requestDefinition.body !== undefined ? JSON.stringify(requestDefinition.body) : null;
+          console.log(requestDefinition);
+          var body;
+          if (requestDefinition.body === undefined) {
+            body = null;
+          } else if (typeof requestDefinition.body === 'string') {
+            body = requestDefinition.body.toString();
+          } else {
+            body = JSON.stringify(requestDefinition.body);
+          }
           return {
             url: endpoint.absoluteEndpoint,
             method: requestDefinition.method || 'GET',
@@ -3567,6 +3578,12 @@ var SeatersSDK = /******/ (function(modules) {
         FanService.prototype.updateFan = function(f) {
           var _this = this;
           return this.seatersApi.fan.updateFan(f).then(function(updatedFan) {
+            return _this.sessionService.updateCurrentFan(updatedFan);
+          });
+        };
+        FanService.prototype.updatePassword = function(data) {
+          var _this = this;
+          return this.seatersApi.fan.updatePassword(data).then(function(updatedFan) {
             return _this.sessionService.updateCurrentFan(updatedFan);
           });
         };
