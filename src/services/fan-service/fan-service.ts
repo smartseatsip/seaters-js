@@ -222,15 +222,6 @@ export class FanService extends SeatersService {
   /**
    *  COMBINATIONS
    */
-  updateEmail(data: IUpdateEmailDTO): Promise<Fan> {
-    return this.seatersApi.fan.updateEmail(data);
-  }
-
-  updatePassword(data: IUpdatePasswordDTO): Promise<Fan> {
-    return this.seatersApi.fan
-      .updatePassword(data)
-      .then(updatedFan => this.sessionService.updateCurrentFan(updatedFan));
-  }
 
   updateFan(f: Fan): Promise<Fan> {
     return this.seatersApi.fan.updateFan(f).then(updatedFan => this.sessionService.updateCurrentFan(updatedFan));

@@ -497,12 +497,6 @@ var SeatersSDK = /******/ (function(modules) {
         FanApi.prototype.fan = function() {
           return this.apiContext.get('/fan');
         };
-        FanApi.prototype.updateEmail = function(data) {
-          return this.apiContext.put('/fan/email', data);
-        };
-        FanApi.prototype.updatePassword = function(data) {
-          return this.apiContext.put('/v2/fan/update-password', data);
-        };
         FanApi.prototype.updateFan = function(fan) {
           return this.apiContext.put('/fan', fan);
         };
@@ -1200,6 +1194,13 @@ var SeatersSDK = /******/ (function(modules) {
         AuthenticationApi.prototype.getStoredTokens = function() {
           var endpoint = '/auth/auth-tokens';
           return this.apiContext.get(endpoint);
+        };
+        /**
+     * Update password
+     * @param data
+     */
+        AuthenticationApi.prototype.updatePassword = function(data) {
+          return this.apiContext.put('/v2/authentication/update-password', data);
         };
         return AuthenticationApi;
       })();
@@ -2010,7 +2011,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.28.10';
+      exports.version = '1.28.11';
       __export(__webpack_require__(21));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
@@ -3563,15 +3564,6 @@ var SeatersSDK = /******/ (function(modules) {
         /**
      *  COMBINATIONS
      */
-        FanService.prototype.updateEmail = function(data) {
-          return this.seatersApi.fan.updateEmail(data);
-        };
-        FanService.prototype.updatePassword = function(data) {
-          var _this = this;
-          return this.seatersApi.fan.updatePassword(data).then(function(updatedFan) {
-            return _this.sessionService.updateCurrentFan(updatedFan);
-          });
-        };
         FanService.prototype.updateFan = function(f) {
           var _this = this;
           return this.seatersApi.fan.updateFan(f).then(function(updatedFan) {
@@ -4387,6 +4379,17 @@ var SeatersSDK = /******/ (function(modules) {
         SessionService.prototype.updateCurrentFan = function(fan) {
           this.currentFan = fan;
           return Promise.resolve(this.currentFan);
+        };
+        /**
+     * Update password
+     *
+     * @param fan latest fan object
+     */
+        SessionService.prototype.updatePassword = function(data) {
+          var _this = this;
+          return new Promise(function(resolve, reject) {
+            _this.seatersApi.authentication.updatePassword(data);
+          });
         };
         /**
      * Log in using an email/password
