@@ -506,6 +506,9 @@ var SeatersSDK = /******/ (function(modules) {
         FanApi.prototype.updateEmail = function(data) {
           return this.apiContext.put('/fan/email', data);
         };
+        FanApi.prototype.updateMobilePhoneNumber = function(data) {
+          return this.apiContext.put('/fan/mobile-phone-number', data);
+        };
         FanApi.prototype.fanGroup = function(fanGroupId) {
           return this.apiContext.get('/fan/groups/:fanGroupId', { fanGroupId: fanGroupId });
         };
@@ -2017,7 +2020,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.28.13';
+      exports.version = '1.28.14';
       __export(__webpack_require__(21));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
@@ -3592,6 +3595,12 @@ var SeatersSDK = /******/ (function(modules) {
         FanService.prototype.updateEmail = function(data) {
           var _this = this;
           return this.seatersApi.fan.updateEmail(data).then(function(updatedFan) {
+            return _this.sessionService.updateCurrentFan(updatedFan);
+          });
+        };
+        FanService.prototype.updateMobilePhoneNumber = function(data) {
+          var _this = this;
+          return this.seatersApi.fan.updateMobilePhoneNumber(data).then(function(updatedFan) {
             return _this.sessionService.updateCurrentFan(updatedFan);
           });
         };

@@ -237,6 +237,12 @@ export class FanService extends SeatersService {
     return this.seatersApi.fan.updateEmail(data).then(updatedFan => this.sessionService.updateCurrentFan(updatedFan));
   }
 
+  updateMobilePhoneNumber(data: PhoneNumber): Promise<Fan> {
+    return this.seatersApi.fan
+      .updateMobilePhoneNumber(data)
+      .then(updatedFan => this.sessionService.updateCurrentFan(updatedFan));
+  }
+
   getWaitingListsByKeywords(keywords: string[], page: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
     return this.publicService.getWaitingListsByKeywords(keywords, page).then(pagedPublicWls => {
       const waitingListIds = pagedPublicWls.items.map(wl => wl.waitingListId);

@@ -31,7 +31,7 @@ import {
 import { WaitingListRequest } from './waiting-list';
 import { StringMap } from '../../api/string-map';
 import { UserInterest } from './profiling';
-import { UserFanAttributeUpdateDTO, UserFanAttributeActionStatusEnum } from './index';
+import { UserFanAttributeUpdateDTO, UserFanAttributeActionStatusEnum, PhoneNumber } from './index';
 import { IUpdateEmailDTO, IUpdatePasswordDTO } from './fan';
 
 export class FanApi {
@@ -51,6 +51,10 @@ export class FanApi {
 
   updateEmail(data: IUpdateEmailDTO): Promise<Fan> {
     return this.apiContext.put('/fan/email', data);
+  }
+
+  updateMobilePhoneNumber(data: PhoneNumber): Promise<Fan> {
+    return this.apiContext.put('/fan/mobile-phone-number', data);
   }
 
   fanGroup(fanGroupId: string): Promise<FanGroup> {
