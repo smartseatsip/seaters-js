@@ -32,7 +32,7 @@ import { WaitingListRequest } from './waiting-list';
 import { StringMap } from '../../api/string-map';
 import { UserInterest } from './profiling';
 import { UserFanAttributeUpdateDTO, UserFanAttributeActionStatusEnum } from './index';
-import { IUpdatePasswordDTO } from './fan';
+import { IUpdateEmailDTO, IUpdatePasswordDTO } from './fan';
 
 export class FanApi {
   constructor(private apiContext: SeatersApiContext) {}
@@ -47,6 +47,10 @@ export class FanApi {
 
   updatePassword(data: IUpdatePasswordDTO): Promise<Fan> {
     return this.apiContext.put('/fan/password', data.password);
+  }
+
+  updateEmail(data: IUpdateEmailDTO): Promise<Fan> {
+    return this.apiContext.put('/fan/email', data);
   }
 
   fanGroup(fanGroupId: string): Promise<FanGroup> {
