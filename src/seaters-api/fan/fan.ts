@@ -1,6 +1,3 @@
-import { Token } from 'marked';
-import { AuthToken } from '../authentication/authentication-types';
-
 export interface Fan {
   /**
    * Fan's notification preferences

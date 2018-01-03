@@ -61,9 +61,9 @@ var SeatersSDK = /******/ (function(modules) {
     return Object.prototype.hasOwnProperty.call(object, property);
   }; // __webpack_public_path__
   /******/
-  /******/ /******/ __webpack_require__.p = '/Users/sanderdecoster/local_projects/seaters/seaters-js/dist'; // Load entry module and return exports
+  /******/ /******/ __webpack_require__.p = '/Users/mahmoudalazzawi/projects/seaters-js/dist'; // Load entry module and return exports
   /******/
-  /******/ /******/ return __webpack_require__((__webpack_require__.s = 20));
+  /******/ /******/ return __webpack_require__((__webpack_require__.s = 21));
   /******/
 })(
   /************************************************************************/
@@ -78,14 +78,14 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(33));
+      __export(__webpack_require__(34));
       __export(__webpack_require__(5));
-      __export(__webpack_require__(43));
-      __export(__webpack_require__(44));
       __export(__webpack_require__(45));
+      __export(__webpack_require__(46));
+      __export(__webpack_require__(47));
       __export(__webpack_require__(6));
       __export(__webpack_require__(16));
-      __export(__webpack_require__(12));
+      __export(__webpack_require__(13));
       __export(__webpack_require__(14));
 
       /***/
@@ -100,14 +100,14 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(26));
-      __export(__webpack_require__(11));
       __export(__webpack_require__(27));
+      __export(__webpack_require__(12));
       __export(__webpack_require__(28));
-      __export(__webpack_require__(9));
       __export(__webpack_require__(29));
+      __export(__webpack_require__(10));
       __export(__webpack_require__(30));
       __export(__webpack_require__(31));
+      __export(__webpack_require__(32));
 
       /***/
     },
@@ -150,7 +150,7 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(49));
+      __export(__webpack_require__(51));
       var seaters_api_1 = __webpack_require__(0);
       exports.SeatersApi = seaters_api_1.SeatersApi;
 
@@ -166,10 +166,10 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(22));
-      __export(__webpack_require__(10));
       __export(__webpack_require__(23));
+      __export(__webpack_require__(11));
       __export(__webpack_require__(24));
+      __export(__webpack_require__(25));
 
       /***/
     },
@@ -259,13 +259,13 @@ var SeatersSDK = /******/ (function(modules) {
           });
         };
         /**
-     * Returns a promise that either resolves with the requested resource
-     * or rejects on error with a SeatersApiException.
-     *
-     * @param requestDefinition Definition of which resource is requested
-     *
-     * @see SeatersApiException
-     */
+         * Returns a promise that either resolves with the requested resource
+         * or rejects on error with a SeatersApiException.
+         *
+         * @param requestDefinition Definition of which resource is requested
+         *
+         * @see SeatersApiException
+         */
         SeatersApiContext.prototype.doSeatersRequest = function(requestDefinition) {
           var _this = this;
           return this.doRequest(requestDefinition).then(
@@ -317,10 +317,10 @@ var SeatersSDK = /******/ (function(modules) {
           });
         };
         /**
-     * For browser, we expect HTMLInputElement containing a file
-     * @param oneTimeFileUrl url of a OneTimeFile returned by requestOneTimeFileUpload
-     * @param data for browsers: HTMLInputElement, for node: not supported
-     */
+         * For browser, we expect HTMLInputElement containing a file
+         * @param oneTimeFileUrl url of a OneTimeFile returned by requestOneTimeFileUpload
+         * @param data for browsers: HTMLInputElement, for node: not supported
+         */
         SeatersApiContext.prototype.uploadOneTimeFile = function(oneTimeFileUrl, data) {
           var _this = this;
           return this.requestDriver({
@@ -381,9 +381,9 @@ var SeatersSDK = /******/ (function(modules) {
           return Promise.resolve(data);
         };
         /**
-     * (legacy) old endpoints return 400 with only a message string
-     * This type of error is mapped to a proper SeatersApiException
-     */
+         * (legacy) old endpoints return 400 with only a message string
+         * This type of error is mapped to a proper SeatersApiException
+         */
         SeatersApiContext.prototype.handle400Response = function(response) {
           return this.dataFromLegacyResponse(response).then(function(data) {
             return Promise.reject({
@@ -489,7 +489,7 @@ var SeatersSDK = /******/ (function(modules) {
         };
       Object.defineProperty(exports, '__esModule', { value: true });
       var seaters_api_1 = __webpack_require__(0);
-      var index_1 = __webpack_require__(13);
+      var index_1 = __webpack_require__(7);
       var FanApi = /** @class */ (function() {
         function FanApi(apiContext) {
           this.apiContext = apiContext;
@@ -705,26 +705,26 @@ var SeatersSDK = /******/ (function(modules) {
         };
         // PROFILING : FAN
         /**
-     * Gets complete list of categories
-     * @param {PagingOptions} pagingOptions
-     */
+         * Gets complete list of categories
+         * @param {PagingOptions} pagingOptions
+         */
         FanApi.prototype.getProfilingCategories = function(pagingOptions) {
           var queryParams = seaters_api_1.SeatersApiContext.buildPagingSortingQueryParams(pagingOptions);
           return this.apiContext.get('v2/fan/interests/categories', null, queryParams);
         };
         /**
-     * Gets single category
-     * @param categoryId
-     */
+         * Gets single category
+         * @param categoryId
+         */
         FanApi.prototype.getProfilingCategoryById = function(categoryId) {
           return this.apiContext.get('v2/fan/interests/category/' + categoryId, {}, {});
         };
         /**
-     * Gets complete list of interests with their user status
-     * and their categoryId
-     *
-     * @param pagingOptions
-     */
+         * Gets complete list of interests with their user status
+         * and their categoryId
+         *
+         * @param pagingOptions
+         */
         FanApi.prototype.getUserInterests = function(pagingOptions) {
           return this.apiContext.get(
             'v2/fan/interests',
@@ -733,29 +733,29 @@ var SeatersSDK = /******/ (function(modules) {
           );
         };
         /**
-     * Updates a user interest
-     * @param {UserInterestUpdateDTO} options
-     */
+         * Updates a user interest
+         * @param {UserInterestUpdateDTO} options
+         */
         FanApi.prototype.updateUserInterest = function(options) {
           return this.apiContext.post('v2/fan/interests/' + options.id + '/' + options.status, {}, {});
         };
         /**
-     *
-     * Performs search operation
-     * on name and aliases of fan attribues
-     *
-     * @param {string} query search query
-     * @param {boolean} validated to fetch only validated fan attributes
-     *
-     */
+         *
+         * Performs search operation
+         * on name and aliases of fan attribues
+         *
+         * @param {string} query search query
+         * @param {boolean} validated to fetch only validated fan attributes
+         *
+         */
         FanApi.prototype.seachFanAttributes = function(query, validated) {
           var queryParams = { query: query, validated: validated ? 'true' : 'false' };
           return this.apiContext.get('v2/fan/fan-attributes/search', null, queryParams);
         };
         /**
-     * Gets list of user fan attribute
-     * @param pagingOptions
-     */
+         * Gets list of user fan attribute
+         * @param pagingOptions
+         */
         FanApi.prototype.getUserFanAttributes = function(pagingOptions) {
           return this.apiContext.get(
             'v2/fan/fan-attributes',
@@ -764,17 +764,17 @@ var SeatersSDK = /******/ (function(modules) {
           );
         };
         /**
-     * Gets single user fan attributes
-     * @param fanAttributeId
-     */
+         * Gets single user fan attributes
+         * @param fanAttributeId
+         */
         FanApi.prototype.getProfilingFanAttributeById = function(fanAttributeId) {
           return this.apiContext.get('v2/fan/fan-attributes/' + fanAttributeId, {}, {});
         };
         /**
-     * Updates user fan attribute
-     * (Link / Unlink / Create )
-     * @param {UserFanAttributeUpdateDTO} options
-     */
+         * Updates user fan attribute
+         * (Link / Unlink / Create )
+         * @param {UserFanAttributeUpdateDTO} options
+         */
         FanApi.prototype.updateUserFanAttribute = function(options) {
           var body = null;
           var endpoint = 'v2/fan/fan-attributes/' + options.id + '/' + options.status;
@@ -824,6 +824,34 @@ var SeatersSDK = /******/ (function(modules) {
             {}
           );
         };
+        // SURVEY : FAN
+        /**
+         * Gets list of survey per wishlist
+         * @param {PagingOptions} pagingOptions
+         */
+        FanApi.prototype.getSurveys = function(pagingOptions) {
+          var queryParams = seaters_api_1.SeatersApiContext.buildPagingSortingQueryParams(pagingOptions);
+          return this.apiContext.get('v2/fan/survey/instances', null, queryParams);
+        };
+        /**
+         * Gets list of answers for a given survey
+         * @param {string} surveyId
+         */
+        FanApi.prototype.getAnswers = function(surveyId) {
+          return this.apiContext.get('v2/fan/surveys/instances/:surveyId/answers', { surveyId: surveyId });
+        };
+        /**
+         * Submits list of answers for a given survey
+         * @param {string} surveyId
+         * @param {Answer[]} answers
+         */
+        FanApi.prototype.submitAnswers = function(surveyId, answers) {
+          return this.apiContext.post(
+            'v2/fan/surveys/instances/:surveyId/answers',
+            { answers: answers },
+            { surveyId: surveyId }
+          );
+        };
         return FanApi;
       })();
       exports.FanApi = FanApi;
@@ -832,6 +860,21 @@ var SeatersSDK = /******/ (function(modules) {
       /***/
     },
     /* 7 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      function __export(m) {
+        for (var p in m) {
+          if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+        }
+      }
+      Object.defineProperty(exports, '__esModule', { value: true });
+      __export(__webpack_require__(6));
+      __export(__webpack_require__(35));
+
+      /***/
+    },
+    /* 8 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -860,15 +903,15 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 8 */
+    /* 9 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
       Object.defineProperty(exports, '__esModule', { value: true });
-      var fan_1 = __webpack_require__(13);
+      var fan_1 = __webpack_require__(7);
       /**
- *  PROFILING
- */
+       *  PROFILING
+       */
       var profiling;
       (function(profiling) {
         profiling.USER_INTEREST_STATUS = fan_1.UserInterestStatusEnum;
@@ -881,7 +924,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 9 */
+    /* 10 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -908,7 +951,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 10 */
+    /* 11 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -987,7 +1030,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 11 */
+    /* 12 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -1006,7 +1049,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 12 */
+    /* 13 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -1069,21 +1112,6 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 13 */
-    /***/ function(module, exports, __webpack_require__) {
-      'use strict';
-
-      function __export(m) {
-        for (var p in m) {
-          if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-        }
-      }
-      Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(6));
-      __export(__webpack_require__(34));
-
-      /***/
-    },
     /* 14 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
@@ -1124,65 +1152,65 @@ var SeatersSDK = /******/ (function(modules) {
           this.apiContext = apiContext;
         }
         /**
-     * Login using email-password credentials
-     * @param credentials email, password and optionally MFA token
-     */
+         * Login using email-password credentials
+         * @param credentials email, password and optionally MFA token
+         */
         AuthenticationApi.prototype.emailPasswordLogin = function(credentials) {
           return this.apiContext.put('/v2/authentication/login', credentials);
         };
         /**
-     * Login using long-term stored token
-     * @param credentials long term stored token and optionally MFA token
-     */
+         * Login using long-term stored token
+         * @param credentials long term stored token and optionally MFA token
+         */
         AuthenticationApi.prototype.storedTokenLogin = function(credentials) {
           return this.apiContext.put('/v2/authentication/stored-token', credentials);
         };
         /**
-     * Extend your session with a refresh token
-     * @param credentials Refresh token
-     */
+         * Extend your session with a refresh token
+         * @param credentials Refresh token
+         */
         AuthenticationApi.prototype.refreshTokenLogin = function(credentials) {
           return this.apiContext.put('/v2/authentication/refresh-token', credentials);
         };
         /**
-     * Signs up a new user
-     * @param input
-     * @returns {any}
-     */
+         * Signs up a new user
+         * @param input
+         * @returns {any}
+         */
         AuthenticationApi.prototype.signup = function(input) {
           return this.apiContext.post('/v2/authentication/signup', input);
         };
         /**
-     * Signs up a new user without firstname / lastname / password
-     * @param input
-     * @returns {any}
-     */
+         * Signs up a new user without firstname / lastname / password
+         * @param input
+         * @returns {any}
+         */
         AuthenticationApi.prototype.signupAnonymous = function(input) {
           return this.apiContext.post('/v2/authentication/embedded/signup', input);
         };
         /**
-     * Validates an email or phone number and marks it as confirmed
-     *
-     * @param input Either the email or the phone and the confirmation code
-     * @returns Promise that resolves with the validated user or rejects with a SeatersApiException
-     * @see SeatersApiException
-     */
+         * Validates an email or phone number and marks it as confirmed
+         *
+         * @param input Either the email or the phone and the confirmation code
+         * @returns Promise that resolves with the validated user or rejects with a SeatersApiException
+         * @see SeatersApiException
+         */
         AuthenticationApi.prototype.validate = function(input) {
           return this.apiContext.put('/auth/validate', input);
         };
         /**
-     *
-     * @param input
-     * @returns {any}
-     */
+         *
+         * @param input
+         * @returns {any}
+         */
         AuthenticationApi.prototype.resetEmail = function(input) {
           return this.apiContext.post('/auth/signup/reset-email', input);
         };
         /**
-     * Obtain a seaters session by passing an oauth code for a given provider
-     * Examples that should work are github, facebook. For your specific provider name
-     * please refer to a seaters developer.
-     */
+         * Obtain a seaters session by passing an oauth code for a given provider
+         * Examples that should work are github, facebook. For your specific provider name
+         * please refer to a seaters developer.
+         */
         AuthenticationApi.prototype.loginWithOAuthCode = function(oauthProvider, code) {
           var endpoint = '/login/:oauthProvider';
           var endpointParams = { oauthProvider: oauthProvider };
@@ -1190,24 +1218,24 @@ var SeatersSDK = /******/ (function(modules) {
           return this.apiContext.get(endpoint, endpointParams, queryParams);
         };
         /**
-     * Create a new authentication token that can be stored and is valid for a longer time
-     * for the authenticated user.
-     */
+         * Create a new authentication token that can be stored and is valid for a longer time
+         * for the authenticated user.
+         */
         AuthenticationApi.prototype.createStoredToken = function(input) {
           var endpoint = '/auth/auth-tokens';
           return this.apiContext.post(endpoint, input, null, null);
         };
         /**
-     * Get all stored tokens for authenticated user
-     */
+         * Get all stored tokens for authenticated user
+         */
         AuthenticationApi.prototype.getStoredTokens = function() {
           var endpoint = '/auth/auth-tokens';
           return this.apiContext.get(endpoint);
         };
         /**
-     * Update password
-     * @param data
-     */
+         * Update password
+         * @param data
+         */
         AuthenticationApi.prototype.updatePassword = function(data) {
           return this.apiContext.put('/v2/authentication/update-password', data);
         };
@@ -1995,16 +2023,16 @@ var SeatersSDK = /******/ (function(modules) {
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
-      function __export(m) {
-        for (var p in m) {
-          if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-        }
-      }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(58));
-      __export(__webpack_require__(59));
-      exports.TYPE_FIELD = 'type';
-      exports.TYPO_TOLERANCE_STRICT = 'strict';
+      var fan_1 = __webpack_require__(7);
+      /**
+       *  PROFILING
+       */
+      var survey;
+      (function(survey) {
+        survey.SURVEY_STATUS = fan_1.SurveyStatusEnum;
+        survey.SURVEY_EXTENSION_POINT = fan_1.SurveyExtensionPointEnum;
+      })((survey = exports.survey || (exports.survey = {})));
 
       /***/
     },
@@ -2018,18 +2046,37 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      //noinspection TsLint
-      // tslint:disable-next-line
-      exports.version = '1.28.14';
-      __export(__webpack_require__(21));
-      var fan_types_1 = __webpack_require__(2);
-      exports.fan = fan_types_1.fan;
-      var profiling_types_1 = __webpack_require__(8);
-      exports.profiling = profiling_types_1.profiling;
+      __export(__webpack_require__(61));
+      __export(__webpack_require__(62));
+      exports.TYPE_FIELD = 'type';
+      exports.TYPO_TOLERANCE_STRICT = 'strict';
 
       /***/
     },
     /* 21 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      function __export(m) {
+        for (var p in m) {
+          if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+        }
+      }
+      Object.defineProperty(exports, '__esModule', { value: true });
+      //noinspection TsLint
+      // tslint:disable-next-line
+      exports.version = '1.28.14';
+      __export(__webpack_require__(22));
+      var fan_types_1 = __webpack_require__(2);
+      exports.fan = fan_types_1.fan;
+      var profiling_types_1 = __webpack_require__(9);
+      exports.profiling = profiling_types_1.profiling;
+      var survey_types_1 = __webpack_require__(19);
+      exports.survey = survey_types_1.survey;
+
+      /***/
+    },
+    /* 22 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2048,7 +2095,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       var api_1 = __webpack_require__(4);
       var seaters_api_1 = __webpack_require__(0);
-      var services_1 = __webpack_require__(46);
+      var services_1 = __webpack_require__(48);
       var SeatersClient = /** @class */ (function() {
         function SeatersClient(options) {
           options = __assign({}, SeatersClient.DEFAULT_OPTIONS, options);
@@ -2071,9 +2118,9 @@ var SeatersSDK = /******/ (function(modules) {
       })();
       exports.SeatersClient = SeatersClient;
       /**
- * Obtain a seaters client. This will only instantiate the client with the given options the first time you invoke it.
- * Calls made after the initial call will return the original instance.
- */
+       * Obtain a seaters client. This will only instantiate the client with the given options the first time you invoke it.
+       * Calls made after the initial call will return the original instance.
+       */
       exports.getSeatersClient = (function() {
         var client;
         return function(options) {
@@ -2121,7 +2168,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 22 */
+    /* 23 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2138,8 +2185,8 @@ var SeatersSDK = /******/ (function(modules) {
           return t;
         };
       Object.defineProperty(exports, '__esModule', { value: true });
-      var subject_1 = __webpack_require__(9);
-      var api_endpoint_1 = __webpack_require__(10);
+      var subject_1 = __webpack_require__(10);
+      var api_endpoint_1 = __webpack_require__(11);
       var ApiContext = /** @class */ (function() {
         function ApiContext(apiPrefix, requestDriver) {
           this.apiPrefix = apiPrefix;
@@ -2205,7 +2252,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 23 */
+    /* 24 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2219,27 +2266,27 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 24 */
+    /* 25 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
       Object.defineProperty(exports, '__esModule', { value: true });
       /**
- * Obtain the request driver for the given type
- */
+       * Obtain the request driver for the given type
+       */
       function getRequestDriver(type) {
         switch (type) {
           case 'BROWSER':
-            return __webpack_require__(25).default;
+            return __webpack_require__(26).default;
           default:
-            return __webpack_require__(32).default;
+            return __webpack_require__(33).default;
         }
       }
       exports.getRequestDriver = getRequestDriver;
 
       /***/
     },
-    /* 25 */
+    /* 26 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2289,7 +2336,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 26 */
+    /* 27 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2316,7 +2363,7 @@ var SeatersSDK = /******/ (function(modules) {
           };
         })();
       Object.defineProperty(exports, '__esModule', { value: true });
-      var deferred_promise_1 = __webpack_require__(11);
+      var deferred_promise_1 = __webpack_require__(12);
       var RetryUntilTimeoutError = /** @class */ (function(_super) {
         __extends(RetryUntilTimeoutError, _super);
         function RetryUntilTimeoutError(limit) {
@@ -2376,7 +2423,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 27 */
+    /* 28 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2387,11 +2434,11 @@ var SeatersSDK = /******/ (function(modules) {
         looseComparison: false
       };
       /**
- * Deep compare of 2 objects; matching the value of each key
- * @param o an Object
- * @param p an Object
- * @param options
- */
+       * Deep compare of 2 objects; matching the value of each key
+       * @param o an Object
+       * @param p an Object
+       * @param options
+       */
       function compareObjects(o, p, options) {
         var i;
         var keysO = Object.keys(o).sort();
@@ -2476,7 +2523,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 28 */
+    /* 29 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2510,13 +2557,13 @@ var SeatersSDK = /******/ (function(modules) {
         return array;
       }
       /**
- * This function stringifies and sorts all key-values in the array and compares them
- * without any null or undefined values
- *
- * @param o {object}
- * @param p {object}
- * @returns {boolean} whether or not the objects o and p are equal
- */
+       * This function stringifies and sorts all key-values in the array and compares them
+       * without any null or undefined values
+       *
+       * @param o {object}
+       * @param p {object}
+       * @returns {boolean} whether or not the objects o and p are equal
+       */
       function compareFlatObjects(o, p) {
         var oArray = createFlatArray(o, []);
         var pArray = createFlatArray(p, []);
@@ -2528,7 +2575,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 29 */
+    /* 30 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2542,10 +2589,10 @@ var SeatersSDK = /******/ (function(modules) {
           });
         }
         /**
-     * Translate the text in the given locale. Will fall back to 'en' when neither locale neither fallbackLocale are available
-     * @param locale Locale to try to retrieve the translated text
-     * @param fallbackLocale Fall back to a translation in this locale if preferred locale was not available
-     */
+         * Translate the text in the given locale. Will fall back to 'en' when neither locale neither fallbackLocale are available
+         * @param locale Locale to try to retrieve the translated text
+         * @param fallbackLocale Fall back to a translation in this locale if preferred locale was not available
+         */
         LocalizableText.prototype.localize = function(locale, fallbackLocale) {
           if (this.hasOwnProperty(locale)) {
             return this[locale];
@@ -2565,7 +2612,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 30 */
+    /* 31 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2583,15 +2630,15 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 31 */
+    /* 32 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
       Object.defineProperty(exports, '__esModule', { value: true });
       /**
- * Transforms this format "2017-07-27T17:18:33.994+0000" into "2017-07-27T17:19:38.182Z"
- * Leaves the latter format alone
- */
+       * Transforms this format "2017-07-27T17:18:33.994+0000" into "2017-07-27T17:19:38.182Z"
+       * Leaves the latter format alone
+       */
       function normalizeLondonTimezoneDate(date) {
         return date.replace(/\+0000$/, 'Z');
       }
@@ -2599,7 +2646,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 32 */
+    /* 33 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2672,18 +2719,18 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 33 */
+    /* 34 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
       Object.defineProperty(exports, '__esModule', { value: true });
-      var app_api_1 = __webpack_require__(12);
+      var app_api_1 = __webpack_require__(13);
       var fan_api_1 = __webpack_require__(6);
-      var admin_1 = __webpack_require__(36);
-      var health_1 = __webpack_require__(38);
+      var admin_1 = __webpack_require__(38);
+      var health_1 = __webpack_require__(40);
       var authentication_api_1 = __webpack_require__(16);
-      var ticketing_1 = __webpack_require__(39);
-      var payment_1 = __webpack_require__(41);
+      var ticketing_1 = __webpack_require__(41);
+      var payment_1 = __webpack_require__(43);
       var seaters_api_context_1 = __webpack_require__(5);
       var SeatersApi = /** @class */ (function() {
         function SeatersApi(prefix, requestDriver) {
@@ -2702,7 +2749,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 34 */
+    /* 35 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2712,18 +2759,19 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(35));
+      __export(__webpack_require__(36));
+      __export(__webpack_require__(37));
 
       /***/
     },
-    /* 35 */
+    /* 36 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
       Object.defineProperty(exports, '__esModule', { value: true });
       /**
- *  PROFILING - FAN ATTRIBUTES
- */
+       *  PROFILING - FAN ATTRIBUTES
+       */
       var ProfilingFanAttributeStatusEnum;
       (function(ProfilingFanAttributeStatusEnum) {
         ProfilingFanAttributeStatusEnum['VALIDATED'] = 'VALIDATED';
@@ -2775,7 +2823,24 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 36 */
+    /* 37 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      Object.defineProperty(exports, '__esModule', { value: true });
+      var SurveyStatusEnum;
+      (function(SurveyStatusEnum) {
+        SurveyStatusEnum['ACTIVE'] = 'ACTIVE';
+        SurveyStatusEnum['ARCHIVED'] = 'ARCHIVED';
+      })((SurveyStatusEnum = exports.SurveyStatusEnum || (exports.SurveyStatusEnum = {})));
+      var SurveyExtensionPointEnum;
+      (function(SurveyExtensionPointEnum) {
+        SurveyExtensionPointEnum['BEFORE_JOINING_WAITINGLIST'] = 'BEFORE_JOINING_WAITINGLIST';
+      })((SurveyExtensionPointEnum = exports.SurveyExtensionPointEnum || (exports.SurveyExtensionPointEnum = {})));
+
+      /***/
+    },
+    /* 38 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2785,11 +2850,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(37));
+      __export(__webpack_require__(39));
 
       /***/
     },
-    /* 37 */
+    /* 39 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2818,7 +2883,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       /* tslint:disable:no-floating-promises */
       var seaters_api_1 = __webpack_require__(0);
-      var seaters_api_controller_1 = __webpack_require__(7);
+      var seaters_api_controller_1 = __webpack_require__(8);
       var AdminApi = /** @class */ (function(_super) {
         __extends(AdminApi, _super);
         function AdminApi(apiContext) {
@@ -2932,10 +2997,10 @@ var SeatersSDK = /******/ (function(modules) {
           );
         };
         /**
-     * Upload a onetime file
-     * @param oneTimeFileUrl url of a OneTimeFile returned by requestOneTimeFileUpload
-     * @param data for browsers: HTMLInputElement, for node: not supported
-     */
+         * Upload a onetime file
+         * @param oneTimeFileUrl url of a OneTimeFile returned by requestOneTimeFileUpload
+         * @param data for browsers: HTMLInputElement, for node: not supported
+         */
         AdminApi.prototype.uploadOneTimeFile = function(oneTimeFileUrl, data) {
           return this.apiContext.uploadOneTimeFile(oneTimeFileUrl, data);
         };
@@ -3012,8 +3077,8 @@ var SeatersSDK = /******/ (function(modules) {
           });
         };
         /**
-     * HELPERS
-     */
+         * HELPERS
+         */
         AdminApi.prototype.requestFanGroupImageUpload = function(fanGroupId, endpoint, fileName) {
           return this.apiContext.put(
             '/seaters-admin/fan-groups/:id/' + endpoint,
@@ -3029,7 +3094,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 38 */
+    /* 40 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3041,74 +3106,6 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       __export(__webpack_require__(14));
       __export(__webpack_require__(15));
-
-      /***/
-    },
-    /* 39 */
-    /***/ function(module, exports, __webpack_require__) {
-      'use strict';
-
-      function __export(m) {
-        for (var p in m) {
-          if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-        }
-      }
-      Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(40));
-
-      /***/
-    },
-    /* 40 */
-    /***/ function(module, exports, __webpack_require__) {
-      'use strict';
-
-      var __extends =
-        (undefined && undefined.__extends) ||
-        (function() {
-          var extendStatics =
-            Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array &&
-              function(d, b) {
-                d.__proto__ = b;
-              }) ||
-            function(d, b) {
-              for (var p in b) {
-                if (b.hasOwnProperty(p)) d[p] = b[p];
-              }
-            };
-          return function(d, b) {
-            extendStatics(d, b);
-            function __() {
-              this.constructor = d;
-            }
-            d.prototype = b === null ? Object.create(b) : ((__.prototype = b.prototype), new __());
-          };
-        })();
-      Object.defineProperty(exports, '__esModule', { value: true });
-      /* tslint:disable:no-floating-promises */
-      var seaters_api_1 = __webpack_require__(0);
-      var seaters_api_controller_1 = __webpack_require__(7);
-      var TicketingApi = /** @class */ (function(_super) {
-        __extends(TicketingApi, _super);
-        function TicketingApi(apiContext) {
-          var _this = _super.call(this) || this;
-          _this.apiContext = apiContext;
-          return _this;
-        }
-        TicketingApi.prototype.getTicketingSystems = function(page) {
-          return this.apiContext.get(
-            '/ticketing/systems',
-            null,
-            seaters_api_1.SeatersApiContext.buildPagingQueryParams(page)
-          );
-        };
-        TicketingApi.prototype.getTicketingSystem = function(ticketingSystemId) {
-          return this.apiContext.get('/ticketing/systems/:id', { id: ticketingSystemId });
-        };
-        return TicketingApi;
-      })(seaters_api_controller_1.SeatersApiController);
-      exports.TicketingApi = TicketingApi;
-      /* tslint:enable:no-floating-promises */
 
       /***/
     },
@@ -3155,7 +3152,75 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       /* tslint:disable:no-floating-promises */
       var seaters_api_1 = __webpack_require__(0);
-      var seaters_api_controller_1 = __webpack_require__(7);
+      var seaters_api_controller_1 = __webpack_require__(8);
+      var TicketingApi = /** @class */ (function(_super) {
+        __extends(TicketingApi, _super);
+        function TicketingApi(apiContext) {
+          var _this = _super.call(this) || this;
+          _this.apiContext = apiContext;
+          return _this;
+        }
+        TicketingApi.prototype.getTicketingSystems = function(page) {
+          return this.apiContext.get(
+            '/ticketing/systems',
+            null,
+            seaters_api_1.SeatersApiContext.buildPagingQueryParams(page)
+          );
+        };
+        TicketingApi.prototype.getTicketingSystem = function(ticketingSystemId) {
+          return this.apiContext.get('/ticketing/systems/:id', { id: ticketingSystemId });
+        };
+        return TicketingApi;
+      })(seaters_api_controller_1.SeatersApiController);
+      exports.TicketingApi = TicketingApi;
+      /* tslint:enable:no-floating-promises */
+
+      /***/
+    },
+    /* 43 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      function __export(m) {
+        for (var p in m) {
+          if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+        }
+      }
+      Object.defineProperty(exports, '__esModule', { value: true });
+      __export(__webpack_require__(44));
+
+      /***/
+    },
+    /* 44 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      var __extends =
+        (undefined && undefined.__extends) ||
+        (function() {
+          var extendStatics =
+            Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array &&
+              function(d, b) {
+                d.__proto__ = b;
+              }) ||
+            function(d, b) {
+              for (var p in b) {
+                if (b.hasOwnProperty(p)) d[p] = b[p];
+              }
+            };
+          return function(d, b) {
+            extendStatics(d, b);
+            function __() {
+              this.constructor = d;
+            }
+            d.prototype = b === null ? Object.create(b) : ((__.prototype = b.prototype), new __());
+          };
+        })();
+      Object.defineProperty(exports, '__esModule', { value: true });
+      /* tslint:disable:no-floating-promises */
+      var seaters_api_1 = __webpack_require__(0);
+      var seaters_api_controller_1 = __webpack_require__(8);
       var PaymentApi = /** @class */ (function(_super) {
         __extends(PaymentApi, _super);
         function PaymentApi(apiContext) {
@@ -3180,7 +3245,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 43 */
+    /* 45 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3215,7 +3280,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 44 */
+    /* 46 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3232,11 +3297,11 @@ var SeatersSDK = /******/ (function(modules) {
 
       Object.defineProperty(exports, '__esModule', { value: true });
       /**
- * Map Seaters API V1 exceptions to a usuable format
- *
- * @param mapping A mapping of V1 error messages to values of the given type
- * @return Returns an Promise that rejects with the mapped error
- */
+       * Map Seaters API V1 exceptions to a usuable format
+       *
+       * @param mapping A mapping of V1 error messages to values of the given type
+       * @return Returns an Promise that rejects with the mapped error
+       */
       function seatersExceptionV1MessageMapper(mapping) {
         return function(err) {
           if ((typeof err === 'undefined' ? 'undefined' : _typeof(err)) !== 'object') {
@@ -3257,7 +3322,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 45 */
+    /* 47 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3268,11 +3333,11 @@ var SeatersSDK = /******/ (function(modules) {
           return '[' + e.references.join(',') + '] ' + e.error.errorCode + ': ' + e.error.errorDescription;
         }
         /**
-     * Map Seaters API V3 exceptions to a consistent format. This is the error view designed by Daniel Di Luca
-     *
-     * @param mapping A mapping of V3 error messages to values of the given type
-     * @return Returns an Promise that rejects with the mapped error
-     */
+         * Map Seaters API V3 exceptions to a consistent format. This is the error view designed by Daniel Di Luca
+         *
+         * @param mapping A mapping of V3 error messages to values of the given type
+         * @return Returns an Promise that rejects with the mapped error
+         */
         function seatersExceptionV3Mapper(res) {
           try {
             var error = JSON.parse(res.body);
@@ -3315,7 +3380,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 46 */
+    /* 48 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3325,18 +3390,18 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(47));
-      __export(__webpack_require__(51));
-      __export(__webpack_require__(60));
-      __export(__webpack_require__(62));
-      __export(__webpack_require__(64));
+      __export(__webpack_require__(49));
+      __export(__webpack_require__(54));
+      __export(__webpack_require__(63));
+      __export(__webpack_require__(65));
       __export(__webpack_require__(67));
-      __export(__webpack_require__(69));
+      __export(__webpack_require__(70));
+      __export(__webpack_require__(72));
       __export(__webpack_require__(1));
 
       /***/
     },
-    /* 47 */
+    /* 49 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3346,15 +3411,16 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(48));
+      __export(__webpack_require__(50));
       __export(__webpack_require__(2));
-      __export(__webpack_require__(8));
+      __export(__webpack_require__(9));
+      __export(__webpack_require__(19));
       __export(__webpack_require__(17));
       __export(__webpack_require__(18));
 
       /***/
     },
-    /* 48 */
+    /* 50 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3397,7 +3463,8 @@ var SeatersSDK = /******/ (function(modules) {
       var waiting_list_service_1 = __webpack_require__(17);
       var fan_group_service_1 = __webpack_require__(18);
       var util_1 = __webpack_require__(1);
-      var fan_profiling_service_1 = __webpack_require__(50);
+      var fan_profiling_service_1 = __webpack_require__(52);
+      var fan_survey_service_1 = __webpack_require__(53);
       var FanService = /** @class */ (function(_super) {
         __extends(FanService, _super);
         function FanService(seatersApi, sessionService, publicService) {
@@ -3407,11 +3474,12 @@ var SeatersSDK = /******/ (function(modules) {
           _this.waitingListService = new waiting_list_service_1.WaitingListService(seatersApi);
           _this.fanGroupService = new fan_group_service_1.FanGroupService(seatersApi);
           _this.fanProfilingService = new fan_profiling_service_1.FanProfilingService(seatersApi);
+          _this.fanSurveyService = new fan_survey_service_1.FanSurveyService(seatersApi);
           return _this;
         }
         /**
-     *  FAN GROUPS
-     */
+         *  FAN GROUPS
+         */
         FanService.prototype.getFanGroups = function(fanGroupIds) {
           return this.fanGroupService.getFanGroups(fanGroupIds);
         };
@@ -3449,8 +3517,8 @@ var SeatersSDK = /******/ (function(modules) {
           });
         };
         /**
-     *  WAITING LISTS
-     */
+         *  WAITING LISTS
+         */
         FanService.prototype.getWaitingList = function(waitingListId) {
           return this.waitingListService.getWaitingList(waitingListId);
         };
@@ -3524,12 +3592,12 @@ var SeatersSDK = /******/ (function(modules) {
           return this.waitingListService.preauthorizePosition(waitingListId, transaction);
         };
         /**
-     * Submit attendee information. This will validate the submitted information. The returned promise will be
-     * resolved once the user can continue with the next step after submitting attendee information
-     * @param waitingListId WL for which attendee info needs to be validated and stored
-     * @param attendeesInfo The actual attendee information
-     * @throws SeatersApiException of type 'validation_error'
-     */
+         * Submit attendee information. This will validate the submitted information. The returned promise will be
+         * resolved once the user can continue with the next step after submitting attendee information
+         * @param waitingListId WL for which attendee info needs to be validated and stored
+         * @param attendeesInfo The actual attendee information
+         * @throws SeatersApiException of type 'validation_error'
+         */
         FanService.prototype.saveAttendeesInfo = function(waitingListId, attendeesInfo) {
           return this.waitingListService.saveAttendeesInfo(waitingListId, attendeesInfo);
         };
@@ -3567,19 +3635,19 @@ var SeatersSDK = /******/ (function(modules) {
           return this.waitingListService.getWaitingListPrice(waitingListId, numberOfSeats);
         };
         /**
-     * FANS
-     */
+         * FANS
+         */
         /**
-     * Send a new SMS containing the code needed to validate email / phone.
-     * @param phone
-     * @returns {any}
-     */
+         * Send a new SMS containing the code needed to validate email / phone.
+         * @param phone
+         * @returns {any}
+         */
         FanService.prototype.sendValidationCodeViaSMS = function(phone) {
           return this.seatersApi.apiContext.put('/fan/mobile-phone-number', phone);
         };
         /**
-     *  COMBINATIONS
-     */
+         *  COMBINATIONS
+         */
         FanService.prototype.updateFan = function(f) {
           var _this = this;
           return this.seatersApi.fan.updateFan(f).then(function(updatedFan) {
@@ -3671,13 +3739,23 @@ var SeatersSDK = /******/ (function(modules) {
         FanService.prototype.unlinkWaitingListFanAttribute = function(waitingListId, fanAttributeId) {
           return this.waitingListService.unlinkWaitingListFanAttribute(waitingListId, fanAttributeId);
         };
+        // Survey
+        FanService.prototype.getSurveys = function(waitingListId, extensionPoint) {
+          return this.fanSurveyService.getSurvey(waitingListId, extensionPoint).then(this.convertPagedSortedResult);
+        };
+        FanService.prototype.getAnswers = function(surveyId) {
+          return this.fanSurveyService.getAnswers(surveyId).then(this.convertPagedSortedResult);
+        };
+        FanService.prototype.submitAnswers = function(surveyId, answers) {
+          return this.fanSurveyService.submitAnswers(surveyId, answers);
+        };
         return FanService;
       })(common_1.SeatersService);
       exports.FanService = FanService;
 
       /***/
     },
-    /* 49 */
+    /* 51 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3710,12 +3788,12 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 50 */
+    /* 52 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
       Object.defineProperty(exports, '__esModule', { value: true });
-      var profiling_types_1 = __webpack_require__(8);
+      var profiling_types_1 = __webpack_require__(9);
       var FanProfilingService = /** @class */ (function() {
         function FanProfilingService(seatersApi) {
           this.seatersApi = seatersApi;
@@ -3758,7 +3836,38 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 51 */
+    /* 53 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      Object.defineProperty(exports, '__esModule', { value: true });
+      var FanSurveyService = /** @class */ (function() {
+        function FanSurveyService(seatersApi) {
+          this.seatersApi = seatersApi;
+        }
+        FanSurveyService.prototype.getSurvey = function(waitingListId, extensionPoint) {
+          var pagingOptions = {};
+          if (!pagingOptions.filters) {
+            pagingOptions.filters = {
+              waitinglist_id: waitingListId,
+              extension_point: extensionPoint
+            };
+          }
+          return this.seatersApi.fan.getSurveys(pagingOptions);
+        };
+        FanSurveyService.prototype.getAnswers = function(surveyId) {
+          return this.seatersApi.fan.getAnswers(surveyId);
+        };
+        FanSurveyService.prototype.submitAnswers = function(surveyId, answers) {
+          return this.seatersApi.fan.submitAnswers(surveyId, answers);
+        };
+        return FanSurveyService;
+      })();
+      exports.FanSurveyService = FanSurveyService;
+
+      /***/
+    },
+    /* 54 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3768,11 +3877,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(52));
+      __export(__webpack_require__(55));
 
       /***/
     },
-    /* 52 */
+    /* 55 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3800,7 +3909,7 @@ var SeatersSDK = /******/ (function(modules) {
           return t;
         };
       Object.defineProperty(exports, '__esModule', { value: true });
-      var algolia_for_seaters_1 = __webpack_require__(53);
+      var algolia_for_seaters_1 = __webpack_require__(56);
       var fan_types_1 = __webpack_require__(2);
       var PublicService = /** @class */ (function() {
         function PublicService(appService, requestDriver, seatersApi) {
@@ -3902,7 +4011,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 53 */
+    /* 56 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3912,18 +4021,18 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(54));
-      __export(__webpack_require__(19));
+      __export(__webpack_require__(57));
+      __export(__webpack_require__(20));
 
       /***/
     },
-    /* 54 */
+    /* 57 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
       Object.defineProperty(exports, '__esModule', { value: true });
-      var algolia_api_1 = __webpack_require__(55);
-      var algolia_for_seaters_types_1 = __webpack_require__(19);
+      var algolia_api_1 = __webpack_require__(58);
+      var algolia_for_seaters_types_1 = __webpack_require__(20);
       var DEFAULT_LOCALE = 'en';
       var WL_FACET_FILTER = {
         facet: algolia_for_seaters_types_1.TYPE_FIELD,
@@ -4191,7 +4300,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 55 */
+    /* 58 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4201,11 +4310,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(56));
+      __export(__webpack_require__(59));
 
       /***/
     },
-    /* 56 */
+    /* 59 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4233,7 +4342,7 @@ var SeatersSDK = /******/ (function(modules) {
         })();
       Object.defineProperty(exports, '__esModule', { value: true });
       var api_1 = __webpack_require__(4);
-      var indices_api_1 = __webpack_require__(57);
+      var indices_api_1 = __webpack_require__(60);
       var APP_ID_HEADER = 'X-Algolia-Application-Id';
       var API_KEY_HEADER = 'X-Algolia-API-Key';
       var API_LOCATION_INFIX = '-dsn.algolia.net/1/';
@@ -4257,7 +4366,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 57 */
+    /* 60 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4334,7 +4443,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 58 */
+    /* 61 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4343,7 +4452,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 59 */
+    /* 62 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4352,7 +4461,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 60 */
+    /* 63 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4362,11 +4471,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(61));
+      __export(__webpack_require__(64));
 
       /***/
     },
-    /* 61 */
+    /* 64 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4395,30 +4504,30 @@ var SeatersSDK = /******/ (function(modules) {
           this.sessionStrategy = sessionStrategy || SESSION_STRATEGY.EXTEND;
         }
         /**
-     * Configure the given session to be used. This method is intended for transitional
-     * phase where the SDK is not the one doing the login process (Seaters FanWebApp)
-     *
-     * @param session a valid session that is not expired
-     * @param fan a valid fan object
-     */
+         * Configure the given session to be used. This method is intended for transitional
+         * phase where the SDK is not the one doing the login process (Seaters FanWebApp)
+         *
+         * @param session a valid session that is not expired
+         * @param fan a valid fan object
+         */
         SessionService.prototype.configureSession = function(s, fan) {
           this.setSession(s);
           this.currentFan = fan;
         };
         /**
-     * Manually configure the fan (in case the current fan was changed / retrieved externally)
-     *
-     * @param fan latest fan object
-     */
+         * Manually configure the fan (in case the current fan was changed / retrieved externally)
+         *
+         * @param fan latest fan object
+         */
         SessionService.prototype.updateCurrentFan = function(fan) {
           this.currentFan = fan;
           return Promise.resolve(this.currentFan);
         };
         /**
-     * Update password
-     *
-     * @param fan latest fan object
-     */
+         * Update password
+         *
+         * @param fan latest fan object
+         */
         SessionService.prototype.updatePassword = function(data) {
           var _this = this;
           return new Promise(function(resolve, reject) {
@@ -4426,12 +4535,12 @@ var SeatersSDK = /******/ (function(modules) {
           });
         };
         /**
-     * Log in using an email/password
-     *
-     * @param email valid email or seaters username
-     * @param password plain text password
-     * @param mfaToken authenticator token
-     */
+         * Log in using an email/password
+         *
+         * @param email valid email or seaters username
+         * @param password plain text password
+         * @param mfaToken authenticator token
+         */
         SessionService.prototype.doEmailPasswordLogin = function(email, password, mfaToken) {
           var _this = this;
           return new Promise(function(resolve, reject) {
@@ -4453,11 +4562,11 @@ var SeatersSDK = /******/ (function(modules) {
           });
         };
         /**
-     * Log in using a stored token (long term validity)
-     *
-     * @param storedToken long term token
-     * @param mfaToken authenticator token
-     */
+         * Log in using a stored token (long term validity)
+         *
+         * @param storedToken long term token
+         * @param mfaToken authenticator token
+         */
         SessionService.prototype.doStoredTokenLogin = function(storedToken, mfaToken) {
           var _this = this;
           return new Promise(function(resolve, reject) {
@@ -4478,11 +4587,11 @@ var SeatersSDK = /******/ (function(modules) {
           });
         };
         /**
-     * @deprecated Use doOAuthCodeLoginV2 instead to retrieve the session
-     * @param oauthProvider
-     * @param code
-     * @returns {Promise<TResult2|TResult1>}
-     */
+         * @deprecated Use doOAuthCodeLoginV2 instead to retrieve the session
+         * @param oauthProvider
+         * @param code
+         * @returns {Promise<TResult2|TResult1>}
+         */
         SessionService.prototype.doOAuthCodeLogin = function(oauthProvider, code) {
           var _this = this;
           console.warn(
@@ -4577,13 +4686,13 @@ var SeatersSDK = /******/ (function(modules) {
           });
         };
         /**
-     * Validate an email by providing a confirmation code
-     *
-     * @param email The email that you want to validate
-     * @param code The code that validates the email
-     * @returns a Promise that resolves with an updated fan or rejects with a VALIDATION_ERRORS
-     * @see VALIDATION_ERRORS
-     */
+         * Validate an email by providing a confirmation code
+         *
+         * @param email The email that you want to validate
+         * @param code The code that validates the email
+         * @returns a Promise that resolves with an updated fan or rejects with a VALIDATION_ERRORS
+         * @see VALIDATION_ERRORS
+         */
         SessionService.prototype.doEmailValidation = function(email, code) {
           var _this = this;
           return new Promise(function(resolve, reject) {
@@ -4604,13 +4713,13 @@ var SeatersSDK = /******/ (function(modules) {
           });
         };
         /**
-     * Validate a phone number by providing a confirmation code
-     *
-     * @param phone The phone number that you want to validate
-     * @param code The code that validates the email
-     * @returns a Promise that resolves with an updated fan or rejects with a VALIDATION_ERRORS
-     * @see VALIDATION_ERRORS
-     */
+         * Validate a phone number by providing a confirmation code
+         *
+         * @param phone The phone number that you want to validate
+         * @param code The code that validates the email
+         * @returns a Promise that resolves with an updated fan or rejects with a VALIDATION_ERRORS
+         * @see VALIDATION_ERRORS
+         */
         SessionService.prototype.doMobilePhoneNumberValidation = function(phone, code) {
           var _this = this;
           return new Promise(function(resolve, reject) {
@@ -4628,9 +4737,9 @@ var SeatersSDK = /******/ (function(modules) {
           });
         };
         /**
-     * Change the email associated to the current user
-     * @param email new email address
-     */
+         * Change the email associated to the current user
+         * @param email new email address
+         */
         SessionService.prototype.doEmailReset = function(email) {
           var _this = this;
           return new Promise(function(resolve, reject) {
@@ -4673,12 +4782,12 @@ var SeatersSDK = /******/ (function(modules) {
           return true;
         };
         /**
-     * Checks if there are any valid stored tokens and returns the first one. If there are none
-     * it will create a new token and return this
-     * @param applicationName the name of the application, e.g. "Seaters Embedded"
-     * @param deviceId defaults to "SDK-device-<random UUID>"
-     * @param applicationId defaults to "SDK-app-<random UUID>"
-     */
+         * Checks if there are any valid stored tokens and returns the first one. If there are none
+         * it will create a new token and return this
+         * @param applicationName the name of the application, e.g. "Seaters Embedded"
+         * @param deviceId defaults to "SDK-device-<random UUID>"
+         * @param applicationId defaults to "SDK-app-<random UUID>"
+         */
         SessionService.prototype.obtainStoredToken = function(applicationName, deviceId, applicationId) {
           var _this = this;
           if (!applicationName) {
@@ -4713,8 +4822,8 @@ var SeatersSDK = /******/ (function(modules) {
           });
         };
         /**
-     * Return the current logged in fan
-     */
+         * Return the current logged in fan
+         */
         SessionService.prototype.whoami = function() {
           return this.currentFan;
         };
@@ -4820,7 +4929,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 62 */
+    /* 65 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4830,11 +4939,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(63));
+      __export(__webpack_require__(66));
 
       /***/
     },
-    /* 63 */
+    /* 66 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4850,8 +4959,8 @@ var SeatersSDK = /******/ (function(modules) {
           this.seatersApi = seatersApi;
         }
         /**
-     * Fetch the application environment details
-     */
+         * Fetch the application environment details
+         */
         AppService.prototype.getEnv = function() {
           if (!this.envP) {
             this.envP = this.seatersApi.app.env();
@@ -4859,39 +4968,39 @@ var SeatersSDK = /******/ (function(modules) {
           return this.envP;
         };
         /**
-     * Fetch a list of countries
-     * @param page defaults to a page with maxPageSize set to anticipated maximum value
-     */
+         * Fetch a list of countries
+         * @param page defaults to a page with maxPageSize set to anticipated maximum value
+         */
         AppService.prototype.getCountries = function() {
           return this.seatersApi.app.countries({ page: 0, maxPageSize: ALL_COUNTRIES_PAGE_SIZE });
         };
         /**
-     * Fetch a list of languages
-     * @param page defaults to a page with maxPageSize set to anticipated maximum value
-     */
+         * Fetch a list of languages
+         * @param page defaults to a page with maxPageSize set to anticipated maximum value
+         */
         AppService.prototype.getLanguages = function() {
           return this.seatersApi.app.languages({ page: 0, maxPageSize: ALL_LANGUAGES_PAGE_SIZE });
         };
         /**
-     * Fetch a list of currencies
-     * @param page defaults to a page with maxPageSize set to anticipated maximum value
-     */
+         * Fetch a list of currencies
+         * @param page defaults to a page with maxPageSize set to anticipated maximum value
+         */
         AppService.prototype.getCurrencies = function() {
           return this.seatersApi.app.currencies({ page: 0, maxPageSize: ALL_CURRENCIES_PAGE_SIZE });
         };
         /**
-     * Fetch a list of time zones
-     * @param page defaults to a page with maxPageSize set to anticipated maximum value
-     */
+         * Fetch a list of time zones
+         * @param page defaults to a page with maxPageSize set to anticipated maximum value
+         */
         AppService.prototype.getTimeZones = function() {
           return this.seatersApi.app.timeZones({ page: 0, maxPageSize: ALL_TIME_ZONES_PAGE_SIZE });
         };
         /**
-     * Fetch a list of translations
-     * @param page defaults to a page with maxPageSize set to anticipated maximum value
-     * @param target restrict to translations for the given target application
-     * @param language restrict to translations in the given language (alpha-2 country code)
-     */
+         * Fetch a list of translations
+         * @param page defaults to a page with maxPageSize set to anticipated maximum value
+         * @param target restrict to translations for the given target application
+         * @param language restrict to translations in the given language (alpha-2 country code)
+         */
         AppService.prototype.getTranslations = function(target, language) {
           return this.seatersApi.app.translations(target, language, {
             page: 0,
@@ -4899,8 +5008,8 @@ var SeatersSDK = /******/ (function(modules) {
           });
         };
         /**
-     * Check if the API is in maintenance mode
-     */
+         * Check if the API is in maintenance mode
+         */
         AppService.prototype.isInMaintenance = function() {
           return this.seatersApi.health
             .node()
@@ -4913,13 +5022,13 @@ var SeatersSDK = /******/ (function(modules) {
             });
         };
         /**
-     * Based on the Accept-Language header this request will obtain
-     * the best suited locale seaters has available for the user.
-     * This method requires the actual request library to populate the
-     * Accept-Language header; by default XHR populates this for most browsers.
-     * It will work even without the header, but it will always return Seater's
-     * default locale in this case.
-     */
+         * Based on the Accept-Language header this request will obtain
+         * the best suited locale seaters has available for the user.
+         * This method requires the actual request library to populate the
+         * Accept-Language header; by default XHR populates this for most browsers.
+         * It will work even without the header, but it will always return Seater's
+         * default locale in this case.
+         */
         AppService.prototype.getUserDefaultLocale = function() {
           return this.seatersApi.app.userDefaultLocale();
         };
@@ -4929,7 +5038,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 64 */
+    /* 67 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4939,11 +5048,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(65));
+      __export(__webpack_require__(68));
 
       /***/
     },
-    /* 65 */
+    /* 68 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4971,7 +5080,7 @@ var SeatersSDK = /******/ (function(modules) {
         })();
       Object.defineProperty(exports, '__esModule', { value: true });
       var common_1 = __webpack_require__(3);
-      var waiting_list_mapper_1 = __webpack_require__(66);
+      var waiting_list_mapper_1 = __webpack_require__(69);
       var AdminService = /** @class */ (function(_super) {
         __extends(AdminService, _super);
         function AdminService(seatersApi) {
@@ -5002,11 +5111,11 @@ var SeatersSDK = /******/ (function(modules) {
           return this.seatersApi.admin.deleteWaitingList(waitingListId);
         };
         /**
-     * Add a new protection code to a FanGroup
-     * @param fanGroupId the id of the fangroup that can be unlocked with the code
-     * @param code a text that can be used to unlock the fangroup
-     * @param maxTimesUsed use 0 to describe unlimited code
-     */
+         * Add a new protection code to a FanGroup
+         * @param fanGroupId the id of the fangroup that can be unlocked with the code
+         * @param code a text that can be used to unlock the fangroup
+         * @param maxTimesUsed use 0 to describe unlimited code
+         */
         AdminService.prototype.createFanGroupProtectionCode = function(fanGroupId, code, maxTimesUsed) {
           return this.seatersApi.admin.createFanGroupProtectionCode(fanGroupId, code, maxTimesUsed);
         };
@@ -5014,12 +5123,12 @@ var SeatersSDK = /******/ (function(modules) {
           return this.seatersApi.admin.deleteFanGroupProtectionCode(fanGroupId, code);
         };
         /**
-     * Import protection codes into a FanGroup. This upload should be a CSV with following format:
-     * - column 1: the actual code that can unlock the FG
-     * - column 2: how many times the code can be used - use 0 for infinite usage
-     * @param fanGroupId The FG to import codes into
-     * @param data For browser an HTMLInputElement containing a file, node: not supported
-     */
+         * Import protection codes into a FanGroup. This upload should be a CSV with following format:
+         * - column 1: the actual code that can unlock the FG
+         * - column 2: how many times the code can be used - use 0 for infinite usage
+         * @param fanGroupId The FG to import codes into
+         * @param data For browser an HTMLInputElement containing a file, node: not supported
+         */
         AdminService.prototype.importFanGroupProtectionCodes = function(fanGroupId, data, fileName) {
           var _this = this;
           return this.uploadOneTimeFile(data, fileName).then(function(otf) {
@@ -5147,7 +5256,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 66 */
+    /* 69 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -5176,7 +5285,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 67 */
+    /* 70 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -5186,11 +5295,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(68));
+      __export(__webpack_require__(71));
 
       /***/
     },
-    /* 68 */
+    /* 71 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -5238,7 +5347,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 69 */
+    /* 72 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -5248,11 +5357,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(70));
+      __export(__webpack_require__(73));
 
       /***/
     },
-    /* 70 */
+    /* 73 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
