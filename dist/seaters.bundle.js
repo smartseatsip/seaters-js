@@ -1405,14 +1405,7 @@ var SeatersSDK = /******/ (function(modules) {
             .then(function() {
               return _this.pollWaitingList(waitingListId, function(wl) {
                 var storedAttendees = (wl.position.attendeesInfo && wl.position.attendeesInfo.attendees) || [];
-                // every attendee must be found in the stored attendees
-                // console.log('storedAttendees', storedAttendees);
-                // console.log('input attendees', attendeesInfo.attendees);
-                return attendeesInfo.every(function(attendee) {
-                  return !!storedAttendees.find(function(storedAttendee) {
-                    return util_1.compareFlatObjects(attendee, storedAttendee);
-                  });
-                });
+                return storedAttendees.length === attendeesInfo.length;
               });
             });
         };
@@ -2020,7 +2013,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.28.14';
+      exports.version = '1.28.15';
       __export(__webpack_require__(21));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
