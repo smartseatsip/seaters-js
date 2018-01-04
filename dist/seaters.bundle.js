@@ -1461,14 +1461,7 @@ var SeatersSDK = /******/ (function(modules) {
             .then(function() {
               return _this.pollWaitingList(waitingListId, function(wl) {
                 var storedAttendees = (wl.position.attendeesInfo && wl.position.attendeesInfo.attendees) || [];
-                // every attendee must be found in the stored attendees
-                // console.log('storedAttendees', storedAttendees);
-                // console.log('input attendees', attendeesInfo.attendees);
-                return attendeesInfo.every(function(attendee) {
-                  return !!storedAttendees.find(function(storedAttendee) {
-                    return util_1.compareFlatObjects(attendee, storedAttendee);
-                  });
-                });
+                return storedAttendees.length === attendeesInfo.length;
               });
             });
         };
@@ -3767,7 +3760,7 @@ var SeatersSDK = /******/ (function(modules) {
         FanService.prototype.unlinkWaitingListFanAttribute = function(waitingListId, fanAttributeId) {
           return this.waitingListService.unlinkWaitingListFanAttribute(waitingListId, fanAttributeId);
         };
-        // Survey
+        // Survey : FAN
         FanService.prototype.getSurveys = function(waitingListId, extensionPoint) {
           return this.fanSurveyService.getSurvey(waitingListId, extensionPoint).then(this.convertPagedSortedResult);
         };
@@ -3884,6 +3877,7 @@ var SeatersSDK = /******/ (function(modules) {
         function FanSurveyService(seatersApi) {
           this.seatersApi = seatersApi;
         }
+        // FAN
         FanSurveyService.prototype.getSurvey = function(waitingListId, extensionPoint) {
           var pagingOptions = {};
           if (!pagingOptions.filters) {
