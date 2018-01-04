@@ -186,15 +186,7 @@ export class WaitingListService {
         .then(() =>
           this.pollWaitingList(waitingListId, wl => {
             const storedAttendees = (wl.position.attendeesInfo && wl.position.attendeesInfo.attendees) || [];
-            // every attendee must be found in the stored attendees
-            // console.log('storedAttendees', storedAttendees);
-            // console.log('input attendees', attendeesInfo.attendees);
-            return attendeesInfo.every(
-              attendee =>
-                !!storedAttendees.find(storedAttendee => {
-                  return compareFlatObjects(attendee, storedAttendee);
-                })
-            );
+            return storedAttendees.length === attendeesInfo.length;
           })
         )
     );
