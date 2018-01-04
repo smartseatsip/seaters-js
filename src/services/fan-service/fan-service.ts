@@ -3,6 +3,7 @@ import { WaitingListService } from './waiting-list-service';
 import { FanGroupService } from './fan-group-service';
 import { fan } from './fan-types';
 import { profiling } from './profiling-types';
+import { survey } from './survey-types';
 import { LocalizableText } from '../util';
 
 import { SessionService } from '../session-service';
@@ -12,18 +13,21 @@ import { BraintreeToken } from '../../seaters-api/fan/braintree-token';
 import { IUpdateEmailDTO, IUpdatePasswordDTO, PhoneNumber } from '../../seaters-api/fan/fan';
 import { StringMap } from '../../api/string-map';
 import { FanProfilingService } from './fan-profiling-service';
+import { FanSurveyService } from './fan-survey-service';
 import { UserInterestUpdateDTO } from '../../seaters-api/fan';
 
 export class FanService extends SeatersService {
   public waitingListService: WaitingListService;
   public fanGroupService: FanGroupService;
   public fanProfilingService: FanProfilingService;
+  public fanSurveyService: FanSurveyService;
 
   constructor(seatersApi: SeatersApi, private sessionService: SessionService, private publicService: PublicService) {
     super(seatersApi);
     this.waitingListService = new WaitingListService(seatersApi);
     this.fanGroupService = new FanGroupService(seatersApi);
     this.fanProfilingService = new FanProfilingService(seatersApi);
+    this.fanSurveyService = new FanSurveyService(seatersApi);
   }
 
   /**
@@ -327,5 +331,26 @@ export class FanService extends SeatersService {
 
   unlinkWaitingListFanAttribute(waitingListId: string, fanAttributeId: string): Promise<void> {
     return this.waitingListService.unlinkWaitingListFanAttribute(waitingListId, fanAttributeId);
+  }
+
+  // Survey : FAN
+
+  getSurveys(waitingListId: string, extensionPoint: string): Promise<PagedResult<survey.SurveyInstance>> {
+    return this.fanSurveyService.getSurvey(waitingListId, extensionPoint).then(this.convertPagedSortedResult);
+  }
+  getAnswers(surveyId: string): Promise<PagedResult<survey.Answer>> {
+    return this.fanSurveyService.getAnswers(surveyId).then(this.convertPagedSortedResult);
+  }
+  submitAnswers(surveyId: string, answers: survey.Answer[]): Promise<survey.Answer[]> {
+    return this.fanSurveyService.submitAnswers(surveyId, answers);
+  }
+  // Survey : FGO
+  getWaitingListSurveys(waitingListId: string, extensionPoint: string): Promise<PagedResult<survey.SurveyInstance>> {
+    return this.fanSurveyService
+      .getWaitingListSurveys(waitingListId, extensionPoint)
+      .then(this.convertPagedSortedResult);
+  }
+  getUserAnswers(waitingListId: string, surveyId: string, userId: string): Promise<PagedResult<survey.Answer>> {
+    return this.fanSurveyService.getUserAnswers(waitingListId, surveyId, userId).then(this.convertPagedSortedResult);
   }
 }
