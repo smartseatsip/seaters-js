@@ -1,6 +1,6 @@
 {
   "name": "seaters",
-  "version": "1.28.14",
+  "version": "1.29.00",
   "description": "Seaters functionality in a box!",
   "main": "./dist/seaters.module.js",
   "typings": "./dist/index",
@@ -8,7 +8,8 @@
     "build": "gulp build",
     "serve": "gulp serve",
     "precommit": "lint-staged",
-    "prettier": "node ./node_modules/prettier/bin/prettier.js --write \"src/**/*.{js,ts}\" --print-width=120 --tab-width=2 --use-tabs=false --single-quote=true --trailing-comma=none --jsx-bracket-same-line=false"
+    "prettier":
+      "node ./node_modules/prettier/bin/prettier.js --write \"src/**/*.{js,ts}\" --print-width=120 --tab-width=2 --use-tabs=false --single-quote=true --trailing-comma=none --jsx-bracket-same-line=false"
   },
   "lint-staged": {
     "*.js": [
