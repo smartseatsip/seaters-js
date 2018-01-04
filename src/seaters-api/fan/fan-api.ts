@@ -441,6 +441,43 @@ export class FanApi {
   submitAnswers(surveyId: string, answers: Answer[]): Promise<Answer[]> {
     return this.apiContext.post('v2/fan/surveys/instances/:surveyId/answers', { answers }, { surveyId });
   }
+
+  // SURVEY : FGO
+  /**
+   * Gets list of surveys per wishlist
+   * @param {string} waitingListId
+   * @param {PagingOptions} pagingOptions
+   */
+  getWaitingListSurveys(
+    waitingListId: string,
+    pagingOptions?: PagingOptions
+  ): Promise<PagedSortedResult<SurveyInstance>> {
+    const queryParams = SeatersApiContext.buildPagingSortingQueryParams(pagingOptions);
+    return this.apiContext.get(
+      'v2/fan-group-owner/waiting-lists/:waitingListId/surveys/instances',
+      { waitingListId },
+      queryParams
+    );
+  }
+
+  /**
+   * Gets list of answers for a given user, survey and waitinglist
+   * @param {string} waitingListId
+   * @param {string} surveyId
+   * @param {PagingOptions} pagingOptions
+   */
+  getUserAnswers(
+    waitingListId: string,
+    surveyId: string,
+    pagingOptions?: PagingOptions
+  ): Promise<PagedSortedResult<Answer>> {
+    const queryParams = SeatersApiContext.buildPagingSortingQueryParams(pagingOptions);
+    return this.apiContext.get(
+      'v2/fan-group-owner/waiting-lists/:waitingListId/surveys/instances/:surveyId/answers',
+      { waitingListId, surveyId },
+      queryParams
+    );
+  }
 }
 
 /* tslint:enable:no-floating-promises */

@@ -2,6 +2,7 @@ export interface Answer {
   questionId: string;
   surveyInstanceId?: string;
   answer: string;
+  userId?: string;
 }
 
 export interface Question {

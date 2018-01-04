@@ -5,7 +5,7 @@ import { PagingOptions } from '../../index';
 
 export class FanSurveyService {
   constructor(private seatersApi: SeatersApi) {}
-
+  // FAN
   getSurvey(waitingListId: string, extensionPoint: string): Promise<PagedSortedResult<survey.SurveyInstance>> {
     const pagingOptions: any = {};
     if (!pagingOptions.filters) {
@@ -22,5 +22,29 @@ export class FanSurveyService {
   }
   submitAnswers(surveyId: string, answers: survey.Answer[]): Promise<survey.Answer[]> {
     return this.seatersApi.fan.submitAnswers(surveyId, answers);
+  }
+
+  // FGO
+  getWaitingListSurveys(
+    waitingListId: string,
+    extensionPoint: string
+  ): Promise<PagedSortedResult<survey.SurveyInstance>> {
+    const pagingOptions: any = {};
+    if (!pagingOptions.filters) {
+      pagingOptions.filters = {
+        extension_point: extensionPoint
+      };
+    }
+
+    return this.seatersApi.fan.getWaitingListSurveys(waitingListId, pagingOptions);
+  }
+  getUserAnswers(waitingListId: string, surveyId: string, userId: string): Promise<PagedSortedResult<survey.Answer>> {
+    const pagingOptions: any = {};
+    if (!pagingOptions.filters) {
+      pagingOptions.filters = {
+        user_id: userId
+      };
+    }
+    return this.seatersApi.fan.getUserAnswers(waitingListId, surveyId, pagingOptions);
   }
 }

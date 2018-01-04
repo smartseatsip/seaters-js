@@ -333,7 +333,7 @@ export class FanService extends SeatersService {
     return this.waitingListService.unlinkWaitingListFanAttribute(waitingListId, fanAttributeId);
   }
 
-  // Survey
+  // Survey : FAN
 
   getSurveys(waitingListId: string, extensionPoint: string): Promise<PagedResult<survey.SurveyInstance>> {
     return this.fanSurveyService.getSurvey(waitingListId, extensionPoint).then(this.convertPagedSortedResult);
@@ -343,5 +343,14 @@ export class FanService extends SeatersService {
   }
   submitAnswers(surveyId: string, answers: survey.Answer[]): Promise<survey.Answer[]> {
     return this.fanSurveyService.submitAnswers(surveyId, answers);
+  }
+  // Survey : FGO
+  getWaitingListSurveys(waitingListId: string, extensionPoint: string): Promise<PagedResult<survey.SurveyInstance>> {
+    return this.fanSurveyService
+      .getWaitingListSurveys(waitingListId, extensionPoint)
+      .then(this.convertPagedSortedResult);
+  }
+  getUserAnswers(waitingListId: string, surveyId: string, userId: string): Promise<PagedResult<survey.Answer>> {
+    return this.fanSurveyService.getUserAnswers(waitingListId, surveyId, userId).then(this.convertPagedSortedResult);
   }
 }

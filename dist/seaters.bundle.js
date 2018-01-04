@@ -826,7 +826,7 @@ var SeatersSDK = /******/ (function(modules) {
         };
         // SURVEY : FAN
         /**
-         * Gets list of survey per wishlist
+         * Gets list of surveys per wishlist
          * @param {PagingOptions} pagingOptions
          */
         FanApi.prototype.getSurveys = function(pagingOptions) {
@@ -834,14 +834,14 @@ var SeatersSDK = /******/ (function(modules) {
           return this.apiContext.get('v2/fan/survey/instances', null, queryParams);
         };
         /**
-         * Gets list of answers for a given survey
+         * Gets list of answers for a given surveyId
          * @param {string} surveyId
          */
         FanApi.prototype.getAnswers = function(surveyId) {
           return this.apiContext.get('v2/fan/surveys/instances/:surveyId/answers', { surveyId: surveyId });
         };
         /**
-         * Submits list of answers for a given survey
+         * Submits list of answers for a given surveyId
          * @param {string} surveyId
          * @param {Answer[]} answers
          */
@@ -850,6 +850,34 @@ var SeatersSDK = /******/ (function(modules) {
             'v2/fan/surveys/instances/:surveyId/answers',
             { answers: answers },
             { surveyId: surveyId }
+          );
+        };
+        // SURVEY : FGO
+        /**
+         * Gets list of surveys per wishlist
+         * @param {string} waitingListId
+         * @param {PagingOptions} pagingOptions
+         */
+        FanApi.prototype.getWaitingListSurveys = function(waitingListId, pagingOptions) {
+          var queryParams = seaters_api_1.SeatersApiContext.buildPagingSortingQueryParams(pagingOptions);
+          return this.apiContext.get(
+            'v2/fan-group-owner/waiting-lists/:waitingListId/surveys/instances',
+            { waitingListId: waitingListId },
+            queryParams
+          );
+        };
+        /**
+         * Gets list of answers for a given user, survey and waitinglist
+         * @param {string} waitingListId
+         * @param {string} surveyId
+         * @param {PagingOptions} pagingOptions
+         */
+        FanApi.prototype.getUserAnswers = function(waitingListId, surveyId, pagingOptions) {
+          var queryParams = seaters_api_1.SeatersApiContext.buildPagingSortingQueryParams(pagingOptions);
+          return this.apiContext.get(
+            'v2/fan-group-owner/waiting-lists/:waitingListId/surveys/instances/:surveyId/answers',
+            { waitingListId: waitingListId, surveyId: surveyId },
+            queryParams
           );
         };
         return FanApi;
@@ -2065,7 +2093,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.28.14';
+      exports.version = '1.29.00';
       __export(__webpack_require__(22));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
@@ -3749,6 +3777,17 @@ var SeatersSDK = /******/ (function(modules) {
         FanService.prototype.submitAnswers = function(surveyId, answers) {
           return this.fanSurveyService.submitAnswers(surveyId, answers);
         };
+        // Survey : FGO
+        FanService.prototype.getWaitingListSurveys = function(waitingListId, extensionPoint) {
+          return this.fanSurveyService
+            .getWaitingListSurveys(waitingListId, extensionPoint)
+            .then(this.convertPagedSortedResult);
+        };
+        FanService.prototype.getUserAnswers = function(waitingListId, surveyId, userId) {
+          return this.fanSurveyService
+            .getUserAnswers(waitingListId, surveyId, userId)
+            .then(this.convertPagedSortedResult);
+        };
         return FanService;
       })(common_1.SeatersService);
       exports.FanService = FanService;
@@ -3860,6 +3899,25 @@ var SeatersSDK = /******/ (function(modules) {
         };
         FanSurveyService.prototype.submitAnswers = function(surveyId, answers) {
           return this.seatersApi.fan.submitAnswers(surveyId, answers);
+        };
+        // FGO
+        FanSurveyService.prototype.getWaitingListSurveys = function(waitingListId, extensionPoint) {
+          var pagingOptions = {};
+          if (!pagingOptions.filters) {
+            pagingOptions.filters = {
+              extension_point: extensionPoint
+            };
+          }
+          return this.seatersApi.fan.getWaitingListSurveys(waitingListId, pagingOptions);
+        };
+        FanSurveyService.prototype.getUserAnswers = function(waitingListId, surveyId, userId) {
+          var pagingOptions = {};
+          if (!pagingOptions.filters) {
+            pagingOptions.filters = {
+              user_id: userId
+            };
+          }
+          return this.seatersApi.fan.getUserAnswers(waitingListId, surveyId, pagingOptions);
         };
         return FanSurveyService;
       })();
