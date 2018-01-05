@@ -1,5 +1,5 @@
 import { uuidv4, normalizeLondonTimezoneDate } from '../util';
-import { SeatersApi, SeatersApiException, seatersExceptionV1MessageMapper } from '../../seaters-api';
+import { SeatersApi } from '../../seaters-api';
 import { session } from './session-types';
 import { MobilePhoneValidationData, AuthenticationSuccess } from '../../seaters-api/authentication';
 import { IUpdatePasswordDTO } from '../../seaters-api/fan/fan';
@@ -7,10 +7,6 @@ import { IUpdatePasswordDTO } from '../../seaters-api/fan/fan';
 const AUTH_HEADER = 'Authorization';
 const AUTH_BEARER = 'SeatersBearer';
 const MS_TO_EXTEND_BEFORE_SESSION_EXPIRES = 60;
-
-export enum VALIDATION_ERRORS {
-  WRONG_VALIDATION_CODE
-}
 
 export enum SESSION_STRATEGY {
   EXPIRE,
@@ -22,10 +18,6 @@ export class SessionService {
 
   private sessionStrategy: SESSION_STRATEGY;
   private sessionToken: string = '';
-
-  private validationMessageMapper = seatersExceptionV1MessageMapper({
-    'Wrong validation code': VALIDATION_ERRORS.WRONG_VALIDATION_CODE
-  });
 
   constructor(private seatersApi: SeatersApi, sessionStrategy?: SESSION_STRATEGY) {
     this.sessionStrategy = sessionStrategy || SESSION_STRATEGY.EXTEND;
@@ -198,7 +190,7 @@ export class SessionService {
         })
         .then(() => this.setCurrentFan())
         .then(r => resolve(r))
-        .catch(r => reject(this.validationMessageMapper(r)));
+        .catch(r => reject(r));
     });
   }
 
@@ -218,7 +210,7 @@ export class SessionService {
           code
         } as MobilePhoneValidationData)
         .then(r => resolve(r))
-        .catch(r => reject(this.validationMessageMapper(r)));
+        .catch(r => reject(r));
     });
   }
 
@@ -234,7 +226,7 @@ export class SessionService {
           token: this.sessionToken
         })
         .then(r => resolve())
-        .catch(r => reject(this.validationMessageMapper(r)));
+        .catch(r => reject(r));
     });
   }
 
