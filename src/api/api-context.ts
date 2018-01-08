@@ -40,7 +40,16 @@ export class ApiContext {
 
   createRequestOptions(requestDefinition: ApiRequestDefinition, endpoint: ApiEndpoint): RequestOptions {
     const headers = this.mergeHeaders(requestDefinition.headers);
-    const body = (requestDefinition.body as any) !== undefined ? JSON.stringify(requestDefinition.body) : null;
+
+    let body;
+    if (requestDefinition.body === undefined) {
+      body = null;
+    } else if (typeof requestDefinition.body === 'string') {
+      body = requestDefinition.body.toString();
+    } else {
+      body = JSON.stringify(requestDefinition.body);
+    }
+
     return {
       url: endpoint.absoluteEndpoint,
       method: requestDefinition.method || 'GET',

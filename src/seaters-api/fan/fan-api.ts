@@ -25,15 +25,16 @@ import {
   PositionSalesTransaction,
   AttendeeInfo,
   FanGroupShare,
-  WaitingListShare
+  WaitingListShare,
+  SurveyInstance,
+  Answer
 } from './fan-types';
 
 import { WaitingListRequest } from './waiting-list';
 import { StringMap } from '../../api/string-map';
-import { ProfilingInterest, UserInterest } from './profiling';
-import { userInfo } from 'os';
-import { UserInterestStatus, UserFanAttributeUpdateDTO, UserFanAttributeActionStatusEnum } from './index';
-import { ENOPROTOOPT } from 'constants';
+import { UserInterest } from './profiling';
+import { UserFanAttributeUpdateDTO, UserFanAttributeActionStatusEnum, PhoneNumber } from './index';
+import { IUpdateEmailDTO, IUpdatePasswordDTO } from './fan';
 
 export class FanApi {
   constructor(private apiContext: SeatersApiContext) {}
@@ -44,6 +45,18 @@ export class FanApi {
 
   updateFan(fan: Fan): Promise<Fan> {
     return this.apiContext.put('/fan', fan);
+  }
+
+  updatePassword(data: IUpdatePasswordDTO): Promise<Fan> {
+    return this.apiContext.put('/fan/password', data.password);
+  }
+
+  updateEmail(data: IUpdateEmailDTO): Promise<Fan> {
+    return this.apiContext.put('/fan/email', data);
+  }
+
+  updateMobilePhoneNumber(data: PhoneNumber): Promise<Fan> {
+    return this.apiContext.put('/fan/mobile-phone-number', data);
   }
 
   fanGroup(fanGroupId: string): Promise<FanGroup> {
@@ -59,7 +72,7 @@ export class FanApi {
   }
 
   fanGroupTranslatedDescription(fanGroupId: string): Promise<string> {
-    return this.apiContext.get('/fan/groups/:fanGroupId/translated-description', { fanGroupId });
+    return this.apiContext.get('/fan/groups/:fa`nGroupId/translated-description', { fanGroupId });
   }
 
   fanGroups(fanGroupIds: string[]): Promise<FanGroup[]> {
@@ -408,6 +421,70 @@ export class FanApi {
       `v2/fan-group-owner/waiting-lists/${waitingListId}/fan_attributes/${fanAttributeId}/unlink`,
       {},
       {}
+    );
+  }
+
+  // SURVEY : FAN
+  /**
+   * Gets list of surveys per wishlist
+   * @param {PagingOptions} pagingOptions
+   */
+  getSurveys(pagingOptions?: PagingOptions): Promise<PagedSortedResult<SurveyInstance>> {
+    const queryParams = SeatersApiContext.buildPagingSortingQueryParams(pagingOptions);
+    return this.apiContext.get('v2/fan/survey/instances', null, queryParams);
+  }
+
+  /**
+   * Gets list of answers for a given surveyId
+   * @param {string} surveyId
+   */
+  getAnswers(surveyId: string): Promise<PagedSortedResult<Answer>> {
+    return this.apiContext.get('v2/fan/surveys/instances/:surveyId/answers', { surveyId });
+  }
+
+  /**
+   * Submits list of answers for a given surveyId
+   * @param {string} surveyId
+   * @param {Answer[]} answers
+   */
+  submitAnswers(surveyId: string, answers: Answer[]): Promise<Answer[]> {
+    return this.apiContext.post('v2/fan/surveys/instances/:surveyId/answers', { answers }, { surveyId });
+  }
+
+  // SURVEY : FGO
+  /**
+   * Gets list of surveys per wishlist
+   * @param {string} waitingListId
+   * @param {PagingOptions} pagingOptions
+   */
+  getWaitingListSurveys(
+    waitingListId: string,
+    pagingOptions?: PagingOptions
+  ): Promise<PagedSortedResult<SurveyInstance>> {
+    const queryParams = SeatersApiContext.buildPagingSortingQueryParams(pagingOptions);
+    return this.apiContext.get(
+      'v2/fan-group-owner/waiting-lists/:waitingListId/surveys/instances',
+      { waitingListId },
+      queryParams
+    );
+  }
+
+  /**
+   * Gets list of answers for a given user, survey and waitinglist
+   * @param {string} waitingListId
+   * @param {string} surveyId
+   * @param {PagingOptions} pagingOptions
+   */
+  getUserAnswers(
+    waitingListId: string,
+    surveyId: string,
+    pagingOptions?: PagingOptions
+  ): Promise<PagedSortedResult<Answer>> {
+    const queryParams = SeatersApiContext.buildPagingSortingQueryParams(pagingOptions);
+    return this.apiContext.get(
+      'v2/fan-group-owner/waiting-lists/:waitingListId/surveys/instances/:surveyId/answers',
+      { waitingListId, surveyId },
+      queryParams
     );
   }
 }

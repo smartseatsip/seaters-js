@@ -130,3 +130,13 @@ export interface PersonalInfo {
 }
 
 export type TITLE = 'MR' | 'MS';
+
+export interface IUpdateEmailDTO {
+  email: string;
+  confirmationReturnURLPath: string;
+}
+
+export interface IUpdatePasswordDTO {
+  password: string;
+  token?: any;
+}

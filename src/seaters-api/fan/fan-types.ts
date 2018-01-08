@@ -13,3 +13,4 @@ export * from './attendee-info';
 export * from './profiling';
 export * from './fan-group-share';
 export * from './waiting-list-share';
+export * from './survey';
