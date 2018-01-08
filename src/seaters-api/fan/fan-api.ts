@@ -388,8 +388,12 @@ export class FanApi {
     return this.apiContext.get(`v2/fan-group-owner/waiting-lists/${waitingListId}/interests`, {}, {});
   }
 
-  getWaitingListFanAttributes(waitingListId: string): Promise<PagedSortedResult<WaitingListFanAttribute>> {
-    return this.apiContext.get(`v2/fan-group-owner/waiting-lists/${waitingListId}/fan-attributes`, {}, {});
+  getWaitingListFanAttributes(
+    waitingListId: string,
+    pagingOptions: PagingOptions
+  ): Promise<PagedSortedResult<WaitingListFanAttribute>> {
+    const queryParams = SeatersApiContext.buildPagingSortingQueryParams(pagingOptions);
+    return this.apiContext.get(`v2/fan-group-owner/waiting-lists/${waitingListId}/fan-attributes`, {}, queryParams);
   }
 
   linkWaitingListInterest(waitingListId: string, interestId: string): Promise<WaitingListInterest> {

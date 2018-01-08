@@ -61,7 +61,7 @@ var SeatersSDK = /******/ (function(modules) {
     return Object.prototype.hasOwnProperty.call(object, property);
   }; // __webpack_public_path__
   /******/
-  /******/ /******/ __webpack_require__.p = '/Users/sanderdecoster/local_projects/seaters/seaters-js/dist'; // Load entry module and return exports
+  /******/ /******/ __webpack_require__.p = '/Users/mahmoudalazzawi/projects/seaters-js/dist'; // Load entry module and return exports
   /******/
   /******/ /******/ return __webpack_require__((__webpack_require__.s = 21));
   /******/
@@ -100,11 +100,11 @@ var SeatersSDK = /******/ (function(modules) {
       }
       Object.defineProperty(exports, '__esModule', { value: true });
       __export(__webpack_require__(34));
-      __export(__webpack_require__(5));
+      __export(__webpack_require__(6));
       __export(__webpack_require__(45));
       __export(__webpack_require__(46));
       __export(__webpack_require__(47));
-      __export(__webpack_require__(6));
+      __export(__webpack_require__(7));
       __export(__webpack_require__(16));
       __export(__webpack_require__(13));
       __export(__webpack_require__(14));
@@ -160,6 +160,27 @@ var SeatersSDK = /******/ (function(modules) {
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
+      Object.defineProperty(exports, '__esModule', { value: true });
+      var fan_1 = __webpack_require__(8);
+      /**
+ *  PROFILING
+ */
+      var profiling;
+      (function(profiling) {
+        profiling.USER_INTEREST_STATUS = fan_1.UserInterestStatusEnum;
+        profiling.USER_INTEREST_ACTION_STATUS = fan_1.UserInterestActionStatusEnum;
+        profiling.USER_FAN_ATTRIBUTES_STATUS = fan_1.UserFanAttributeStatusEnum;
+        profiling.USER_FAN_ATTRIBUTES_ACTION_STATUS = fan_1.UserFanAttributeActionStatusEnum;
+        profiling.FAN_ATTRIBUTES_STATUS = fan_1.ProfilingFanAttributeStatusEnum;
+        profiling.FAN_ATTRIBUTES_ACTION_STATUS = fan_1.ProfilingFanAttributeActionStatusEnum;
+      })((profiling = exports.profiling || (exports.profiling = {})));
+
+      /***/
+    },
+    /* 5 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
       function __export(m) {
         for (var p in m) {
           if (!exports.hasOwnProperty(p)) exports[p] = m[p];
@@ -173,7 +194,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 5 */
+    /* 6 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -212,7 +233,7 @@ var SeatersSDK = /******/ (function(modules) {
           return t;
         };
       Object.defineProperty(exports, '__esModule', { value: true });
-      var api_1 = __webpack_require__(4);
+      var api_1 = __webpack_require__(5);
       var SeatersApiContext = /** @class */ (function(_super) {
         __extends(SeatersApiContext, _super);
         function SeatersApiContext(prefix, requestDriver) {
@@ -469,7 +490,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 6 */
+    /* 7 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -489,7 +510,7 @@ var SeatersSDK = /******/ (function(modules) {
         };
       Object.defineProperty(exports, '__esModule', { value: true });
       var seaters_api_1 = __webpack_require__(1);
-      var index_1 = __webpack_require__(7);
+      var index_1 = __webpack_require__(8);
       var FanApi = /** @class */ (function() {
         function FanApi(apiContext) {
           this.apiContext = apiContext;
@@ -791,8 +812,13 @@ var SeatersSDK = /******/ (function(modules) {
         FanApi.prototype.getWaitingListInterests = function(waitingListId) {
           return this.apiContext.get('v2/fan-group-owner/waiting-lists/' + waitingListId + '/interests', {}, {});
         };
-        FanApi.prototype.getWaitingListFanAttributes = function(waitingListId) {
-          return this.apiContext.get('v2/fan-group-owner/waiting-lists/' + waitingListId + '/fan-attributes', {}, {});
+        FanApi.prototype.getWaitingListFanAttributes = function(waitingListId, pagingOptions) {
+          var queryParams = seaters_api_1.SeatersApiContext.buildPagingSortingQueryParams(pagingOptions);
+          return this.apiContext.get(
+            'v2/fan-group-owner/waiting-lists/' + waitingListId + '/fan-attributes',
+            {},
+            queryParams
+          );
         };
         FanApi.prototype.linkWaitingListInterest = function(waitingListId, interestId) {
           return this.apiContext.post(
@@ -885,7 +911,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 7 */
+    /* 8 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -895,12 +921,12 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(6));
+      __export(__webpack_require__(7));
       __export(__webpack_require__(35));
 
       /***/
     },
-    /* 8 */
+    /* 9 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -926,27 +952,6 @@ var SeatersSDK = /******/ (function(modules) {
         return SeatersApiController;
       })();
       exports.SeatersApiController = SeatersApiController;
-
-      /***/
-    },
-    /* 9 */
-    /***/ function(module, exports, __webpack_require__) {
-      'use strict';
-
-      Object.defineProperty(exports, '__esModule', { value: true });
-      var fan_1 = __webpack_require__(7);
-      /**
- *  PROFILING
- */
-      var profiling;
-      (function(profiling) {
-        profiling.USER_INTEREST_STATUS = fan_1.UserInterestStatusEnum;
-        profiling.USER_INTEREST_ACTION_STATUS = fan_1.UserInterestActionStatusEnum;
-        profiling.USER_FAN_ATTRIBUTES_STATUS = fan_1.UserFanAttributeStatusEnum;
-        profiling.USER_FAN_ATTRIBUTES_ACTION_STATUS = fan_1.UserFanAttributeActionStatusEnum;
-        profiling.FAN_ATTRIBUTES_STATUS = fan_1.ProfilingFanAttributeStatusEnum;
-        profiling.FAN_ATTRIBUTES_ACTION_STATUS = fan_1.ProfilingFanAttributeActionStatusEnum;
-      })((profiling = exports.profiling || (exports.profiling = {})));
 
       /***/
     },
@@ -1081,7 +1086,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       Object.defineProperty(exports, '__esModule', { value: true });
       /* tslint:disable:no-floating-promises */
-      var seaters_api_context_1 = __webpack_require__(5);
+      var seaters_api_context_1 = __webpack_require__(6);
       var AppApi = /** @class */ (function() {
         function AppApi(apiContext) {
           this.apiContext = apiContext;
@@ -1290,6 +1295,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       var seaters_api_1 = __webpack_require__(1);
       var fan_types_1 = __webpack_require__(2);
+      var profiling_types_1 = __webpack_require__(4);
       var util_1 = __webpack_require__(0);
       var WAITING_LIST_ACTION_STATUS = fan_types_1.fan.WAITING_LIST_ACTION_STATUS;
       var EXPORTABLE_TICKETING_SYSTEMS = ['UPLOAD', 'DIGITICK'];
@@ -1517,8 +1523,14 @@ var SeatersSDK = /******/ (function(modules) {
         WaitingListService.prototype.getWaitingListInterests = function(waitingListId) {
           return this.api.fan.getWaitingListInterests(waitingListId);
         };
-        WaitingListService.prototype.getWaitingListFanAttributes = function(waitingListId) {
-          return this.api.fan.getWaitingListFanAttributes(waitingListId);
+        WaitingListService.prototype.getWaitingListFanAttributes = function(waitingListId, pagingOptions) {
+          pagingOptions = pagingOptions || {};
+          if (!pagingOptions.filters) {
+            pagingOptions.filters = {
+              waitinglist_fan_attribute_status: profiling_types_1.profiling.USER_FAN_ATTRIBUTES_STATUS.LINKED
+            };
+          }
+          return this.api.fan.getWaitingListFanAttributes(waitingListId, pagingOptions);
         };
         WaitingListService.prototype.linkWaitingListInterest = function(waitingListId, interestId) {
           return this.api.fan.linkWaitingListInterest(waitingListId, interestId);
@@ -2040,7 +2052,7 @@ var SeatersSDK = /******/ (function(modules) {
       'use strict';
 
       Object.defineProperty(exports, '__esModule', { value: true });
-      var fan_1 = __webpack_require__(7);
+      var fan_1 = __webpack_require__(8);
       /**
  *  PROFILING
  */
@@ -2085,7 +2097,7 @@ var SeatersSDK = /******/ (function(modules) {
       __export(__webpack_require__(22));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
-      var profiling_types_1 = __webpack_require__(9);
+      var profiling_types_1 = __webpack_require__(4);
       exports.profiling = profiling_types_1.profiling;
       var survey_types_1 = __webpack_require__(19);
       exports.survey = survey_types_1.survey;
@@ -2109,7 +2121,7 @@ var SeatersSDK = /******/ (function(modules) {
           return t;
         };
       Object.defineProperty(exports, '__esModule', { value: true });
-      var api_1 = __webpack_require__(4);
+      var api_1 = __webpack_require__(5);
       var seaters_api_1 = __webpack_require__(1);
       var services_1 = __webpack_require__(48);
       var SeatersClient = /** @class */ (function() {
@@ -2741,13 +2753,13 @@ var SeatersSDK = /******/ (function(modules) {
 
       Object.defineProperty(exports, '__esModule', { value: true });
       var app_api_1 = __webpack_require__(13);
-      var fan_api_1 = __webpack_require__(6);
+      var fan_api_1 = __webpack_require__(7);
       var admin_1 = __webpack_require__(38);
       var health_1 = __webpack_require__(40);
       var authentication_api_1 = __webpack_require__(16);
       var ticketing_1 = __webpack_require__(41);
       var payment_1 = __webpack_require__(43);
-      var seaters_api_context_1 = __webpack_require__(5);
+      var seaters_api_context_1 = __webpack_require__(6);
       var SeatersApi = /** @class */ (function() {
         function SeatersApi(prefix, requestDriver) {
           this.apiContext = new seaters_api_context_1.SeatersApiContext(prefix, requestDriver);
@@ -2899,7 +2911,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       /* tslint:disable:no-floating-promises */
       var seaters_api_1 = __webpack_require__(1);
-      var seaters_api_controller_1 = __webpack_require__(8);
+      var seaters_api_controller_1 = __webpack_require__(9);
       var AdminApi = /** @class */ (function(_super) {
         __extends(AdminApi, _super);
         function AdminApi(apiContext) {
@@ -3168,7 +3180,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       /* tslint:disable:no-floating-promises */
       var seaters_api_1 = __webpack_require__(1);
-      var seaters_api_controller_1 = __webpack_require__(8);
+      var seaters_api_controller_1 = __webpack_require__(9);
       var TicketingApi = /** @class */ (function(_super) {
         __extends(TicketingApi, _super);
         function TicketingApi(apiContext) {
@@ -3236,7 +3248,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       /* tslint:disable:no-floating-promises */
       var seaters_api_1 = __webpack_require__(1);
-      var seaters_api_controller_1 = __webpack_require__(8);
+      var seaters_api_controller_1 = __webpack_require__(9);
       var PaymentApi = /** @class */ (function(_super) {
         __extends(PaymentApi, _super);
         function PaymentApi(apiContext) {
@@ -3429,7 +3441,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       __export(__webpack_require__(50));
       __export(__webpack_require__(2));
-      __export(__webpack_require__(9));
+      __export(__webpack_require__(4));
       __export(__webpack_require__(19));
       __export(__webpack_require__(17));
       __export(__webpack_require__(18));
@@ -3737,8 +3749,10 @@ var SeatersSDK = /******/ (function(modules) {
         FanService.prototype.getWaitingListInterests = function(waitingListId) {
           return this.waitingListService.getWaitingListInterests(waitingListId).then(this.convertPagedSortedResult);
         };
-        FanService.prototype.getWaitingListFanAttributes = function(waitingListId) {
-          return this.waitingListService.getWaitingListFanAttributes(waitingListId).then(this.convertPagedSortedResult);
+        FanService.prototype.getWaitingListFanAttributes = function(waitingListId, pagingOptions) {
+          return this.waitingListService
+            .getWaitingListFanAttributes(waitingListId, pagingOptions)
+            .then(this.convertPagedSortedResult);
         };
         FanService.prototype.linkWaitingListInterest = function(waitingListId, interestId) {
           return this.waitingListService.linkWaitingListInterest(waitingListId, interestId);
@@ -3817,7 +3831,7 @@ var SeatersSDK = /******/ (function(modules) {
       'use strict';
 
       Object.defineProperty(exports, '__esModule', { value: true });
-      var profiling_types_1 = __webpack_require__(9);
+      var profiling_types_1 = __webpack_require__(4);
       var FanProfilingService = /** @class */ (function() {
         function FanProfilingService(seatersApi) {
           this.seatersApi = seatersApi;
@@ -4385,7 +4399,7 @@ var SeatersSDK = /******/ (function(modules) {
           };
         })();
       Object.defineProperty(exports, '__esModule', { value: true });
-      var api_1 = __webpack_require__(4);
+      var api_1 = __webpack_require__(5);
       var indices_api_1 = __webpack_require__(60);
       var APP_ID_HEADER = 'X-Algolia-Application-Id';
       var API_KEY_HEADER = 'X-Algolia-API-Key';

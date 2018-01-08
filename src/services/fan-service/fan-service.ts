@@ -306,8 +306,13 @@ export class FanService extends SeatersService {
     return this.waitingListService.getWaitingListInterests(waitingListId).then(this.convertPagedSortedResult);
   }
 
-  getWaitingListFanAttributes(waitingListId: string): Promise<PagedResult<profiling.WaitingListFanAttribute>> {
-    return this.waitingListService.getWaitingListFanAttributes(waitingListId).then(this.convertPagedSortedResult);
+  getWaitingListFanAttributes(
+    waitingListId: string,
+    pagingOptions
+  ): Promise<PagedResult<profiling.WaitingListFanAttribute>> {
+    return this.waitingListService
+      .getWaitingListFanAttributes(waitingListId, pagingOptions)
+      .then(this.convertPagedSortedResult);
   }
 
   linkWaitingListInterest(waitingListId: string, interestId: string): Promise<profiling.WaitingListInterest> {
