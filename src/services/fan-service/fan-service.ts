@@ -1,4 +1,4 @@
-import { SeatersApi, SeatersService, PagingOptions, PagedResult, PagedSortedResult } from '../common';
+import { SeatersApi, SeatersService, PagingOptions, PagedResult } from '../common';
 import { WaitingListService } from './waiting-list-service';
 import { FanGroupService } from './fan-group-service';
 import { fan } from './fan-types';
@@ -262,12 +262,8 @@ export class FanService extends SeatersService {
 
   // Profiling (public)
 
-  getProfilingCategories(pagingOptions): Promise<PagedResult<fan.ProfilingCategory>> {
-    return this.fanProfilingService
-      .getProfilingCategories(pagingOptions)
-      .then((pagedSortedResult: PagedSortedResult<fan.ProfilingCategory>) => {
-        return this.convertPagedSortedResult(pagedSortedResult);
-      });
+  getProfilingCategories(): Promise<fan.ProfilingCategory[]> {
+    return this.fanProfilingService.getProfilingCategories();
   }
 
   getProfilingCategoryById(categoryId: string): Promise<fan.ProfilingCategory> {
