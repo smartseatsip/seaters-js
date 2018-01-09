@@ -24,8 +24,8 @@ export class FanProfilingService {
 
   // User (fan)
 
-  getUserInterests(pagingOptions): Promise<PagedSortedResult<fan.UserInterest>> {
-    return this.seatersApi.fan.getUserInterests(pagingOptions);
+  getUserInterests(): Promise<fan.UserInterest[]> {
+    return this.seatersApi.fan.getUserInterests();
   }
 
   createUserInterest(userInterestCreateDTO: fan.UserInterestCreateDTO): Promise<fan.UserInterest> {

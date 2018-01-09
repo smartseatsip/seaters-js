@@ -39,7 +39,6 @@ import { StringMap } from '../../api/string-map';
 import { PhoneNumber } from './index';
 import { IUpdateEmailDTO, IUpdatePasswordDTO } from './fan';
 import { ProfilingInterest, UserInterest } from './profiling';
-import { userInfo } from 'os';
 
 export class FanApi {
   constructor(private apiContext: SeatersApiContext) {}
@@ -300,7 +299,7 @@ export class FanApi {
 
   // Profiling (public)
 
-  getProfilingCategories(pagingOptions?: PagingOptions): Promise<PagedSortedResult<ProfilingCategory>> {
+  getProfilingCategories(pagingOptions: PagingOptions): Promise<PagedSortedResult<ProfilingCategory>> {
     return this.apiContext.get(
       'v2/fan/interests/categories',
       null,
@@ -329,8 +328,8 @@ export class FanApi {
 
   // User (fan)
 
-  getUserInterests(pagingOptions?: PagingOptions): Promise<PagedSortedResult<UserInterest>> {
-    return this.apiContext.get(`v2/fan/interests`, {}, SeatersApiContext.buildPagingSortingQueryParams(pagingOptions));
+  getUserInterests(): Promise<UserInterest[]> {
+    return this.apiContext.get(`/profiling/v1/user/interests`, {}, {});
   }
 
   createUserInterest(userInterestCreateDTO: UserInterestCreateDTO): Promise<UserInterest> {
