@@ -1,7 +1,6 @@
 import { SeatersApi, PagedResult, PagingOptions, SeatersService } from '../common';
 import { admin } from './admin-types';
 import { mapWaitingList } from './waiting-list-mapper';
-import { profiling } from '../index';
 
 export class AdminService extends SeatersService {
   constructor(seatersApi: SeatersApi) {
@@ -56,7 +55,7 @@ export class AdminService extends SeatersService {
   /**
    * Import protection codes into a FanGroup. This upload should be a CSV with following format:
    * - column 1: the actual code that can unlock the FG
-   * - column 2: how many times the code can be used - use 0 for infinite usage
+   * - column 2: how many times the code can be used - use 0 for infinite usage 
    * @param fanGroupId The FG to import codes into
    * @param data For browser an HTMLInputElement containing a file, node: not supported
    */
@@ -99,76 +98,5 @@ export class AdminService extends SeatersService {
     } else {
       return new Date().toISOString();
     }
-  }
-  getCateogries(options: PagingOptions): Promise<PagedResult<profiling.ProfilingCategory>> {
-    return this.seatersApi.admin.getCateogries(options).then(r => this.convertPagedResult(r));
-  }
-
-  getCategory(id: string): Promise<profiling.ProfilingCategory> {
-    return this.seatersApi.admin.getCategory(id);
-  }
-
-  createCategory(category: profiling.ProfilingCategory): Promise<profiling.ProfilingCategory> {
-    return this.seatersApi.admin.createCategory(category);
-  }
-
-  updateCategory(category: profiling.ProfilingCategory): Promise<profiling.ProfilingCategory> {
-    return this.seatersApi.admin.updateCategory(category);
-  }
-
-  deleteCategory(id: string): Promise<any> {
-    return this.seatersApi.admin.deleteCategory(id);
-  }
-
-  orderCategories(orderedCategoryIds: string[]): Promise<any> {
-    return this.seatersApi.admin.orderCategories(orderedCategoryIds);
-  }
-
-  getInterests(options: PagingOptions): Promise<PagedResult<profiling.ProfilingCategory>> {
-    return this.seatersApi.admin.getInterests(options).then(r => this.convertPagedResult(r));
-  }
-
-  getInterest(id: string): Promise<profiling.ProfilingInterest> {
-    return this.seatersApi.admin.getInterest(id);
-  }
-
-  createInterest(interest: profiling.ProfilingInterest): Promise<profiling.ProfilingInterest> {
-    return this.seatersApi.admin.createInterest(interest);
-  }
-
-  updateInterest(interest: profiling.ProfilingInterest): Promise<profiling.ProfilingInterest> {
-    return this.seatersApi.admin.updateInterest(interest);
-  }
-
-  deleteInterest(id: string): Promise<any> {
-    return this.seatersApi.admin.deleteInterest(id);
-  }
-
-  getFanAttributes(options: PagingOptions): Promise<PagedResult<profiling.ProfilingFanAttribute>> {
-    return this.seatersApi.admin.getFanAttributes(options).then(r => this.convertPagedResult(r));
-  }
-
-  getFanAttribute(id: string): Promise<profiling.ProfilingFanAttribute> {
-    return this.seatersApi.admin.getFanAttribute(id);
-  }
-
-  createFanAttribute(fanAttribute: profiling.ProfilingFanAttribute): Promise<profiling.ProfilingFanAttribute> {
-    return this.seatersApi.admin.createFanAttribute(fanAttribute);
-  }
-
-  updateFanAttribute(fanAttribute: profiling.ProfilingFanAttribute): Promise<profiling.ProfilingFanAttribute> {
-    return this.seatersApi.admin.updateFanAttribute(fanAttribute);
-  }
-
-  deleteFanAttribute(id: string): Promise<any> {
-    return this.seatersApi.admin.deleteFanAttribute(id);
-  }
-
-  validateFanAttribute(id: string): Promise<profiling.ProfilingFanAttribute> {
-    return this.seatersApi.admin.validateFanAttribute(id);
-  }
-
-  addAliases(id: string, idsToConvert: string[]): Promise<profiling.ProfilingFanAttribute> {
-    return this.seatersApi.admin.addAliases(id, idsToConvert);
   }
 }
