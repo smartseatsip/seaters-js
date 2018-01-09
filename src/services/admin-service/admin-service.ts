@@ -87,9 +87,21 @@ export class AdminService extends SeatersService {
       .then(() => this.getFanGroup(fanGroupId));
   }
 
-  // Profiling
-  getCategories(options: PagingOptions): Promise<PagedResult<profiling.ProfilingCategory>> {
-    return this.seatersApi.admin.getCategories(options).then(r => this.convertPagedResult(r));
+  private uploadOneTimeFile(data: any, fileName?: string): Promise<admin.OneTimeFile> {
+    return this.seatersApi.admin
+      .requestOneTimeFileUpload(this.defaultFileName(fileName))
+      .then(otf => this.seatersApi.admin.uploadOneTimeFile(otf.url, data).then(() => otf));
+  }
+
+  private defaultFileName(fileName?: string): string {
+    if (fileName && fileName !== '') {
+      return fileName;
+    } else {
+      return new Date().toISOString();
+    }
+  }
+  getCateogries(options: PagingOptions): Promise<PagedResult<profiling.ProfilingCategory>> {
+    return this.seatersApi.admin.getCateogries(options).then(r => this.convertPagedResult(r));
   }
 
   getCategory(id: string): Promise<profiling.ProfilingCategory> {
@@ -158,19 +170,5 @@ export class AdminService extends SeatersService {
 
   addAliases(id: string, idsToConvert: string[]): Promise<profiling.ProfilingFanAttribute> {
     return this.seatersApi.admin.addAliases(id, idsToConvert);
-  }
-
-  private uploadOneTimeFile(data: any, fileName?: string): Promise<admin.OneTimeFile> {
-    return this.seatersApi.admin
-      .requestOneTimeFileUpload(this.defaultFileName(fileName))
-      .then(otf => this.seatersApi.admin.uploadOneTimeFile(otf.url, data).then(() => otf));
-  }
-
-  private defaultFileName(fileName?: string): string {
-    if (fileName && fileName !== '') {
-      return fileName;
-    } else {
-      return new Date().toISOString();
-    }
   }
 }
