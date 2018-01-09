@@ -948,7 +948,6 @@ var SeatersSDK = /******/ (function(modules) {
         profiling.USER_INTEREST_ACTION_STATUS = fan_1.UserInterestActionStatusEnum;
         profiling.USER_FAN_ATTRIBUTES_STATUS = fan_1.UserFanAttributeStatusEnum;
         profiling.USER_FAN_ATTRIBUTES_ACTION_STATUS = fan_1.UserFanAttributeActionStatusEnum;
-        profiling.FAN_ATTRIBUTES_STATUS = fan_1.ProfilingFanAttributeStatusEnum;
       })((profiling = exports.profiling || (exports.profiling = {})));
 
       /***/
@@ -2829,7 +2828,7 @@ var SeatersSDK = /******/ (function(modules) {
       (function(UserFanAttributeActionStatusEnum) {
         UserFanAttributeActionStatusEnum['link'] = 'link';
         UserFanAttributeActionStatusEnum['unlink'] = 'unlink';
-        UserFanAttributeActionStatusEnum['create'] = 'link-by-name'; // create new fan attribute
+        UserFanAttributeActionStatusEnum['create'] = 'link-by-name';
       })(
         (UserFanAttributeActionStatusEnum =
           exports.UserFanAttributeActionStatusEnum || (exports.UserFanAttributeActionStatusEnum = {}))
