@@ -272,8 +272,8 @@ export class FanService extends SeatersService {
     return this.fanProfilingService.getProfilingCategoryById(categoryId);
   }
 
-  seachFanAttributes(query: string, validated: boolean): Promise<profiling.ProfilingFanAttribute[]> {
-    return this.fanProfilingService.seachFanAttributes(query, validated);
+  getProfilingFanAttributes(query: string, validated: boolean): Promise<profiling.ProfilingFanAttribute[]> {
+    return this.fanProfilingService.getProfilingFanAttributes(query, validated);
   }
 
   getProfilingFanAttributeById(fanAttributeId: string): Promise<profiling.ProfilingFanAttribute> {
@@ -286,16 +286,34 @@ export class FanService extends SeatersService {
     return this.fanProfilingService.getUserInterests(pagingOptions).then(this.convertPagedSortedResult);
   }
 
+  createUserInterest(userInterestCreateDTO: profiling.UserInterestCreateDTO): Promise<profiling.UserInterest> {
+    return this.fanProfilingService.createUserInterest(userInterestCreateDTO);
+  }
+
   updateUserInterest(userInterestUpdateDTO: UserInterestUpdateDTO): Promise<profiling.UserInterest> {
     return this.fanProfilingService.updateUserInterest(userInterestUpdateDTO);
   }
 
-  getUserFanAttributes(pagingOptions?): Promise<PagedResult<profiling.UserFanAttribute>> {
-    return this.fanProfilingService.getUserFanAttributes(pagingOptions).then(this.convertPagedSortedResult);
+  getUserFanAttributes(): Promise<profiling.UserFanAttribute[]> {
+    return this.fanProfilingService.getUserFanAttributes();
   }
 
-  updateUserFanAttribute(options): Promise<profiling.UserFanAttribute> {
-    return this.fanProfilingService.updateUserFanAttribute(options);
+  createUserFanAttribute(
+    userFanAttributeCreateDTO: profiling.UserFanAttributeCreateDTO,
+    relationsValidation: string
+  ): Promise<profiling.UserFanAttribute> {
+    return this.fanProfilingService.createUserFanAttribute(userFanAttributeCreateDTO, relationsValidation);
+  }
+
+  updateUserFanAttribute(
+    userFanAttributeId: string,
+    userFanAttributeCreateDTO: profiling.UserFanAttributeUpdateDTO
+  ): Promise<profiling.UserFanAttribute> {
+    return this.fanProfilingService.updateUserFanAttribute(userFanAttributeId, userFanAttributeCreateDTO);
+  }
+
+  removeUserFanAttribute(userFanAttributeId: string): Promise<profiling.UserFanAttribute> {
+    return this.fanProfilingService.removeUserFanAttribute(userFanAttributeId);
   }
 
   getWaitingListInterests(waitingListId: string): Promise<profiling.WaitingListInterest[]> {

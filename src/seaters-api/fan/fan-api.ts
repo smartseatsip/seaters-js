@@ -7,9 +7,12 @@ import { TranslationMap } from '../translation-map';
 
 import {
   ProfilingCategory,
+  UserInterestCreateDTO,
   UserInterestUpdateDTO,
   ProfilingFanAttribute,
   UserFanAttribute,
+  UserFanAttributeCreateDTO,
+  UserFanAttributeUpdateDTO,
   WaitingListFanAttribute,
   WaitingListInterest,
   Fan,
@@ -32,9 +35,11 @@ import {
 
 import { WaitingListRequest } from './waiting-list';
 import { StringMap } from '../../api/string-map';
-import { UserInterest } from './profiling';
-import { UserFanAttributeUpdateDTO, UserFanAttributeActionStatusEnum, PhoneNumber } from './index';
+import { PhoneNumber } from './index';
 import { IUpdateEmailDTO, IUpdatePasswordDTO } from './fan';
+import { ProfilingInterest, UserInterest } from './profiling';
+import { userInfo } from 'os';
+import { UserInterestStatus } from './index';
 
 export class FanApi {
   constructor(private apiContext: SeatersApiContext) {}
@@ -292,93 +297,79 @@ export class FanApi {
   getTranslatedVenueConditions(waitingListId: string): Promise<string> {
     return this.apiContext.get('/fan/waiting-lists/:waitingListId/translated-venue-conditions', { waitingListId });
   }
-  // @TODO create seperate Calls for admin
-  //  PROFILING : ADMIN
 
-  // PROFILING : FAN
+  // Profiling (public)
 
-  /**
-   * Gets complete list of categories
-   * @param {PagingOptions} pagingOptions
-   */
   getProfilingCategories(pagingOptions?: PagingOptions): Promise<PagedSortedResult<ProfilingCategory>> {
-    const queryParams = SeatersApiContext.buildPagingSortingQueryParams(pagingOptions);
-    return this.apiContext.get('v2/fan/interests/categories', null, queryParams);
-  }
-
-  /**
-   * Gets single category
-   * @param categoryId
-   */
-  getProfilingCategoryById(categoryId): Promise<ProfilingCategory> {
-    return this.apiContext.get(`v2/fan/interests/category/${categoryId}`, {}, {});
-  }
-
-  /**
-   * Gets complete list of interests with their user status
-   * and their categoryId
-   *
-   * @param pagingOptions
-   */
-  getUserInterests(pagingOptions?: PagingOptions): Promise<PagedSortedResult<UserInterest>> {
-    return this.apiContext.get(`v2/fan/interests`, {}, SeatersApiContext.buildPagingSortingQueryParams(pagingOptions));
-  }
-
-  /**
-   * Updates a user interest
-   * @param {UserInterestUpdateDTO} options
-   */
-  updateUserInterest(options: UserInterestUpdateDTO): Promise<UserInterest> {
-    return this.apiContext.post(`v2/fan/interests/${options.id}/${options.status}`, {}, {});
-  }
-
-  /**
-   *
-   * Performs search operation
-   * on name and aliases of fan attribues
-   *
-   * @param {string} query search query
-   * @param {boolean} validated to fetch only validated fan attributes
-   *
-   */
-  seachFanAttributes(query: string, validated: boolean): Promise<ProfilingFanAttribute[]> {
-    const queryParams = { query, validated: validated ? 'true' : 'false' };
-    return this.apiContext.get('v2/fan/fan-attributes/search', null, queryParams);
-  }
-
-  /**
-   * Gets list of user fan attribute
-   * @param pagingOptions
-   */
-  getUserFanAttributes(pagingOptions?: PagingOptions): Promise<PagedSortedResult<UserFanAttribute>> {
     return this.apiContext.get(
-      `v2/fan/fan-attributes`,
-      {},
+      'v2/fan/interests/categories',
+      null,
       SeatersApiContext.buildPagingSortingQueryParams(pagingOptions)
     );
   }
 
-  /**
-   * Gets single user fan attributes
-   * @param fanAttributeId
-   */
-  getProfilingFanAttributeById(fanAttributeId: string): Promise<ProfilingFanAttribute> {
-    return this.apiContext.get(`v2/fan/fan-attributes/${fanAttributeId}`, {}, {});
+  getProfilingCategoryById(categoryId): Promise<ProfilingCategory> {
+    return this.apiContext.get(`v2/fan/interests/category/${categoryId}`, {}, {});
   }
 
-  /**
-   * Updates user fan attribute
-   * (Link / Unlink / Create )
-   * @param {UserFanAttributeUpdateDTO} options
-   */
-  updateUserFanAttribute(options: UserFanAttributeUpdateDTO): Promise<UserFanAttribute> {
-    let body = null;
-    let endpoint = `v2/fan/fan-attributes/${options.id}/${options.status}`;
-    if (options.status === UserFanAttributeActionStatusEnum.create) {
-      endpoint = `v2/fan/fan-attributes/${UserFanAttributeActionStatusEnum.create}`;
-      body = { name: options.name };
-    }
-    return this.apiContext.post(endpoint, body, {});
+  getProfilingFanAttributes(query: string, validated: boolean): Promise<ProfilingFanAttribute[]> {
+    return this.apiContext.get(
+      '/profiling/v1/fan_attributes',
+      {},
+      {
+        query,
+        validated: validated ? 'true' : 'false'
+      }
+    );
+  }
+
+  getProfilingFanAttributeById(fanAttributeId: string): Promise<ProfilingFanAttribute> {
+    return this.apiContext.get(`/profiling/v1/fan_attribute/${fanAttributeId}`, {}, {});
+  }
+
+  // User (fan)
+
+  getUserInterests(pagingOptions?: PagingOptions): Promise<PagedSortedResult<UserInterest>> {
+    return this.apiContext.get(`v2/fan/interests`, {}, SeatersApiContext.buildPagingSortingQueryParams(pagingOptions));
+  }
+
+  createUserInterest(userInterestCreateDTO: UserInterestCreateDTO): Promise<UserInterest> {
+    return this.apiContext.post('/profiling/v1/user/interest', userInterestCreateDTO, {});
+  }
+
+  updateUserInterest(userInterestUpdateDTO: UserInterestUpdateDTO): Promise<UserInterest> {
+    return this.apiContext.post(`v2/fan/interests/${userInterestUpdateDTO.id}/${userInterestUpdateDTO.status}`, {}, {});
+  }
+
+  getUserFanAttributes(): Promise<UserFanAttribute[]> {
+    return this.apiContext.get(`/profiling/v1/user/fan_attributes`, {}, {});
+  }
+
+  createUserFanAttribute(
+    userFanAttributeCreateDTO: UserFanAttributeCreateDTO,
+    relationsValidation: string
+  ): Promise<UserFanAttribute> {
+    return this.apiContext.post(
+      `/profiling/v1/user/fan_attribute`,
+      userFanAttributeCreateDTO,
+      {},
+      { relations_validation: relationsValidation ? 'true' : 'false' }
+    );
+  }
+
+  updateUserFanAttribute(
+    userFanAttributeId: string,
+    userFanAttributeUpdateDTO: UserFanAttributeUpdateDTO
+  ): Promise<UserFanAttribute> {
+    return this.apiContext.post(
+      `/profiling/v1/user/fan_attribute/${userFanAttributeId}`,
+      userFanAttributeUpdateDTO,
+      {}
+    );
+  }
+
+  removeUserFanAttribute(userFanAttributeId: string): Promise<UserFanAttribute> {
+    return this.apiContext.delete(`/profiling/v1/user/fan_attribute/${userFanAttributeId}`, {}, {});
   }
 
   getWaitingListInterests(waitingListId: string): Promise<WaitingListInterest[]> {

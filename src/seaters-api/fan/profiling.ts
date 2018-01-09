@@ -2,7 +2,7 @@
  *  PROFILING - CATEGORIES
  */
 export interface ProfilingCategory {
-  id?: string;
+  id: string;
   order: number;
   name: Array<{ lang: string; text: string }>;
 }
@@ -11,7 +11,7 @@ export interface ProfilingCategory {
  *  PROFILING - INTERESTS
  */
 export interface ProfilingInterest {
-  id?: string;
+  id: string;
   categoryId: string;
   name: Array<{ lang: string; text: string }>;
 }
@@ -20,29 +20,13 @@ export interface ProfilingInterest {
  *  PROFILING - FAN ATTRIBUTES
  */
 
-export enum ProfilingFanAttributeStatusEnum {
-  VALIDATED = 'VALIDATED',
-  UNVALIDATED = 'UNVALIDATED'
-}
-
-export type ProfilingFanAttributeStatus =
-  | ProfilingFanAttributeStatusEnum.VALIDATED
-  | ProfilingFanAttributeStatusEnum.UNVALIDATED;
-
 export interface ProfilingFanAttribute {
-  id?: string;
+  id: string;
   name: string;
   externalIdentifierType: string | null;
   externalIdentifierId: string | null;
   interestId: string | null;
-  status: ProfilingFanAttributeStatus;
-  aliases: string[] | null[];
-}
-
-export interface FanAttributeCreateUpdateDTO {
-  externalId: string | null;
-  interestId: string | null;
-  name: string | null;
+  status: boolean;
   aliases: string[] | null[];
 }
 
@@ -50,9 +34,10 @@ export interface FanAttributeCreateUpdateDTO {
  *  USER - INTERESTS
  */
 export interface UserInterest {
-  userId: string;
+  id: string;
   interest: ProfilingInterest;
   status: UserInterestStatus; // 'LIKE', 'UNKNOWN', 'NEUTRAL', 'DISLIKE'
+  userId: string;
 }
 
 export interface UserInterestUpdateDTO {
@@ -89,34 +74,16 @@ export type UserInterestActionStatus =
  */
 
 export interface UserFanAttribute {
-  userId: string;
   fanAttribute: ProfilingFanAttribute;
-  status: UserFanAttributeStatus;
+  id: string;
+  userId: string;
 }
 
-export interface UserFanAttributeUpdateDTO {
-  id?: string;
-  name?: string;
-  status: UserFanAttributeActionStatus; // 'link', 'unlink', 'link-by-name'
+export interface UserFanAttributeCreateUpdateDTO {
+  externalId: string | null;
+  interestId: string | null;
+  name: string | null;
 }
-
-export enum UserFanAttributeStatusEnum {
-  UNLINKED = 'UNLINKED',
-  LINKED = 'LINKED'
-}
-
-export enum UserFanAttributeActionStatusEnum {
-  link = 'link', // Link to an existing fan attribute
-  unlink = 'unlink', // Unlink from an exsisting fan attribute
-  create = 'link-by-name' // create new fan attribute
-}
-
-export type UserFanAttributeStatus = UserFanAttributeStatusEnum.UNLINKED | UserFanAttributeStatusEnum.LINKED;
-
-export type UserFanAttributeActionStatus =
-  | UserFanAttributeActionStatusEnum.link
-  | UserFanAttributeActionStatusEnum.unlink
-  | UserFanAttributeActionStatusEnum.create;
 
 /**
  *  WAITING LIST - INTEREST
