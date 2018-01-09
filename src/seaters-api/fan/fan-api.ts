@@ -292,6 +292,41 @@ export class FanApi {
   getTranslatedVenueConditions(waitingListId: string): Promise<string> {
     return this.apiContext.get('/fan/waiting-lists/:waitingListId/translated-venue-conditions', { waitingListId });
   }
+  // @TODO create seperate Calls for admin
+  //  PROFILING : ADMIN
+  getCateogries() {}
+
+  getCategory() {}
+
+  createCategory() {}
+
+  updateCategory() {}
+
+  deleteCategory() {}
+
+  getInterests() {}
+
+  getInterest(id: string) {}
+
+  createInterest() {}
+
+  updateInterest(id: string) {}
+
+  deleteInterest(id: string) {}
+
+  getFanAttributes() {}
+
+  getFanAttribute() {}
+
+  createFanAttribute() {}
+
+  updateFanAttribute() {}
+
+  deleteFanAttribute() {}
+
+  validateFanAttribute() {}
+
+  convertToAlies() {}
 
   // PROFILING : FAN
 
