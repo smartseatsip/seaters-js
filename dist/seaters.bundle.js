@@ -61,9 +61,9 @@ var SeatersSDK = /******/ (function(modules) {
     return Object.prototype.hasOwnProperty.call(object, property);
   }; // __webpack_public_path__
   /******/
-  /******/ /******/ __webpack_require__.p = '/Users/sanderdecoster/local_projects/seaters/seaters-js/dist'; // Load entry module and return exports
+  /******/ /******/ __webpack_require__.p = '/Users/mahmoudalazzawi/projects/seaters-js/dist'; // Load entry module and return exports
   /******/
-  /******/ /******/ return __webpack_require__((__webpack_require__.s = 21));
+  /******/ /******/ return __webpack_require__((__webpack_require__.s = 19));
   /******/
 })(
   /************************************************************************/
@@ -78,14 +78,14 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
+      __export(__webpack_require__(25));
+      __export(__webpack_require__(10));
+      __export(__webpack_require__(26));
       __export(__webpack_require__(27));
-      __export(__webpack_require__(12));
+      __export(__webpack_require__(8));
       __export(__webpack_require__(28));
       __export(__webpack_require__(29));
-      __export(__webpack_require__(10));
       __export(__webpack_require__(30));
-      __export(__webpack_require__(31));
-      __export(__webpack_require__(32));
 
       /***/
     },
@@ -99,15 +99,15 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(34));
+      __export(__webpack_require__(32));
       __export(__webpack_require__(5));
-      __export(__webpack_require__(45));
-      __export(__webpack_require__(46));
-      __export(__webpack_require__(47));
+      __export(__webpack_require__(40));
+      __export(__webpack_require__(41));
+      __export(__webpack_require__(42));
       __export(__webpack_require__(6));
-      __export(__webpack_require__(16));
-      __export(__webpack_require__(13));
       __export(__webpack_require__(14));
+      __export(__webpack_require__(11));
+      __export(__webpack_require__(12));
 
       /***/
     },
@@ -150,7 +150,7 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(51));
+      __export(__webpack_require__(46));
       var seaters_api_1 = __webpack_require__(1);
       exports.SeatersApi = seaters_api_1.SeatersApi;
 
@@ -166,10 +166,10 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
+      __export(__webpack_require__(21));
+      __export(__webpack_require__(9));
+      __export(__webpack_require__(22));
       __export(__webpack_require__(23));
-      __export(__webpack_require__(11));
-      __export(__webpack_require__(24));
-      __export(__webpack_require__(25));
 
       /***/
     },
@@ -220,17 +220,10 @@ var SeatersSDK = /******/ (function(modules) {
         }
         SeatersApiContext.buildPagingQueryParams = function(pagingOptions) {
           pagingOptions = pagingOptions || {};
-          var options = {
+          return {
             maxPageSize: pagingOptions.maxPageSize || 9999,
             itemOffset: pagingOptions.page || 0
           };
-          if (pagingOptions.sort) {
-            options.sort = pagingOptions.sort;
-          }
-          if (pagingOptions.filters) {
-            options = __assign({}, options, pagingOptions.filters);
-          }
-          return options;
         };
         SeatersApiContext.buildPagingSortingQueryParams = function(pagingOptions) {
           pagingOptions = pagingOptions || {};
@@ -489,7 +482,6 @@ var SeatersSDK = /******/ (function(modules) {
         };
       Object.defineProperty(exports, '__esModule', { value: true });
       var seaters_api_1 = __webpack_require__(1);
-      var index_1 = __webpack_require__(7);
       var FanApi = /** @class */ (function() {
         function FanApi(apiContext) {
           this.apiContext = apiContext;
@@ -703,86 +695,59 @@ var SeatersSDK = /******/ (function(modules) {
             waitingListId: waitingListId
           });
         };
-        // PROFILING : FAN
-        /**
-     * Gets complete list of categories
-     * @param {PagingOptions} pagingOptions
-     */
-        FanApi.prototype.getProfilingCategories = function(pagingOptions) {
-          var queryParams = seaters_api_1.SeatersApiContext.buildPagingSortingQueryParams(pagingOptions);
-          return this.apiContext.get('v2/fan/interests/categories', null, queryParams);
+        // Profiling (public)
+        FanApi.prototype.getProfilingCategories = function() {
+          return this.apiContext.get('/profiling/v1/categories', {}, {});
         };
-        /**
-     * Gets single category
-     * @param categoryId
-     */
+        FanApi.prototype.getProfilingCategoriesOrder = function() {
+          return this.apiContext.get('/profiling/v1/categories/order', {}, {});
+        };
         FanApi.prototype.getProfilingCategoryById = function(categoryId) {
-          return this.apiContext.get('v2/fan/interests/category/' + categoryId, {}, {});
+          return this.apiContext.get('/profiling/v1/category/' + categoryId, {}, {});
         };
-        /**
-     * Gets complete list of interests with their user status
-     * and their categoryId
-     *
-     * @param pagingOptions
-     */
-        FanApi.prototype.getUserInterests = function(pagingOptions) {
+        FanApi.prototype.getProfilingFanAttributes = function(query, validated) {
           return this.apiContext.get(
-            'v2/fan/interests',
+            '/profiling/v1/fan_attributes',
             {},
-            seaters_api_1.SeatersApiContext.buildPagingSortingQueryParams(pagingOptions)
+            {
+              query: query,
+              validated: validated ? 'true' : 'false'
+            }
           );
         };
-        /**
-     * Updates a user interest
-     * @param {UserInterestUpdateDTO} options
-     */
-        FanApi.prototype.updateUserInterest = function(options) {
-          return this.apiContext.post('v2/fan/interests/' + options.id + '/' + options.status, {}, {});
-        };
-        /**
-     *
-     * Performs search operation
-     * on name and aliases of fan attribues
-     *
-     * @param {string} query search query
-     * @param {boolean} validated to fetch only validated fan attributes
-     *
-     */
-        FanApi.prototype.seachFanAttributes = function(query, validated) {
-          var queryParams = { query: query, validated: validated ? 'true' : 'false' };
-          return this.apiContext.get('v2/fan/fan-attributes/search', null, queryParams);
-        };
-        /**
-     * Gets list of user fan attribute
-     * @param pagingOptions
-     */
-        FanApi.prototype.getUserFanAttributes = function(pagingOptions) {
-          return this.apiContext.get(
-            'v2/fan/fan-attributes',
-            {},
-            seaters_api_1.SeatersApiContext.buildPagingSortingQueryParams(pagingOptions)
-          );
-        };
-        /**
-     * Gets single user fan attributes
-     * @param fanAttributeId
-     */
         FanApi.prototype.getProfilingFanAttributeById = function(fanAttributeId) {
-          return this.apiContext.get('v2/fan/fan-attributes/' + fanAttributeId, {}, {});
+          return this.apiContext.get('/profiling/v1/fan_attribute/' + fanAttributeId, {}, {});
         };
-        /**
-     * Updates user fan attribute
-     * (Link / Unlink / Create )
-     * @param {UserFanAttributeUpdateDTO} options
-     */
-        FanApi.prototype.updateUserFanAttribute = function(options) {
-          var body = null;
-          var endpoint = 'v2/fan/fan-attributes/' + options.id + '/' + options.status;
-          if (options.status === index_1.UserFanAttributeActionStatusEnum.create) {
-            endpoint = 'v2/fan/fan-attributes/' + index_1.UserFanAttributeActionStatusEnum.create;
-            body = { name: options.name };
-          }
-          return this.apiContext.post(endpoint, body, {});
+        // User (fan)
+        FanApi.prototype.getUserInterests = function() {
+          return this.apiContext.get('/profiling/v1/user/interests', {}, {});
+        };
+        FanApi.prototype.createUserInterest = function(userInterestCreateDTO) {
+          return this.apiContext.post('/profiling/v1/user/interest', userInterestCreateDTO, {});
+        };
+        FanApi.prototype.updateUserInterest = function(userInterestUpdateDTO) {
+          return this.apiContext.put('/profiling/v1/user/interest', userInterestUpdateDTO, {});
+        };
+        FanApi.prototype.getUserFanAttributes = function() {
+          return this.apiContext.get('/profiling/v1/user/fan_attributes', {}, {});
+        };
+        FanApi.prototype.createUserFanAttribute = function(userFanAttributeCreateDTO, relationsValidation) {
+          return this.apiContext.post(
+            '/profiling/v1/user/fan_attribute',
+            userFanAttributeCreateDTO,
+            {},
+            { relations_validation: relationsValidation ? 'true' : 'false' }
+          );
+        };
+        FanApi.prototype.updateUserFanAttribute = function(userFanAttributeId, userFanAttributeUpdateDTO) {
+          return this.apiContext.post(
+            '/profiling/v1/user/fan_attribute/' + userFanAttributeId,
+            userFanAttributeUpdateDTO,
+            {}
+          );
+        };
+        FanApi.prototype.removeUserFanAttribute = function(userFanAttributeId) {
+          return this.apiContext.delete('/profiling/v1/user/fan_attribute/' + userFanAttributeId, {}, {});
         };
         FanApi.prototype.getWaitingListInterests = function(waitingListId) {
           return this.apiContext.get('/profiling/v1/waitinglists/' + waitingListId + '/interests', {}, {});
@@ -891,21 +856,6 @@ var SeatersSDK = /******/ (function(modules) {
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
-      function __export(m) {
-        for (var p in m) {
-          if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-        }
-      }
-      Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(6));
-      __export(__webpack_require__(35));
-
-      /***/
-    },
-    /* 8 */
-    /***/ function(module, exports, __webpack_require__) {
-      'use strict';
-
       Object.defineProperty(exports, '__esModule', { value: true });
       var SeatersApiController = /** @class */ (function() {
         function SeatersApiController() {}
@@ -931,28 +881,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 9 */
-    /***/ function(module, exports, __webpack_require__) {
-      'use strict';
-
-      Object.defineProperty(exports, '__esModule', { value: true });
-      var fan_1 = __webpack_require__(7);
-      /**
- *  PROFILING
- */
-      var profiling;
-      (function(profiling) {
-        profiling.USER_INTEREST_STATUS = fan_1.UserInterestStatusEnum;
-        profiling.USER_INTEREST_ACTION_STATUS = fan_1.UserInterestActionStatusEnum;
-        profiling.USER_FAN_ATTRIBUTES_STATUS = fan_1.UserFanAttributeStatusEnum;
-        profiling.USER_FAN_ATTRIBUTES_ACTION_STATUS = fan_1.UserFanAttributeActionStatusEnum;
-        profiling.FAN_ATTRIBUTES_STATUS = fan_1.ProfilingFanAttributeStatusEnum;
-        profiling.FAN_ATTRIBUTES_ACTION_STATUS = fan_1.ProfilingFanAttributeActionStatusEnum;
-      })((profiling = exports.profiling || (exports.profiling = {})));
-
-      /***/
-    },
-    /* 10 */
+    /* 8 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -979,7 +908,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 11 */
+    /* 9 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -1058,7 +987,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 12 */
+    /* 10 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -1077,7 +1006,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 13 */
+    /* 11 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -1140,7 +1069,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 14 */
+    /* 12 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -1161,7 +1090,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 15 */
+    /* 13 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -1170,7 +1099,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 16 */
+    /* 14 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -1273,7 +1202,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 17 */
+    /* 15 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -1865,7 +1794,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 18 */
+    /* 16 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2040,12 +1969,12 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 19 */
+    /* 17 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
       Object.defineProperty(exports, '__esModule', { value: true });
-      var fan_1 = __webpack_require__(7);
+      var fan_1 = __webpack_require__(49);
       /**
  *  PROFILING
  */
@@ -2057,7 +1986,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 20 */
+    /* 18 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2067,14 +1996,14 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
+      __export(__webpack_require__(60));
       __export(__webpack_require__(61));
-      __export(__webpack_require__(62));
       exports.TYPE_FIELD = 'type';
       exports.TYPO_TOLERANCE_STRICT = 'strict';
 
       /***/
     },
-    /* 21 */
+    /* 19 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2087,17 +2016,15 @@ var SeatersSDK = /******/ (function(modules) {
       //noinspection TsLint
       // tslint:disable-next-line
       exports.version = '1.29.2';
-      __export(__webpack_require__(22));
+      __export(__webpack_require__(20));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
-      var profiling_types_1 = __webpack_require__(9);
-      exports.profiling = profiling_types_1.profiling;
-      var survey_types_1 = __webpack_require__(19);
+      var survey_types_1 = __webpack_require__(17);
       exports.survey = survey_types_1.survey;
 
       /***/
     },
-    /* 22 */
+    /* 20 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2116,7 +2043,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       var api_1 = __webpack_require__(4);
       var seaters_api_1 = __webpack_require__(1);
-      var services_1 = __webpack_require__(48);
+      var services_1 = __webpack_require__(43);
       var SeatersClient = /** @class */ (function() {
         function SeatersClient(options) {
           options = __assign({}, SeatersClient.DEFAULT_OPTIONS, options);
@@ -2189,7 +2116,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 23 */
+    /* 21 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2206,8 +2133,8 @@ var SeatersSDK = /******/ (function(modules) {
           return t;
         };
       Object.defineProperty(exports, '__esModule', { value: true });
-      var subject_1 = __webpack_require__(10);
-      var api_endpoint_1 = __webpack_require__(11);
+      var subject_1 = __webpack_require__(8);
+      var api_endpoint_1 = __webpack_require__(9);
       var ApiContext = /** @class */ (function() {
         function ApiContext(apiPrefix, requestDriver) {
           this.apiPrefix = apiPrefix;
@@ -2273,7 +2200,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 24 */
+    /* 22 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2287,7 +2214,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 25 */
+    /* 23 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2298,16 +2225,16 @@ var SeatersSDK = /******/ (function(modules) {
       function getRequestDriver(type) {
         switch (type) {
           case 'BROWSER':
-            return __webpack_require__(26).default;
+            return __webpack_require__(24).default;
           default:
-            return __webpack_require__(33).default;
+            return __webpack_require__(31).default;
         }
       }
       exports.getRequestDriver = getRequestDriver;
 
       /***/
     },
-    /* 26 */
+    /* 24 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2357,7 +2284,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 27 */
+    /* 25 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2384,7 +2311,7 @@ var SeatersSDK = /******/ (function(modules) {
           };
         })();
       Object.defineProperty(exports, '__esModule', { value: true });
-      var deferred_promise_1 = __webpack_require__(12);
+      var deferred_promise_1 = __webpack_require__(10);
       var RetryUntilTimeoutError = /** @class */ (function(_super) {
         __extends(RetryUntilTimeoutError, _super);
         function RetryUntilTimeoutError(limit) {
@@ -2444,7 +2371,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 28 */
+    /* 26 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2544,7 +2471,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 29 */
+    /* 27 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2596,7 +2523,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 30 */
+    /* 28 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2633,7 +2560,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 31 */
+    /* 29 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2651,7 +2578,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 32 */
+    /* 30 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2667,7 +2594,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 33 */
+    /* 31 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2740,18 +2667,18 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 34 */
+    /* 32 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
       Object.defineProperty(exports, '__esModule', { value: true });
-      var app_api_1 = __webpack_require__(13);
+      var app_api_1 = __webpack_require__(11);
       var fan_api_1 = __webpack_require__(6);
-      var admin_1 = __webpack_require__(38);
-      var health_1 = __webpack_require__(40);
-      var authentication_api_1 = __webpack_require__(16);
-      var ticketing_1 = __webpack_require__(41);
-      var payment_1 = __webpack_require__(43);
+      var admin_1 = __webpack_require__(33);
+      var health_1 = __webpack_require__(35);
+      var authentication_api_1 = __webpack_require__(14);
+      var ticketing_1 = __webpack_require__(36);
+      var payment_1 = __webpack_require__(38);
       var seaters_api_context_1 = __webpack_require__(5);
       var SeatersApi = /** @class */ (function() {
         function SeatersApi(prefix, requestDriver) {
@@ -2770,7 +2697,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 35 */
+    /* 33 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2780,102 +2707,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(36));
-      __export(__webpack_require__(37));
+      __export(__webpack_require__(34));
 
       /***/
     },
-    /* 36 */
-    /***/ function(module, exports, __webpack_require__) {
-      'use strict';
-
-      Object.defineProperty(exports, '__esModule', { value: true });
-      /**
- *  PROFILING - FAN ATTRIBUTES
- */
-      var ProfilingFanAttributeStatusEnum;
-      (function(ProfilingFanAttributeStatusEnum) {
-        ProfilingFanAttributeStatusEnum['VALIDATED'] = 'VALIDATED';
-        ProfilingFanAttributeStatusEnum['UNVALIDATED'] = 'UNVALIDATED';
-      })(
-        (ProfilingFanAttributeStatusEnum =
-          exports.ProfilingFanAttributeStatusEnum || (exports.ProfilingFanAttributeStatusEnum = {}))
-      );
-      var ProfilingFanAttributeActionStatusEnum;
-      (function(ProfilingFanAttributeActionStatusEnum) {
-        ProfilingFanAttributeActionStatusEnum['validate'] = 'validate';
-        ProfilingFanAttributeActionStatusEnum['unvalidate'] = 'unvalidate';
-      })(
-        (ProfilingFanAttributeActionStatusEnum =
-          exports.ProfilingFanAttributeActionStatusEnum || (exports.ProfilingFanAttributeActionStatusEnum = {}))
-      );
-      var UserInterestStatusEnum;
-      (function(UserInterestStatusEnum) {
-        UserInterestStatusEnum['LIKE'] = 'LIKE';
-        UserInterestStatusEnum['DISLIKE'] = 'DISLIKE';
-        UserInterestStatusEnum['NEUTRAL'] = 'NEUTRAL';
-        UserInterestStatusEnum['UNKNOWN'] = 'UNKNOWN';
-      })((UserInterestStatusEnum = exports.UserInterestStatusEnum || (exports.UserInterestStatusEnum = {})));
-      var UserInterestActionStatusEnum;
-      (function(UserInterestActionStatusEnum) {
-        UserInterestActionStatusEnum['like'] = 'like';
-        UserInterestActionStatusEnum['dislike'] = 'dislike';
-        UserInterestActionStatusEnum['neutral'] = 'neutral';
-      })(
-        (UserInterestActionStatusEnum =
-          exports.UserInterestActionStatusEnum || (exports.UserInterestActionStatusEnum = {}))
-      );
-      var UserFanAttributeStatusEnum;
-      (function(UserFanAttributeStatusEnum) {
-        UserFanAttributeStatusEnum['UNLINKED'] = 'UNLINKED';
-        UserFanAttributeStatusEnum['LINKED'] = 'LINKED';
-      })(
-        (UserFanAttributeStatusEnum = exports.UserFanAttributeStatusEnum || (exports.UserFanAttributeStatusEnum = {}))
-      );
-      var UserFanAttributeActionStatusEnum;
-      (function(UserFanAttributeActionStatusEnum) {
-        UserFanAttributeActionStatusEnum['link'] = 'link';
-        UserFanAttributeActionStatusEnum['unlink'] = 'unlink';
-        UserFanAttributeActionStatusEnum['create'] = 'link-by-name'; // create new fan attribute
-      })(
-        (UserFanAttributeActionStatusEnum =
-          exports.UserFanAttributeActionStatusEnum || (exports.UserFanAttributeActionStatusEnum = {}))
-      );
-
-      /***/
-    },
-    /* 37 */
-    /***/ function(module, exports, __webpack_require__) {
-      'use strict';
-
-      Object.defineProperty(exports, '__esModule', { value: true });
-      var SurveyStatusEnum;
-      (function(SurveyStatusEnum) {
-        SurveyStatusEnum['ACTIVE'] = 'ACTIVE';
-        SurveyStatusEnum['ARCHIVED'] = 'ARCHIVED';
-      })((SurveyStatusEnum = exports.SurveyStatusEnum || (exports.SurveyStatusEnum = {})));
-      var SurveyExtensionPointEnum;
-      (function(SurveyExtensionPointEnum) {
-        SurveyExtensionPointEnum['BEFORE_JOINING_WAITINGLIST'] = 'BEFORE_JOINING_WAITINGLIST';
-      })((SurveyExtensionPointEnum = exports.SurveyExtensionPointEnum || (exports.SurveyExtensionPointEnum = {})));
-
-      /***/
-    },
-    /* 38 */
-    /***/ function(module, exports, __webpack_require__) {
-      'use strict';
-
-      function __export(m) {
-        for (var p in m) {
-          if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-        }
-      }
-      Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(39));
-
-      /***/
-    },
-    /* 39 */
+    /* 34 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2904,7 +2740,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       /* tslint:disable:no-floating-promises */
       var seaters_api_1 = __webpack_require__(1);
-      var seaters_api_controller_1 = __webpack_require__(8);
+      var seaters_api_controller_1 = __webpack_require__(7);
       var AdminApi = /** @class */ (function(_super) {
         __extends(AdminApi, _super);
         function AdminApi(apiContext) {
@@ -3025,78 +2861,6 @@ var SeatersSDK = /******/ (function(modules) {
         AdminApi.prototype.uploadOneTimeFile = function(oneTimeFileUrl, data) {
           return this.apiContext.uploadOneTimeFile(oneTimeFileUrl, data);
         };
-        //  PROFILING
-        AdminApi.prototype.getCategories = function(options) {
-          return this.apiContext.get(
-            '/v2/seaters-admin/categories',
-            null,
-            seaters_api_1.SeatersApiContext.buildPagingQueryParams(options)
-          );
-        };
-        AdminApi.prototype.getCategory = function(id) {
-          return this.apiContext.get('/v2/seaters-admin/categories/' + id);
-        };
-        AdminApi.prototype.createCategory = function(category) {
-          return this.apiContext.post('/v2/seaters-admin/categories', category);
-        };
-        AdminApi.prototype.updateCategory = function(category) {
-          return this.apiContext.put('/v2/seaters-admin/categories/' + category.id, category);
-        };
-        AdminApi.prototype.deleteCategory = function(id) {
-          return this.apiContext.delete('/v2/seaters-admin/categories/' + id);
-        };
-        AdminApi.prototype.orderCategories = function(orderedCategoryIds) {
-          return this.apiContext.post('/v2/seaters-admin/categories/order', { categoryIds: orderedCategoryIds });
-        };
-        AdminApi.prototype.getInterests = function(options) {
-          return this.apiContext.get(
-            '/v2/seaters-admin/interests',
-            null,
-            seaters_api_1.SeatersApiContext.buildPagingQueryParams(options)
-          );
-        };
-        AdminApi.prototype.getInterest = function(id) {
-          return this.apiContext.get('/v2/seaters-admin/interests/' + id);
-        };
-        AdminApi.prototype.createInterest = function(interest) {
-          return this.apiContext.post('/v2/seaters-admin/interests', interest);
-        };
-        AdminApi.prototype.updateInterest = function(interest) {
-          return this.apiContext.put('/v2/seaters-admin/interests/' + interest.id, interest);
-        };
-        AdminApi.prototype.deleteInterest = function(id) {
-          return this.apiContext.delete('/v2/seaters-admin/interests/' + id);
-        };
-        AdminApi.prototype.getFanAttributes = function(options) {
-          return this.apiContext.get(
-            '/v2/seaters-admin/fan-attributes',
-            null,
-            seaters_api_1.SeatersApiContext.buildPagingQueryParams(options)
-          );
-        };
-        AdminApi.prototype.getFanAttribute = function(id) {
-          return this.apiContext.get('/v2/seaters-admin/fan-attributes/' + id);
-        };
-        AdminApi.prototype.createFanAttribute = function(fanAttribute) {
-          return this.apiContext.post('/v2/seaters-admin/fan-attributes', fanAttribute);
-        };
-        AdminApi.prototype.updateFanAttribute = function(fanAttribute) {
-          return this.apiContext.put('/v2/seaters-admin/fan-attributes/' + fanAttribute.id, fanAttribute);
-        };
-        AdminApi.prototype.deleteFanAttribute = function(id) {
-          return this.apiContext.delete('/v2/seaters-admin/fan-attributes/' + id);
-        };
-        AdminApi.prototype.validateFanAttribute = function(id) {
-          return this.apiContext.post('/v2/seaters-admin/fan-attributes/' + id + '/validate');
-        };
-        AdminApi.prototype.unvalidateFanAttribute = function(id) {
-          return this.apiContext.post('/v2/seaters-admin/fan-attributes/' + id + '/unvalidate');
-        };
-        AdminApi.prototype.addAliases = function(id, idsToConvert) {
-          return this.apiContext.post('/v2/seaters-admin/fan-attributes/' + id + '/add-alias', {
-            fanAttributeIds: idsToConvert
-          });
-        };
         /**
      * HELPERS
      */
@@ -3115,7 +2879,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 40 */
+    /* 35 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3125,12 +2889,12 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(14));
-      __export(__webpack_require__(15));
+      __export(__webpack_require__(12));
+      __export(__webpack_require__(13));
 
       /***/
     },
-    /* 41 */
+    /* 36 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3140,11 +2904,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(42));
+      __export(__webpack_require__(37));
 
       /***/
     },
-    /* 42 */
+    /* 37 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3173,7 +2937,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       /* tslint:disable:no-floating-promises */
       var seaters_api_1 = __webpack_require__(1);
-      var seaters_api_controller_1 = __webpack_require__(8);
+      var seaters_api_controller_1 = __webpack_require__(7);
       var TicketingApi = /** @class */ (function(_super) {
         __extends(TicketingApi, _super);
         function TicketingApi(apiContext) {
@@ -3198,7 +2962,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 43 */
+    /* 38 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3208,11 +2972,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(44));
+      __export(__webpack_require__(39));
 
       /***/
     },
-    /* 44 */
+    /* 39 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3241,7 +3005,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       /* tslint:disable:no-floating-promises */
       var seaters_api_1 = __webpack_require__(1);
-      var seaters_api_controller_1 = __webpack_require__(8);
+      var seaters_api_controller_1 = __webpack_require__(7);
       var PaymentApi = /** @class */ (function(_super) {
         __extends(PaymentApi, _super);
         function PaymentApi(apiContext) {
@@ -3266,7 +3030,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 45 */
+    /* 40 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3301,7 +3065,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 46 */
+    /* 41 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3343,7 +3107,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 47 */
+    /* 42 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3401,7 +3165,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 48 */
+    /* 43 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3411,18 +3175,18 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(49));
-      __export(__webpack_require__(54));
-      __export(__webpack_require__(63));
-      __export(__webpack_require__(65));
-      __export(__webpack_require__(67));
-      __export(__webpack_require__(70));
-      __export(__webpack_require__(72));
+      __export(__webpack_require__(44));
+      __export(__webpack_require__(53));
+      __export(__webpack_require__(62));
+      __export(__webpack_require__(64));
+      __export(__webpack_require__(66));
+      __export(__webpack_require__(69));
+      __export(__webpack_require__(71));
       __export(__webpack_require__(0));
 
       /***/
     },
-    /* 49 */
+    /* 44 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3432,16 +3196,15 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(50));
+      __export(__webpack_require__(45));
       __export(__webpack_require__(2));
-      __export(__webpack_require__(9));
-      __export(__webpack_require__(19));
       __export(__webpack_require__(17));
-      __export(__webpack_require__(18));
+      __export(__webpack_require__(15));
+      __export(__webpack_require__(16));
 
       /***/
     },
-    /* 50 */
+    /* 45 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3481,11 +3244,11 @@ var SeatersSDK = /******/ (function(modules) {
         };
       Object.defineProperty(exports, '__esModule', { value: true });
       var common_1 = __webpack_require__(3);
-      var waiting_list_service_1 = __webpack_require__(17);
-      var fan_group_service_1 = __webpack_require__(18);
+      var waiting_list_service_1 = __webpack_require__(15);
+      var fan_group_service_1 = __webpack_require__(16);
       var util_1 = __webpack_require__(0);
-      var fan_profiling_service_1 = __webpack_require__(52);
-      var fan_survey_service_1 = __webpack_require__(53);
+      var fan_profiling_service_1 = __webpack_require__(47);
+      var fan_survey_service_1 = __webpack_require__(48);
       var FanService = /** @class */ (function(_super) {
         __extends(FanService, _super);
         function FanService(seatersApi, sessionService, publicService) {
@@ -3711,30 +3474,39 @@ var SeatersSDK = /******/ (function(modules) {
           });
         };
         // Profiling (public)
-        FanService.prototype.getProfilingCategories = function(pagingOptions) {
-          return this.fanProfilingService.getProfilingCategories(pagingOptions).then(this.convertPagedSortedResult);
+        FanService.prototype.getProfilingCategories = function() {
+          return this.fanProfilingService.getProfilingCategories();
         };
         FanService.prototype.getProfilingCategoryById = function(categoryId) {
           return this.fanProfilingService.getProfilingCategoryById(categoryId);
         };
-        FanService.prototype.seachFanAttributes = function(query, validated) {
-          return this.fanProfilingService.seachFanAttributes(query, validated);
+        FanService.prototype.getProfilingFanAttributes = function(query, validated) {
+          return this.fanProfilingService.getProfilingFanAttributes(query, validated);
         };
         FanService.prototype.getProfilingFanAttributeById = function(fanAttributeId) {
           return this.fanProfilingService.getProfilingFanAttributeById(fanAttributeId);
         };
         // User (fan)
-        FanService.prototype.getUserInterests = function(pagingOptions) {
-          return this.fanProfilingService.getUserInterests(pagingOptions).then(this.convertPagedSortedResult);
+        FanService.prototype.getUserInterests = function() {
+          return this.fanProfilingService.getUserInterests();
+        };
+        FanService.prototype.createUserInterest = function(userInterestCreateDTO) {
+          return this.fanProfilingService.createUserInterest(userInterestCreateDTO);
         };
         FanService.prototype.updateUserInterest = function(userInterestUpdateDTO) {
           return this.fanProfilingService.updateUserInterest(userInterestUpdateDTO);
         };
-        FanService.prototype.getUserFanAttributes = function(pagingOptions) {
-          return this.fanProfilingService.getUserFanAttributes(pagingOptions).then(this.convertPagedSortedResult);
+        FanService.prototype.getUserFanAttributes = function() {
+          return this.fanProfilingService.getUserFanAttributes();
         };
-        FanService.prototype.updateUserFanAttribute = function(options) {
-          return this.fanProfilingService.updateUserFanAttribute(options);
+        FanService.prototype.createUserFanAttribute = function(userFanAttributeCreateDTO, relationsValidation) {
+          return this.fanProfilingService.createUserFanAttribute(userFanAttributeCreateDTO, relationsValidation);
+        };
+        FanService.prototype.updateUserFanAttribute = function(userFanAttributeId, userFanAttributeCreateDTO) {
+          return this.fanProfilingService.updateUserFanAttribute(userFanAttributeId, userFanAttributeCreateDTO);
+        };
+        FanService.prototype.removeUserFanAttribute = function(userFanAttributeId) {
+          return this.fanProfilingService.removeUserFanAttribute(userFanAttributeId);
         };
         FanService.prototype.getWaitingListInterests = function(waitingListId) {
           return this.waitingListService.getWaitingListInterests(waitingListId);
@@ -3787,7 +3559,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 51 */
+    /* 46 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3820,47 +3592,71 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 52 */
+    /* 47 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
       Object.defineProperty(exports, '__esModule', { value: true });
-      var profiling_types_1 = __webpack_require__(9);
       var FanProfilingService = /** @class */ (function() {
         function FanProfilingService(seatersApi) {
           this.seatersApi = seatersApi;
         }
         // Profiling (public)
-        FanProfilingService.prototype.getProfilingCategories = function(pagingOptions) {
-          return this.seatersApi.fan.getProfilingCategories(pagingOptions);
+        FanProfilingService.prototype.getProfilingCategories = function() {
+          var _this = this;
+          var categories = [];
+          return this.seatersApi.fan
+            .getProfilingCategories()
+            .then(function(results) {
+              categories = results;
+              return _this.seatersApi.fan.getProfilingCategoriesOrder();
+            })
+            .then(function(categoriesOrder) {
+              categories = categories.map(function(category) {
+                var orderedData = categoriesOrder.find(function(item) {
+                  return item.id === category.id;
+                });
+                category.order = orderedData ? orderedData.order : undefined;
+                return category;
+              });
+              return categories.sort(function(a, b) {
+                return a.order - b.order;
+              });
+            });
         };
         FanProfilingService.prototype.getProfilingCategoryById = function(categoryId) {
           return this.seatersApi.fan.getProfilingCategoryById(categoryId);
         };
-        FanProfilingService.prototype.seachFanAttributes = function(query, validated) {
-          return this.seatersApi.fan.seachFanAttributes(query, validated);
+        FanProfilingService.prototype.getProfilingFanAttributes = function(query, validated) {
+          return this.seatersApi.fan.getProfilingFanAttributes(query, validated);
         };
         FanProfilingService.prototype.getProfilingFanAttributeById = function(fanAttributeId) {
           return this.seatersApi.fan.getProfilingFanAttributeById(fanAttributeId);
         };
         // User (fan)
-        FanProfilingService.prototype.getUserInterests = function(pagingOptions) {
-          return this.seatersApi.fan.getUserInterests(pagingOptions);
+        FanProfilingService.prototype.getUserInterests = function() {
+          return this.seatersApi.fan.getUserInterests();
+        };
+        FanProfilingService.prototype.createUserInterest = function(userInterestCreateDTO) {
+          return this.seatersApi.fan.createUserInterest(userInterestCreateDTO);
         };
         FanProfilingService.prototype.updateUserInterest = function(userInterestUpdateDTO) {
           return this.seatersApi.fan.updateUserInterest(userInterestUpdateDTO);
         };
-        FanProfilingService.prototype.getUserFanAttributes = function(pagingOptions) {
-          pagingOptions = pagingOptions || {};
-          if (!pagingOptions.filters) {
-            pagingOptions.filters = {
-              user_fan_attribute_status: profiling_types_1.profiling.USER_FAN_ATTRIBUTES_STATUS.LINKED
-            };
-          }
-          return this.seatersApi.fan.getUserFanAttributes(pagingOptions);
+        FanProfilingService.prototype.getUserFanAttributes = function() {
+          return this.seatersApi.fan.getUserFanAttributes();
         };
-        FanProfilingService.prototype.updateUserFanAttribute = function(options) {
-          return this.seatersApi.fan.updateUserFanAttribute(options);
+        FanProfilingService.prototype.createUserFanAttribute = function(
+          userFanAttributeCreateDTO,
+          relationsValidation
+        ) {
+          return this.seatersApi.fan.createUserFanAttribute(userFanAttributeCreateDTO, relationsValidation);
+        };
+        FanProfilingService.prototype.updateUserFanAttribute = function(userFanAttributeId, userFanAttributeUpdateDTO) {
+          return this.seatersApi.fan.updateUserFanAttribute(userFanAttributeId, userFanAttributeUpdateDTO);
+        };
+        FanProfilingService.prototype.removeUserFanAttribute = function(userFanAttributeId) {
+          return this.seatersApi.fan.removeUserFanAttribute(userFanAttributeId);
         };
         return FanProfilingService;
       })();
@@ -3868,7 +3664,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 53 */
+    /* 48 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3919,7 +3715,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 54 */
+    /* 49 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3929,11 +3725,66 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(55));
+      __export(__webpack_require__(6));
+      __export(__webpack_require__(50));
 
       /***/
     },
-    /* 55 */
+    /* 50 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      function __export(m) {
+        for (var p in m) {
+          if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+        }
+      }
+      Object.defineProperty(exports, '__esModule', { value: true });
+      __export(__webpack_require__(51));
+      __export(__webpack_require__(52));
+
+      /***/
+    },
+    /* 51 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      Object.defineProperty(exports, '__esModule', { value: true });
+
+      /***/
+    },
+    /* 52 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      Object.defineProperty(exports, '__esModule', { value: true });
+      var SurveyStatusEnum;
+      (function(SurveyStatusEnum) {
+        SurveyStatusEnum['ACTIVE'] = 'ACTIVE';
+        SurveyStatusEnum['ARCHIVED'] = 'ARCHIVED';
+      })((SurveyStatusEnum = exports.SurveyStatusEnum || (exports.SurveyStatusEnum = {})));
+      var SurveyExtensionPointEnum;
+      (function(SurveyExtensionPointEnum) {
+        SurveyExtensionPointEnum['BEFORE_JOINING_WAITINGLIST'] = 'BEFORE_JOINING_WAITINGLIST';
+      })((SurveyExtensionPointEnum = exports.SurveyExtensionPointEnum || (exports.SurveyExtensionPointEnum = {})));
+
+      /***/
+    },
+    /* 53 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      function __export(m) {
+        for (var p in m) {
+          if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+        }
+      }
+      Object.defineProperty(exports, '__esModule', { value: true });
+      __export(__webpack_require__(54));
+
+      /***/
+    },
+    /* 54 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3961,7 +3812,7 @@ var SeatersSDK = /******/ (function(modules) {
           return t;
         };
       Object.defineProperty(exports, '__esModule', { value: true });
-      var algolia_for_seaters_1 = __webpack_require__(56);
+      var algolia_for_seaters_1 = __webpack_require__(55);
       var fan_types_1 = __webpack_require__(2);
       var PublicService = /** @class */ (function() {
         function PublicService(appService, requestDriver, seatersApi) {
@@ -4063,7 +3914,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 56 */
+    /* 55 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4073,18 +3924,18 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(57));
-      __export(__webpack_require__(20));
+      __export(__webpack_require__(56));
+      __export(__webpack_require__(18));
 
       /***/
     },
-    /* 57 */
+    /* 56 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
       Object.defineProperty(exports, '__esModule', { value: true });
-      var algolia_api_1 = __webpack_require__(58);
-      var algolia_for_seaters_types_1 = __webpack_require__(20);
+      var algolia_api_1 = __webpack_require__(57);
+      var algolia_for_seaters_types_1 = __webpack_require__(18);
       var DEFAULT_LOCALE = 'en';
       var WL_FACET_FILTER = {
         facet: algolia_for_seaters_types_1.TYPE_FIELD,
@@ -4352,7 +4203,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 58 */
+    /* 57 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4362,11 +4213,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(59));
+      __export(__webpack_require__(58));
 
       /***/
     },
-    /* 59 */
+    /* 58 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4394,7 +4245,7 @@ var SeatersSDK = /******/ (function(modules) {
         })();
       Object.defineProperty(exports, '__esModule', { value: true });
       var api_1 = __webpack_require__(4);
-      var indices_api_1 = __webpack_require__(60);
+      var indices_api_1 = __webpack_require__(59);
       var APP_ID_HEADER = 'X-Algolia-Application-Id';
       var API_KEY_HEADER = 'X-Algolia-API-Key';
       var API_LOCATION_INFIX = '-dsn.algolia.net/1/';
@@ -4418,7 +4269,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 60 */
+    /* 59 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4495,7 +4346,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 61 */
+    /* 60 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4504,7 +4355,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 62 */
+    /* 61 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4513,7 +4364,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 63 */
+    /* 62 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4523,11 +4374,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(64));
+      __export(__webpack_require__(63));
 
       /***/
     },
-    /* 64 */
+    /* 63 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4973,7 +4824,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 65 */
+    /* 64 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4983,16 +4834,16 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(66));
+      __export(__webpack_require__(65));
 
       /***/
     },
-    /* 66 */
+    /* 65 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
       Object.defineProperty(exports, '__esModule', { value: true });
-      var health_types_1 = __webpack_require__(15);
+      var health_types_1 = __webpack_require__(13);
       var ALL_COUNTRIES_PAGE_SIZE = 1000;
       var ALL_LANGUAGES_PAGE_SIZE = 1000;
       var ALL_CURRENCIES_PAGE_SIZE = 1000;
@@ -5082,7 +4933,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 67 */
+    /* 66 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -5092,11 +4943,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(68));
+      __export(__webpack_require__(67));
 
       /***/
     },
-    /* 68 */
+    /* 67 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -5124,7 +4975,7 @@ var SeatersSDK = /******/ (function(modules) {
         })();
       Object.defineProperty(exports, '__esModule', { value: true });
       var common_1 = __webpack_require__(3);
-      var waiting_list_mapper_1 = __webpack_require__(69);
+      var waiting_list_mapper_1 = __webpack_require__(68);
       var AdminService = /** @class */ (function(_super) {
         __extends(AdminService, _super);
         function AdminService(seatersApi) {
@@ -5212,73 +5063,6 @@ var SeatersSDK = /******/ (function(modules) {
               return _this.getFanGroup(fanGroupId);
             });
         };
-        // Profiling
-        AdminService.prototype.getCategories = function(options) {
-          var _this = this;
-          return this.seatersApi.admin.getCategories(options).then(function(r) {
-            return _this.convertPagedResult(r);
-          });
-        };
-        AdminService.prototype.getCategory = function(id) {
-          return this.seatersApi.admin.getCategory(id);
-        };
-        AdminService.prototype.createCategory = function(category) {
-          return this.seatersApi.admin.createCategory(category);
-        };
-        AdminService.prototype.updateCategory = function(category) {
-          return this.seatersApi.admin.updateCategory(category);
-        };
-        AdminService.prototype.deleteCategory = function(id) {
-          return this.seatersApi.admin.deleteCategory(id);
-        };
-        AdminService.prototype.orderCategories = function(orderedCategoryIds) {
-          return this.seatersApi.admin.orderCategories(orderedCategoryIds);
-        };
-        AdminService.prototype.getInterests = function(options) {
-          var _this = this;
-          return this.seatersApi.admin.getInterests(options).then(function(r) {
-            return _this.convertPagedResult(r);
-          });
-        };
-        AdminService.prototype.getInterest = function(id) {
-          return this.seatersApi.admin.getInterest(id);
-        };
-        AdminService.prototype.createInterest = function(interest) {
-          return this.seatersApi.admin.createInterest(interest);
-        };
-        AdminService.prototype.updateInterest = function(interest) {
-          return this.seatersApi.admin.updateInterest(interest);
-        };
-        AdminService.prototype.deleteInterest = function(id) {
-          return this.seatersApi.admin.deleteInterest(id);
-        };
-        AdminService.prototype.getFanAttributes = function(options) {
-          var _this = this;
-          return this.seatersApi.admin.getFanAttributes(options).then(function(r) {
-            return _this.convertPagedResult(r);
-          });
-        };
-        AdminService.prototype.getFanAttribute = function(id) {
-          return this.seatersApi.admin.getFanAttribute(id);
-        };
-        AdminService.prototype.createFanAttribute = function(fanAttribute) {
-          return this.seatersApi.admin.createFanAttribute(fanAttribute);
-        };
-        AdminService.prototype.updateFanAttribute = function(fanAttribute) {
-          return this.seatersApi.admin.updateFanAttribute(fanAttribute);
-        };
-        AdminService.prototype.deleteFanAttribute = function(id) {
-          return this.seatersApi.admin.deleteFanAttribute(id);
-        };
-        AdminService.prototype.validateFanAttribute = function(id) {
-          return this.seatersApi.admin.validateFanAttribute(id);
-        };
-        AdminService.prototype.unvalidateFanAttribute = function(id) {
-          return this.seatersApi.admin.validateFanAttribute(id);
-        };
-        AdminService.prototype.addAliases = function(id, idsToConvert) {
-          return this.seatersApi.admin.addAliases(id, idsToConvert);
-        };
         AdminService.prototype.uploadOneTimeFile = function(data, fileName) {
           var _this = this;
           return this.seatersApi.admin.requestOneTimeFileUpload(this.defaultFileName(fileName)).then(function(otf) {
@@ -5300,7 +5084,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 69 */
+    /* 68 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -5329,7 +5113,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 70 */
+    /* 69 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -5339,11 +5123,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(71));
+      __export(__webpack_require__(70));
 
       /***/
     },
-    /* 71 */
+    /* 70 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -5391,7 +5175,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 72 */
+    /* 71 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -5401,11 +5185,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(73));
+      __export(__webpack_require__(72));
 
       /***/
     },
-    /* 73 */
+    /* 72 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 

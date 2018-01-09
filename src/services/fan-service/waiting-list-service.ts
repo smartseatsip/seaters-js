@@ -9,7 +9,6 @@ import {
   TICKETING_SYSTEM_TYPE
 } from '../../seaters-api/fan';
 import { fan } from './fan-types';
-import { profiling } from './profiling-types';
 import { retryUntil, compareFlatObjects, timeoutPromise } from './../util';
 import { TranslationMap } from '../../seaters-api/translation-map';
 import { BraintreeToken } from '../../seaters-api/fan/braintree-token';
@@ -244,22 +243,19 @@ export class WaitingListService {
   }
 
   // Profiling - FGO
-  getWaitingListInterests(waitingListId: string): Promise<profiling.WaitingListInterest[]> {
+  getWaitingListInterests(waitingListId: string): Promise<fan.WaitingListInterest[]> {
     return this.api.fan.getWaitingListInterests(waitingListId);
   }
 
-  getWaitingListFanAttributes(waitingListId: string): Promise<profiling.WaitingListFanAttribute[]> {
+  getWaitingListFanAttributes(waitingListId: string): Promise<fan.WaitingListFanAttribute[]> {
     return this.api.fan.getWaitingListFanAttributes(waitingListId);
   }
 
-  linkWaitingListInterest(waitingListId: string, interestId: string): Promise<profiling.WaitingListInterest> {
+  linkWaitingListInterest(waitingListId: string, interestId: string): Promise<fan.WaitingListInterest> {
     return this.api.fan.linkWaitingListInterest(waitingListId, interestId);
   }
 
-  linkWaitingListFanAttribute(
-    waitingListId: string,
-    fanAttributeId: string
-  ): Promise<profiling.WaitingListFanAttribute> {
+  linkWaitingListFanAttribute(waitingListId: string, fanAttributeId: string): Promise<fan.WaitingListFanAttribute> {
     return this.api.fan.linkWaitingListFanAttribute(waitingListId, fanAttributeId);
   }
 

@@ -6,6 +6,20 @@ import {
   PaymentInfo as _PaymentInfo,
   AttendeesInfo as _AttendeesInfo,
   AttendeeInfo as _AttendeeInfo,
+  ProfilingCategory as _ProfilingCategory,
+  ProfilingCategoryOrder as _ProfilingCategoryOrder,
+  ProfilingTimeStamp as _ProfilingTimestamp,
+  ProfilingInterest as _ProfilingInterest,
+  ProfilingExternalIdentifier as _ProfilingExternalIdentifier,
+  ProfilingFanAttribute as _ProfilingFanAttribute,
+  UserInterest as _UserInterest,
+  UserInterestCreateDTO as _UserInterestCreateDTO,
+  UserInterestUpdateDTO as _UserInterestUpdateDTO,
+  UserFanAttribute as _UserFanAttribute,
+  UserFanAttributeCreateDTO as _UserFanAttributeCreateDTO,
+  UserFanAttributeUpdateDTO as _UserFanAttributeUpdateDTO,
+  WaitingListInterest as _WaitingListInterest,
+  WaitingListFanAttribute as _WaitingListFanAttribute,
   FanGroupShare as _FanGroupShare,
   WaitingListShare as _WaitingListShare,
   Fan as _Fan,
@@ -114,5 +128,24 @@ export namespace fan {
 
   export interface Address extends _Address {}
 
+  /**
+   *  PROFILING
+   */
+
+  export interface ProfilingCategory extends _ProfilingCategory {}
+  export interface ProfilingCategoryOrder extends _ProfilingCategoryOrder {}
+  export interface ProfilingTimeStamp extends _ProfilingTimestamp {}
+  export interface ProfilingInterest extends _ProfilingInterest {}
+  export interface ProfilingExternalIdentifier extends _ProfilingExternalIdentifier {}
+  export interface ProfilingFanAttribute extends _ProfilingFanAttribute {}
+
+  export interface UserInterest extends _UserInterest {}
+  export interface UserInterestCreateDTO extends _UserInterestCreateDTO {}
+  export interface UserInterestUpdateDTO extends _UserInterestUpdateDTO {}
+  export interface UserFanAttribute extends _UserFanAttribute {}
+  export interface UserFanAttributeCreateDTO extends _UserFanAttributeCreateDTO {}
+  export interface UserFanAttributeUpdateDTO extends _UserFanAttributeUpdateDTO {}
+  export interface WaitingListInterest extends _WaitingListInterest {}
+  export interface WaitingListFanAttribute extends _WaitingListFanAttribute {}
   export interface PhoneNumber extends _PhoneNumber {}
 }
