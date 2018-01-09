@@ -7,6 +7,7 @@ import { TranslationMap } from '../translation-map';
 
 import {
   ProfilingCategory,
+  ProfilingCategoryOrder,
   UserInterestCreateDTO,
   UserInterestUpdateDTO,
   ProfilingFanAttribute,
@@ -39,7 +40,6 @@ import { PhoneNumber } from './index';
 import { IUpdateEmailDTO, IUpdatePasswordDTO } from './fan';
 import { ProfilingInterest, UserInterest } from './profiling';
 import { userInfo } from 'os';
-import { UserInterestStatus } from './index';
 
 export class FanApi {
   constructor(private apiContext: SeatersApiContext) {}
@@ -338,7 +338,7 @@ export class FanApi {
   }
 
   updateUserInterest(userInterestUpdateDTO: UserInterestUpdateDTO): Promise<UserInterest> {
-    return this.apiContext.post(`v2/fan/interests/${userInterestUpdateDTO.id}/${userInterestUpdateDTO.status}`, {}, {});
+    return this.apiContext.put('/profiling/v1/user/interest', userInterestUpdateDTO, {});
   }
 
   getUserFanAttributes(): Promise<UserFanAttribute[]> {

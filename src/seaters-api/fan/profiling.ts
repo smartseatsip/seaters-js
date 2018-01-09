@@ -1,19 +1,41 @@
 /**
+ *  PROFILING - TIMESTAMP
+ */
+export interface ProfilingTimeStamp {
+  creation_date: string;
+  deletion_date: string;
+  update_date: string;
+}
+
+/**
  *  PROFILING - CATEGORIES
  */
 export interface ProfilingCategory {
+  category_code: string;
+  id: string;
+  interests: string[];
+  time_stamps: ProfilingTimeStamp;
+  version: number;
+}
+
+/**
+ *  PROFILING - CATEGORIES ORDER
+ */
+export interface ProfilingCategoryOrder {
   id: string;
   order: number;
-  name: Array<{ lang: string; text: string }>;
 }
 
 /**
  *  PROFILING - INTERESTS
  */
 export interface ProfilingInterest {
+  category_id: string;
   id: string;
-  categoryId: string;
-  name: Array<{ lang: string; text: string }>;
+  interest_code: string;
+  objectType: string;
+  time_stamps: ProfilingTimeStamp;
+  version: number;
 }
 
 /**
@@ -25,6 +47,7 @@ export interface ProfilingExternalIdentifier {
   identifier_id: string;
   identifier_type: string;
   objectType: string;
+  time_stamps: ProfilingTimeStamp;
   version: number;
 }
 
@@ -38,6 +61,7 @@ export interface ProfilingFanAttribute {
   interest: ProfilingInterest;
   name: string;
   objectType: string;
+  time_stamps: ProfilingTimeStamp;
   type: string; // 'private', 'general'
   validated: boolean;
   version: number;
@@ -48,8 +72,10 @@ export interface ProfilingFanAttribute {
  */
 export interface UserInterest {
   id: string;
+  objectType: string;
   interest: ProfilingInterest | string;
   state: string; // 'like', 'unknown', 'dislike'
+  time_stamps: ProfilingTimeStamp;
   user_id: string;
   version: number;
 }
@@ -59,32 +85,10 @@ export interface UserInterestCreateDTO {
   state: string; // 'like', 'unknown', 'dislike'
 }
 
-export enum UserInterestStatusEnum {
-  LIKE = 'LIKE',
-  DISLIKE = 'DISLIKE',
-  NEUTRAL = 'NEUTRAL',
-  UNKNOWN = 'UNKNOWN'
-}
-
-export enum UserInterestActionStatusEnum {
-  like = 'like',
-  dislike = 'dislike',
-  neutral = 'neutral'
-}
-
-export type UserInterestStatus =
-  | UserInterestStatusEnum.LIKE
-  | UserInterestStatusEnum.DISLIKE
-  | UserInterestStatusEnum.NEUTRAL
-  | UserInterestStatusEnum.UNKNOWN;
-export type UserInterestActionStatus =
-  | UserInterestActionStatusEnum.like
-  | UserInterestActionStatusEnum.dislike
-  | UserInterestActionStatusEnum.neutral;
-
 export interface UserInterestUpdateDTO {
   id: string;
-  status: UserInterestActionStatus; // 'like', 'neutral', 'dislike'
+  state: string; // 'like', 'unknown', 'dislike'
+  version: number;
 }
 
 /**
@@ -95,6 +99,7 @@ export interface UserFanAttribute {
   fan_attribute: ProfilingFanAttribute;
   id: string;
   objectType: string;
+  time_stamps: ProfilingTimeStamp;
   user_id: string;
   version: number;
 }
@@ -104,6 +109,7 @@ export interface UserFanAttributeCreateDTO {
   interest_id: string;
   name: string;
   objectType: string;
+  time_stamps: ProfilingTimeStamp;
   type: string; // 'general', 'private'
   validated: boolean;
 }
@@ -112,6 +118,7 @@ export interface UserFanAttributeUpdateDTO {
   fan_attribute: ProfilingFanAttribute;
   id: string;
   objectType: string;
+  time_stamps: ProfilingTimeStamp;
   user_id: string;
   validated: boolean;
 }
@@ -124,6 +131,7 @@ export interface WaitingListInterest {
   id: string;
   objectType: string;
   interest: ProfilingInterest | string;
+  time_stamps: ProfilingTimeStamp;
   waitinglist_id: string;
   version: number;
 }
@@ -136,6 +144,7 @@ export interface WaitingListFanAttribute {
   fan_attribute: ProfilingFanAttribute;
   id: string;
   objectType: string;
+  time_stamps: ProfilingTimeStamp;
   waitinglist_id: string;
   version: number;
 }
