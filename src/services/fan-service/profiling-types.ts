@@ -15,8 +15,7 @@ import {
   UserFanAttributeStatusEnum as _UserFanAttributeStatusEnum,
   UserFanAttributeActionStatusEnum as _UserFanAttributeActionStatusEnum,
   UserFanAttributeUpdateDTO as _UserFanAttributeUpdateDTO,
-  ProfilingFanAttributeStatusEnum as _ProfilingFanAttributeStatusEnum,
-  ProfilingFanAttributeActionStatusEnum as _ProfilingFanAttributeActionStatusEnum
+  ProfilingFanAttributeStatusEnum as _ProfilingFanAttributeStatusEnum
 } from '../../seaters-api/fan';
 
 /**
@@ -39,5 +38,4 @@ export namespace profiling {
   export const USER_FAN_ATTRIBUTES_STATUS = _UserFanAttributeStatusEnum;
   export const USER_FAN_ATTRIBUTES_ACTION_STATUS = _UserFanAttributeActionStatusEnum;
   export const FAN_ATTRIBUTES_STATUS = _ProfilingFanAttributeStatusEnum;
-  export const FAN_ATTRIBUTES_ACTION_STATUS = _ProfilingFanAttributeActionStatusEnum;
 }

@@ -25,31 +25,21 @@ export enum ProfilingFanAttributeStatusEnum {
   UNVALIDATED = 'UNVALIDATED'
 }
 
-export enum ProfilingFanAttributeActionStatusEnum {
-  validate = 'validate',
-  unvalidate = 'unvalidate'
-}
-
 export type ProfilingFanAttributeStatus =
   | ProfilingFanAttributeStatusEnum.VALIDATED
   | ProfilingFanAttributeStatusEnum.UNVALIDATED;
 
-export type ProfilingFanAttributeActionStatus =
-  | ProfilingFanAttributeActionStatusEnum.validate
-  | ProfilingFanAttributeActionStatusEnum.unvalidate;
-
 export interface ProfilingFanAttribute {
   id?: string;
   name: string;
-  externalIdType: string | null;
-  externalId: string | null;
+  externalIdentifierType: string | null;
+  externalIdentifierId: string | null;
   interestId: string | null;
   status: ProfilingFanAttributeStatus;
   aliases: string[] | null[];
 }
 
 export interface FanAttributeCreateUpdateDTO {
-  externalIdType: string | null;
   externalId: string | null;
   interestId: string | null;
   name: string | null;
