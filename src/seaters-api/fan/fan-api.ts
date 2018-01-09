@@ -1,7 +1,7 @@
 /* tslint:disable:no-floating-promises */
 
 import { SeatersApiContext } from '../../seaters-api';
-import { PagedResult } from '../paged-result';
+import { PagedResult, PagedSortedResult } from '../paged-result';
 import { PagingOptions } from '../paging-options';
 import { TranslationMap } from '../translation-map';
 
