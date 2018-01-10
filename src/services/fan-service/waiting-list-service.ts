@@ -1,4 +1,4 @@
-import { SeatersApi, PagedResult, PagingOptions, SeatersExceptionV3 } from '../../seaters-api';
+import { SeatersApi, PagedResult, SeatersExceptionV3 } from '../../seaters-api';
 import {
   WaitingList,
   TRANSACTION_STATUS,
@@ -14,6 +14,7 @@ import { retryUntil, compareFlatObjects, timeoutPromise } from './../util';
 import { TranslationMap } from '../../seaters-api/translation-map';
 import { BraintreeToken } from '../../seaters-api/fan/braintree-token';
 import { StringMap } from '../../api/string-map';
+import { PagedSortedResult, PagingOptions } from '../../index';
 
 const WAITING_LIST_ACTION_STATUS = fan.WAITING_LIST_ACTION_STATUS;
 
@@ -244,12 +245,26 @@ export class WaitingListService {
   }
 
   // Profiling - FGO
-  getWaitingListInterests(waitingListId: string): Promise<profiling.WaitingListInterest[]> {
+  getWaitingListCategories(pagingOptions): Promise<PagedSortedResult<profiling.ProfilingCategory>> {
+    return this.api.fan.getWaitingListCategories(pagingOptions);
+  }
+
+  getWaitingListInterests(waitingListId: string): Promise<PagedSortedResult<profiling.WaitingListInterest>> {
     return this.api.fan.getWaitingListInterests(waitingListId);
   }
 
-  getWaitingListFanAttributes(waitingListId: string): Promise<profiling.WaitingListFanAttribute[]> {
-    return this.api.fan.getWaitingListFanAttributes(waitingListId);
+  getWaitingListFanAttributes(
+    waitingListId: string,
+    pagingOptions: PagingOptions
+  ): Promise<PagedSortedResult<profiling.WaitingListFanAttribute>> {
+    pagingOptions = pagingOptions || {};
+    if (!pagingOptions.filters) {
+      pagingOptions.filters = {
+        waitinglist_fan_attribute_status: profiling.USER_FAN_ATTRIBUTES_STATUS.LINKED
+      };
+    }
+
+    return this.api.fan.getWaitingListFanAttributes(waitingListId, pagingOptions);
   }
 
   linkWaitingListInterest(waitingListId: string, interestId: string): Promise<profiling.WaitingListInterest> {
@@ -263,19 +278,14 @@ export class WaitingListService {
     return this.api.fan.linkWaitingListFanAttribute(waitingListId, fanAttributeId);
   }
 
-  unlinkWaitingListInterests(waitingListId: string): Promise<void> {
-    return this.api.fan.unlinkWaitingListInterests(waitingListId);
-  }
-
-  unlinkWaitingListFanAttributes(waitingListId: string): Promise<void> {
-    return this.api.fan.unlinkWaitingListFanAttributes(waitingListId);
-  }
-
-  unlinkWaitingListInterest(waitingListId: string, interestId: string): Promise<void> {
+  unlinkWaitingListInterest(waitingListId: string, interestId: string): Promise<profiling.WaitingListInterest> {
     return this.api.fan.unlinkWaitingListInterest(waitingListId, interestId);
   }
 
-  unlinkWaitingListFanAttribute(waitingListId: string, fanAttributeId: string): Promise<void> {
+  unlinkWaitingListFanAttribute(
+    waitingListId: string,
+    fanAttributeId: string
+  ): Promise<profiling.WaitingListFanAttribute> {
     return this.api.fan.unlinkWaitingListFanAttribute(waitingListId, fanAttributeId);
   }
 
