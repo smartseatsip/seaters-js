@@ -406,7 +406,7 @@ export class FanApi {
 
   linkWaitingListFanAttribute(waitingListId: string, fanAttributeId: string): Promise<WaitingListFanAttribute> {
     return this.apiContext.post(
-      `v2/fan-group-owner/waiting-lists/${waitingListId}/fan_attributes/${fanAttributeId}/link`,
+      `v2/fan-group-owner/waiting-lists/${waitingListId}/fan-attributes/${fanAttributeId}/link`,
       {},
       {}
     );
@@ -422,7 +422,7 @@ export class FanApi {
 
   unlinkWaitingListFanAttribute(waitingListId: string, fanAttributeId: string): Promise<WaitingListFanAttribute> {
     return this.apiContext.post(
-      `v2/fan-group-owner/waiting-lists/${waitingListId}/fan_attributes/${fanAttributeId}/unlink`,
+      `v2/fan-group-owner/waiting-lists/${waitingListId}/fan-attributes/${fanAttributeId}/unlink`,
       {},
       {}
     );

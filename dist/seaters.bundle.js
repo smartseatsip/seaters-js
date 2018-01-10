@@ -829,7 +829,7 @@ var SeatersSDK = /******/ (function(modules) {
         };
         FanApi.prototype.linkWaitingListFanAttribute = function(waitingListId, fanAttributeId) {
           return this.apiContext.post(
-            'v2/fan-group-owner/waiting-lists/' + waitingListId + '/fan_attributes/' + fanAttributeId + '/link',
+            'v2/fan-group-owner/waiting-lists/' + waitingListId + '/fan-attributes/' + fanAttributeId + '/link',
             {},
             {}
           );
@@ -843,7 +843,7 @@ var SeatersSDK = /******/ (function(modules) {
         };
         FanApi.prototype.unlinkWaitingListFanAttribute = function(waitingListId, fanAttributeId) {
           return this.apiContext.post(
-            'v2/fan-group-owner/waiting-lists/' + waitingListId + '/fan_attributes/' + fanAttributeId + '/unlink',
+            'v2/fan-group-owner/waiting-lists/' + waitingListId + '/fan-attributes/' + fanAttributeId + '/unlink',
             {},
             {}
           );
