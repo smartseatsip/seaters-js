@@ -2,6 +2,7 @@ import { SeatersApi, SeatersService, PagingOptions, PagedResult, PagedSortedResu
 import { WaitingListService } from './waiting-list-service';
 import { FanGroupService } from './fan-group-service';
 import { fan } from './fan-types';
+import { profiling } from './profiling-types';
 import { survey } from './survey-types';
 import { LocalizableText } from '../util';
 
@@ -13,6 +14,7 @@ import { IUpdateEmailDTO, IUpdatePasswordDTO, PhoneNumber } from '../../seaters-
 import { StringMap } from '../../api/string-map';
 import { FanProfilingService } from './fan-profiling-service';
 import { FanSurveyService } from './fan-survey-service';
+import { UserInterestUpdateDTO } from '../../seaters-api/fan';
 
 export class FanService extends SeatersService {
   public waitingListService: WaitingListService;
@@ -262,71 +264,74 @@ export class FanService extends SeatersService {
 
   // Profiling (public)
 
-  getProfilingCategories(pagingOptions): Promise<PagedResult<fan.ProfilingCategory>> {
+  getProfilingCategories(pagingOptions): Promise<PagedResult<profiling.ProfilingCategory>> {
     return this.fanProfilingService.getProfilingCategories(pagingOptions).then(this.convertPagedSortedResult);
   }
 
-  getProfilingCategoryById(categoryId: string): Promise<fan.ProfilingCategory> {
+  getProfilingCategoryById(categoryId: string): Promise<profiling.ProfilingCategory> {
     return this.fanProfilingService.getProfilingCategoryById(categoryId);
   }
 
-  getProfilingFanAttributes(query: string, validated: boolean): Promise<fan.ProfilingFanAttribute[]> {
+  getProfilingFanAttributes(query: string, validated: boolean): Promise<profiling.ProfilingFanAttribute[]> {
     return this.fanProfilingService.getProfilingFanAttributes(query, validated);
   }
 
-  getProfilingFanAttributeById(fanAttributeId: string): Promise<fan.ProfilingFanAttribute> {
+  getProfilingFanAttributeById(fanAttributeId: string): Promise<profiling.ProfilingFanAttribute> {
     return this.fanProfilingService.getProfilingFanAttributeById(fanAttributeId);
   }
 
   // User (fan)
 
-  getUserInterests(pagingOptions): Promise<PagedResult<fan.UserInterest>> {
+  getUserInterests(pagingOptions): Promise<PagedResult<profiling.UserInterest>> {
     return this.fanProfilingService.getUserInterests(pagingOptions).then(this.convertPagedSortedResult);
   }
 
-  createUserInterest(userInterestCreateDTO: fan.UserInterestCreateDTO): Promise<fan.UserInterest> {
+  createUserInterest(userInterestCreateDTO: profiling.UserInterestCreateDTO): Promise<profiling.UserInterest> {
     return this.fanProfilingService.createUserInterest(userInterestCreateDTO);
   }
 
-  updateUserInterest(userInterestUpdateDTO: fan.UserInterestUpdateDTO): Promise<fan.UserInterest> {
+  updateUserInterest(userInterestUpdateDTO: UserInterestUpdateDTO): Promise<profiling.UserInterest> {
     return this.fanProfilingService.updateUserInterest(userInterestUpdateDTO);
   }
 
-  getUserFanAttributes(): Promise<fan.UserFanAttribute[]> {
+  getUserFanAttributes(): Promise<profiling.UserFanAttribute[]> {
     return this.fanProfilingService.getUserFanAttributes();
   }
 
   createUserFanAttribute(
-    userFanAttributeCreateDTO: fan.UserFanAttributeCreateDTO,
+    userFanAttributeCreateDTO: profiling.UserFanAttributeCreateDTO,
     relationsValidation: string
-  ): Promise<fan.UserFanAttribute> {
+  ): Promise<profiling.UserFanAttribute> {
     return this.fanProfilingService.createUserFanAttribute(userFanAttributeCreateDTO, relationsValidation);
   }
 
   updateUserFanAttribute(
     userFanAttributeId: string,
-    userFanAttributeCreateDTO: fan.UserFanAttributeUpdateDTO
-  ): Promise<fan.UserFanAttribute> {
+    userFanAttributeCreateDTO: profiling.UserFanAttributeUpdateDTO
+  ): Promise<profiling.UserFanAttribute> {
     return this.fanProfilingService.updateUserFanAttribute(userFanAttributeId, userFanAttributeCreateDTO);
   }
 
-  removeUserFanAttribute(userFanAttributeId: string): Promise<fan.UserFanAttribute> {
+  removeUserFanAttribute(userFanAttributeId: string): Promise<profiling.UserFanAttribute> {
     return this.fanProfilingService.removeUserFanAttribute(userFanAttributeId);
   }
 
-  getWaitingListInterests(waitingListId: string): Promise<fan.WaitingListInterest[]> {
+  getWaitingListInterests(waitingListId: string): Promise<profiling.WaitingListInterest[]> {
     return this.waitingListService.getWaitingListInterests(waitingListId);
   }
 
-  getWaitingListFanAttributes(waitingListId: string): Promise<fan.WaitingListFanAttribute[]> {
+  getWaitingListFanAttributes(waitingListId: string): Promise<profiling.WaitingListFanAttribute[]> {
     return this.waitingListService.getWaitingListFanAttributes(waitingListId);
   }
 
-  linkWaitingListInterest(waitingListId: string, interestId: string): Promise<fan.WaitingListInterest> {
+  linkWaitingListInterest(waitingListId: string, interestId: string): Promise<profiling.WaitingListInterest> {
     return this.waitingListService.linkWaitingListInterest(waitingListId, interestId);
   }
 
-  linkWaitingListFanAttribute(waitingListId: string, fanAttributeId: string): Promise<fan.WaitingListFanAttribute> {
+  linkWaitingListFanAttribute(
+    waitingListId: string,
+    fanAttributeId: string
+  ): Promise<profiling.WaitingListFanAttribute> {
     return this.waitingListService.linkWaitingListFanAttribute(waitingListId, fanAttributeId);
   }
 
