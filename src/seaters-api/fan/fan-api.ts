@@ -1,6 +1,6 @@
 /* tslint:disable:no-floating-promises */
 
-import { SeatersApiContext } from '../../seaters-api';
+import { SeatersApiContext, PagedSortedResult, SeatersApi } from '../../seaters-api';
 import { PagedResult } from '../paged-result';
 import { PagingOptions } from '../paging-options';
 import { TranslationMap } from '../translation-map';
@@ -299,16 +299,16 @@ export class FanApi {
 
   // Profiling (public)
 
-  getProfilingCategories(): Promise<ProfilingCategory[]> {
-    return this.apiContext.get('/profiling/v1/categories', {}, {});
-  }
-
-  getProfilingCategoriesOrder(): Promise<ProfilingCategoryOrder[]> {
-    return this.apiContext.get('/profiling/v1/categories/order', {}, {});
+  getProfilingCategories(pagingOptions: PagingOptions): Promise<PagedSortedResult<ProfilingCategory>> {
+    return this.apiContext.get(
+      'v2/fan/interests/categories',
+      null,
+      SeatersApiContext.buildPagingSortingQueryParams(pagingOptions)
+    );
   }
 
   getProfilingCategoryById(categoryId): Promise<ProfilingCategory> {
-    return this.apiContext.get(`/profiling/v1/category/${categoryId}`, {}, {});
+    return this.apiContext.get(`v2/fan/interests/category/${categoryId}`, {}, {});
   }
 
   getProfilingFanAttributes(query: string, validated: boolean): Promise<ProfilingFanAttribute[]> {
