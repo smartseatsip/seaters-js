@@ -294,6 +294,39 @@ export class FanApi {
   }
   // @TODO create seperate Calls for admin
   //  PROFILING : ADMIN
+  getCateogries() {}
+
+  getCategory() {}
+
+  createCategory() {}
+
+  updateCategory() {}
+
+  deleteCategory() {}
+
+  getInterests() {}
+
+  getInterest(id: string) {}
+
+  createInterest() {}
+
+  updateInterest(id: string) {}
+
+  deleteInterest(id: string) {}
+
+  getFanAttributes() {}
+
+  getFanAttribute() {}
+
+  createFanAttribute() {}
+
+  updateFanAttribute() {}
+
+  deleteFanAttribute() {}
+
+  validateFanAttribute() {}
+
+  convertToAlies() {}
 
   // PROFILING : FAN
 
