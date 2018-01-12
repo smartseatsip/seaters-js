@@ -134,10 +134,10 @@ export type UserFanAttributeActionStatus =
 
 export interface WaitingListInterest {
   id: string;
-  objectType: string;
   interest: ProfilingInterest | string;
-  waitinglist_id: string;
-  version: number;
+  waitinglistId: string;
+  // @TODO create seperate naming convention for this type.
+  status: UserFanAttributeStatus;
 }
 
 /**
@@ -145,9 +145,9 @@ export interface WaitingListInterest {
  */
 
 export interface WaitingListFanAttribute {
-  fan_attribute: ProfilingFanAttribute;
   id: string;
-  objectType: string;
-  waitinglist_id: string;
-  version: number;
+  fanAttribute: ProfilingFanAttribute | string;
+  fanAttributeId: string;
+  // @TODO create seperate naming convention for this type.
+  status: UserFanAttributeStatus;
 }

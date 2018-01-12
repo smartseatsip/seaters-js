@@ -298,12 +298,21 @@ export class FanService extends SeatersService {
     return this.fanProfilingService.updateUserFanAttribute(options);
   }
 
-  getWaitingListInterests(waitingListId: string): Promise<profiling.WaitingListInterest[]> {
-    return this.waitingListService.getWaitingListInterests(waitingListId);
+  getWaitingListCategories(pagingOptions): Promise<PagedResult<profiling.ProfilingCategory>> {
+    return this.waitingListService.getWaitingListCategories(pagingOptions).then(this.convertPagedSortedResult);
   }
 
-  getWaitingListFanAttributes(waitingListId: string): Promise<profiling.WaitingListFanAttribute[]> {
-    return this.waitingListService.getWaitingListFanAttributes(waitingListId);
+  getWaitingListInterests(waitingListId: string): Promise<PagedResult<profiling.WaitingListInterest>> {
+    return this.waitingListService.getWaitingListInterests(waitingListId).then(this.convertPagedSortedResult);
+  }
+
+  getWaitingListFanAttributes(
+    waitingListId: string,
+    pagingOptions
+  ): Promise<PagedResult<profiling.WaitingListFanAttribute>> {
+    return this.waitingListService
+      .getWaitingListFanAttributes(waitingListId, pagingOptions)
+      .then(this.convertPagedSortedResult);
   }
 
   linkWaitingListInterest(waitingListId: string, interestId: string): Promise<profiling.WaitingListInterest> {
@@ -317,19 +326,14 @@ export class FanService extends SeatersService {
     return this.waitingListService.linkWaitingListFanAttribute(waitingListId, fanAttributeId);
   }
 
-  unlinkWaitingListInterests(waitingListId: string): Promise<void> {
-    return this.waitingListService.unlinkWaitingListInterests(waitingListId);
-  }
-
-  unlinkWaitingListFanAttributes(waitingListId: string): Promise<void> {
-    return this.waitingListService.unlinkWaitingListFanAttributes(waitingListId);
-  }
-
-  unlinkWaitingListInterest(waitingListId: string, interestId: string): Promise<void> {
+  unlinkWaitingListInterest(waitingListId: string, interestId: string): Promise<profiling.WaitingListInterest> {
     return this.waitingListService.unlinkWaitingListInterest(waitingListId, interestId);
   }
 
-  unlinkWaitingListFanAttribute(waitingListId: string, fanAttributeId: string): Promise<void> {
+  unlinkWaitingListFanAttribute(
+    waitingListId: string,
+    fanAttributeId: string
+  ): Promise<profiling.WaitingListFanAttribute> {
     return this.waitingListService.unlinkWaitingListFanAttribute(waitingListId, fanAttributeId);
   }
 
