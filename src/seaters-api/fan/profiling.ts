@@ -17,30 +17,17 @@ export interface ProfilingInterest {
 }
 
 /**
- *  PROFILING - EXTERNAL IDENTIFIERS
- */
-
-export interface ProfilingExternalIdentifier {
-  id: string;
-  identifier_id: string;
-  identifier_type: string;
-  objectType: string;
-  version: number;
-}
-
-/**
  *  PROFILING - FAN ATTRIBUTES
  */
 
 export interface ProfilingFanAttribute {
-  external_identifier: ProfilingExternalIdentifier;
   id: string;
-  interest: ProfilingInterest;
   name: string;
-  objectType: string;
-  type: string; // 'private', 'general'
-  validated: boolean;
-  version: number;
+  externalIdentifierType: string | null;
+  externalIdentifierId: string | null;
+  interestId: string | null;
+  status: boolean;
+  aliases: string[] | null[];
 }
 
 /**
@@ -48,15 +35,14 @@ export interface ProfilingFanAttribute {
  */
 export interface UserInterest {
   id: string;
-  interest: ProfilingInterest | string;
-  state: string; // 'like', 'unknown', 'dislike'
-  user_id: string;
-  version: number;
+  interest: ProfilingInterest;
+  status: UserInterestStatus; // 'LIKE', 'UNKNOWN', 'NEUTRAL', 'DISLIKE'
+  userId: string;
 }
 
-export interface UserInterestCreateDTO {
-  interest_id: string;
-  state: string; // 'like', 'unknown', 'dislike'
+export interface UserInterestUpdateDTO {
+  id: string;
+  status: UserInterestActionStatus; // 'like', 'neutral', 'dislike'
 }
 
 export enum UserInterestStatusEnum {
@@ -77,43 +63,26 @@ export type UserInterestStatus =
   | UserInterestStatusEnum.DISLIKE
   | UserInterestStatusEnum.NEUTRAL
   | UserInterestStatusEnum.UNKNOWN;
+
 export type UserInterestActionStatus =
   | UserInterestActionStatusEnum.like
   | UserInterestActionStatusEnum.dislike
   | UserInterestActionStatusEnum.neutral;
-
-export interface UserInterestUpdateDTO {
-  id: string;
-  status: UserInterestActionStatus; // 'like', 'neutral', 'dislike'
-}
 
 /**
  *  USER - FAN ATTRIBUTES
  */
 
 export interface UserFanAttribute {
-  fan_attribute: ProfilingFanAttribute;
+  fanAttribute: ProfilingFanAttribute;
   id: string;
-  objectType: string;
-  user_id: string;
-  version: number;
+  userId: string;
 }
 
-export interface UserFanAttributeCreateDTO {
-  external_identifier: string;
-  interest_id: string;
-  name: string;
-  objectType: string;
-  type: string; // 'general', 'private'
-  validated: boolean;
-}
-
-export interface UserFanAttributeUpdateDTO {
-  fan_attribute: ProfilingFanAttribute;
-  id: string;
-  objectType: string;
-  user_id: string;
-  validated: boolean;
+export interface UserFanAttributeCreateUpdateDTO {
+  externalId: string | null;
+  interestId: string | null;
+  name: string | null;
 }
 
 /**
