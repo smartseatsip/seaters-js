@@ -127,6 +127,7 @@ export interface PersonalInfo {
   title: TITLE;
   citizenshipCountryCode: string;
   address: Address;
+  company: string;
 }
 
 export type TITLE = 'MR' | 'MS';

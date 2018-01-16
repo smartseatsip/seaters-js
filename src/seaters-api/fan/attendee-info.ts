@@ -71,6 +71,11 @@ export interface AttendeeInfo {
    * Attendee's address
    */
   address: Address;
+
+  /**
+   * Attendee's company
+   */
+  company: string;
 }
 
 /**
