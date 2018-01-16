@@ -1,3 +1,8 @@
+export interface translationItem {
+  lang: string;
+  text: string;
+}
+
 export interface Answer {
   questionId: string;
   surveyInstanceId?: string;
@@ -7,8 +12,8 @@ export interface Answer {
 
 export interface Question {
   id: string;
-  text: string;
-  answerLabel: string;
+  text: translationItem[];
+  answerLabel: translationItem[];
   answerSemanticId: string;
   status: SurveyStatus;
 }
@@ -16,10 +21,13 @@ export interface SurveyQuestion {
   question: Question;
   enabled: boolean;
 }
+
 export interface Survey {
   id: string;
   name: string;
   status: SurveyStatus;
+  title: translationItem[];
+  description: translationItem[];
   surveyQuestions: SurveyQuestion[];
 }
 export interface SurveyInstance {
