@@ -1,4 +1,4 @@
-export interface translationItem {
+export interface TranslationItem {
   lang: string;
   text: string;
 }
@@ -12,8 +12,8 @@ export interface Answer {
 
 export interface Question {
   id: string;
-  text: translationItem[];
-  answerLabel: translationItem[];
+  text: TranslationItem[];
+  answerLabel: TranslationItem[];
   answerSemanticId: string;
   status: SurveyStatus;
 }
@@ -26,8 +26,8 @@ export interface Survey {
   id: string;
   name: string;
   status: SurveyStatus;
-  title: translationItem[];
-  description: translationItem[];
+  title: TranslationItem[];
+  description: TranslationItem[];
   surveyQuestions: SurveyQuestion[];
 }
 export interface SurveyInstance {
