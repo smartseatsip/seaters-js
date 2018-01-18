@@ -78,7 +78,7 @@ export class AuthenticationApi {
    * @returns {any}
    */
   resetPassword(input: ResetPasswordData): Promise<void> {
-    return this.apiContext.post('/v2/authentication/reset-password', input);
+    return this.apiContext.put('/v2/authentication/reset-password', input);
   }
 
   /**

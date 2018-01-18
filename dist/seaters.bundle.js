@@ -1235,7 +1235,7 @@ var SeatersSDK = /******/ (function(modules) {
      * @returns {any}
      */
         AuthenticationApi.prototype.resetPassword = function(input) {
-          return this.apiContext.post('/v2/authentication/reset-password', input);
+          return this.apiContext.put('/v2/authentication/reset-password', input);
         };
         /**
      *
@@ -2101,7 +2101,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.30.5';
+      exports.version = '1.30.6';
       __export(__webpack_require__(22));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
