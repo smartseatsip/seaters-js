@@ -2,13 +2,11 @@ import { SeatersApiContext, SeatersApiException } from '../../seaters-api';
 import { Fan } from '../fan';
 import {
   UserData,
-  SessionToken,
   ResetEmailData,
+  ResetPasswordData,
   SignupData,
   AnonymousSignupData,
   ValidationData,
-  EmailValidationData,
-  MobilePhoneValidationData,
   EmailPasswordCredentials,
   StoredTokenCredentials,
   RefreshTokenCredentials,
@@ -72,6 +70,15 @@ export class AuthenticationApi {
    */
   validate(input: ValidationData): Promise<Fan> {
     return this.apiContext.put('/auth/validate', input);
+  }
+
+  /**
+   *
+   * @param input
+   * @returns {any}
+   */
+  resetPassword(input: ResetPasswordData): Promise<void> {
+    return this.apiContext.post('/v2/authentication/reset-password', input);
   }
 
   /**
