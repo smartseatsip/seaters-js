@@ -6,7 +6,7 @@ export interface SignupData {
   lastName: string;
   firstName: string;
   password: string;
-  confirmationReturnURLPath: string;  
+  confirmationReturnURLPath: string;
 }
 
 export interface AnonymousSignupData {
@@ -32,21 +32,22 @@ export interface ResetEmailData {
   token: string;
 }
 
+export interface ResetPasswordData {
+  email: string;
+}
+
 /**
  * Relogin using a valid session token
  */
 export interface SessionTokenCredentials {
-
   mfaToken?: string;
   accessToken: string;
-
 }
 
 /**
  * 30-minute lasting session token that can be used in the Seaters authentication header
  */
 export interface SessionToken {
-
   /**
    * date when the token expires, ISO date format
    */
@@ -56,24 +57,21 @@ export interface SessionToken {
    * session token value to be used in Seaters authentication header
    */
   token: string;
-
 }
 
 /**
  * User information for the authenticated user
  */
 export interface UserData {
-
   facebookId?: string;
   mobilePhoneNumber?: PhoneNumber;
   email: string;
   roles: string[];
   locale: string;
   name: {
-    firstName: string,
-    lastName: string
+    firstName: string;
+    lastName: string;
   };
-
 }
 
 /**

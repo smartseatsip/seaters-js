@@ -215,6 +215,19 @@ export class SessionService {
   }
 
   /**
+   * Reset the user password based on the email
+   * @param email email address
+   */
+  doPasswordReset(email: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.seatersApi.authentication
+        .resetPassword({ email })
+        .then(r => resolve())
+        .catch(r => reject(r));
+    });
+  }
+
+  /**
    * Change the email associated to the current user
    * @param email new email address
    */
