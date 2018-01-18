@@ -1234,6 +1234,14 @@ var SeatersSDK = /******/ (function(modules) {
      * @param input
      * @returns {any}
      */
+        AuthenticationApi.prototype.resetPassword = function(input) {
+          return this.apiContext.post('/v2/authentication/reset-password', input);
+        };
+        /**
+     *
+     * @param input
+     * @returns {any}
+     */
         AuthenticationApi.prototype.resetEmail = function(input) {
           return this.apiContext.post('/auth/signup/reset-email', input);
         };
@@ -2093,7 +2101,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.30.4';
+      exports.version = '1.30.5';
       __export(__webpack_require__(22));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
@@ -4787,6 +4795,23 @@ var SeatersSDK = /******/ (function(modules) {
               })
               .then(function(r) {
                 return resolve(r);
+              })
+              .catch(function(r) {
+                return reject(r);
+              });
+          });
+        };
+        /**
+     * Reset the user password based on the email
+     * @param email email address
+     */
+        SessionService.prototype.doPasswordReset = function(email) {
+          var _this = this;
+          return new Promise(function(resolve, reject) {
+            _this.seatersApi.authentication
+              .resetPassword({ email: email })
+              .then(function(r) {
+                return resolve();
               })
               .catch(function(r) {
                 return reject(r);
