@@ -215,6 +215,14 @@ export class FanService extends SeatersService {
    */
 
   /**
+   * Get current logged in fan
+   * @returns {fan.Fan}
+   */
+  fan(): Promise<Fan> {
+    return this.seatersApi.fan.fan();
+  }
+
+  /**
    * Send a new SMS containing the code needed to validate email / phone.
    * @param phone
    * @returns {any}
