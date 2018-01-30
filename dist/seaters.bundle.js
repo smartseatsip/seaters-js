@@ -2101,7 +2101,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.30.6';
+      exports.version = '1.30.7';
       __export(__webpack_require__(22));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
@@ -4705,7 +4705,8 @@ var SeatersSDK = /******/ (function(modules) {
           firstname,
           lastname,
           language,
-          redirect
+          redirect,
+          fanGroupReference
         ) {
           var _this = this;
           return new Promise(function(resolve, reject) {
@@ -4716,7 +4717,8 @@ var SeatersSDK = /******/ (function(modules) {
                 firstName: firstname,
                 lastName: lastname,
                 language: language || 'en',
-                confirmationReturnURLPath: redirect
+                confirmationReturnURLPath: redirect,
+                registeredFromFanGroupId: fanGroupReference
               })
               .then(function() {
                 return _this.doEmailPasswordLogin(email, password);
