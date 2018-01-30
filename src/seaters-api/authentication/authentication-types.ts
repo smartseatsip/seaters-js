@@ -7,6 +7,7 @@ export interface SignupData {
   firstName: string;
   password: string;
   confirmationReturnURLPath: string;
+  registeredFromFanGroupId: string;
 }
 
 export interface AnonymousSignupData {

@@ -139,8 +139,9 @@ export class SessionService {
     password: string,
     firstname: string,
     lastname: string,
-    language?: string,
-    redirect?: string
+    language: string,
+    redirect: string,
+    fanGroupReference: string
   ): Promise<session.Session> {
     return new Promise((resolve, reject) => {
       this.seatersApi.authentication
@@ -150,7 +151,8 @@ export class SessionService {
           firstName: firstname,
           lastName: lastname,
           language: language || 'en',
-          confirmationReturnURLPath: redirect
+          confirmationReturnURLPath: redirect,
+          registeredFromFanGroupId: fanGroupReference
         })
         .then(() => this.doEmailPasswordLogin(email, password))
         .then(r => resolve(r))
