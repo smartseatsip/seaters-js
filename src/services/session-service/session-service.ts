@@ -311,11 +311,31 @@ export class SessionService {
     });
   }
 
-  /**
-   * Return the current logged in fan
-   */
-  whoami(): session.Fan {
+  public whoami(): session.Fan {
     return this.currentFan;
+  }
+
+  public setSession(s: session.SessionToken): void {
+    this.seatersApi.apiContext.setHeader(AUTH_HEADER, AUTH_BEARER + ' ' + s.token);
+    this.sessionToken = s.token;
+    switch (this.sessionStrategy) {
+      case SESSION_STRATEGY.EXTEND:
+        return this.applyExtendSessionStrategy(s);
+      case SESSION_STRATEGY.EXPIRE:
+        return this.applyExpireSessionStrategy(s);
+      default:
+        throw new Error('Unknown session strategy: ' + JSON.stringify(this.sessionStrategy));
+    }
+  }
+
+  public setCurrentFan(): Promise<session.Fan> {
+    return new Promise((resolve, reject) => {
+      this.seatersApi.fan
+        .fan()
+        .then(fan => (this.currentFan = fan))
+        .then(r => resolve(r))
+        .catch(r => reject(r));
+    });
   }
 
   private waitUntilMillisBeforeSessionExpires(s: session.SessionToken, msBefore: number): Promise<any> {
@@ -354,29 +374,6 @@ export class SessionService {
             token: authSuccess.token.value
           };
         })
-        .then(r => resolve(r))
-        .catch(r => reject(r));
-    });
-  }
-
-  private setSession(s: session.SessionToken): void {
-    this.seatersApi.apiContext.setHeader(AUTH_HEADER, AUTH_BEARER + ' ' + s.token);
-    this.sessionToken = s.token;
-    switch (this.sessionStrategy) {
-      case SESSION_STRATEGY.EXTEND:
-        return this.applyExtendSessionStrategy(s);
-      case SESSION_STRATEGY.EXPIRE:
-        return this.applyExpireSessionStrategy(s);
-      default:
-        throw new Error('Unknown session strategy: ' + JSON.stringify(this.sessionStrategy));
-    }
-  }
-
-  private setCurrentFan(): Promise<session.Fan> {
-    return new Promise((resolve, reject) => {
-      this.seatersApi.fan
-        .fan()
-        .then(fan => (this.currentFan = fan))
         .then(r => resolve(r))
         .catch(r => reject(r));
     });
