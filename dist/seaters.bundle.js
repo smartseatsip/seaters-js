@@ -2101,7 +2101,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.30.7';
+      exports.version = '1.30.8';
       __export(__webpack_require__(22));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
@@ -4905,11 +4905,36 @@ var SeatersSDK = /******/ (function(modules) {
               });
           });
         };
-        /**
-     * Return the current logged in fan
-     */
         SessionService.prototype.whoami = function() {
           return this.currentFan;
+        };
+        SessionService.prototype.setSession = function(s) {
+          this.seatersApi.apiContext.setHeader(AUTH_HEADER, AUTH_BEARER + ' ' + s.token);
+          this.sessionToken = s.token;
+          switch (this.sessionStrategy) {
+            case SESSION_STRATEGY.EXTEND:
+              return this.applyExtendSessionStrategy(s);
+            case SESSION_STRATEGY.EXPIRE:
+              return this.applyExpireSessionStrategy(s);
+            default:
+              throw new Error('Unknown session strategy: ' + JSON.stringify(this.sessionStrategy));
+          }
+        };
+        SessionService.prototype.setCurrentFan = function() {
+          var _this = this;
+          return new Promise(function(resolve, reject) {
+            _this.seatersApi.fan
+              .fan()
+              .then(function(fan) {
+                return (_this.currentFan = fan);
+              })
+              .then(function(r) {
+                return resolve(r);
+              })
+              .catch(function(r) {
+                return reject(r);
+              });
+          });
         };
         SessionService.prototype.waitUntilMillisBeforeSessionExpires = function(s, msBefore) {
           var expirationDate = util_1.normalizeLondonTimezoneDate(s.expirationDate);
@@ -4951,34 +4976,6 @@ var SeatersSDK = /******/ (function(modules) {
                   identity: identity,
                   token: authSuccess.token.value
                 };
-              })
-              .then(function(r) {
-                return resolve(r);
-              })
-              .catch(function(r) {
-                return reject(r);
-              });
-          });
-        };
-        SessionService.prototype.setSession = function(s) {
-          this.seatersApi.apiContext.setHeader(AUTH_HEADER, AUTH_BEARER + ' ' + s.token);
-          this.sessionToken = s.token;
-          switch (this.sessionStrategy) {
-            case SESSION_STRATEGY.EXTEND:
-              return this.applyExtendSessionStrategy(s);
-            case SESSION_STRATEGY.EXPIRE:
-              return this.applyExpireSessionStrategy(s);
-            default:
-              throw new Error('Unknown session strategy: ' + JSON.stringify(this.sessionStrategy));
-          }
-        };
-        SessionService.prototype.setCurrentFan = function() {
-          var _this = this;
-          return new Promise(function(resolve, reject) {
-            _this.seatersApi.fan
-              .fan()
-              .then(function(fan) {
-                return (_this.currentFan = fan);
               })
               .then(function(r) {
                 return resolve(r);
