@@ -187,6 +187,11 @@ export interface WaitingList {
   translatedShortGroupName: string;
 
   /**
+   * Description, translated in fan's locale
+   */
+  translatedDescription: string;
+
+  /**
    * Event name, translated in fan's locale
    */
   translatedEventName: string;
