@@ -3,6 +3,7 @@ export interface PagedResult<T> {
   itemOffset: number;
   totalSize: number;
   items: T[];
+  page: number;
 }
 
 export interface PagedSortedResult<T> {

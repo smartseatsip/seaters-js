@@ -10,6 +10,14 @@ export interface Answer {
   userId?: string;
 }
 
+export interface AnswerSemantic {
+  id?: string;
+  name: string;
+  createdDate?: string;
+  lastModifiedDate?: string;
+  version?: number;
+}
+
 export interface Question {
   id: string;
   text: TranslationItem[];
@@ -18,7 +26,8 @@ export interface Question {
   status: SurveyStatus;
 }
 export interface SurveyQuestion {
-  question: Question;
+  questionId?: string;
+  question?: Question;
   enabled: boolean;
 }
 
@@ -31,10 +40,11 @@ export interface Survey {
   surveyQuestions: SurveyQuestion[];
 }
 export interface SurveyInstance {
-  id: string;
+  id?: string;
   waitinglistId: string;
   extensionPoint;
-  survey: Survey;
+  surveyId?: string;
+  survey?: Survey;
 }
 
 export enum SurveyStatusEnum {

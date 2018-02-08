@@ -4,7 +4,7 @@ import { PagedResult } from '../paged-result';
 import { PagingOptions } from '../paging-options';
 import { SeatersApiController } from '../seaters-api-controller';
 import * as admin from './admin-types';
-import { profiling } from '../../services/index';
+import { profiling, survey } from '../../services/index';
 
 export class AdminApi extends SeatersApiController {
   constructor(private apiContext: SeatersApiContext) {
@@ -216,6 +216,86 @@ export class AdminApi extends SeatersApiController {
 
   addAliases(id: string, idsToConvert: string[]): Promise<profiling.ProfilingFanAttribute> {
     return this.apiContext.post(`/v2/seaters-admin/fan-attributes/${id}/add-alias`, { fanAttributeIds: idsToConvert });
+  }
+
+  // Survey
+  getSurvey(id: string): Promise<survey.Survey> {
+    return this.apiContext.get(`/v2/seaters-admin/survey/${id}`);
+  }
+
+  getSurveys(options: PagingOptions): Promise<PagedResult<survey.Survey>> {
+    return this.apiContext.get('/v2/seaters-admin/surveys', null, SeatersApiContext.buildPagingQueryParams(options));
+  }
+
+  createSurvey(data: survey.Survey): Promise<survey.Survey> {
+    return this.apiContext.post(`/v2/seaters-admin/survey`, data);
+  }
+
+  updateSurvey(data: survey.Survey): Promise<survey.Survey> {
+    return this.apiContext.put(`/v2/seaters-admin/survey/${data.id}`, data);
+  }
+
+  // Survey : Instances
+  getSurveyInstance(id: string): Promise<survey.Survey> {
+    return this.apiContext.get(`/v2/seaters-admin/survey/instances/${id}`);
+  }
+
+  getSurveyInstances(options: PagingOptions): Promise<PagedResult<survey.SurveyInstance>> {
+    return this.apiContext.get(
+      '/v2/seaters-admin/surveys/instances',
+      null,
+      SeatersApiContext.buildPagingQueryParams(options)
+    );
+  }
+
+  createSurveyInstances(surveyInstance: survey.SurveyInstance): Promise<survey.SurveyInstance> {
+    return this.apiContext.post(`/v2/seaters-admin/survey/instances`, surveyInstance);
+  }
+
+  updateSurveyInstances(surveyInstance: survey.SurveyInstance): Promise<survey.SurveyInstance> {
+    return this.apiContext.put(`/v2/seaters-admin/survey/instances/${surveyInstance.id}`, surveyInstance);
+  }
+
+  // Survey : Answer Semantic
+  getAnswerSemantic(id: string): Promise<survey.AnswerSemantic> {
+    return this.apiContext.get(`/v2/seaters-admin/survey/answer-semantics/${id}`);
+  }
+
+  getAnswerSemantics(options: PagingOptions): Promise<PagedResult<survey.AnswerSemantic>> {
+    return this.apiContext.get(
+      '/v2/seaters-admin/surveys/answer-semantics',
+      null,
+      SeatersApiContext.buildPagingQueryParams(options)
+    );
+  }
+
+  createAnswerSemantic(answerSemantic: survey.AnswerSemantic): Promise<survey.AnswerSemantic> {
+    return this.apiContext.post(`/v2/seaters-admin/survey/answer-semantics`, answerSemantic);
+  }
+
+  updateAnswerSemantic(answerSemantic: survey.AnswerSemantic): Promise<survey.AnswerSemantic> {
+    return this.apiContext.put(`/v2/seaters-admin/survey/answer-semantics/${answerSemantic.id}`, answerSemantic);
+  }
+
+  // Survey : Questions
+  getQuestion(id: string): Promise<survey.Question> {
+    return this.apiContext.get(`/v2/seaters-admin/survey/questions/${id}`);
+  }
+
+  getQuestions(options: PagingOptions): Promise<PagedResult<survey.Question>> {
+    return this.apiContext.get(
+      '/v2/seaters-admin/surveys/questions',
+      null,
+      SeatersApiContext.buildPagingQueryParams(options)
+    );
+  }
+
+  createQuestion(question: survey.Question): Promise<survey.Question> {
+    return this.apiContext.post(`/v2/seaters-admin/survey/questions`, question);
+  }
+
+  updateQuestion(question: survey.Question): Promise<survey.Question> {
+    return this.apiContext.put(`/v2/seaters-admin/survey/questions/${question.id}`, question);
   }
 
   /**
