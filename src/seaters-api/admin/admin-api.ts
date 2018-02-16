@@ -220,7 +220,7 @@ export class AdminApi extends SeatersApiController {
 
   // Survey
   getSurvey(id: string): Promise<survey.Survey> {
-    return this.apiContext.get(`/v2/seaters-admin/survey/${id}`);
+    return this.apiContext.get(`/v2/seaters-admin/surveys/${id}`);
   }
 
   getSurveys(options: PagingOptions): Promise<PagedResult<survey.Survey>> {
@@ -228,16 +228,16 @@ export class AdminApi extends SeatersApiController {
   }
 
   createSurvey(data: survey.Survey): Promise<survey.Survey> {
-    return this.apiContext.post(`/v2/seaters-admin/survey`, data);
+    return this.apiContext.post(`/v2/seaters-admin/surveys`, data);
   }
 
   updateSurvey(data: survey.Survey): Promise<survey.Survey> {
-    return this.apiContext.put(`/v2/seaters-admin/survey/${data.id}`, data);
+    return this.apiContext.put(`/v2/seaters-admin/surveys/${data.id}`, data);
   }
 
   // Survey : Instances
   getSurveyInstance(id: string): Promise<survey.Survey> {
-    return this.apiContext.get(`/v2/seaters-admin/survey/instances/${id}`);
+    return this.apiContext.get(`/v2/seaters-admin/surveys/instances/${id}`);
   }
 
   getSurveyInstances(options: PagingOptions): Promise<PagedResult<survey.SurveyInstance>> {
@@ -249,16 +249,16 @@ export class AdminApi extends SeatersApiController {
   }
 
   createSurveyInstances(surveyInstance: survey.SurveyInstance): Promise<survey.SurveyInstance> {
-    return this.apiContext.post(`/v2/seaters-admin/survey/instances`, surveyInstance);
+    return this.apiContext.post(`/v2/seaters-admin/surveys/instances`, surveyInstance);
   }
 
   updateSurveyInstances(surveyInstance: survey.SurveyInstance): Promise<survey.SurveyInstance> {
-    return this.apiContext.put(`/v2/seaters-admin/survey/instances/${surveyInstance.id}`, surveyInstance);
+    return this.apiContext.put(`/v2/seaters-admin/surveys/instances/${surveyInstance.id}`, surveyInstance);
   }
 
   // Survey : Answer Semantic
   getAnswerSemantic(id: string): Promise<survey.AnswerSemantic> {
-    return this.apiContext.get(`/v2/seaters-admin/survey/answer-semantics/${id}`);
+    return this.apiContext.get(`/v2/seaters-admin/surveys/answer-semantics/${id}`);
   }
 
   getAnswerSemantics(options: PagingOptions): Promise<PagedResult<survey.AnswerSemantic>> {
@@ -270,16 +270,16 @@ export class AdminApi extends SeatersApiController {
   }
 
   createAnswerSemantic(answerSemantic: survey.AnswerSemantic): Promise<survey.AnswerSemantic> {
-    return this.apiContext.post(`/v2/seaters-admin/survey/answer-semantics`, answerSemantic);
+    return this.apiContext.post(`/v2/seaters-admin/surveys/answer-semantics`, answerSemantic);
   }
 
   updateAnswerSemantic(answerSemantic: survey.AnswerSemantic): Promise<survey.AnswerSemantic> {
-    return this.apiContext.put(`/v2/seaters-admin/survey/answer-semantics/${answerSemantic.id}`, answerSemantic);
+    return this.apiContext.put(`/v2/seaters-admin/surveys/answer-semantics/${answerSemantic.id}`, answerSemantic);
   }
 
   // Survey : Questions
   getQuestion(id: string): Promise<survey.Question> {
-    return this.apiContext.get(`/v2/seaters-admin/survey/questions/${id}`);
+    return this.apiContext.get(`/v2/seaters-admin/surveys/questions/${id}`);
   }
 
   getQuestions(options: PagingOptions): Promise<PagedResult<survey.Question>> {
@@ -291,11 +291,11 @@ export class AdminApi extends SeatersApiController {
   }
 
   createQuestion(question: survey.Question): Promise<survey.Question> {
-    return this.apiContext.post(`/v2/seaters-admin/survey/questions`, question);
+    return this.apiContext.post(`/v2/seaters-admin/surveys/questions`, question);
   }
 
   updateQuestion(question: survey.Question): Promise<survey.Question> {
-    return this.apiContext.put(`/v2/seaters-admin/survey/questions/${question.id}`, question);
+    return this.apiContext.put(`/v2/seaters-admin/surveys/questions/${question.id}`, question);
   }
 
   /**

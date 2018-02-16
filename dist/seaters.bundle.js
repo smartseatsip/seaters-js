@@ -3114,7 +3114,7 @@ var SeatersSDK = /******/ (function(modules) {
         };
         // Survey
         AdminApi.prototype.getSurvey = function(id) {
-          return this.apiContext.get('/v2/seaters-admin/survey/' + id);
+          return this.apiContext.get('/v2/seaters-admin/surveys/' + id);
         };
         AdminApi.prototype.getSurveys = function(options) {
           return this.apiContext.get(
@@ -3124,14 +3124,14 @@ var SeatersSDK = /******/ (function(modules) {
           );
         };
         AdminApi.prototype.createSurvey = function(data) {
-          return this.apiContext.post('/v2/seaters-admin/survey', data);
+          return this.apiContext.post('/v2/seaters-admin/surveys', data);
         };
         AdminApi.prototype.updateSurvey = function(data) {
-          return this.apiContext.put('/v2/seaters-admin/survey/' + data.id, data);
+          return this.apiContext.put('/v2/seaters-admin/surveys/' + data.id, data);
         };
         // Survey : Instances
         AdminApi.prototype.getSurveyInstance = function(id) {
-          return this.apiContext.get('/v2/seaters-admin/survey/instances/' + id);
+          return this.apiContext.get('/v2/seaters-admin/surveys/instances/' + id);
         };
         AdminApi.prototype.getSurveyInstances = function(options) {
           return this.apiContext.get(
@@ -3141,14 +3141,14 @@ var SeatersSDK = /******/ (function(modules) {
           );
         };
         AdminApi.prototype.createSurveyInstances = function(surveyInstance) {
-          return this.apiContext.post('/v2/seaters-admin/survey/instances', surveyInstance);
+          return this.apiContext.post('/v2/seaters-admin/surveys/instances', surveyInstance);
         };
         AdminApi.prototype.updateSurveyInstances = function(surveyInstance) {
-          return this.apiContext.put('/v2/seaters-admin/survey/instances/' + surveyInstance.id, surveyInstance);
+          return this.apiContext.put('/v2/seaters-admin/surveys/instances/' + surveyInstance.id, surveyInstance);
         };
         // Survey : Answer Semantic
         AdminApi.prototype.getAnswerSemantic = function(id) {
-          return this.apiContext.get('/v2/seaters-admin/survey/answer-semantics/' + id);
+          return this.apiContext.get('/v2/seaters-admin/surveys/answer-semantics/' + id);
         };
         AdminApi.prototype.getAnswerSemantics = function(options) {
           return this.apiContext.get(
@@ -3158,14 +3158,14 @@ var SeatersSDK = /******/ (function(modules) {
           );
         };
         AdminApi.prototype.createAnswerSemantic = function(answerSemantic) {
-          return this.apiContext.post('/v2/seaters-admin/survey/answer-semantics', answerSemantic);
+          return this.apiContext.post('/v2/seaters-admin/surveys/answer-semantics', answerSemantic);
         };
         AdminApi.prototype.updateAnswerSemantic = function(answerSemantic) {
-          return this.apiContext.put('/v2/seaters-admin/survey/answer-semantics/' + answerSemantic.id, answerSemantic);
+          return this.apiContext.put('/v2/seaters-admin/surveys/answer-semantics/' + answerSemantic.id, answerSemantic);
         };
         // Survey : Questions
         AdminApi.prototype.getQuestion = function(id) {
-          return this.apiContext.get('/v2/seaters-admin/survey/questions/' + id);
+          return this.apiContext.get('/v2/seaters-admin/surveys/questions/' + id);
         };
         AdminApi.prototype.getQuestions = function(options) {
           return this.apiContext.get(
@@ -3175,10 +3175,10 @@ var SeatersSDK = /******/ (function(modules) {
           );
         };
         AdminApi.prototype.createQuestion = function(question) {
-          return this.apiContext.post('/v2/seaters-admin/survey/questions', question);
+          return this.apiContext.post('/v2/seaters-admin/surveys/questions', question);
         };
         AdminApi.prototype.updateQuestion = function(question) {
-          return this.apiContext.put('/v2/seaters-admin/survey/questions/' + question.id, question);
+          return this.apiContext.put('/v2/seaters-admin/surveys/questions/' + question.id, question);
         };
         /**
      * HELPERS
