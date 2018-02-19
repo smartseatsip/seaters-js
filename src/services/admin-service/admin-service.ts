@@ -1,7 +1,7 @@
 import { SeatersApi, PagedResult, PagingOptions, SeatersService } from '../common';
 import { admin } from './admin-types';
 import { mapWaitingList } from './waiting-list-mapper';
-import { profiling } from '../index';
+import { profiling, survey } from '../index';
 
 export class AdminService extends SeatersService {
   constructor(seatersApi: SeatersApi) {
@@ -162,6 +162,74 @@ export class AdminService extends SeatersService {
 
   addAliases(id: string, idsToConvert: string[]): Promise<profiling.ProfilingFanAttribute> {
     return this.seatersApi.admin.addAliases(id, idsToConvert);
+  }
+
+  // Survey
+  getSurvey(id: string): Promise<survey.Survey> {
+    return this.seatersApi.admin.getSurvey(id);
+  }
+
+  getSurveys(options: PagingOptions): Promise<PagedResult<survey.Survey>> {
+    return this.seatersApi.admin.getSurveys(options);
+  }
+
+  createSurvey(data: survey.Survey): Promise<survey.Survey> {
+    return this.seatersApi.admin.createSurvey(data);
+  }
+
+  updateSurvey(data: survey.Survey): Promise<survey.Survey> {
+    return this.seatersApi.admin.updateSurvey(data);
+  }
+
+  // Survey : Instances
+  getSurveyInstance(id: string): Promise<survey.Survey> {
+    return this.seatersApi.admin.getSurveyInstance(id);
+  }
+
+  getSurveyInstances(options: PagingOptions): Promise<PagedResult<survey.SurveyInstance>> {
+    return this.seatersApi.admin.getSurveyInstances(options);
+  }
+
+  createSurveyInstances(surveyInstance: survey.SurveyInstance): Promise<survey.SurveyInstance> {
+    return this.seatersApi.admin.createSurveyInstances(surveyInstance);
+  }
+
+  updateSurveyInstances(surveyInstance: survey.SurveyInstance): Promise<survey.SurveyInstance> {
+    return this.seatersApi.admin.updateSurveyInstances(surveyInstance);
+  }
+
+  // Survey : Answer Semantic
+  getAnswerSemantic(id: string): Promise<survey.AnswerSemantic> {
+    return this.seatersApi.admin.getAnswerSemantic(id);
+  }
+
+  getAnswerSemantics(options: PagingOptions): Promise<PagedResult<survey.AnswerSemantic>> {
+    return this.seatersApi.admin.getAnswerSemantics(options);
+  }
+
+  createAnswerSemantic(answerSemantic: survey.AnswerSemantic): Promise<survey.AnswerSemantic> {
+    return this.seatersApi.admin.createAnswerSemantic(answerSemantic);
+  }
+
+  updateAnswerSemantic(answerSemantic: survey.AnswerSemantic): Promise<survey.AnswerSemantic> {
+    return this.seatersApi.admin.updateAnswerSemantic(answerSemantic);
+  }
+
+  // Survey : Questions
+  getQuestion(id: string): Promise<survey.Question> {
+    return this.seatersApi.admin.getQuestion(id);
+  }
+
+  getQuestions(options: PagingOptions): Promise<PagedResult<survey.Question>> {
+    return this.seatersApi.admin.getQuestions(options);
+  }
+
+  createQuestion(question: survey.Question): Promise<survey.Question> {
+    return this.seatersApi.admin.createQuestion(question);
+  }
+
+  updateQuestion(question: survey.Question): Promise<survey.Question> {
+    return this.seatersApi.admin.updateQuestion(question);
   }
 
   private uploadOneTimeFile(data: any, fileName?: string): Promise<admin.OneTimeFile> {

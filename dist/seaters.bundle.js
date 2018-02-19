@@ -61,7 +61,7 @@ var SeatersSDK = /******/ (function(modules) {
     return Object.prototype.hasOwnProperty.call(object, property);
   }; // __webpack_public_path__
   /******/
-  /******/ /******/ __webpack_require__.p = '/Users/sanderdecoster/local_projects/seaters/seaters-js/dist'; // Load entry module and return exports
+  /******/ /******/ __webpack_require__.p = '/Users/mahmoudalazzawi/projects/seaters-js/dist'; // Load entry module and return exports
   /******/
   /******/ /******/ return __webpack_require__((__webpack_require__.s = 21));
   /******/
@@ -3112,6 +3112,74 @@ var SeatersSDK = /******/ (function(modules) {
             fanAttributeIds: idsToConvert
           });
         };
+        // Survey
+        AdminApi.prototype.getSurvey = function(id) {
+          return this.apiContext.get('/v2/seaters-admin/surveys/' + id);
+        };
+        AdminApi.prototype.getSurveys = function(options) {
+          return this.apiContext.get(
+            '/v2/seaters-admin/surveys',
+            null,
+            seaters_api_1.SeatersApiContext.buildPagingQueryParams(options)
+          );
+        };
+        AdminApi.prototype.createSurvey = function(data) {
+          return this.apiContext.post('/v2/seaters-admin/surveys', data);
+        };
+        AdminApi.prototype.updateSurvey = function(data) {
+          return this.apiContext.put('/v2/seaters-admin/surveys/' + data.id, data);
+        };
+        // Survey : Instances
+        AdminApi.prototype.getSurveyInstance = function(id) {
+          return this.apiContext.get('/v2/seaters-admin/surveys/instances/' + id);
+        };
+        AdminApi.prototype.getSurveyInstances = function(options) {
+          return this.apiContext.get(
+            '/v2/seaters-admin/surveys/instances',
+            null,
+            seaters_api_1.SeatersApiContext.buildPagingQueryParams(options)
+          );
+        };
+        AdminApi.prototype.createSurveyInstances = function(surveyInstance) {
+          return this.apiContext.post('/v2/seaters-admin/surveys/instances', surveyInstance);
+        };
+        AdminApi.prototype.updateSurveyInstances = function(surveyInstance) {
+          return this.apiContext.put('/v2/seaters-admin/surveys/instances/' + surveyInstance.id, surveyInstance);
+        };
+        // Survey : Answer Semantic
+        AdminApi.prototype.getAnswerSemantic = function(id) {
+          return this.apiContext.get('/v2/seaters-admin/surveys/answer-semantics/' + id);
+        };
+        AdminApi.prototype.getAnswerSemantics = function(options) {
+          return this.apiContext.get(
+            '/v2/seaters-admin/surveys/answer-semantics',
+            null,
+            seaters_api_1.SeatersApiContext.buildPagingQueryParams(options)
+          );
+        };
+        AdminApi.prototype.createAnswerSemantic = function(answerSemantic) {
+          return this.apiContext.post('/v2/seaters-admin/surveys/answer-semantics', answerSemantic);
+        };
+        AdminApi.prototype.updateAnswerSemantic = function(answerSemantic) {
+          return this.apiContext.put('/v2/seaters-admin/surveys/answer-semantics/' + answerSemantic.id, answerSemantic);
+        };
+        // Survey : Questions
+        AdminApi.prototype.getQuestion = function(id) {
+          return this.apiContext.get('/v2/seaters-admin/surveys/questions/' + id);
+        };
+        AdminApi.prototype.getQuestions = function(options) {
+          return this.apiContext.get(
+            '/v2/seaters-admin/surveys/questions',
+            null,
+            seaters_api_1.SeatersApiContext.buildPagingQueryParams(options)
+          );
+        };
+        AdminApi.prototype.createQuestion = function(question) {
+          return this.apiContext.post('/v2/seaters-admin/surveys/questions', question);
+        };
+        AdminApi.prototype.updateQuestion = function(question) {
+          return this.apiContext.put('/v2/seaters-admin/surveys/questions/' + question.id, question);
+        };
         /**
      * HELPERS
      */
@@ -5315,6 +5383,58 @@ var SeatersSDK = /******/ (function(modules) {
         };
         AdminService.prototype.addAliases = function(id, idsToConvert) {
           return this.seatersApi.admin.addAliases(id, idsToConvert);
+        };
+        // Survey
+        AdminService.prototype.getSurvey = function(id) {
+          return this.seatersApi.admin.getSurvey(id);
+        };
+        AdminService.prototype.getSurveys = function(options) {
+          return this.seatersApi.admin.getSurveys(options);
+        };
+        AdminService.prototype.createSurvey = function(data) {
+          return this.seatersApi.admin.createSurvey(data);
+        };
+        AdminService.prototype.updateSurvey = function(data) {
+          return this.seatersApi.admin.updateSurvey(data);
+        };
+        // Survey : Instances
+        AdminService.prototype.getSurveyInstance = function(id) {
+          return this.seatersApi.admin.getSurveyInstance(id);
+        };
+        AdminService.prototype.getSurveyInstances = function(options) {
+          return this.seatersApi.admin.getSurveyInstances(options);
+        };
+        AdminService.prototype.createSurveyInstances = function(surveyInstance) {
+          return this.seatersApi.admin.createSurveyInstances(surveyInstance);
+        };
+        AdminService.prototype.updateSurveyInstances = function(surveyInstance) {
+          return this.seatersApi.admin.updateSurveyInstances(surveyInstance);
+        };
+        // Survey : Answer Semantic
+        AdminService.prototype.getAnswerSemantic = function(id) {
+          return this.seatersApi.admin.getAnswerSemantic(id);
+        };
+        AdminService.prototype.getAnswerSemantics = function(options) {
+          return this.seatersApi.admin.getAnswerSemantics(options);
+        };
+        AdminService.prototype.createAnswerSemantic = function(answerSemantic) {
+          return this.seatersApi.admin.createAnswerSemantic(answerSemantic);
+        };
+        AdminService.prototype.updateAnswerSemantic = function(answerSemantic) {
+          return this.seatersApi.admin.updateAnswerSemantic(answerSemantic);
+        };
+        // Survey : Questions
+        AdminService.prototype.getQuestion = function(id) {
+          return this.seatersApi.admin.getQuestion(id);
+        };
+        AdminService.prototype.getQuestions = function(options) {
+          return this.seatersApi.admin.getQuestions(options);
+        };
+        AdminService.prototype.createQuestion = function(question) {
+          return this.seatersApi.admin.createQuestion(question);
+        };
+        AdminService.prototype.updateQuestion = function(question) {
+          return this.seatersApi.admin.updateQuestion(question);
         };
         AdminService.prototype.uploadOneTimeFile = function(data, fileName) {
           var _this = this;
