@@ -1,6 +1,6 @@
 {
   "name": "seaters",
-  "version": "1.30.9",
+  "version": "1.31.0",
   "description": "Seaters functionality in a box!",
   "main": "./dist/seaters.module.js",
   "typings": "./dist/index",
