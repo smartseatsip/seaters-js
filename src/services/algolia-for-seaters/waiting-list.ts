@@ -52,6 +52,16 @@ export interface WaitingList {
   venueCurrencyCode: string;
   venueImageUrl: string;
 
+  /**
+   * Experience name (wish list name) (locale => value)
+   */
+  experienceName: any;
+
+  /**
+   * Experience (description) (locale => value)
+   */
+  description: any;
+
   maxNumberOfSeats: number;
   freeWaitingList: boolean;
   waitingListStatus: WL_STATUS;
@@ -87,9 +97,4 @@ export interface WaitingList {
    * (random distribution only) URL to the terms and conditions PDF file
    */
   termsAndConditionFileURL: string;
-
-  /**
-   * Experience (description) (locale => value)
-   */
-  description: any;
 }

@@ -3,34 +3,20 @@ import { ACCESS_MODE } from './fan-group';
 export interface FanGroupLook {
   accessMode: ACCESS_MODE;
 
-  /**
-   * Translation map
-   */
-  welcomeText: any;
-
   profileImageUrl: string;
-
   coverImageUrl: string;
-
   backgroundImageUrl: string;
-
-  translatedWelcomeText: string;
-
-  translatedName: string;
-
-  translatedDescription: string;
-
   rankAndLikelihoodHidden: boolean;
-
-  /**
-   * Translation map
-   */
-  description: any;
-
   color: string;
 
-  /**
-   * Translation map
-   */
+  // Translated
+  translatedWelcomeText: string;
+  translatedName: string;
+  translatedExperienceName: string;
+  translatedDescription: string;
+
+  // Not translated (translation map)
+  welcomeText: any;
+  description: any;
   name: any;
 }
