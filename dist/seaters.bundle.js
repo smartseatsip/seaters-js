@@ -61,7 +61,7 @@ var SeatersSDK = /******/ (function(modules) {
     return Object.prototype.hasOwnProperty.call(object, property);
   }; // __webpack_public_path__
   /******/
-  /******/ /******/ __webpack_require__.p = '/Users/mahmoudalazzawi/projects/seaters-js/dist'; // Load entry module and return exports
+  /******/ /******/ __webpack_require__.p = '/Users/sanderdecoster/local_projects/seaters/seaters-js/dist'; // Load entry module and return exports
   /******/
   /******/ /******/ return __webpack_require__((__webpack_require__.s = 21));
   /******/
@@ -540,7 +540,7 @@ var SeatersSDK = /******/ (function(modules) {
           return this.apiContext.get('/fan/fangroups-by-slug/:slug/look', { slug: slug });
         };
         FanApi.prototype.fanGroupTranslatedDescription = function(fanGroupId) {
-          return this.apiContext.get('/fan/groups/:fa`nGroupId/translated-description', { fanGroupId: fanGroupId });
+          return this.apiContext.get('/fan/groups/:fanGroupId/translated-description', { fanGroupId: fanGroupId });
         };
         FanApi.prototype.fanGroups = function(fanGroupIds) {
           return this.apiContext.get(
@@ -2101,7 +2101,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.30.9';
+      exports.version = '1.32.0';
       __export(__webpack_require__(22));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
