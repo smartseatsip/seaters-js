@@ -187,6 +187,11 @@ export interface WaitingList {
   translatedShortGroupName: string;
 
   /**
+   * Experience name, translated in fan's locale
+   */
+  translatedExperienceName: string;
+
+  /**
    * Description, translated in fan's locale
    */
   translatedDescription: string;
@@ -309,6 +314,11 @@ export interface WaitingList {
    * Visibility of Rank and Likelihood at fan group level
    */
   groupRankAndLikelihoodHidden: boolean;
+
+  /**
+   * Experience name (wish list name) (locale => value)
+   */
+  experienceName: any;
 
   /**
    * Experience (description) (locale => value)

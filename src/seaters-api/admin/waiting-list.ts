@@ -47,6 +47,11 @@ export interface WaitingList extends BaseEntity {
   name: string;
 
   /**
+   * Experience name (wish list name) (locale => value)
+   */
+  experienceName: any;
+
+  /**
    * Experience (description) (locale => value)
    */
   description: any;

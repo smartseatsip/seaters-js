@@ -72,7 +72,7 @@ export class FanApi {
   }
 
   fanGroupTranslatedDescription(fanGroupId: string): Promise<string> {
-    return this.apiContext.get('/fan/groups/:fa`nGroupId/translated-description', { fanGroupId });
+    return this.apiContext.get('/fan/groups/:fanGroupId/translated-description', { fanGroupId });
   }
 
   fanGroups(fanGroupIds: string[]): Promise<FanGroup[]> {
