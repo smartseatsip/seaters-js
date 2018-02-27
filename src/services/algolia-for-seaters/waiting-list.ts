@@ -6,7 +6,6 @@ import { fan } from '../fan-service/fan-types';
 export const WL_ALGOLIA_TYPE = 'WAITING_LIST';
 
 export interface WaitingList {
-  actionStatus?: fan.WAITING_LIST_ACTION_STATUS;
   waitingListId: string;
 
   type: 'WAITING_LIST';

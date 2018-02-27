@@ -4,6 +4,7 @@ import {
   SearchSeatersContentOptions as _SearchSeatersContentOptions
 } from '../algolia-for-seaters';
 import { Price as _Price, FanGroupLook as _FanGroupLook } from '../../seaters-api/fan';
+import { fan } from '../fan-service/fan-types';
 
 /**
  * The namespace of resources in the context of publicly available data
@@ -11,9 +12,13 @@ import { Price as _Price, FanGroupLook as _FanGroupLook } from '../../seaters-ap
  * we chose 'pub' (as in "let's have a pint in the pub").
  */
 export namespace pub {
-  export interface FanGroup extends _FanGroup {}
+  export interface FanGroup extends _FanGroup {
+    actionStatus?: fan.FAN_GROUP_ACTION_STATUS;
+  }
 
-  export interface WaitingList extends _WaitingList {}
+  export interface WaitingList extends _WaitingList {
+    actionStatus?: fan.WAITING_LIST_ACTION_STATUS;
+  }
 
   export interface Price extends _Price {}
 
