@@ -2101,7 +2101,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.32.0';
+      exports.version = '1.33.0';
       __export(__webpack_require__(22));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
@@ -4070,10 +4070,18 @@ var SeatersSDK = /******/ (function(modules) {
           });
         };
         PublicService.prototype.getFanGroups = function(fanGroupIds) {
-          return this.algoliaForSeatersService.getFanGroupsById(fanGroupIds);
+          var _this = this;
+          return this.algoliaForSeatersService.getFanGroupsById(fanGroupIds).then(function(result) {
+            return result.map(function(fg) {
+              return __assign({}, fg, { actionStatus: _this.getFanGroupActionStatus(fg) });
+            });
+          });
         };
         PublicService.prototype.getWaitingList = function(waitingListId) {
-          return this.algoliaForSeatersService.getWaitingListById(waitingListId);
+          var _this = this;
+          return this.algoliaForSeatersService.getWaitingListById(waitingListId).then(function(wl) {
+            return __assign({}, wl, { actionStatus: _this.getWaitingListActionStatus(wl) });
+          });
         };
         PublicService.prototype.getWaitingListsInFanGroup = function(fanGroupId, pagingOptions) {
           var _this = this;
@@ -4081,6 +4089,12 @@ var SeatersSDK = /******/ (function(modules) {
             .getWaitingListsByFanGroupId(fanGroupId, pagingOptions.maxPageSize, pagingOptions.page)
             .then(function(result) {
               return _this.convertAlgoliaResultSet(result);
+            })
+            .then(function(result) {
+              result.items = result.items.map(function(wl) {
+                return __assign({}, wl, { actionStatus: _this.getWaitingListActionStatus(wl) });
+              });
+              return result;
             });
         };
         PublicService.prototype.getWaitingListsInFanGroups = function(fanGroupIds, pagingOptions) {
@@ -4089,6 +4103,12 @@ var SeatersSDK = /******/ (function(modules) {
             .getWaitingListsByFanGroupIds(fanGroupIds, pagingOptions.maxPageSize, pagingOptions.page)
             .then(function(result) {
               return _this.convertAlgoliaResultSet(result);
+            })
+            .then(function(result) {
+              result.items = result.items.map(function(wl) {
+                return __assign({}, wl, { actionStatus: _this.getWaitingListActionStatus(wl) });
+              });
+              return result;
             });
         };
         PublicService.prototype.getWaitingListPrice = function(waitingListId, numberOfSeats) {
@@ -4101,6 +4121,18 @@ var SeatersSDK = /******/ (function(modules) {
             .searchSeatersContent(query, locale, page.maxPageSize, page.page, options)
             .then(function(result) {
               return _this.convertAlgoliaResultSet(result);
+            })
+            .then(function(result) {
+              result.items = result.items.map(function(content) {
+                if (content.type === 'WAITING_LIST') {
+                  content = __assign({}, content, { actionStatus: _this.getWaitingListActionStatus(content) });
+                }
+                if (content.type === 'FAN_GROUP') {
+                  content = __assign({}, content, { actionStatus: _this.getFanGroupActionStatus(content) });
+                }
+                return content;
+              });
+              return result;
             });
         };
         PublicService.prototype.searchWaitingListsInFanGroup = function(fanGroupId, query, locale, page) {
@@ -4110,6 +4142,12 @@ var SeatersSDK = /******/ (function(modules) {
             .searchWaitingListsInFanGroup(fanGroupId, query, locale, page.maxPageSize, page.page)
             .then(function(result) {
               return _this.convertAlgoliaResultSet(result);
+            })
+            .then(function(result) {
+              result.items = result.items.map(function(wl) {
+                return __assign({}, wl, { actionStatus: _this.getWaitingListActionStatus(wl) });
+              });
+              return result;
             });
         };
         PublicService.prototype.getWaitingListsByKeywords = function(keywords, page) {
@@ -4119,6 +4157,12 @@ var SeatersSDK = /******/ (function(modules) {
             .getWaitingListsByKeywords(keywords, page.maxPageSize, page.page)
             .then(function(result) {
               return _this.convertAlgoliaResultSet(result);
+            })
+            .then(function(result) {
+              result.items = result.items.map(function(wl) {
+                return __assign({}, wl, { actionStatus: _this.getWaitingListActionStatus(wl) });
+              });
+              return result;
             });
         };
         PublicService.prototype.defaultPage = function(page) {
@@ -4145,6 +4189,39 @@ var SeatersSDK = /******/ (function(modules) {
             return fan_types_1.fan.FAN_GROUP_ACTION_STATUS.CAN_UNLOCK;
           }
           return fan_types_1.fan.FAN_GROUP_ACTION_STATUS.CAN_JOIN;
+        };
+        /**
+     *
+     * The action status for public fan groups is limited since we don't have:
+     * - position
+     * - seat
+     * - request
+     * - ...
+     * since the user is not logged in
+     */
+        PublicService.prototype.getWaitingListActionStatus = function(waitingList) {
+          // Coming soon
+          if (
+            waitingList.waitingListStatus === 'PUBLISHED' ||
+            waitingList.waitingListStatus === 'SETUP' ||
+            waitingList.waitingListStatus === 'DRAFT'
+          ) {
+            return fan_types_1.fan.WAITING_LIST_ACTION_STATUS.SOON;
+          }
+          // Closed
+          if (waitingList.waitingListStatus === 'CLOSED') {
+            return undefined;
+          }
+          // Code protected
+          if (waitingList.accessMode === 'CODE_PROTECTED') {
+            return fan_types_1.fan.WAITING_LIST_ACTION_STATUS.UNLOCK;
+          }
+          // Public
+          if (waitingList.accessMode === 'PUBLIC') {
+            return fan_types_1.fan.WAITING_LIST_ACTION_STATUS.BOOK;
+          }
+          // Anything else is not supported since the user is not logged in
+          return undefined;
         };
         return PublicService;
       })();

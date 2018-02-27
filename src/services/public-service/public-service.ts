@@ -28,17 +28,25 @@ export class PublicService {
   }
 
   getFanGroups(fanGroupIds: string[]): Promise<pub.FanGroup[]> {
-    return this.algoliaForSeatersService.getFanGroupsById(fanGroupIds);
+    return this.algoliaForSeatersService
+      .getFanGroupsById(fanGroupIds)
+      .then(result => result.map(fg => ({ ...fg, actionStatus: this.getFanGroupActionStatus(fg) })));
   }
 
   getWaitingList(waitingListId: string): Promise<pub.WaitingList> {
-    return this.algoliaForSeatersService.getWaitingListById(waitingListId);
+    return this.algoliaForSeatersService
+      .getWaitingListById(waitingListId)
+      .then(wl => ({ ...wl, actionStatus: this.getWaitingListActionStatus(wl) }));
   }
 
   getWaitingListsInFanGroup(fanGroupId: string, pagingOptions: PagingOptions): Promise<PagedResult<pub.WaitingList>> {
     return this.algoliaForSeatersService
       .getWaitingListsByFanGroupId(fanGroupId, pagingOptions.maxPageSize, pagingOptions.page)
-      .then(result => this.convertAlgoliaResultSet(result));
+      .then(result => this.convertAlgoliaResultSet(result))
+      .then(result => {
+        result.items = result.items.map(wl => ({ ...wl, actionStatus: this.getWaitingListActionStatus(wl) }));
+        return result;
+      });
   }
 
   getWaitingListsInFanGroups(
@@ -47,7 +55,11 @@ export class PublicService {
   ): Promise<PagedResult<pub.WaitingList>> {
     return this.algoliaForSeatersService
       .getWaitingListsByFanGroupIds(fanGroupIds, pagingOptions.maxPageSize, pagingOptions.page)
-      .then(result => this.convertAlgoliaResultSet(result));
+      .then(result => this.convertAlgoliaResultSet(result))
+      .then(result => {
+        result.items = result.items.map(wl => ({ ...wl, actionStatus: this.getWaitingListActionStatus(wl) }));
+        return result;
+      });
   }
 
   getWaitingListPrice(waitingListId: string, numberOfSeats: number): Promise<pub.Price> {
@@ -63,7 +75,21 @@ export class PublicService {
     page = this.defaultPage(page);
     return this.algoliaForSeatersService
       .searchSeatersContent(query, locale, page.maxPageSize, page.page, options)
-      .then(result => this.convertAlgoliaResultSet<pub.SeatersContent>(result));
+      .then(result => this.convertAlgoliaResultSet<pub.SeatersContent>(result))
+      .then(result => {
+        result.items = result.items.map(content => {
+          if (content.type === 'WAITING_LIST') {
+            content = { ...content, actionStatus: this.getWaitingListActionStatus(content) };
+          }
+
+          if (content.type === 'FAN_GROUP') {
+            content = { ...content, actionStatus: this.getFanGroupActionStatus(content) };
+          }
+
+          return content;
+        });
+        return result;
+      });
   }
 
   searchWaitingListsInFanGroup(
@@ -75,14 +101,22 @@ export class PublicService {
     page = this.defaultPage(page);
     return this.algoliaForSeatersService
       .searchWaitingListsInFanGroup(fanGroupId, query, locale, page.maxPageSize, page.page)
-      .then(result => this.convertAlgoliaResultSet<pub.WaitingList>(result));
+      .then(result => this.convertAlgoliaResultSet<pub.WaitingList>(result))
+      .then(result => {
+        result.items = result.items.map(wl => ({ ...wl, actionStatus: this.getWaitingListActionStatus(wl) }));
+        return result;
+      });
   }
 
   getWaitingListsByKeywords(keywords: string[], page?: PagingOptions): Promise<PagedResult<pub.WaitingList>> {
     page = this.defaultPage(page);
     return this.algoliaForSeatersService
       .getWaitingListsByKeywords(keywords, page.maxPageSize, page.page)
-      .then(result => this.convertAlgoliaResultSet<pub.WaitingList>(result));
+      .then(result => this.convertAlgoliaResultSet<pub.WaitingList>(result))
+      .then(result => {
+        result.items = result.items.map(wl => ({ ...wl, actionStatus: this.getWaitingListActionStatus(wl) }));
+        return result;
+      });
   }
 
   private defaultPage(page: PagingOptions): PagingOptions {
@@ -114,5 +148,43 @@ export class PublicService {
     }
 
     return fan.FAN_GROUP_ACTION_STATUS.CAN_JOIN;
+  }
+
+  /**
+   *
+   * The action status for public fan groups is limited since we don't have:
+   * - position
+   * - seat
+   * - request
+   * - ...
+   * since the user is not logged in
+   */
+  private getWaitingListActionStatus(waitingList: pub.WaitingList): fan.WAITING_LIST_ACTION_STATUS {
+    // Coming soon
+    if (
+      waitingList.waitingListStatus === 'PUBLISHED' ||
+      waitingList.waitingListStatus === 'SETUP' ||
+      waitingList.waitingListStatus === 'DRAFT'
+    ) {
+      return fan.WAITING_LIST_ACTION_STATUS.SOON;
+    }
+
+    // Closed
+    if (waitingList.waitingListStatus === 'CLOSED') {
+      return undefined;
+    }
+
+    // Code protected
+    if (waitingList.accessMode === 'CODE_PROTECTED') {
+      return fan.WAITING_LIST_ACTION_STATUS.UNLOCK;
+    }
+
+    // Public
+    if (waitingList.accessMode === 'PUBLIC') {
+      return fan.WAITING_LIST_ACTION_STATUS.BOOK;
+    }
+
+    // Anything else is not supported since the user is not logged in
+    return undefined;
   }
 }
