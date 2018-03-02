@@ -61,7 +61,7 @@ var SeatersSDK = /******/ (function(modules) {
     return Object.prototype.hasOwnProperty.call(object, property);
   }; // __webpack_public_path__
   /******/
-  /******/ /******/ __webpack_require__.p = '/Users/sanderdecoster/local_projects/seaters/seaters-js/dist'; // Load entry module and return exports
+  /******/ /******/ __webpack_require__.p = '/Users/mahmoudalazzawi/projects/seaters-js/dist'; // Load entry module and return exports
   /******/
   /******/ /******/ return __webpack_require__((__webpack_require__.s = 21));
   /******/
@@ -3101,8 +3101,8 @@ var SeatersSDK = /******/ (function(modules) {
         AdminApi.prototype.deleteFanAttribute = function(id) {
           return this.apiContext.delete('/v2/seaters-admin/fan-attributes/' + id);
         };
-        AdminApi.prototype.validateFanAttribute = function(id) {
-          return this.apiContext.post('/v2/seaters-admin/fan-attributes/' + id + '/validate');
+        AdminApi.prototype.validateFanAttribute = function(id, updatedFanAttribute) {
+          return this.apiContext.post('/v2/seaters-admin/fan-attributes/' + id + '/validate', updatedFanAttribute);
         };
         AdminApi.prototype.unvalidateFanAttribute = function(id) {
           return this.apiContext.post('/v2/seaters-admin/fan-attributes/' + id + '/unvalidate');
@@ -5452,11 +5452,11 @@ var SeatersSDK = /******/ (function(modules) {
         AdminService.prototype.deleteFanAttribute = function(id) {
           return this.seatersApi.admin.deleteFanAttribute(id);
         };
-        AdminService.prototype.validateFanAttribute = function(id) {
-          return this.seatersApi.admin.validateFanAttribute(id);
+        AdminService.prototype.validateFanAttribute = function(id, updatedFanAttribute) {
+          return this.seatersApi.admin.validateFanAttribute(id, updatedFanAttribute);
         };
         AdminService.prototype.unvalidateFanAttribute = function(id) {
-          return this.seatersApi.admin.validateFanAttribute(id);
+          return this.seatersApi.admin.unvalidateFanAttribute(id);
         };
         AdminService.prototype.addAliases = function(id, idsToConvert) {
           return this.seatersApi.admin.addAliases(id, idsToConvert);
