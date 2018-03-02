@@ -206,8 +206,11 @@ export class AdminApi extends SeatersApiController {
     return this.apiContext.delete(`/v2/seaters-admin/fan-attributes/${id}`);
   }
 
-  validateFanAttribute(id: string): Promise<profiling.ProfilingFanAttribute> {
-    return this.apiContext.post(`/v2/seaters-admin/fan-attributes/${id}/validate`);
+  validateFanAttribute(
+    id: string,
+    updatedFanAttribute?: profiling.ProfilingFanAttribute
+  ): Promise<profiling.ProfilingFanAttribute> {
+    return this.apiContext.post(`/v2/seaters-admin/fan-attributes/${id}/validate`, updatedFanAttribute);
   }
 
   unvalidateFanAttribute(id: string): Promise<profiling.ProfilingFanAttribute> {
