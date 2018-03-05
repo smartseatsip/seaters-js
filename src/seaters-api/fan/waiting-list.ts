@@ -242,6 +242,11 @@ export interface WaitingList {
   position: ExtendedPosition;
 
   /**
+   * Minimum number of Seats a Fan can reserve when joining a Waiting List
+   */
+  minNumberOfSeatsPerPosition: number;
+
+  /**
    * Maximum number of Seats a Fan can reserve when joining a Waiting List
    */
   maxNumberOfSeatsPerPosition: number;
