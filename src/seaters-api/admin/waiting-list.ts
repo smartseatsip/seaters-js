@@ -33,6 +33,7 @@ export interface WaitingList extends BaseEntity {
   rankOffset: number;
   seatDistributionMode: WAITING_LIST_SEAT_DISTRIBUTION_MODE;
   directSales: boolean;
+  minNumberOfSeatsPerPosition: number;
   maxNumberOfSeatsPerPosition: number;
   eventId: string;
   voucherText: TranslatedText;

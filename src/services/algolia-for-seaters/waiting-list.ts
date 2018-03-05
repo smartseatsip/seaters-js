@@ -63,6 +63,7 @@ export interface WaitingList {
    */
   description: any;
 
+  minNumberOfSeats: number;
   maxNumberOfSeats: number;
   freeWaitingList: boolean;
   waitingListStatus: WL_STATUS;
