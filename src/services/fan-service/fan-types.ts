@@ -28,7 +28,7 @@ export namespace fan {
     /**
      * What action can be taken next?
      */
-    actionStatus: WAITING_LIST_ACTION_STATUS;
+    actionStatus?: WAITING_LIST_ACTION_STATUS;
 
     /**
      * Is seaters currently processing your request?
@@ -57,7 +57,7 @@ export namespace fan {
     /**
      * FanGroup Fan's action status
      */
-    actionStatus: FAN_GROUP_ACTION_STATUS;
+    actionStatus?: FAN_GROUP_ACTION_STATUS;
   }
 
   export interface PaymentInfo extends _PaymentInfo {}
