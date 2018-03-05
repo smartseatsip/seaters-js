@@ -61,7 +61,7 @@ var SeatersSDK = /******/ (function(modules) {
     return Object.prototype.hasOwnProperty.call(object, property);
   }; // __webpack_public_path__
   /******/
-  /******/ /******/ __webpack_require__.p = '/Users/mahmoudalazzawi/projects/seaters-js/dist'; // Load entry module and return exports
+  /******/ /******/ __webpack_require__.p = '/Users/sanderdecoster/local_projects/seaters/seaters-js/dist'; // Load entry module and return exports
   /******/
   /******/ /******/ return __webpack_require__((__webpack_require__.s = 21));
   /******/
@@ -2101,7 +2101,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.34.0';
+      exports.version = '1.34.2';
       __export(__webpack_require__(22));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
@@ -5452,6 +5452,7 @@ var SeatersSDK = /******/ (function(modules) {
         AdminService.prototype.deleteFanAttribute = function(id) {
           return this.seatersApi.admin.deleteFanAttribute(id);
         };
+        // Validates fan attribute and updates with data if given
         AdminService.prototype.validateFanAttribute = function(id, updatedFanAttribute) {
           return this.seatersApi.admin.validateFanAttribute(id, updatedFanAttribute);
         };
