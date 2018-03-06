@@ -193,3 +193,7 @@ export interface FanGroupRequest {
 }
 
 export type FG_REQUEST_STATUS = 'PENDING' | 'ACCEPTED' | 'REJECTED';
+
+export interface FanGroupFilterInfo {
+  hasGeoFilteredWaitingLists: boolean;
+}

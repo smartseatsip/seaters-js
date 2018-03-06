@@ -27,7 +27,8 @@ import {
   FanGroupShare,
   WaitingListShare,
   SurveyInstance,
-  Answer
+  Answer,
+  FanGroupFilterInfo
 } from './fan-types';
 
 import { WaitingListRequest } from './waiting-list';
@@ -73,6 +74,10 @@ export class FanApi {
 
   fanGroupTranslatedDescription(fanGroupId: string): Promise<string> {
     return this.apiContext.get('/fan/groups/:fanGroupId/translated-description', { fanGroupId });
+  }
+
+  hasGeoFilteredWaitingLists(fanGroupId: string): Promise<FanGroupFilterInfo> {
+    return this.apiContext.get('v2/fan/groups/:fanGroupId/filter-info', { fanGroupId }, { groupId: fanGroupId });
   }
 
   fanGroups(fanGroupIds: string[]): Promise<FanGroup[]> {

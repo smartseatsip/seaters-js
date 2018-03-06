@@ -10,6 +10,7 @@ import {
   WaitingListShare as _WaitingListShare,
   Fan as _Fan,
   Address as _Address,
+  FanGroupFilterInfo as _FanGroupFilterInfo,
   PhoneNumber as _PhoneNumber
 } from '../../seaters-api/fan';
 
@@ -115,4 +116,6 @@ export namespace fan {
   export interface Address extends _Address {}
 
   export interface PhoneNumber extends _PhoneNumber {}
+
+  export interface FanGroupFilterInfo extends _FanGroupFilterInfo {}
 }

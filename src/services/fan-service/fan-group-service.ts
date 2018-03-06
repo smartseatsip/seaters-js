@@ -83,6 +83,10 @@ export class FanGroupService {
     return this.api.fan.shareFanGroup(fanGroupId);
   }
 
+  hasGeoFilteredWaitingLists(fanGroupId: string): Promise<fan.FanGroupFilterInfo> {
+    return this.api.fan.hasGeoFilteredWaitingLists(fanGroupId);
+  }
+
   private checkUnlockStatus(fg: fan.FanGroup) {
     if (!fg.membership.request) {
       console.error('[FanGroupService] checkUnlockStatus - no request made');

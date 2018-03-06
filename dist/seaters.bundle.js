@@ -61,7 +61,7 @@ var SeatersSDK = /******/ (function(modules) {
     return Object.prototype.hasOwnProperty.call(object, property);
   }; // __webpack_public_path__
   /******/
-  /******/ /******/ __webpack_require__.p = '/Users/sanderdecoster/local_projects/seaters/seaters-js/dist'; // Load entry module and return exports
+  /******/ /******/ __webpack_require__.p = '/Users/mahmoudalazzawi/projects/seaters-js/dist'; // Load entry module and return exports
   /******/
   /******/ /******/ return __webpack_require__((__webpack_require__.s = 21));
   /******/
@@ -541,6 +541,13 @@ var SeatersSDK = /******/ (function(modules) {
         };
         FanApi.prototype.fanGroupTranslatedDescription = function(fanGroupId) {
           return this.apiContext.get('/fan/groups/:fanGroupId/translated-description', { fanGroupId: fanGroupId });
+        };
+        FanApi.prototype.hasGeoFilteredWaitingLists = function(fanGroupId) {
+          return this.apiContext.get(
+            'v2/fan/groups/:fanGroupId/filter-info',
+            { fanGroupId: fanGroupId },
+            { groupId: fanGroupId }
+          );
         };
         FanApi.prototype.fanGroups = function(fanGroupIds) {
           return this.apiContext.get(
@@ -1990,6 +1997,9 @@ var SeatersSDK = /******/ (function(modules) {
         };
         FanGroupService.prototype.shareFanGroup = function(fanGroupId) {
           return this.api.fan.shareFanGroup(fanGroupId);
+        };
+        FanGroupService.prototype.hasGeoFilteredWaitingLists = function(fanGroupId) {
+          return this.api.fan.hasGeoFilteredWaitingLists(fanGroupId);
         };
         FanGroupService.prototype.checkUnlockStatus = function(fg) {
           if (!fg.membership.request) {
@@ -3613,6 +3623,9 @@ var SeatersSDK = /******/ (function(modules) {
         };
         FanService.prototype.shareFanGroup = function(fanGroupId) {
           return this.fanGroupService.shareFanGroup(fanGroupId);
+        };
+        FanService.prototype.hasGeoFilteredWaitingLists = function(fanGroupId) {
+          return this.fanGroupService.hasGeoFilteredWaitingLists(fanGroupId);
         };
         FanService.prototype.getJoinedFanGroups = function(pagingOptions) {
           var _this = this;

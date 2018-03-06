@@ -73,6 +73,10 @@ export class FanService extends SeatersService {
     return this.fanGroupService.shareFanGroup(fanGroupId);
   }
 
+  hasGeoFilteredWaitingLists(fanGroupId: string): Promise<fan.FanGroupFilterInfo> {
+    return this.fanGroupService.hasGeoFilteredWaitingLists(fanGroupId);
+  }
+
   getJoinedFanGroups(pagingOptions: PagingOptions): Promise<PagedResult<fan.FanGroup>> {
     return this.fanGroupService.joinedFanGroups(pagingOptions).then(r => this.convertPagedResult(r));
   }
