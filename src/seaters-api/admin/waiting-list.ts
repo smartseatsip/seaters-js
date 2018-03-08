@@ -22,6 +22,7 @@ export interface WaitingList extends BaseEntity {
   likelihoodHighRangeLowerBound: number;
   likelihoodHighRangeUpperBound: number;
   billingMode: WAITING_LIST_BILLING_MODE;
+  showFreePrice: boolean;
   totalTickets: number;
   positionExpirationTimeOutInMs: number;
   paidSeatExpirationTimeOutInMs: number;

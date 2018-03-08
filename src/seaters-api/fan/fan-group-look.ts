@@ -7,6 +7,7 @@ export interface FanGroupLook {
   coverImageUrl: string;
   backgroundImageUrl: string;
   rankAndLikelihoodHidden: boolean;
+  showLogo: boolean;
   color: string;
 
   // Translated

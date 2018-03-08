@@ -15,4 +15,5 @@ export interface FanGroup {
   profileImageUrl: string;
   slug: string;
   rankAndLikelihoodHidden: boolean;
+  showLogo: boolean;
 }
