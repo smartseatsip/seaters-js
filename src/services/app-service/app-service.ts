@@ -1,6 +1,7 @@
 import { SeatersApi } from '../../seaters-api';
 import { app } from './app-types';
 import { HEALTH_NODE_OK } from '../../seaters-api/health/health-types';
+import { Address } from '../../seaters-api/fan';
 
 const ALL_COUNTRIES_PAGE_SIZE = 1000;
 const ALL_LANGUAGES_PAGE_SIZE = 1000;
@@ -88,5 +89,94 @@ export class AppService {
    */
   getUserDefaultLocale(): Promise<string> {
     return this.seatersApi.app.userDefaultLocale();
+  }
+
+  /**
+   * Generates a seaters Address based 
+   * on a given google place
+   * @param place google place https://developers.google.com/maps/documentation/javascript/reference/3/
+   */
+  generateSeatersAddress(place): Address {
+    // https://developers.google.com/places/supported_types
+    const streetNumber = this.getComponentName('street_number', place);
+    const routeName = this.getComponentName('route', place);
+    const localityName = this.getComponentName('locality', place);
+    const localityLevel1 = this.getComponentName('locality_level_1', place);
+    const sublocality = this.getComponentName('sublocality', place);
+    const postalTownName = this.getComponentName('postal_town', place);
+    const administrativeArea2 = this.getComponentName('administrative_area_level_2', place);
+    const administrativeArea1 = this.getComponentName('administrative_area_level_1', place);
+    const postalCode = this.getComponentName('postal_code', place);
+    const country = this.getComponentName('country', place, 'short_name');
+
+    return {
+      // addressLine1
+      line1: this.generateAddressLine1(place, streetNumber, routeName),
+
+      // zipCode
+      zipCode: postalCode,
+      // city
+      city: this.generateCity(administrativeArea2, sublocality, localityLevel1, localityName, postalTownName),
+
+      // state
+      state: administrativeArea1,
+
+      // countryCode
+      countryCode: country
+    };
+  }
+
+  private getComponentName(type, place, nameLength?) {
+    nameLength = nameLength || 'long_name';
+    const component = place.address_components.find(addressComponent => {
+      return addressComponent.types.includes(type);
+    });
+    return component && component[nameLength];
+  }
+
+  private generateAddressLine1(placeObject, streetNumber, routeName) {
+    let line1 = '';
+    if (placeObject.formatted_address) {
+      return placeObject.formatted_address.split(',')[0];
+    }
+
+    if (streetNumber) {
+      line1 = streetNumber;
+    }
+
+    if (routeName && routeName) {
+      line1 = streetNumber + ' ' + routeName;
+    }
+
+    if (!streetNumber && routeName) {
+      line1 = routeName;
+    }
+    return line1;
+  }
+
+  private generateCity(administrativeArea2, sublocality, localityLevel1, localityName, postalTownName) {
+    let city = '';
+
+    if (administrativeArea2) {
+      city = administrativeArea2;
+    }
+
+    if (localityLevel1) {
+      city = localityLevel1;
+    }
+
+    if (sublocality) {
+      city = sublocality;
+    }
+
+    if (localityName) {
+      city = localityName;
+    }
+
+    if (postalTownName) {
+      city = postalTownName;
+    }
+
+    return city;
   }
 }

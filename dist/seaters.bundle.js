@@ -2111,7 +2111,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.34.3';
+      exports.version = '1.34.4';
       __export(__webpack_require__(22));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
@@ -5270,6 +5270,84 @@ var SeatersSDK = /******/ (function(modules) {
      */
         AppService.prototype.getUserDefaultLocale = function() {
           return this.seatersApi.app.userDefaultLocale();
+        };
+        /**
+     * Generates a seaters Address based
+     * on a given google place
+     * @param place google place https://developers.google.com/maps/documentation/javascript/reference/3/
+     */
+        AppService.prototype.generateSeatersAddress = function(place) {
+          // https://developers.google.com/places/supported_types
+          var streetNumber = this.getComponentName('street_number', place);
+          var routeName = this.getComponentName('route', place);
+          var localityName = this.getComponentName('locality', place);
+          var localityLevel1 = this.getComponentName('locality_level_1', place);
+          var sublocality = this.getComponentName('sublocality', place);
+          var postalTownName = this.getComponentName('postal_town', place);
+          var administrativeArea2 = this.getComponentName('administrative_area_level_2', place);
+          var administrativeArea1 = this.getComponentName('administrative_area_level_1', place);
+          var postalCode = this.getComponentName('postal_code', place);
+          var country = this.getComponentName('country', place, 'short_name');
+          return {
+            // addressLine1
+            line1: this.generateAddressLine1(place, streetNumber, routeName),
+            // zipCode
+            zipCode: postalCode,
+            // city
+            city: this.generateCity(administrativeArea2, sublocality, localityLevel1, localityName, postalTownName),
+            // state
+            state: administrativeArea1,
+            // countryCode
+            countryCode: country
+          };
+        };
+        AppService.prototype.getComponentName = function(type, place, nameLength) {
+          nameLength = nameLength || 'long_name';
+          var component = place.address_components.find(function(addressComponent) {
+            return addressComponent.types.includes(type);
+          });
+          return component && component[nameLength];
+        };
+        AppService.prototype.generateAddressLine1 = function(placeObject, streetNumber, routeName) {
+          var line1 = '';
+          if (placeObject.formatted_address) {
+            return placeObject.formatted_address.split(',')[0];
+          }
+          if (streetNumber) {
+            line1 = streetNumber;
+          }
+          if (routeName && routeName) {
+            line1 = streetNumber + ' ' + routeName;
+          }
+          if (!streetNumber && routeName) {
+            line1 = routeName;
+          }
+          return line1;
+        };
+        AppService.prototype.generateCity = function(
+          administrativeArea2,
+          sublocality,
+          localityLevel1,
+          localityName,
+          postalTownName
+        ) {
+          var city = '';
+          if (administrativeArea2) {
+            city = administrativeArea2;
+          }
+          if (localityLevel1) {
+            city = localityLevel1;
+          }
+          if (sublocality) {
+            city = sublocality;
+          }
+          if (localityName) {
+            city = localityName;
+          }
+          if (postalTownName) {
+            city = postalTownName;
+          }
+          return city;
         };
         return AppService;
       })();
