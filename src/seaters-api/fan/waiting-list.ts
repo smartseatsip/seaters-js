@@ -157,6 +157,11 @@ export interface WaitingList {
   freeWaitingList: boolean;
 
   /**
+   * Visibility of price when waiting list is free indicator
+   */
+  showFreePrice: boolean;
+
+  /**
    * Seat data or null if Waiting List has no seat yet
    */
   seat: Seat;

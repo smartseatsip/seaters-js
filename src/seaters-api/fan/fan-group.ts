@@ -107,6 +107,11 @@ export interface FanGroup {
    * Visibility of rank & likelihood indicator
    */
   rankAndLikelihoodHidden: boolean;
+
+  /**
+   * Visibility of logo indicator
+   */
+  showLogo: boolean;
 }
 
 export type ACCESS_MODE = 'PUBLIC' | 'PRIVATE' | 'CODE_PROTECTED';
