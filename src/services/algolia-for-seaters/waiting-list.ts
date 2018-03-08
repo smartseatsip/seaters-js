@@ -66,6 +66,7 @@ export interface WaitingList {
   minNumberOfSeats: number;
   maxNumberOfSeats: number;
   freeWaitingList: boolean;
+  showFreePrice: boolean;
   waitingListStatus: WL_STATUS;
   accessMode: WL_ACCESS_MODE;
   directSalesEnabled: boolean;
