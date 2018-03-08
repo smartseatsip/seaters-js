@@ -103,22 +103,22 @@ export interface Address {
   zipCode: string;
   city: string;
   line1: string;
-  line2: string;
-  line3: string;
+  line2?: string;
+  line3?: string;
   state: string;
 
   /**
    * @deprecated
    */
-  street: string;
+  street?: string;
   /**
    * @deprecated
    */
-  number: string;
+  number?: string;
   /**
    * @deprecated
    */
-  country: string;
+  country?: string;
 }
 
 export interface PersonalInfo {
