@@ -116,12 +116,12 @@ export interface FanGroup {
   /**
    * To use as title when notification about geo location is needed
    */
-  geoFilteringNotificationTitle: string;
+  geoFilteringNotificationTitle: any;
 
   /**
    * To use as description when notification about geo location is needed
    */
-  geoFilteringNotificationDescription: string;
+  geoFilteringNotificationDescription: any;
 }
 
 export type ACCESS_MODE = 'PUBLIC' | 'PRIVATE' | 'CODE_PROTECTED';
