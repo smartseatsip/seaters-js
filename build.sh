@@ -19,5 +19,5 @@ cp -r doc/* "$DIST_DIR"
 cd "$TMP_DIR"
 #tar -czf "${NAME}-${VERSION}.tgz" seaters-sdk
 # fix version for now - too many redeploys
-tar -czf "${NAME}-1.0.0.tgz" seaters-sdk
+tar -czf "${NAME}-${VERSION}.tgz" seaters-sdk
 cd ..
