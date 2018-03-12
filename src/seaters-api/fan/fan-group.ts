@@ -112,6 +112,16 @@ export interface FanGroup {
    * Visibility of logo indicator
    */
   showLogo: boolean;
+
+  /**
+   * To use as title when notification about geo location is needed
+   */
+  geoFilteringNotificationTitle: string;
+
+  /**
+   * To use as description when notification about geo location is needed
+   */
+  geoFilteringNotificationDescription: string;
 }
 
 export type ACCESS_MODE = 'PUBLIC' | 'PRIVATE' | 'CODE_PROTECTED';
