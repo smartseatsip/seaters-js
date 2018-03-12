@@ -121,6 +121,10 @@ export interface Address {
   country?: string;
 }
 
+export interface GeoLocation {
+  latitude: string;
+  longitude: string;
+}
 export interface PersonalInfo {
   birthDate: string;
   idNumber: string;
@@ -128,6 +132,7 @@ export interface PersonalInfo {
   citizenshipCountryCode: string;
   address: Address;
   company: string;
+  geoLocation: GeoLocation | null;
 }
 
 export type TITLE = 'MR' | 'MS';
