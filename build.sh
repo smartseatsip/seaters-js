@@ -17,7 +17,6 @@ mkdir -p "$DIST_DIR"
 cp dist/seaters*.bundle.* "$DIST_DIR"
 cp -r doc/* "$DIST_DIR"
 cd "$TMP_DIR"
-#tar -czf "${NAME}-${VERSION}.tgz" seaters-sdk
-# fix version for now - too many redeploys
-tar -czf "${NAME}-${VERSION}.tgz" seaters-sdk
+# We append -SNAPSHOT since the documentation is publish only on sdk.dev-seaters.com
+tar -czf "${NAME}-${VERSION}-SNAPSHOT.tgz" seaters-sdk
 cd ..
