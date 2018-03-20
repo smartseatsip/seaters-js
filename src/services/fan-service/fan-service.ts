@@ -351,7 +351,10 @@ export class FanService extends SeatersService {
 
   // Survey : FAN
 
-  getSurveys(waitingListId: string, extensionPoint: string): Promise<PagedResult<survey.SurveyInstance>> {
+  getSurveys(
+    waitingListId: string,
+    extensionPoint: survey.SURVEY_EXTENSION_POINT
+  ): Promise<PagedResult<survey.SurveyInstance>> {
     return this.fanSurveyService.getSurvey(waitingListId, extensionPoint).then(this.convertPagedSortedResult);
   }
   getAnswers(surveyId: string): Promise<PagedResult<survey.Answer>> {
@@ -361,7 +364,10 @@ export class FanService extends SeatersService {
     return this.fanSurveyService.submitAnswers(surveyId, answers);
   }
   // Survey : FGO
-  getWaitingListSurveys(waitingListId: string, extensionPoint: string): Promise<PagedResult<survey.SurveyInstance>> {
+  getWaitingListSurveys(
+    waitingListId: string,
+    extensionPoint: survey.SURVEY_EXTENSION_POINT
+  ): Promise<PagedResult<survey.SurveyInstance>> {
     return this.fanSurveyService
       .getWaitingListSurveys(waitingListId, extensionPoint)
       .then(this.convertPagedSortedResult);

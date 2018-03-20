@@ -23,18 +23,19 @@ export interface Question {
   text: TranslationItem[];
   answerLabel: TranslationItem[];
   answerSemanticId: string;
-  status: SurveyStatus;
+  status: SURVEY_STATUS;
 }
 export interface SurveyQuestion {
   questionId?: string;
   question?: Question;
   enabled: boolean;
+  mandatory: boolean;
 }
 
 export interface Survey {
   id: string;
   name: string;
-  status: SurveyStatus;
+  status: SURVEY_STATUS;
   title: TranslationItem[];
   description: TranslationItem[];
   surveyQuestions: SurveyQuestion[];
@@ -42,20 +43,10 @@ export interface Survey {
 export interface SurveyInstance {
   id?: string;
   waitinglistId: string;
-  extensionPoint;
+  extensionPoint: SURVEY_EXTENSION_POINT;
   surveyId?: string;
   survey?: Survey;
 }
 
-export enum SurveyStatusEnum {
-  ACTIVE = 'ACTIVE',
-  ARCHIVED = 'ARCHIVED'
-}
-
-export type SurveyStatus = SurveyStatusEnum.ACTIVE | SurveyStatusEnum.ARCHIVED;
-
-export enum SurveyExtensionPointEnum {
-  BEFORE_JOINING_WAITINGLIST = 'BEFORE_JOINING_WAITINGLIST'
-}
-
-export type SurveyExtensionPoint = SurveyExtensionPointEnum.BEFORE_JOINING_WAITINGLIST;
+export type SURVEY_STATUS = 'ACTIVE' | 'ARCHIVED';
+export type SURVEY_EXTENSION_POINT = 'BEFORE_JOINING_WAITINGLIST' | 'BEFORE_PAYMENT';
