@@ -26,20 +26,21 @@ export interface PositionSalesTransactionInput {
    */
   paypalPaymentId: string;
 
+  /**
+   * Seaters payment info for the server to create the translations
+   */
+  seatersPayment: SeatersPaymentInput;
 }
 
 export interface AdyenPaymentInput {
-
   skinCode: string;
   merchantReference: string;
   merchantSig: string;
   pspReference: string;
   authResult: string;
-
 }
 
 export interface BraintreePaymentInput {
-
   /**
    * Represents a payment that can be cashed-in by seaters.
    * A nonce is obtained by initializing braintree SDK with a token
@@ -47,5 +48,8 @@ export interface BraintreePaymentInput {
    * and completing the checkout process.
    */
   paymentMethodNonce: string;
+}
 
+export interface SeatersPaymentInput {
+  surveyAnswerId: string;
 }

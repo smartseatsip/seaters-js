@@ -6,7 +6,10 @@ import { PagingOptions } from '../../index';
 export class FanSurveyService {
   constructor(private seatersApi: SeatersApi) {}
   // FAN
-  getSurvey(waitingListId: string, extensionPoint: string): Promise<PagedSortedResult<survey.SurveyInstance>> {
+  getSurvey(
+    waitingListId: string,
+    extensionPoint: survey.SURVEY_EXTENSION_POINT
+  ): Promise<PagedSortedResult<survey.SurveyInstance>> {
     const pagingOptions: any = {};
     if (!pagingOptions.filters) {
       pagingOptions.filters = {
@@ -27,7 +30,7 @@ export class FanSurveyService {
   // FGO
   getWaitingListSurveys(
     waitingListId: string,
-    extensionPoint: string
+    extensionPoint: survey.SURVEY_EXTENSION_POINT
   ): Promise<PagedSortedResult<survey.SurveyInstance>> {
     const pagingOptions: any = {};
     if (!pagingOptions.filters) {

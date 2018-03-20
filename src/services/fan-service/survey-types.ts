@@ -3,10 +3,10 @@ import {
   Survey as _Survey,
   SurveyQuestion as _SurveyQuestion,
   Question as _Question,
-  SurveyStatusEnum as _SurveyStatusEnum,
-  SurveyExtensionPointEnum as _SurveyExtensionPointEnum,
   Answer as _Answer,
-  AnswerSemantic as _AnswerSemantic
+  AnswerSemantic as _AnswerSemantic,
+  SURVEY_STATUS as _SURVEY_STATUS,
+  SURVEY_EXTENSION_POINT as _SURVEY_EXTENSION_POINT
 } from '../../seaters-api/fan';
 
 /**
@@ -19,6 +19,7 @@ export namespace survey {
   export interface Question extends _Question {}
   export interface Answer extends _Answer {}
   export interface AnswerSemantic extends _AnswerSemantic {}
-  export const SURVEY_STATUS = _SurveyStatusEnum;
-  export const SURVEY_EXTENSION_POINT = _SurveyExtensionPointEnum;
+
+  export type SURVEY_STATUS = _SURVEY_STATUS;
+  export type SURVEY_EXTENSION_POINT = _SURVEY_EXTENSION_POINT;
 }

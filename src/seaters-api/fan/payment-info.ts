@@ -1,3 +1,8 @@
+import { LanguageCode } from '../app/app-types';
+
+export type PAYMENT_SYSTEM_TYPE = 'PAYPAL' | 'ADYEN' | 'BRAINTREE' | 'SEATERS';
+export type SEATERS_PAYMENT_METHODS = 'VIRTUAL';
+
 export interface PaymentInfo {
   /**
    * Which payment system is used for this payment
@@ -24,9 +29,12 @@ export interface PaymentInfo {
    * Config for paypal-based payments
    */
   paypalConfig: PaymentInfoPaypalConfig;
-}
 
-export type PAYMENT_SYSTEM_TYPE = 'PAYPAL' | 'ADYEN' | 'BRAINTREE';
+  /**
+   * Config for seaters-based payments
+   */
+  seatersConfig: PaymentInfoSeatersConfig;
+}
 
 export interface PaymentInfoTransaction {
   items: PaymentInfoTransactionItem[];
@@ -69,4 +77,11 @@ export interface PaymentInfoPaypalConfig {
   androidClientId: string;
   iosClientId: string;
   endpointNature: string;
+}
+
+export interface PaymentInfoSeatersConfig {
+  paymentMethods: SEATERS_PAYMENT_METHODS[];
+  virtualTitle: LanguageCode;
+  virtualDesc: LanguageCode;
+  virtualTcLink: LanguageCode;
 }
