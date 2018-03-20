@@ -1,4 +1,4 @@
-import { BaseEntity, TranslatedText } from './common';
+import { TranslatedText } from './common';
 
 export type FAN_GROUP_STATUS = 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
 export type FAN_GROUP_ACCESS_MODE = 'PUBLIC | PRIVATE | CODE_PROTECTED';

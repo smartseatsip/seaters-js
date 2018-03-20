@@ -1,7 +1,6 @@
 import { Price } from '../../seaters-api/fan/price';
 import { LanguageCode } from '../../seaters-api/app/app-types';
 import { WL_ACCESS_MODE, WL_STATUS } from '../../seaters-api/fan/waiting-list';
-import { fan } from '../fan-service/fan-types';
 
 export const WL_ALGOLIA_TYPE = 'WAITING_LIST';
 

@@ -1,4 +1,4 @@
-import { ServerResponse, ApiContext, ApiRequestDefinition, RequestDriver, StringMap, ArrayMap } from '../api';
+import { ApiContext, ApiRequestDefinition, ArrayMap, RequestDriver, ServerResponse, StringMap } from '../api';
 
 import { SeatersApiException } from './seaters-api-exception';
 import { SeatersExceptionV1 } from './seaters-exception-v1';

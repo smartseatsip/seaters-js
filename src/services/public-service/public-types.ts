@@ -1,9 +1,9 @@
 import {
   FanGroup as _FanGroup,
-  WaitingList as _WaitingList,
-  SearchSeatersContentOptions as _SearchSeatersContentOptions
+  SearchSeatersContentOptions as _SearchSeatersContentOptions,
+  WaitingList as _WaitingList
 } from '../algolia-for-seaters';
-import { Price as _Price, FanGroupLook as _FanGroupLook } from '../../seaters-api/fan';
+import { FanGroupLook as _FanGroupLook, Price as _Price } from '../../seaters-api/fan';
 import { fan } from '../fan-service/fan-types';
 
 /**

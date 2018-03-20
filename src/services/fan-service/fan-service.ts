@@ -1,14 +1,15 @@
-import { SeatersApi, SeatersService, PagingOptions, PagedResult, PagedSortedResult } from '../common';
+import { PagedResult, PagingOptions, SeatersApi, SeatersService } from '../common';
 import { WaitingListService } from './waiting-list-service';
 import { FanGroupService } from './fan-group-service';
 import { fan } from './fan-types';
+import { payment } from '../payment-service/payment-types';
 import { profiling } from './profiling-types';
 import { survey } from './survey-types';
 import { LocalizableText } from '../util';
 
 import { SessionService } from '../session-service';
 import { PublicService } from '../public-service';
-import { Fan, PositionSalesTransactionInput, AttendeeInfo } from '../../seaters-api/fan/fan-types';
+import { AttendeeInfo, Fan, PositionSalesTransactionInput } from '../../seaters-api/fan/fan-types';
 import { BraintreeToken } from '../../seaters-api/fan/braintree-token';
 import { IUpdateEmailDTO, IUpdatePasswordDTO, PhoneNumber } from '../../seaters-api/fan/fan';
 import { StringMap } from '../../api/string-map';
@@ -120,7 +121,7 @@ export class FanService extends SeatersService {
     return this.waitingListService.getWaitingListTranslatedVenueDescription(waitingListId);
   }
 
-  getPositionBraintreePaymentInfo(waitingListId: string): Promise<fan.BraintreePaymentInfo> {
+  getPositionBraintreePaymentInfo(waitingListId: string): Promise<payment.PaymentInfoBraintreeConfig> {
     return this.waitingListService.getPositionBraintreePaymentInfo(waitingListId);
   }
 
@@ -151,7 +152,7 @@ export class FanService extends SeatersService {
     return this.waitingListService.leaveWaitingList(waitingListId);
   }
 
-  getPositionPaymentInfo(waitingListId: string): Promise<fan.PaymentInfo> {
+  getPositionPaymentInfo(waitingListId: string): Promise<payment.PaymentInfo> {
     return this.waitingListService.getPositionPaymentInfo(waitingListId);
   }
 

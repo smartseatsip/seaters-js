@@ -1,7 +1,7 @@
 import { RequestDriver } from '../../api';
 import { PagedResult, PagingOptions } from '../../shared-types';
 import { SeatersApi } from '../../seaters-api';
-import { AlgoliaForSeatersService, TypedSearchResult, SearchSeatersContentOptions } from '../algolia-for-seaters';
+import { AlgoliaForSeatersService, SearchSeatersContentOptions, TypedSearchResult } from '../algolia-for-seaters';
 import { AppService } from '../app-service';
 import { pub } from './public-types';
 import { fan } from '../fan-service/fan-types';

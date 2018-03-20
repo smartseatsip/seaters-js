@@ -1,5 +1,5 @@
 import { ApiContext } from '../../api';
-import { SearchQuery, FacetFilter } from './search-query';
+import { FacetFilter, SearchQuery } from './search-query';
 import { SearchResult } from './search-result';
 
 export class IndicesApi {

@@ -101,9 +101,9 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       __export(__webpack_require__(33));
       __export(__webpack_require__(6));
+      __export(__webpack_require__(43));
       __export(__webpack_require__(44));
       __export(__webpack_require__(45));
-      __export(__webpack_require__(46));
       __export(__webpack_require__(7));
       __export(__webpack_require__(16));
       __export(__webpack_require__(12));
@@ -150,7 +150,7 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(50));
+      __export(__webpack_require__(49));
       var seaters_api_1 = __webpack_require__(1);
       exports.SeatersApi = seaters_api_1.SeatersApi;
 
@@ -1386,17 +1386,20 @@ var SeatersSDK = /******/ (function(modules) {
             // fetch the token for this position
             return _this.positionBraintreeToken(waitingListId).then(function(braintreeToken) {
               // combine the settings with the token
-              return {
-                total: paymentInfo.transactions[0].total,
+              return __assign({}, paymentInfo.braintreeConfig, {
+                // Transaction
                 currency: paymentInfo.transactions[0].currency,
-                threeDSEnabled: paymentInfo.braintreeConfig.threeDSEnabled,
+                total: paymentInfo.transactions[0].total,
+                // Payment method helpers
                 masterpassEnabled:
                   !paymentInfo.braintreeConfig.threeDSEnabled &&
                   paymentInfo.braintreeConfig.paymentMethods.indexOf(GROUP_PAYMENT_METHODS.MASTERPASS) !== -1,
                 // @TODO: Disable iDEAL payment until the backend is configred
                 // idealEnabled: paymentInfo.braintreeConfig.paymentMethods.indexOf(GROUP_PAYMENT_METHODS.IDEAL) !== -1,
+                idealEnabled: false,
+                // Token
                 token: braintreeToken.token
-              };
+              });
             });
           });
         };
@@ -2075,8 +2078,8 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
+      __export(__webpack_require__(60));
       __export(__webpack_require__(61));
-      __export(__webpack_require__(62));
       exports.TYPE_FIELD = 'type';
       exports.TYPO_TOLERANCE_STRICT = 'strict';
 
@@ -2094,7 +2097,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.34.8';
+      exports.version = '1.34.9';
       __export(__webpack_require__(21));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
@@ -2122,7 +2125,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       var api_1 = __webpack_require__(5);
       var seaters_api_1 = __webpack_require__(1);
-      var services_1 = __webpack_require__(47);
+      var services_1 = __webpack_require__(46);
       var SeatersClient = /** @class */ (function() {
         function SeatersClient(options) {
           options = __assign({}, SeatersClient.DEFAULT_OPTIONS, options);
@@ -2753,11 +2756,11 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       var app_api_1 = __webpack_require__(12);
       var fan_api_1 = __webpack_require__(7);
-      var admin_1 = __webpack_require__(37);
-      var health_1 = __webpack_require__(39);
+      var admin_1 = __webpack_require__(36);
+      var health_1 = __webpack_require__(38);
       var authentication_api_1 = __webpack_require__(16);
-      var ticketing_1 = __webpack_require__(40);
-      var payment_1 = __webpack_require__(42);
+      var ticketing_1 = __webpack_require__(39);
+      var payment_1 = __webpack_require__(41);
       var seaters_api_context_1 = __webpack_require__(6);
       var SeatersApi = /** @class */ (function() {
         function SeatersApi(prefix, requestDriver) {
@@ -2787,7 +2790,6 @@ var SeatersSDK = /******/ (function(modules) {
       }
       Object.defineProperty(exports, '__esModule', { value: true });
       __export(__webpack_require__(35));
-      __export(__webpack_require__(36));
 
       /***/
     },
@@ -2854,25 +2856,17 @@ var SeatersSDK = /******/ (function(modules) {
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
-      Object.defineProperty(exports, '__esModule', { value: true });
-
-      /***/
-    },
-    /* 37 */
-    /***/ function(module, exports, __webpack_require__) {
-      'use strict';
-
       function __export(m) {
         for (var p in m) {
           if (!exports.hasOwnProperty(p)) exports[p] = m[p];
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(38));
+      __export(__webpack_require__(37));
 
       /***/
     },
-    /* 38 */
+    /* 37 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3180,7 +3174,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 39 */
+    /* 38 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3195,7 +3189,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 40 */
+    /* 39 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3205,11 +3199,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(41));
+      __export(__webpack_require__(40));
 
       /***/
     },
-    /* 41 */
+    /* 40 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3263,7 +3257,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 42 */
+    /* 41 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3273,11 +3267,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(43));
+      __export(__webpack_require__(42));
 
       /***/
     },
-    /* 43 */
+    /* 42 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3303,6 +3297,18 @@ var SeatersSDK = /******/ (function(modules) {
             d.prototype = b === null ? Object.create(b) : ((__.prototype = b.prototype), new __());
           };
         })();
+      var __assign =
+        (undefined && undefined.__assign) ||
+        Object.assign ||
+        function(t) {
+          for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) {
+              if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+            }
+          }
+          return t;
+        };
       Object.defineProperty(exports, '__esModule', { value: true });
       /* tslint:disable:no-floating-promises */
       var seaters_api_1 = __webpack_require__(1);
@@ -3324,6 +3330,15 @@ var SeatersSDK = /******/ (function(modules) {
         PaymentApi.prototype.getPaymentSystem = function(paymentSystemId) {
           return this.apiContext.get('/seaters-admin/payment-systems/:id', { id: paymentSystemId });
         };
+        PaymentApi.prototype.createPaymentSystem = function(payload) {
+          return this.apiContext.post('/seaters-admin/payment-systems', payload);
+        };
+        PaymentApi.prototype.updatePaymentSystem = function(paymentSystemId, payload) {
+          return this.apiContext.put('/seaters-admin/payment-systems/:id', __assign({ id: paymentSystemId }, payload));
+        };
+        PaymentApi.prototype.deletePaymentSystem = function(paymentSystemId) {
+          return this.apiContext.delete('/seaters-admin/payment-systems/:id', { id: paymentSystemId });
+        };
         return PaymentApi;
       })(seaters_api_controller_1.SeatersApiController);
       exports.PaymentApi = PaymentApi;
@@ -3331,7 +3346,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 44 */
+    /* 43 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3366,7 +3381,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 45 */
+    /* 44 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3408,7 +3423,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 46 */
+    /* 45 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3466,6 +3481,27 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
+    /* 46 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      function __export(m) {
+        for (var p in m) {
+          if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+        }
+      }
+      Object.defineProperty(exports, '__esModule', { value: true });
+      __export(__webpack_require__(47));
+      __export(__webpack_require__(53));
+      __export(__webpack_require__(62));
+      __export(__webpack_require__(64));
+      __export(__webpack_require__(66));
+      __export(__webpack_require__(69));
+      __export(__webpack_require__(71));
+      __export(__webpack_require__(0));
+
+      /***/
+    },
     /* 47 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
@@ -3477,36 +3513,15 @@ var SeatersSDK = /******/ (function(modules) {
       }
       Object.defineProperty(exports, '__esModule', { value: true });
       __export(__webpack_require__(48));
-      __export(__webpack_require__(54));
-      __export(__webpack_require__(63));
-      __export(__webpack_require__(65));
-      __export(__webpack_require__(67));
-      __export(__webpack_require__(70));
-      __export(__webpack_require__(72));
-      __export(__webpack_require__(0));
-
-      /***/
-    },
-    /* 48 */
-    /***/ function(module, exports, __webpack_require__) {
-      'use strict';
-
-      function __export(m) {
-        for (var p in m) {
-          if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-        }
-      }
-      Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(49));
       __export(__webpack_require__(2));
       __export(__webpack_require__(4));
-      __export(__webpack_require__(53));
+      __export(__webpack_require__(52));
       __export(__webpack_require__(17));
       __export(__webpack_require__(18));
 
       /***/
     },
-    /* 49 */
+    /* 48 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3549,8 +3564,8 @@ var SeatersSDK = /******/ (function(modules) {
       var waiting_list_service_1 = __webpack_require__(17);
       var fan_group_service_1 = __webpack_require__(18);
       var util_1 = __webpack_require__(0);
-      var fan_profiling_service_1 = __webpack_require__(51);
-      var fan_survey_service_1 = __webpack_require__(52);
+      var fan_profiling_service_1 = __webpack_require__(50);
+      var fan_survey_service_1 = __webpack_require__(51);
       var FanService = /** @class */ (function(_super) {
         __extends(FanService, _super);
         function FanService(seatersApi, sessionService, publicService) {
@@ -3861,7 +3876,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 50 */
+    /* 49 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3894,7 +3909,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 51 */
+    /* 50 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3942,7 +3957,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 52 */
+    /* 51 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3993,7 +4008,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 53 */
+    /* 52 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4001,7 +4016,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 54 */
+    /* 53 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4011,11 +4026,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(55));
+      __export(__webpack_require__(54));
 
       /***/
     },
-    /* 55 */
+    /* 54 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4043,7 +4058,7 @@ var SeatersSDK = /******/ (function(modules) {
           return t;
         };
       Object.defineProperty(exports, '__esModule', { value: true });
-      var algolia_for_seaters_1 = __webpack_require__(56);
+      var algolia_for_seaters_1 = __webpack_require__(55);
       var fan_types_1 = __webpack_require__(2);
       var PublicService = /** @class */ (function() {
         function PublicService(appService, requestDriver, seatersApi) {
@@ -4222,7 +4237,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 56 */
+    /* 55 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4232,17 +4247,17 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(57));
+      __export(__webpack_require__(56));
       __export(__webpack_require__(19));
 
       /***/
     },
-    /* 57 */
+    /* 56 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
       Object.defineProperty(exports, '__esModule', { value: true });
-      var algolia_api_1 = __webpack_require__(58);
+      var algolia_api_1 = __webpack_require__(57);
       var algolia_for_seaters_types_1 = __webpack_require__(19);
       var DEFAULT_LOCALE = 'en';
       var WL_FACET_FILTER = {
@@ -4511,7 +4526,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 58 */
+    /* 57 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4521,11 +4536,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(59));
+      __export(__webpack_require__(58));
 
       /***/
     },
-    /* 59 */
+    /* 58 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4553,7 +4568,7 @@ var SeatersSDK = /******/ (function(modules) {
         })();
       Object.defineProperty(exports, '__esModule', { value: true });
       var api_1 = __webpack_require__(5);
-      var indices_api_1 = __webpack_require__(60);
+      var indices_api_1 = __webpack_require__(59);
       var APP_ID_HEADER = 'X-Algolia-Application-Id';
       var API_KEY_HEADER = 'X-Algolia-API-Key';
       var API_LOCATION_INFIX = '-dsn.algolia.net/1/';
@@ -4577,7 +4592,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 60 */
+    /* 59 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4654,7 +4669,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 61 */
+    /* 60 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4663,7 +4678,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 62 */
+    /* 61 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4672,7 +4687,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 63 */
+    /* 62 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4682,11 +4697,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(64));
+      __export(__webpack_require__(63));
 
       /***/
     },
-    /* 64 */
+    /* 63 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -5148,7 +5163,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 65 */
+    /* 64 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -5158,11 +5173,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(66));
+      __export(__webpack_require__(65));
 
       /***/
     },
-    /* 66 */
+    /* 65 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -5335,7 +5350,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 67 */
+    /* 66 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -5345,11 +5360,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(68));
+      __export(__webpack_require__(67));
 
       /***/
     },
-    /* 68 */
+    /* 67 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -5377,7 +5392,7 @@ var SeatersSDK = /******/ (function(modules) {
         })();
       Object.defineProperty(exports, '__esModule', { value: true });
       var common_1 = __webpack_require__(3);
-      var waiting_list_mapper_1 = __webpack_require__(69);
+      var waiting_list_mapper_1 = __webpack_require__(68);
       var AdminService = /** @class */ (function(_super) {
         __extends(AdminService, _super);
         function AdminService(seatersApi) {
@@ -5606,7 +5621,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 69 */
+    /* 68 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -5635,7 +5650,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 70 */
+    /* 69 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -5645,11 +5660,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(71));
+      __export(__webpack_require__(70));
 
       /***/
     },
-    /* 71 */
+    /* 70 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -5697,7 +5712,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 72 */
+    /* 71 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -5707,11 +5722,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(73));
+      __export(__webpack_require__(72));
 
       /***/
     },
-    /* 73 */
+    /* 72 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -5752,6 +5767,15 @@ var SeatersSDK = /******/ (function(modules) {
         };
         PaymentService.prototype.getPaymentSystem = function(paymentSystemId) {
           return this.seatersApi.payment.getPaymentSystem(paymentSystemId);
+        };
+        PaymentService.prototype.createPaymentSystem = function(paymentSystem) {
+          return this.seatersApi.payment.createPaymentSystem(paymentSystem);
+        };
+        PaymentService.prototype.updatePaymentSystem = function(paymentSystemId, paymentSystem) {
+          return this.seatersApi.payment.updatePaymentSystem(paymentSystemId, paymentSystem);
+        };
+        PaymentService.prototype.deletePaymentSystem = function(paymentSystemId) {
+          return this.seatersApi.payment.deletePaymentSystem(paymentSystemId);
         };
         return PaymentService;
       })(common_1.SeatersService);

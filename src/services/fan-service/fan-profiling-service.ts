@@ -1,5 +1,4 @@
-import { SeatersApi, PagedSortedResult } from '../../seaters-api';
-import { fan } from './fan-types';
+import { PagedSortedResult, SeatersApi } from '../../seaters-api';
 import { profiling } from './profiling-types';
 import { PagingOptions } from '../../index';
 

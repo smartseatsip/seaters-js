@@ -1,7 +1,5 @@
-import { SeatersApi, PagedSortedResult } from '../../seaters-api';
-import { fan } from './fan-types';
+import { PagedSortedResult, SeatersApi } from '../../seaters-api';
 import { survey } from './survey-types';
-import { PagingOptions } from '../../index';
 
 export class FanSurveyService {
   constructor(private seatersApi: SeatersApi) {}

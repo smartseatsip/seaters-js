@@ -1,16 +1,16 @@
 import { AppService } from './../app-service';
-import { AlgoliaApi, SearchQuery, SearchResult, FacetFilter } from '../../algolia-api';
+import { AlgoliaApi, FacetFilter, SearchQuery, SearchResult } from '../../algolia-api';
 import { RequestDriver } from '../../api';
 
 import {
   FanGroup,
-  WaitingList,
-  TypedSearchResult,
   FG_ALGOLIA_TYPE,
-  WL_ALGOLIA_TYPE,
+  SearchSeatersContentOptions,
   TYPE_FIELD,
+  TypedSearchResult,
   TYPO_TOLERANCE_STRICT,
-  SearchSeatersContentOptions
+  WaitingList,
+  WL_ALGOLIA_TYPE
 } from './algolia-for-seaters-types';
 
 const DEFAULT_LOCALE = 'en';

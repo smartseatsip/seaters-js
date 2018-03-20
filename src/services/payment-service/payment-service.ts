@@ -1,4 +1,4 @@
-import { SeatersApi, SeatersService, PagingOptions, PagedResult } from '../common';
+import { PagedResult, PagingOptions, SeatersApi, SeatersService } from '../common';
 import { payment } from './payment-types';
 
 export class PaymentService extends SeatersService {
@@ -12,5 +12,20 @@ export class PaymentService extends SeatersService {
 
   getPaymentSystem(paymentSystemId: string): Promise<payment.PaymentSystem> {
     return this.seatersApi.payment.getPaymentSystem(paymentSystemId);
+  }
+
+  createPaymentSystem(paymentSystem: payment.PaymentSystemCreateDTO): Promise<payment.PaymentSystem> {
+    return this.seatersApi.payment.createPaymentSystem(paymentSystem);
+  }
+
+  updatePaymentSystem(
+    paymentSystemId: string,
+    paymentSystem: payment.PaymentSystemUpdateDTO
+  ): Promise<payment.PaymentSystem> {
+    return this.seatersApi.payment.updatePaymentSystem(paymentSystemId, paymentSystem);
+  }
+
+  deletePaymentSystem(paymentSystemId: string): Promise<void> {
+    return this.seatersApi.payment.deletePaymentSystem(paymentSystemId);
   }
 }

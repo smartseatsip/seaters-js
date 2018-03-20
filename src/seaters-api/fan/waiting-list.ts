@@ -1,7 +1,7 @@
 import { FanGroupCategory } from './fan-group';
 import { ExtendedPosition } from './extended-position';
 import { EVENT_REQUIRED_ATTENDEE_INFO } from './attendee-info';
-import { LanguageCode, Translation } from '../app/app-types';
+import { LanguageCode } from '../app/app-types';
 import { Price } from './price';
 
 export interface WaitingList {

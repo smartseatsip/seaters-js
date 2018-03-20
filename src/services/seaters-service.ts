@@ -1,5 +1,5 @@
-import { SeatersApi, PagedResult as ApiPagedResult, PagedSortedResult as ApiPagedSortedResult } from '../seaters-api';
-import { PagedResult, PagingOptions } from '../shared-types';
+import { PagedResult as ApiPagedResult, PagedSortedResult as ApiPagedSortedResult, SeatersApi } from '../seaters-api';
+import { PagedResult } from '../shared-types';
 
 export abstract class SeatersService {
   constructor(protected seatersApi: SeatersApi) {}

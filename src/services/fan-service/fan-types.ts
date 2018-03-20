@@ -1,17 +1,16 @@
 import {
-  WaitingList as _WaitingList,
-  FanGroup as _FanGroup,
-  FanGroupLook as _FanGroupLook,
-  Price as _Price,
-  PaymentInfo as _PaymentInfo,
-  AttendeesInfo as _AttendeesInfo,
-  AttendeeInfo as _AttendeeInfo,
-  FanGroupShare as _FanGroupShare,
-  WaitingListShare as _WaitingListShare,
-  Fan as _Fan,
   Address as _Address,
+  AttendeeInfo as _AttendeeInfo,
+  AttendeesInfo as _AttendeesInfo,
+  Fan as _Fan,
+  FanGroup as _FanGroup,
   FanGroupFilterInfo as _FanGroupFilterInfo,
-  PhoneNumber as _PhoneNumber
+  FanGroupLook as _FanGroupLook,
+  FanGroupShare as _FanGroupShare,
+  PhoneNumber as _PhoneNumber,
+  Price as _Price,
+  WaitingList as _WaitingList,
+  WaitingListShare as _WaitingListShare
 } from '../../seaters-api/fan';
 
 export namespace fan {
@@ -59,48 +58,6 @@ export namespace fan {
      * FanGroup Fan's action status
      */
     actionStatus?: FAN_GROUP_ACTION_STATUS;
-  }
-
-  export interface PaymentInfo extends _PaymentInfo {}
-
-  export interface BraintreePaymentInfo {
-    /**
-     * Braintree Payment token used to setup the braintree SDK.
-     * It identifies the fan to braintree and allows seaters to
-     * link incoming payment nonces to the correct fan.
-     */
-    token: string;
-
-    /**
-     * Can 3Ds be enabled in the SDK for this payment?
-     * If true, you may enable it if you wish in the braintree SDK.
-     * If it's false you should never enable it in the braintree SDK.
-     */
-    threeDSEnabled: boolean;
-
-    /**
-     * Let the user pay using masterpass service within braintree sdk,
-     * this property shows the masterpass button in the payment view
-     */
-    masterpassEnabled: boolean;
-
-    /**
-     * Let the user pay using ideal service within braintree sdk,
-     * this property shows the ideal button in the payment view
-     */
-    idealEnabled: boolean;
-
-    /**
-     * Currency codes according to the ISO 4217 (3 uppercase characters)
-     * e.g. EUR, USD, CAD
-     * @see SeatersClient.appService.getCurrencies
-     */
-    currency: string;
-
-    /**
-     * The total amount to pay (with double precision)
-     */
-    total: string;
   }
 
   export interface AttendeeInfo extends _AttendeeInfo {}

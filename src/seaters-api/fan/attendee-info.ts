@@ -1,4 +1,4 @@
-import { TITLE, PhoneNumber, Address } from './fan';
+import { Address, PhoneNumber, TITLE } from './fan';
 
 /**
  * Attendee Info stores information from event guests, which is required for

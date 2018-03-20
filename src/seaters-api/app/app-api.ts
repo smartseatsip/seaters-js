@@ -1,6 +1,6 @@
 /* tslint:disable:no-floating-promises */
 import { SeatersApiContext } from '../seaters-api-context';
-import { Env, Country, Currency, Translation, TimeZone, Language, TRANSLATION_TARGET } from './app-types';
+import { Country, Currency, Env, Language, TimeZone, Translation, TRANSLATION_TARGET } from './app-types';
 import { PagingOptions } from '../../shared-types';
 
 export class AppApi {

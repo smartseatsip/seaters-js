@@ -1,4 +1,4 @@
-import { SeatersApi, SeatersService, PagingOptions, PagedResult } from '../common';
+import { PagedResult, PagingOptions, SeatersApi, SeatersService } from '../common';
 import { ticketing } from './ticketing-types';
 
 export class TicketingService extends SeatersService {

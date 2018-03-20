@@ -1,18 +1,18 @@
 import { SeatersApiContext, SeatersApiException } from '../../seaters-api';
 import { Fan } from '../fan';
 import {
-  UserData,
+  AnonymousSignupData,
+  AuthenticationSuccess,
+  AuthToken,
+  AuthTokenInput,
+  EmailPasswordCredentials,
+  RefreshTokenCredentials,
   ResetEmailData,
   ResetPasswordData,
   SignupData,
-  AnonymousSignupData,
-  ValidationData,
-  EmailPasswordCredentials,
   StoredTokenCredentials,
-  RefreshTokenCredentials,
-  AuthenticationSuccess,
-  AuthTokenInput,
-  AuthToken
+  UserData,
+  ValidationData
 } from './authentication-types';
 import { IUpdatePasswordDTO } from '../fan/fan';
 

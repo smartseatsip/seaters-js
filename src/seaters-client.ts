@@ -1,13 +1,13 @@
-import { REQUEST_DRIVER_TYPE, getRequestDriver } from './api';
+import { getRequestDriver, REQUEST_DRIVER_TYPE } from './api';
 import { SeatersApi } from './seaters-api';
 import {
+  AdminService,
+  AppService,
   FanService,
+  PaymentService,
   PublicService,
   SessionService,
-  AppService,
-  AdminService,
-  TicketingService,
-  PaymentService
+  TicketingService
 } from './services';
 
 export type PromiseMiddleware<T> = (promise: Promise<any>) => T;
