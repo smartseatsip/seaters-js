@@ -2097,7 +2097,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.35.0';
+      exports.version = '1.35.1';
       __export(__webpack_require__(21));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
@@ -5829,6 +5829,7 @@ var SeatersSDK = /******/ (function(modules) {
           }
           var flatData = __assign({}, data);
           var keys = Object.keys(data);
+          /* tslint:disable prefer-for-of */
           for (var i = 0; i < keys.length; i++) {
             if (_typeof(data[keys[i]]) === 'object') {
               var jsonValue = void 0;
@@ -5840,6 +5841,7 @@ var SeatersSDK = /******/ (function(modules) {
               flatData[keys[i]] = jsonValue;
             }
           }
+          /* tslint:enable prefer-for-of */
           return flatData;
         };
         PaymentService.prototype.expandJSONStringToObject = function(data) {
@@ -5848,6 +5850,7 @@ var SeatersSDK = /******/ (function(modules) {
           }
           var expandedData = __assign({}, data);
           var keys = Object.keys(data);
+          /* tslint:disable prefer-for-of */
           for (var i = 0; i < keys.length; i++) {
             if (typeof data[keys[i]] === 'string') {
               var object = void 0;
@@ -5859,6 +5862,7 @@ var SeatersSDK = /******/ (function(modules) {
               expandedData[keys[i]] = object;
             }
           }
+          /* tslint:enable prefer-for-of */
           return expandedData;
         };
         return PaymentService;
