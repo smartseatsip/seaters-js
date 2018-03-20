@@ -1,22 +1,20 @@
 import {
-  ProfilingCategory as _ProfilingCategory,
-  ProfilingInterest as _ProfilingInterest,
-  ProfilingFanAttribute as _ProfilingFanAttribute,
-  UserInterest as _UserInterest,
-  UserInterestUpdateDTO as _UserInterestUpdateDTO,
-  UserFanAttribute as _UserFanAttribute,
-  WaitingListInterest as _WaitingListInterest,
-  WaitingListFanAttribute as _WaitingListFanAttribute,
-  FanGroupShare as _FanGroupShare,
-  WaitingListShare as _WaitingListShare,
-  UserInterestStatusEnum as _UserInterestStatusEnum,
-  UserInterestActionStatusEnum as _UserInterestActionStatusEnum,
   FanAttributeCreateUpdateDTO as _FanAttributeCreateUpdateDTO,
-  UserFanAttributeStatusEnum as _UserFanAttributeStatusEnum,
-  UserFanAttributeActionStatusEnum as _UserFanAttributeActionStatusEnum,
-  UserFanAttributeUpdateDTO as _UserFanAttributeUpdateDTO,
+  ProfilingCategory as _ProfilingCategory,
+  ProfilingFanAttribute as _ProfilingFanAttribute,
+  ProfilingFanAttributeActionStatusEnum as _ProfilingFanAttributeActionStatusEnum,
   ProfilingFanAttributeStatusEnum as _ProfilingFanAttributeStatusEnum,
-  ProfilingFanAttributeActionStatusEnum as _ProfilingFanAttributeActionStatusEnum
+  ProfilingInterest as _ProfilingInterest,
+  UserFanAttribute as _UserFanAttribute,
+  UserFanAttributeActionStatusEnum as _UserFanAttributeActionStatusEnum,
+  UserFanAttributeStatusEnum as _UserFanAttributeStatusEnum,
+  UserFanAttributeUpdateDTO as _UserFanAttributeUpdateDTO,
+  UserInterest as _UserInterest,
+  UserInterestActionStatusEnum as _UserInterestActionStatusEnum,
+  UserInterestStatusEnum as _UserInterestStatusEnum,
+  UserInterestUpdateDTO as _UserInterestUpdateDTO,
+  WaitingListFanAttribute as _WaitingListFanAttribute,
+  WaitingListInterest as _WaitingListInterest
 } from '../../seaters-api/fan';
 
 /**

@@ -1,4 +1,4 @@
-import { TranslatedText, BaseEntity } from './common';
+import { BaseEntity, TranslatedText } from './common';
 
 export type WAITING_LIST_STATUS = 'SETUP' | 'DRAFT' | 'PUBLISHED' | 'OPEN' | 'CLOSED' | 'ARCHIVED';
 export type WAITING_LIST_BILLING_MODE = 'FREE' | 'FAIR_PRICE';

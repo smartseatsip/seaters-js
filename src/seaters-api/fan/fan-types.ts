@@ -4,7 +4,6 @@ export * from './waiting-list';
 export * from './extended-position';
 export * from './fan';
 export * from './position';
-export * from './payment-info';
 export * from './braintree-token';
 export * from './position-sales-transaction';
 export * from './position-sales-transaction-input';

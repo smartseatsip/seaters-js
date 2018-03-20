@@ -1,7 +1,7 @@
-import { uuidv4, normalizeLondonTimezoneDate } from '../util';
+import { normalizeLondonTimezoneDate, uuidv4 } from '../util';
 import { SeatersApi } from '../../seaters-api';
 import { session } from './session-types';
-import { MobilePhoneValidationData, AuthenticationSuccess } from '../../seaters-api/authentication';
+import { AuthenticationSuccess, MobilePhoneValidationData } from '../../seaters-api/authentication';
 import { IUpdatePasswordDTO } from '../../seaters-api/fan/fan';
 
 const AUTH_HEADER = 'Authorization';

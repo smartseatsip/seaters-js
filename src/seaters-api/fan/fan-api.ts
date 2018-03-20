@@ -1,41 +1,41 @@
 /* tslint:disable:no-floating-promises */
 
-import { SeatersApiContext, PagedSortedResult, SeatersApi } from '../../seaters-api';
+import { PagedSortedResult, SeatersApiContext } from '../../seaters-api';
 import { PagedResult } from '../paged-result';
 import { PagingOptions } from '../paging-options';
 import { TranslationMap } from '../translation-map';
 
 import {
-  ProfilingCategory,
-  UserInterestUpdateDTO,
-  ProfilingFanAttribute,
-  UserFanAttribute,
-  WaitingListFanAttribute,
-  WaitingListInterest,
+  Answer,
+  AttendeeInfo,
+  BraintreeToken,
   Fan,
   FanGroup,
-  WaitingList,
-  FanGroupRequest,
-  Position,
-  Price,
-  PaymentInfo,
-  BraintreeToken,
+  FanGroupFilterInfo,
   FanGroupLook,
-  PositionSalesTransactionInput,
-  PositionSalesTransaction,
-  AttendeeInfo,
+  FanGroupRequest,
   FanGroupShare,
-  WaitingListShare,
+  Position,
+  PositionSalesTransaction,
+  PositionSalesTransactionInput,
+  Price,
+  ProfilingCategory,
+  ProfilingFanAttribute,
   SurveyInstance,
-  Answer,
-  FanGroupFilterInfo
+  UserFanAttribute,
+  UserInterestUpdateDTO,
+  WaitingList,
+  WaitingListFanAttribute,
+  WaitingListInterest,
+  WaitingListShare
 } from './fan-types';
 
 import { WaitingListRequest } from './waiting-list';
 import { StringMap } from '../../api/string-map';
 import { UserInterest } from './profiling';
-import { UserFanAttributeUpdateDTO, UserFanAttributeActionStatusEnum, PhoneNumber } from './index';
+import { PhoneNumber, UserFanAttributeActionStatusEnum, UserFanAttributeUpdateDTO } from './index';
 import { IUpdateEmailDTO, IUpdatePasswordDTO } from './fan';
+import { payment } from '../../services/payment-service/payment-types';
 
 export class FanApi {
   constructor(private apiContext: SeatersApiContext) {}
@@ -246,7 +246,7 @@ export class FanApi {
     return this.apiContext.put(endpoint, null, endpointParams);
   }
 
-  positionPaymentInfo(waitingListId: string): Promise<PaymentInfo> {
+  positionPaymentInfo(waitingListId: string): Promise<payment.PaymentInfo> {
     const endpoint = '/fan/waiting-lists/:waitingListId/position/payment-info';
     const endpointParams = { waitingListId };
     return this.apiContext.get(endpoint, endpointParams);

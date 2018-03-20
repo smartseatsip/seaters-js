@@ -1,4 +1,4 @@
-import { ServerResponse, RequestOptions } from './request-driver';
+import { RequestOptions, ServerResponse } from './request-driver';
 import { DeferredPromise } from './../services/util';
 
 declare function require(str: string): any;

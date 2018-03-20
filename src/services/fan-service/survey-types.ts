@@ -1,12 +1,12 @@
 import {
-  SurveyInstance as _SurveyInstance,
-  Survey as _Survey,
-  SurveyQuestion as _SurveyQuestion,
-  Question as _Question,
   Answer as _Answer,
   AnswerSemantic as _AnswerSemantic,
+  Question as _Question,
+  Survey as _Survey,
+  SURVEY_EXTENSION_POINT as _SURVEY_EXTENSION_POINT,
   SURVEY_STATUS as _SURVEY_STATUS,
-  SURVEY_EXTENSION_POINT as _SURVEY_EXTENSION_POINT
+  SurveyInstance as _SurveyInstance,
+  SurveyQuestion as _SurveyQuestion
 } from '../../seaters-api/fan';
 
 /**

@@ -1,20 +1,13 @@
-import { SeatersApi, PagedResult, SeatersExceptionV3 } from '../../seaters-api';
-import {
-  WaitingList,
-  TRANSACTION_STATUS,
-  PositionSalesTransactionInput,
-  AttendeesInfo,
-  AttendeeInfo,
-  EVENT_REQUIRED_ATTENDEE_INFO,
-  TICKETING_SYSTEM_TYPE
-} from '../../seaters-api/fan';
+import { PagedResult, SeatersApi, SeatersExceptionV3 } from '../../seaters-api';
+import { AttendeeInfo, PositionSalesTransactionInput, TICKETING_SYSTEM_TYPE, WaitingList } from '../../seaters-api/fan';
 import { fan } from './fan-types';
 import { profiling } from './profiling-types';
-import { retryUntil, compareFlatObjects, timeoutPromise } from './../util';
+import { retryUntil, timeoutPromise } from './../util';
 import { TranslationMap } from '../../seaters-api/translation-map';
 import { BraintreeToken } from '../../seaters-api/fan/braintree-token';
 import { StringMap } from '../../api/string-map';
 import { PagedSortedResult, PagingOptions } from '../../index';
+import { payment } from '../payment-service/payment-types';
 
 const WAITING_LIST_ACTION_STATUS = fan.WAITING_LIST_ACTION_STATUS;
 
@@ -66,12 +59,13 @@ export class WaitingListService {
     return this.api.fan.waitingListTranslatedVenueDescription(waitingListId);
   }
 
-  getPositionBraintreePaymentInfo(waitingListId: string): Promise<fan.BraintreePaymentInfo> {
+  getPositionBraintreePaymentInfo(waitingListId: string): Promise<payment.PaymentInfoBraintreeConfig> {
     return this.getPositionPaymentInfo(waitingListId).then(paymentInfo => {
       // ensure it's a proper braintree payment
       if (paymentInfo.paymentSystemType !== 'BRAINTREE') {
         throw new Error('WaitingList ' + waitingListId + ' is not configured to use braintree');
       }
+
       if (paymentInfo.transactions.length !== 1) {
         console.error(
           '[FanService] unexpected nbr of transactions for wl (%s) : %s',
@@ -80,20 +74,29 @@ export class WaitingListService {
         );
         throw new Error('Unexpected number of transactions for braintree payment for WL ' + waitingListId);
       }
+
       // fetch the token for this position
       return this.positionBraintreeToken(waitingListId).then(braintreeToken => {
         // combine the settings with the token
         return {
-          total: paymentInfo.transactions[0].total,
+          // Braintree config
+          ...paymentInfo.braintreeConfig,
+
+          // Transaction
           currency: paymentInfo.transactions[0].currency,
-          threeDSEnabled: paymentInfo.braintreeConfig.threeDSEnabled,
+          total: paymentInfo.transactions[0].total,
+
+          // Payment method helpers
           masterpassEnabled:
             !paymentInfo.braintreeConfig.threeDSEnabled &&
             paymentInfo.braintreeConfig.paymentMethods.indexOf(GROUP_PAYMENT_METHODS.MASTERPASS) !== -1,
           // @TODO: Disable iDEAL payment until the backend is configred
           // idealEnabled: paymentInfo.braintreeConfig.paymentMethods.indexOf(GROUP_PAYMENT_METHODS.IDEAL) !== -1,
+          idealEnabled: false,
+
+          // Token
           token: braintreeToken.token
-        } as fan.BraintreePaymentInfo;
+        };
       });
     });
   }
@@ -152,7 +155,7 @@ export class WaitingListService {
     );
   }
 
-  getPositionPaymentInfo(waitingListId: string): Promise<fan.PaymentInfo> {
+  getPositionPaymentInfo(waitingListId: string): Promise<payment.PaymentInfo> {
     return this.api.fan.positionPaymentInfo(waitingListId);
   }
 

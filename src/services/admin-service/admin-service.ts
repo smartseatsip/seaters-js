@@ -1,4 +1,4 @@
-import { SeatersApi, PagedResult, PagingOptions, SeatersService } from '../common';
+import { PagedResult, PagingOptions, SeatersApi, SeatersService } from '../common';
 import { admin } from './admin-types';
 import { mapWaitingList } from './waiting-list-mapper';
 import { profiling, survey } from '../index';
