@@ -2097,7 +2097,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.34.9';
+      exports.version = '1.35.0';
       __export(__webpack_require__(21));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
@@ -5730,6 +5730,17 @@ var SeatersSDK = /******/ (function(modules) {
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
+      var _typeof =
+        typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol'
+          ? function(obj) {
+              return typeof obj;
+            }
+          : function(obj) {
+              return obj && typeof Symbol === 'function' && obj.constructor === Symbol && obj !== Symbol.prototype
+                ? 'symbol'
+                : typeof obj;
+            };
+
       var __extends =
         (undefined && undefined.__extends) ||
         (function() {
@@ -5752,6 +5763,18 @@ var SeatersSDK = /******/ (function(modules) {
             d.prototype = b === null ? Object.create(b) : ((__.prototype = b.prototype), new __());
           };
         })();
+      var __assign =
+        (undefined && undefined.__assign) ||
+        Object.assign ||
+        function(t) {
+          for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) {
+              if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+            }
+          }
+          return t;
+        };
       Object.defineProperty(exports, '__esModule', { value: true });
       var common_1 = __webpack_require__(3);
       var PaymentService = /** @class */ (function(_super) {
@@ -5761,21 +5784,82 @@ var SeatersSDK = /******/ (function(modules) {
         }
         PaymentService.prototype.getPaymentSystems = function(page) {
           var _this = this;
-          return this.seatersApi.payment.getPaymentSystems(page).then(function(r) {
-            return _this.convertPagedResult(r);
-          });
+          return this.seatersApi.payment
+            .getPaymentSystems(page)
+            .then(function(r) {
+              return _this.convertPagedResult(r);
+            })
+            .then(function(r) {
+              r.items = r.items.map(function(paymentSystem) {
+                paymentSystem.configuration = _this.expandJSONStringToObject(paymentSystem.configuration);
+                return paymentSystem;
+              });
+              return r;
+            });
         };
         PaymentService.prototype.getPaymentSystem = function(paymentSystemId) {
-          return this.seatersApi.payment.getPaymentSystem(paymentSystemId);
+          var _this = this;
+          return this.seatersApi.payment.getPaymentSystem(paymentSystemId).then(function(paymentSystem) {
+            paymentSystem.configuration = _this.expandJSONStringToObject(paymentSystem.configuration);
+            return paymentSystem;
+          });
         };
-        PaymentService.prototype.createPaymentSystem = function(paymentSystem) {
-          return this.seatersApi.payment.createPaymentSystem(paymentSystem);
+        PaymentService.prototype.createPaymentSystem = function(payload) {
+          var _this = this;
+          payload.configuration = this.flattenObjectToJSONString(payload.configuration);
+          return this.seatersApi.payment.createPaymentSystem(payload).then(function(paymentSystem) {
+            paymentSystem.configuration = _this.expandJSONStringToObject(paymentSystem.configuration);
+            return paymentSystem;
+          });
         };
-        PaymentService.prototype.updatePaymentSystem = function(paymentSystemId, paymentSystem) {
-          return this.seatersApi.payment.updatePaymentSystem(paymentSystemId, paymentSystem);
+        PaymentService.prototype.updatePaymentSystem = function(paymentSystemId, payload) {
+          var _this = this;
+          payload.configuration = this.flattenObjectToJSONString(payload.configuration);
+          return this.seatersApi.payment.updatePaymentSystem(paymentSystemId, payload).then(function(paymentSystem) {
+            paymentSystem.configuration = _this.expandJSONStringToObject(paymentSystem.configuration);
+            return paymentSystem;
+          });
         };
         PaymentService.prototype.deletePaymentSystem = function(paymentSystemId) {
           return this.seatersApi.payment.deletePaymentSystem(paymentSystemId);
+        };
+        PaymentService.prototype.flattenObjectToJSONString = function(data) {
+          if (!data || Object.keys(data).length === 0) {
+            return data;
+          }
+          var flatData = __assign({}, data);
+          var keys = Object.keys(data);
+          for (var i = 0; i < keys.length; i++) {
+            if (_typeof(data[keys[i]]) === 'object') {
+              var jsonValue = void 0;
+              try {
+                jsonValue = JSON.stringify(data[keys[i]]);
+              } catch (e) {
+                jsonValue = data[keys[i]];
+              }
+              flatData[keys[i]] = jsonValue;
+            }
+          }
+          return flatData;
+        };
+        PaymentService.prototype.expandJSONStringToObject = function(data) {
+          if (!data || Object.keys(data).length === 0) {
+            return data;
+          }
+          var expandedData = __assign({}, data);
+          var keys = Object.keys(data);
+          for (var i = 0; i < keys.length; i++) {
+            if (typeof data[keys[i]] === 'string') {
+              var object = void 0;
+              try {
+                object = JSON.parse(data[keys[i]]);
+              } catch (e) {
+                object = data[keys[i]];
+              }
+              expandedData[keys[i]] = object;
+            }
+          }
+          return expandedData;
         };
         return PaymentService;
       })(common_1.SeatersService);
