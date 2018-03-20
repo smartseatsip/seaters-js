@@ -61,9 +61,9 @@ var SeatersSDK = /******/ (function(modules) {
     return Object.prototype.hasOwnProperty.call(object, property);
   }; // __webpack_public_path__
   /******/
-  /******/ /******/ __webpack_require__.p = 'C:\\local_projects\\seaters\\seaters-js/dist'; // Load entry module and return exports
+  /******/ /******/ __webpack_require__.p = '/Users/sanderdecoster/local_projects/seaters/seaters-js/dist'; // Load entry module and return exports
   /******/
-  /******/ /******/ return __webpack_require__((__webpack_require__.s = 21));
+  /******/ /******/ return __webpack_require__((__webpack_require__.s = 20));
   /******/
 })(
   /************************************************************************/
@@ -78,14 +78,14 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
+      __export(__webpack_require__(26));
+      __export(__webpack_require__(11));
       __export(__webpack_require__(27));
-      __export(__webpack_require__(12));
       __export(__webpack_require__(28));
+      __export(__webpack_require__(9));
       __export(__webpack_require__(29));
-      __export(__webpack_require__(10));
       __export(__webpack_require__(30));
       __export(__webpack_require__(31));
-      __export(__webpack_require__(32));
 
       /***/
     },
@@ -99,14 +99,14 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(34));
+      __export(__webpack_require__(33));
       __export(__webpack_require__(6));
+      __export(__webpack_require__(44));
       __export(__webpack_require__(45));
       __export(__webpack_require__(46));
-      __export(__webpack_require__(47));
       __export(__webpack_require__(7));
       __export(__webpack_require__(16));
-      __export(__webpack_require__(13));
+      __export(__webpack_require__(12));
       __export(__webpack_require__(14));
 
       /***/
@@ -150,7 +150,7 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(51));
+      __export(__webpack_require__(50));
       var seaters_api_1 = __webpack_require__(1);
       exports.SeatersApi = seaters_api_1.SeatersApi;
 
@@ -161,7 +161,7 @@ var SeatersSDK = /******/ (function(modules) {
       'use strict';
 
       Object.defineProperty(exports, '__esModule', { value: true });
-      var fan_1 = __webpack_require__(8);
+      var fan_1 = __webpack_require__(13);
       /**
  *  PROFILING
  */
@@ -187,10 +187,10 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
+      __export(__webpack_require__(22));
+      __export(__webpack_require__(10));
       __export(__webpack_require__(23));
-      __export(__webpack_require__(11));
       __export(__webpack_require__(24));
-      __export(__webpack_require__(25));
 
       /***/
     },
@@ -510,7 +510,7 @@ var SeatersSDK = /******/ (function(modules) {
         };
       Object.defineProperty(exports, '__esModule', { value: true });
       var seaters_api_1 = __webpack_require__(1);
-      var index_1 = __webpack_require__(8);
+      var index_1 = __webpack_require__(13);
       var FanApi = /** @class */ (function() {
         function FanApi(apiContext) {
           this.apiContext = apiContext;
@@ -922,21 +922,6 @@ var SeatersSDK = /******/ (function(modules) {
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
-      function __export(m) {
-        for (var p in m) {
-          if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-        }
-      }
-      Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(7));
-      __export(__webpack_require__(35));
-
-      /***/
-    },
-    /* 9 */
-    /***/ function(module, exports, __webpack_require__) {
-      'use strict';
-
       Object.defineProperty(exports, '__esModule', { value: true });
       var SeatersApiController = /** @class */ (function() {
         function SeatersApiController() {}
@@ -962,7 +947,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 10 */
+    /* 9 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -989,7 +974,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 11 */
+    /* 10 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -1068,7 +1053,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 12 */
+    /* 11 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -1087,7 +1072,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 13 */
+    /* 12 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -1147,6 +1132,21 @@ var SeatersSDK = /******/ (function(modules) {
       })();
       exports.AppApi = AppApi;
       /* tslint:enable:no-floating-promises */
+
+      /***/
+    },
+    /* 13 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      function __export(m) {
+        for (var p in m) {
+          if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+        }
+      }
+      Object.defineProperty(exports, '__esModule', { value: true });
+      __export(__webpack_require__(7));
+      __export(__webpack_require__(34));
 
       /***/
     },
@@ -2069,23 +2069,6 @@ var SeatersSDK = /******/ (function(modules) {
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
-      Object.defineProperty(exports, '__esModule', { value: true });
-      var fan_1 = __webpack_require__(8);
-      /**
- *  PROFILING
- */
-      var survey;
-      (function(survey) {
-        survey.SURVEY_STATUS = fan_1.SurveyStatusEnum;
-        survey.SURVEY_EXTENSION_POINT = fan_1.SurveyExtensionPointEnum;
-      })((survey = exports.survey || (exports.survey = {})));
-
-      /***/
-    },
-    /* 20 */
-    /***/ function(module, exports, __webpack_require__) {
-      'use strict';
-
       function __export(m) {
         for (var p in m) {
           if (!exports.hasOwnProperty(p)) exports[p] = m[p];
@@ -2099,7 +2082,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 21 */
+    /* 20 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2111,18 +2094,16 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.34.7';
-      __export(__webpack_require__(22));
+      exports.version = '1.34.8';
+      __export(__webpack_require__(21));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
       var profiling_types_1 = __webpack_require__(4);
       exports.profiling = profiling_types_1.profiling;
-      var survey_types_1 = __webpack_require__(19);
-      exports.survey = survey_types_1.survey;
 
       /***/
     },
-    /* 22 */
+    /* 21 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2141,7 +2122,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       var api_1 = __webpack_require__(5);
       var seaters_api_1 = __webpack_require__(1);
-      var services_1 = __webpack_require__(48);
+      var services_1 = __webpack_require__(47);
       var SeatersClient = /** @class */ (function() {
         function SeatersClient(options) {
           options = __assign({}, SeatersClient.DEFAULT_OPTIONS, options);
@@ -2214,7 +2195,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 23 */
+    /* 22 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2231,8 +2212,8 @@ var SeatersSDK = /******/ (function(modules) {
           return t;
         };
       Object.defineProperty(exports, '__esModule', { value: true });
-      var subject_1 = __webpack_require__(10);
-      var api_endpoint_1 = __webpack_require__(11);
+      var subject_1 = __webpack_require__(9);
+      var api_endpoint_1 = __webpack_require__(10);
       var ApiContext = /** @class */ (function() {
         function ApiContext(apiPrefix, requestDriver) {
           this.apiPrefix = apiPrefix;
@@ -2298,7 +2279,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 24 */
+    /* 23 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2312,7 +2293,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 25 */
+    /* 24 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2323,16 +2304,16 @@ var SeatersSDK = /******/ (function(modules) {
       function getRequestDriver(type) {
         switch (type) {
           case 'BROWSER':
-            return __webpack_require__(26).default;
+            return __webpack_require__(25).default;
           default:
-            return __webpack_require__(33).default;
+            return __webpack_require__(32).default;
         }
       }
       exports.getRequestDriver = getRequestDriver;
 
       /***/
     },
-    /* 26 */
+    /* 25 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2382,7 +2363,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 27 */
+    /* 26 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2409,7 +2390,7 @@ var SeatersSDK = /******/ (function(modules) {
           };
         })();
       Object.defineProperty(exports, '__esModule', { value: true });
-      var deferred_promise_1 = __webpack_require__(12);
+      var deferred_promise_1 = __webpack_require__(11);
       var RetryUntilTimeoutError = /** @class */ (function(_super) {
         __extends(RetryUntilTimeoutError, _super);
         function RetryUntilTimeoutError(limit) {
@@ -2469,7 +2450,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 28 */
+    /* 27 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2569,7 +2550,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 29 */
+    /* 28 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2621,7 +2602,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 30 */
+    /* 29 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2658,7 +2639,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 31 */
+    /* 30 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2676,7 +2657,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 32 */
+    /* 31 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2692,7 +2673,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 33 */
+    /* 32 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2765,18 +2746,18 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 34 */
+    /* 33 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
       Object.defineProperty(exports, '__esModule', { value: true });
-      var app_api_1 = __webpack_require__(13);
+      var app_api_1 = __webpack_require__(12);
       var fan_api_1 = __webpack_require__(7);
-      var admin_1 = __webpack_require__(38);
-      var health_1 = __webpack_require__(40);
+      var admin_1 = __webpack_require__(37);
+      var health_1 = __webpack_require__(39);
       var authentication_api_1 = __webpack_require__(16);
-      var ticketing_1 = __webpack_require__(41);
-      var payment_1 = __webpack_require__(43);
+      var ticketing_1 = __webpack_require__(40);
+      var payment_1 = __webpack_require__(42);
       var seaters_api_context_1 = __webpack_require__(6);
       var SeatersApi = /** @class */ (function() {
         function SeatersApi(prefix, requestDriver) {
@@ -2795,7 +2776,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 35 */
+    /* 34 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2805,12 +2786,12 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
+      __export(__webpack_require__(35));
       __export(__webpack_require__(36));
-      __export(__webpack_require__(37));
 
       /***/
     },
-    /* 36 */
+    /* 35 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2869,24 +2850,15 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 37 */
+    /* 36 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
       Object.defineProperty(exports, '__esModule', { value: true });
-      var SurveyStatusEnum;
-      (function(SurveyStatusEnum) {
-        SurveyStatusEnum['ACTIVE'] = 'ACTIVE';
-        SurveyStatusEnum['ARCHIVED'] = 'ARCHIVED';
-      })((SurveyStatusEnum = exports.SurveyStatusEnum || (exports.SurveyStatusEnum = {})));
-      var SurveyExtensionPointEnum;
-      (function(SurveyExtensionPointEnum) {
-        SurveyExtensionPointEnum['BEFORE_JOINING_WAITINGLIST'] = 'BEFORE_JOINING_WAITINGLIST';
-      })((SurveyExtensionPointEnum = exports.SurveyExtensionPointEnum || (exports.SurveyExtensionPointEnum = {})));
 
       /***/
     },
-    /* 38 */
+    /* 37 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2896,11 +2868,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(39));
+      __export(__webpack_require__(38));
 
       /***/
     },
-    /* 39 */
+    /* 38 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -2929,7 +2901,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       /* tslint:disable:no-floating-promises */
       var seaters_api_1 = __webpack_require__(1);
-      var seaters_api_controller_1 = __webpack_require__(9);
+      var seaters_api_controller_1 = __webpack_require__(8);
       var AdminApi = /** @class */ (function(_super) {
         __extends(AdminApi, _super);
         function AdminApi(apiContext) {
@@ -3208,7 +3180,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 40 */
+    /* 39 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3223,7 +3195,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 41 */
+    /* 40 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3233,11 +3205,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(42));
+      __export(__webpack_require__(41));
 
       /***/
     },
-    /* 42 */
+    /* 41 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3266,7 +3238,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       /* tslint:disable:no-floating-promises */
       var seaters_api_1 = __webpack_require__(1);
-      var seaters_api_controller_1 = __webpack_require__(9);
+      var seaters_api_controller_1 = __webpack_require__(8);
       var TicketingApi = /** @class */ (function(_super) {
         __extends(TicketingApi, _super);
         function TicketingApi(apiContext) {
@@ -3291,7 +3263,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 43 */
+    /* 42 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3301,11 +3273,11 @@ var SeatersSDK = /******/ (function(modules) {
         }
       }
       Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(44));
+      __export(__webpack_require__(43));
 
       /***/
     },
-    /* 44 */
+    /* 43 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3334,7 +3306,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       /* tslint:disable:no-floating-promises */
       var seaters_api_1 = __webpack_require__(1);
-      var seaters_api_controller_1 = __webpack_require__(9);
+      var seaters_api_controller_1 = __webpack_require__(8);
       var PaymentApi = /** @class */ (function(_super) {
         __extends(PaymentApi, _super);
         function PaymentApi(apiContext) {
@@ -3359,7 +3331,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 45 */
+    /* 44 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3394,7 +3366,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 46 */
+    /* 45 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3436,7 +3408,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 47 */
+    /* 46 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3494,6 +3466,27 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
+    /* 47 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      function __export(m) {
+        for (var p in m) {
+          if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+        }
+      }
+      Object.defineProperty(exports, '__esModule', { value: true });
+      __export(__webpack_require__(48));
+      __export(__webpack_require__(54));
+      __export(__webpack_require__(63));
+      __export(__webpack_require__(65));
+      __export(__webpack_require__(67));
+      __export(__webpack_require__(70));
+      __export(__webpack_require__(72));
+      __export(__webpack_require__(0));
+
+      /***/
+    },
     /* 48 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
@@ -3505,36 +3498,15 @@ var SeatersSDK = /******/ (function(modules) {
       }
       Object.defineProperty(exports, '__esModule', { value: true });
       __export(__webpack_require__(49));
-      __export(__webpack_require__(54));
-      __export(__webpack_require__(63));
-      __export(__webpack_require__(65));
-      __export(__webpack_require__(67));
-      __export(__webpack_require__(70));
-      __export(__webpack_require__(72));
-      __export(__webpack_require__(0));
-
-      /***/
-    },
-    /* 49 */
-    /***/ function(module, exports, __webpack_require__) {
-      'use strict';
-
-      function __export(m) {
-        for (var p in m) {
-          if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-        }
-      }
-      Object.defineProperty(exports, '__esModule', { value: true });
-      __export(__webpack_require__(50));
       __export(__webpack_require__(2));
       __export(__webpack_require__(4));
-      __export(__webpack_require__(19));
+      __export(__webpack_require__(53));
       __export(__webpack_require__(17));
       __export(__webpack_require__(18));
 
       /***/
     },
-    /* 50 */
+    /* 49 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3577,8 +3549,8 @@ var SeatersSDK = /******/ (function(modules) {
       var waiting_list_service_1 = __webpack_require__(17);
       var fan_group_service_1 = __webpack_require__(18);
       var util_1 = __webpack_require__(0);
-      var fan_profiling_service_1 = __webpack_require__(52);
-      var fan_survey_service_1 = __webpack_require__(53);
+      var fan_profiling_service_1 = __webpack_require__(51);
+      var fan_survey_service_1 = __webpack_require__(52);
       var FanService = /** @class */ (function(_super) {
         __extends(FanService, _super);
         function FanService(seatersApi, sessionService, publicService) {
@@ -3889,7 +3861,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 51 */
+    /* 50 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3922,7 +3894,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 52 */
+    /* 51 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -3970,7 +3942,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       /***/
     },
-    /* 53 */
+    /* 52 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict';
 
@@ -4018,6 +3990,14 @@ var SeatersSDK = /******/ (function(modules) {
         return FanSurveyService;
       })();
       exports.FanSurveyService = FanSurveyService;
+
+      /***/
+    },
+    /* 53 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict';
+
+      Object.defineProperty(exports, '__esModule', { value: true });
 
       /***/
     },
@@ -4253,7 +4233,7 @@ var SeatersSDK = /******/ (function(modules) {
       }
       Object.defineProperty(exports, '__esModule', { value: true });
       __export(__webpack_require__(57));
-      __export(__webpack_require__(20));
+      __export(__webpack_require__(19));
 
       /***/
     },
@@ -4263,7 +4243,7 @@ var SeatersSDK = /******/ (function(modules) {
 
       Object.defineProperty(exports, '__esModule', { value: true });
       var algolia_api_1 = __webpack_require__(58);
-      var algolia_for_seaters_types_1 = __webpack_require__(20);
+      var algolia_for_seaters_types_1 = __webpack_require__(19);
       var DEFAULT_LOCALE = 'en';
       var WL_FACET_FILTER = {
         facet: algolia_for_seaters_types_1.TYPE_FIELD,
