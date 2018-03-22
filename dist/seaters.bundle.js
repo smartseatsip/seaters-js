@@ -1317,7 +1317,8 @@ var SeatersSDK = /******/ (function(modules) {
       var GROUP_PAYMENT_METHODS = {
         CREDIT_CARD: 'CREDIT_CARD',
         IDEAL: 'IDEAL',
-        MASTERPASS: 'MASTERPASS'
+        MASTERPASS: 'MASTERPASS',
+        VIRTUAL: 'VIRTUAL'
       };
       var WaitingListService = /** @class */ (function() {
         function WaitingListService(api) {
@@ -1400,6 +1401,25 @@ var SeatersSDK = /******/ (function(modules) {
                 // Token
                 token: braintreeToken.token
               });
+            });
+          });
+        };
+        WaitingListService.prototype.getPositionSeatersPaymentInfo = function(waitingListId) {
+          return this.getPositionPaymentInfo(waitingListId).then(function(paymentInfo) {
+            // ensure it's a proper seaters payment
+            if (paymentInfo.paymentSystemType !== 'SEATERS') {
+              throw new Error('WaitingList ' + waitingListId + ' is not configured to use braintree');
+            }
+            if (paymentInfo.transactions.length !== 1) {
+              console.error(
+                '[FanService] unexpected nbr of transactions for wl (%s) : %s',
+                waitingListId,
+                paymentInfo.transactions.length
+              );
+              throw new Error('Unexpected number of transactions for braintree payment for WL ' + waitingListId);
+            }
+            return __assign({}, paymentInfo.seatersConfig, {
+              virtualEnabled: paymentInfo.seatersConfig.paymentMethods.indexOf('VIRTUAL') !== -1
             });
           });
         };
@@ -2097,7 +2117,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.35.1';
+      exports.version = '1.35.2';
       __export(__webpack_require__(21));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
@@ -3659,6 +3679,9 @@ var SeatersSDK = /******/ (function(modules) {
         };
         FanService.prototype.getPositionBraintreePaymentInfo = function(waitingListId) {
           return this.waitingListService.getPositionBraintreePaymentInfo(waitingListId);
+        };
+        FanService.prototype.getPositionSeatersPaymentInfo = function(waitingListId) {
+          return this.waitingListService.getPositionSeatersPaymentInfo(waitingListId);
         };
         FanService.prototype.joinWaitingList = function(waitingListId, numberOfSeats, additionalQueryParams) {
           return this.waitingListService.joinWaitingList(
