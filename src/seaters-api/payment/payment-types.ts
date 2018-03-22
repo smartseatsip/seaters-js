@@ -117,6 +117,8 @@ export interface PaymentInfoSeatersConfig {
   virtualTitle: LanguageCode;
   virtualDesc: LanguageCode;
   virtualTcLink: LanguageCode;
+
+  virtualEnabled: boolean;
 }
 
 export interface PaymentSystemBase {

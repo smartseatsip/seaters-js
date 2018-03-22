@@ -15,7 +15,8 @@ const EXPORTABLE_TICKETING_SYSTEMS: TICKETING_SYSTEM_TYPE[] = ['UPLOAD', 'DIGITI
 const GROUP_PAYMENT_METHODS = {
   CREDIT_CARD: 'CREDIT_CARD',
   IDEAL: 'IDEAL',
-  MASTERPASS: 'MASTERPASS'
+  MASTERPASS: 'MASTERPASS',
+  VIRTUAL: 'VIRTUAL'
 };
 
 export class WaitingListService {
@@ -98,6 +99,29 @@ export class WaitingListService {
           token: braintreeToken.token
         };
       });
+    });
+  }
+
+  getPositionSeatersPaymentInfo(waitingListId: string): Promise<payment.PaymentInfoSeatersConfig> {
+    return this.getPositionPaymentInfo(waitingListId).then(paymentInfo => {
+      // ensure it's a proper seaters payment
+      if (paymentInfo.paymentSystemType !== 'SEATERS') {
+        throw new Error('WaitingList ' + waitingListId + ' is not configured to use braintree');
+      }
+
+      if (paymentInfo.transactions.length !== 1) {
+        console.error(
+          '[FanService] unexpected nbr of transactions for wl (%s) : %s',
+          waitingListId,
+          paymentInfo.transactions.length
+        );
+        throw new Error('Unexpected number of transactions for braintree payment for WL ' + waitingListId);
+      }
+
+      return {
+        ...paymentInfo.seatersConfig,
+        virtualEnabled: paymentInfo.seatersConfig.paymentMethods.indexOf('VIRTUAL') !== -1
+      };
     });
   }
 

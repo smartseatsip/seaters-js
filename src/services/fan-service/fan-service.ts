@@ -125,6 +125,10 @@ export class FanService extends SeatersService {
     return this.waitingListService.getPositionBraintreePaymentInfo(waitingListId);
   }
 
+  getPositionSeatersPaymentInfo(waitingListId: string): Promise<payment.PaymentInfoSeatersConfig> {
+    return this.waitingListService.getPositionSeatersPaymentInfo(waitingListId);
+  }
+
   joinWaitingList(
     waitingListId: string,
     numberOfSeats: number,
