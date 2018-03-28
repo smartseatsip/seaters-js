@@ -61,7 +61,7 @@ var SeatersSDK = /******/ (function(modules) {
     return Object.prototype.hasOwnProperty.call(object, property);
   }; // __webpack_public_path__
   /******/
-  /******/ /******/ __webpack_require__.p = '/Users/sanderdecoster/local_projects/seaters/seaters-js/dist'; // Load entry module and return exports
+  /******/ /******/ __webpack_require__.p = 'C:\\local_projects\\seaters\\seaters-js/dist'; // Load entry module and return exports
   /******/
   /******/ /******/ return __webpack_require__((__webpack_require__.s = 20));
   /******/
@@ -865,22 +865,24 @@ var SeatersSDK = /******/ (function(modules) {
           return this.apiContext.get('v2/fan/survey/instances', null, queryParams);
         };
         /**
-     * Gets list of answers for a given surveyId
-     * @param {string} surveyId
+     * Gets list of answers for a given surveyInstanceId
+     * @param {string} surveyInstanceId
      */
-        FanApi.prototype.getAnswers = function(surveyId) {
-          return this.apiContext.get('v2/fan/surveys/instances/:surveyId/answers', { surveyId: surveyId });
+        FanApi.prototype.getAnswers = function(surveyInstanceId) {
+          return this.apiContext.get('v2/fan/surveys/instances/:surveyInstanceId/answers', {
+            surveyInstanceId: surveyInstanceId
+          });
         };
         /**
-     * Submits list of answers for a given surveyId
-     * @param {string} surveyId
+     * Submits list of answers for a given surveyInstanceId
+     * @param {string} surveyInstanceId
      * @param {Answer[]} answers
      */
-        FanApi.prototype.submitAnswers = function(surveyId, answers) {
+        FanApi.prototype.submitAnswers = function(surveyInstanceId, answers) {
           return this.apiContext.post(
-            'v2/fan/surveys/instances/:surveyId/answers',
+            'v2/fan/surveys/instances/:surveyInstanceId/answers',
             { answers: answers },
-            { surveyId: surveyId }
+            { surveyInstanceId: surveyInstanceId }
           );
         };
         // SURVEY : FGO
@@ -900,14 +902,14 @@ var SeatersSDK = /******/ (function(modules) {
         /**
      * Gets list of answers for a given user, survey and waitinglist
      * @param {string} waitingListId
-     * @param {string} surveyId
+     * @param {string} surveyInstanceId
      * @param {PagingOptions} pagingOptions
      */
-        FanApi.prototype.getUserAnswers = function(waitingListId, surveyId, pagingOptions) {
+        FanApi.prototype.getUserAnswers = function(waitingListId, surveyInstanceId, pagingOptions) {
           var queryParams = seaters_api_1.SeatersApiContext.buildPagingSortingQueryParams(pagingOptions);
           return this.apiContext.get(
-            'v2/fan-group-owner/waiting-lists/:waitingListId/surveys/instances/:surveyId/answers',
-            { waitingListId: waitingListId, surveyId: surveyId },
+            'v2/fan-group-owner/waiting-lists/:waitingListId/surveys/instances/:surveyInstanceId/answers',
+            { waitingListId: waitingListId, surveyInstanceId: surveyInstanceId },
             queryParams
           );
         };
@@ -2117,7 +2119,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.35.3';
+      exports.version = '1.35.4';
       __export(__webpack_require__(21));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
@@ -4000,11 +4002,11 @@ var SeatersSDK = /******/ (function(modules) {
           }
           return this.seatersApi.fan.getSurveys(pagingOptions);
         };
-        FanSurveyService.prototype.getAnswers = function(surveyId) {
-          return this.seatersApi.fan.getAnswers(surveyId);
+        FanSurveyService.prototype.getAnswers = function(surveyInstanceId) {
+          return this.seatersApi.fan.getAnswers(surveyInstanceId);
         };
-        FanSurveyService.prototype.submitAnswers = function(surveyId, answers) {
-          return this.seatersApi.fan.submitAnswers(surveyId, answers);
+        FanSurveyService.prototype.submitAnswers = function(surveyInstanceId, answers) {
+          return this.seatersApi.fan.submitAnswers(surveyInstanceId, answers);
         };
         // FGO
         FanSurveyService.prototype.getWaitingListSurveys = function(waitingListId, extensionPoint) {
@@ -4016,14 +4018,14 @@ var SeatersSDK = /******/ (function(modules) {
           }
           return this.seatersApi.fan.getWaitingListSurveys(waitingListId, pagingOptions);
         };
-        FanSurveyService.prototype.getUserAnswers = function(waitingListId, surveyId, userId) {
+        FanSurveyService.prototype.getUserAnswers = function(waitingListId, surveyInstanceId, userId) {
           var pagingOptions = {};
           if (!pagingOptions.filters) {
             pagingOptions.filters = {
               user_id: userId
             };
           }
-          return this.seatersApi.fan.getUserAnswers(waitingListId, surveyId, pagingOptions);
+          return this.seatersApi.fan.getUserAnswers(waitingListId, surveyInstanceId, pagingOptions);
         };
         return FanSurveyService;
       })();
