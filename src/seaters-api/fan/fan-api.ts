@@ -444,20 +444,24 @@ export class FanApi {
   }
 
   /**
-   * Gets list of answers for a given surveyId
-   * @param {string} surveyId
+   * Gets list of answers for a given surveyInstanceId
+   * @param {string} surveyInstanceId
    */
-  getAnswers(surveyId: string): Promise<PagedSortedResult<Answer>> {
-    return this.apiContext.get('v2/fan/surveys/instances/:surveyId/answers', { surveyId });
+  getAnswers(surveyInstanceId: string): Promise<PagedSortedResult<Answer>> {
+    return this.apiContext.get('v2/fan/surveys/instances/:surveyInstanceId/answers', { surveyInstanceId });
   }
 
   /**
-   * Submits list of answers for a given surveyId
-   * @param {string} surveyId
+   * Submits list of answers for a given surveyInstanceId
+   * @param {string} surveyInstanceId
    * @param {Answer[]} answers
    */
-  submitAnswers(surveyId: string, answers: Answer[]): Promise<Answer[]> {
-    return this.apiContext.post('v2/fan/surveys/instances/:surveyId/answers', { answers }, { surveyId });
+  submitAnswers(surveyInstanceId: string, answers: Answer[]): Promise<Answer[]> {
+    return this.apiContext.post(
+      'v2/fan/surveys/instances/:surveyInstanceId/answers',
+      { answers },
+      { surveyInstanceId }
+    );
   }
 
   // SURVEY : FGO
@@ -481,18 +485,18 @@ export class FanApi {
   /**
    * Gets list of answers for a given user, survey and waitinglist
    * @param {string} waitingListId
-   * @param {string} surveyId
+   * @param {string} surveyInstanceId
    * @param {PagingOptions} pagingOptions
    */
   getUserAnswers(
     waitingListId: string,
-    surveyId: string,
+    surveyInstanceId: string,
     pagingOptions?: PagingOptions
   ): Promise<PagedSortedResult<Answer>> {
     const queryParams = SeatersApiContext.buildPagingSortingQueryParams(pagingOptions);
     return this.apiContext.get(
-      'v2/fan-group-owner/waiting-lists/:waitingListId/surveys/instances/:surveyId/answers',
-      { waitingListId, surveyId },
+      'v2/fan-group-owner/waiting-lists/:waitingListId/surveys/instances/:surveyInstanceId/answers',
+      { waitingListId, surveyInstanceId },
       queryParams
     );
   }

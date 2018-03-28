@@ -18,11 +18,13 @@ export class FanSurveyService {
 
     return this.seatersApi.fan.getSurveys(pagingOptions);
   }
-  getAnswers(surveyId: string): Promise<PagedSortedResult<survey.Answer>> {
-    return this.seatersApi.fan.getAnswers(surveyId);
+
+  getAnswers(surveyInstanceId: string): Promise<PagedSortedResult<survey.Answer>> {
+    return this.seatersApi.fan.getAnswers(surveyInstanceId);
   }
-  submitAnswers(surveyId: string, answers: survey.Answer[]): Promise<survey.Answer[]> {
-    return this.seatersApi.fan.submitAnswers(surveyId, answers);
+
+  submitAnswers(surveyInstanceId: string, answers: survey.Answer[]): Promise<survey.Answer[]> {
+    return this.seatersApi.fan.submitAnswers(surveyInstanceId, answers);
   }
 
   // FGO
@@ -39,13 +41,18 @@ export class FanSurveyService {
 
     return this.seatersApi.fan.getWaitingListSurveys(waitingListId, pagingOptions);
   }
-  getUserAnswers(waitingListId: string, surveyId: string, userId: string): Promise<PagedSortedResult<survey.Answer>> {
+
+  getUserAnswers(
+    waitingListId: string,
+    surveyInstanceId: string,
+    userId: string
+  ): Promise<PagedSortedResult<survey.Answer>> {
     const pagingOptions: any = {};
     if (!pagingOptions.filters) {
       pagingOptions.filters = {
         user_id: userId
       };
     }
-    return this.seatersApi.fan.getUserAnswers(waitingListId, surveyId, pagingOptions);
+    return this.seatersApi.fan.getUserAnswers(waitingListId, surveyInstanceId, pagingOptions);
   }
 }
