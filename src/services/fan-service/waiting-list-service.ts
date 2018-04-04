@@ -316,6 +316,10 @@ export class WaitingListService {
     return this.api.fan.unlinkWaitingListFanAttribute(waitingListId, fanAttributeId);
   }
 
+  loadAdditionalCharges(waitingListId: string): Promise<fan.AdditionalCharges[]> {
+    return this.api.fan.loadAdditionalCharges(waitingListId);
+  }
+
   private hasPreviousPayment(wl: fan.WaitingList): boolean {
     return !!(wl.position && wl.position.transactionStatus);
   }

@@ -9,7 +9,7 @@ import { LocalizableText } from '../util';
 
 import { SessionService } from '../session-service';
 import { PublicService } from '../public-service';
-import { AttendeeInfo, Fan, PositionSalesTransactionInput } from '../../seaters-api/fan/fan-types';
+import { AttendeeInfo, Fan, PositionSalesTransactionInput, AdditionalCharges } from '../../seaters-api/fan/fan-types';
 import { BraintreeToken } from '../../seaters-api/fan/braintree-token';
 import { IUpdateEmailDTO, IUpdatePasswordDTO, PhoneNumber } from '../../seaters-api/fan/fan';
 import { StringMap } from '../../api/string-map';
@@ -379,5 +379,9 @@ export class FanService extends SeatersService {
   }
   getUserAnswers(waitingListId: string, surveyId: string, userId: string): Promise<PagedResult<survey.Answer>> {
     return this.fanSurveyService.getUserAnswers(waitingListId, surveyId, userId).then(this.convertPagedSortedResult);
+  }
+
+  loadAdditionalCharges(waitingListId: string): Promise<AdditionalCharges[]> {
+    return this.waitingListService.loadAdditionalCharges(waitingListId);
   }
 }

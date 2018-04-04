@@ -27,7 +27,8 @@ import {
   WaitingList,
   WaitingListFanAttribute,
   WaitingListInterest,
-  WaitingListShare
+  WaitingListShare,
+  AdditionalCharges
 } from './fan-types';
 
 import { WaitingListRequest } from './waiting-list';
@@ -499,6 +500,10 @@ export class FanApi {
       { waitingListId, surveyInstanceId },
       queryParams
     );
+  }
+
+  loadAdditionalCharges(waitingListId: string): Promise<AdditionalCharges[]> {
+    return this.apiContext.get('v2/fan/waiting-lists/:waitingListId/additional-charges', { waitingListId });
   }
 }
 
