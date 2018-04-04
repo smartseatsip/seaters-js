@@ -61,7 +61,7 @@ var SeatersSDK = /******/ (function(modules) {
     return Object.prototype.hasOwnProperty.call(object, property);
   }; // __webpack_public_path__
   /******/
-  /******/ /******/ __webpack_require__.p = 'C:\\local_projects\\seaters\\seaters-js/dist'; // Load entry module and return exports
+  /******/ /******/ __webpack_require__.p = '/Users/mahmoudalazzawi/projects/seaters-js/dist'; // Load entry module and return exports
   /******/
   /******/ /******/ return __webpack_require__((__webpack_require__.s = 20));
   /******/
@@ -913,6 +913,11 @@ var SeatersSDK = /******/ (function(modules) {
             queryParams
           );
         };
+        FanApi.prototype.loadAdditionalCharges = function(waitingListId) {
+          return this.apiContext.get('v2/fan/waiting-lists/:waitingListId/additional-charges', {
+            waitingListId: waitingListId
+          });
+        };
         return FanApi;
       })();
       exports.FanApi = FanApi;
@@ -1583,6 +1588,9 @@ var SeatersSDK = /******/ (function(modules) {
         };
         WaitingListService.prototype.unlinkWaitingListFanAttribute = function(waitingListId, fanAttributeId) {
           return this.api.fan.unlinkWaitingListFanAttribute(waitingListId, fanAttributeId);
+        };
+        WaitingListService.prototype.loadAdditionalCharges = function(waitingListId) {
+          return this.api.fan.loadAdditionalCharges(waitingListId);
         };
         WaitingListService.prototype.hasPreviousPayment = function(wl) {
           return !!(wl.position && wl.position.transactionStatus);
@@ -3894,6 +3902,9 @@ var SeatersSDK = /******/ (function(modules) {
           return this.fanSurveyService
             .getUserAnswers(waitingListId, surveyId, userId)
             .then(this.convertPagedSortedResult);
+        };
+        FanService.prototype.loadAdditionalCharges = function(waitingListId) {
+          return this.waitingListService.loadAdditionalCharges(waitingListId);
         };
         return FanService;
       })(common_1.SeatersService);
