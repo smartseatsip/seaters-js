@@ -23,7 +23,7 @@ export class PaymentApi extends SeatersApiController {
   }
 
   updatePaymentSystem(paymentSystemId: string, payload: PaymentSystemUpdateDTO): Promise<PaymentSystem> {
-    return this.apiContext.put('/seaters-admin/payment-systems/:id', { id: paymentSystemId, ...payload });
+    return this.apiContext.put('/seaters-admin/payment-systems/:id', { ...payload }, { id: paymentSystemId });
   }
 
   deletePaymentSystem(paymentSystemId: string): Promise<void> {

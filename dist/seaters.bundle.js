@@ -2127,7 +2127,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.35.7';
+      exports.version = '1.35.8';
       __export(__webpack_require__(21));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
@@ -3364,7 +3364,9 @@ var SeatersSDK = /******/ (function(modules) {
           return this.apiContext.post('/seaters-admin/payment-systems', payload);
         };
         PaymentApi.prototype.updatePaymentSystem = function(paymentSystemId, payload) {
-          return this.apiContext.put('/seaters-admin/payment-systems/:id', __assign({ id: paymentSystemId }, payload));
+          return this.apiContext.put('/seaters-admin/payment-systems/:id', __assign({}, payload), {
+            id: paymentSystemId
+          });
         };
         PaymentApi.prototype.deletePaymentSystem = function(paymentSystemId) {
           return this.apiContext.delete('/seaters-admin/payment-systems/:id', { id: paymentSystemId });
