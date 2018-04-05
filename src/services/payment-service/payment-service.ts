@@ -64,7 +64,7 @@ export class PaymentService extends SeatersService {
 
     /* tslint:disable prefer-for-of */
     for (let i = 0; i < keys.length; i++) {
-      if (typeof data[keys[i]] === 'object') {
+      if (typeof data[keys[i]] === 'object' && !Array.isArray(data[keys[i]])) {
         let jsonValue;
         try {
           jsonValue = JSON.stringify(data[keys[i]]);
