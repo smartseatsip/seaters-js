@@ -46,6 +46,8 @@ export interface FanGroup {
   color1: string;
   description: TranslatedText;
   name: TranslatedText;
+  termsAndConditions: TranslatedText;
+  privacyPolicy: TranslatedText;
   rankAndLikelihoodHidden: boolean;
   showLogo: boolean;
 }

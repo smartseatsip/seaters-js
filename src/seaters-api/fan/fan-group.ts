@@ -122,6 +122,12 @@ export interface FanGroup {
    * To use as description when notification about geo location is needed
    */
   geoFilteringNotificationDescription: any;
+
+  /** Terms and condition links {string=>string} - 1 per supported locale */
+  termsAndConditions: any;
+
+  /** Privacy Policy links {string=>string} - 1 per supported locale */
+  privacyPolicy: any;
 }
 
 export type ACCESS_MODE = 'PUBLIC' | 'PRIVATE' | 'CODE_PROTECTED';
