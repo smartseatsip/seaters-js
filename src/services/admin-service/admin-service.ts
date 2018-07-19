@@ -2,6 +2,7 @@ import { PagedResult, PagingOptions, SeatersApi, SeatersService } from '../commo
 import { admin } from './admin-types';
 import { mapWaitingList } from './waiting-list-mapper';
 import { profiling, survey } from '../index';
+import { VenueConfig, Event } from '../../seaters-api/admin';
 
 export class AdminService extends SeatersService {
   constructor(seatersApi: SeatersApi) {
@@ -236,6 +237,29 @@ export class AdminService extends SeatersService {
     return this.seatersApi.admin.updateQuestion(question);
   }
 
+  getVenueConfig(venueId: string): Promise<PagedResult<VenueConfig>> {
+    return this.seatersApi.admin.getVenueConfig(venueId).then(r => this.convertPagedResult(r));
+  }
+
+  createEvent(event: Event): Promise<Event> {
+    return this.seatersApi.admin.createEvent(event);
+  }
+  
+  createWishlist(groupId: string, wishList: any): Promise<any> {
+    return this.seatersApi.admin.createWishlist(groupId, wishList);
+  }
+
+  openWishlist(wishlistId: string): Promise<any> {
+    return this.seatersApi.admin.openWishlist(wishlistId);
+  }
+
+  getWaitingListFull(waitingListId: string): Promise<any> {
+    return this.seatersApi.admin.getWaitingListFull(waitingListId);
+  }
+
+  updateWaitingListFull(wl: any): Promise<any> {
+    return this.seatersApi.admin.updateWaitingListFull(wl);
+  }
   private uploadOneTimeFile(data: any, fileName?: string): Promise<admin.OneTimeFile> {
     return this.seatersApi.admin
       .requestOneTimeFileUpload(this.defaultFileName(fileName))
