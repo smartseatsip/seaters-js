@@ -461,12 +461,12 @@ export class WaitingListService {
             console.error('[WaitingListService] - unexpected transactionStatus: %s', position.transactionStatus);
             return WAITING_LIST_ACTION_STATUS.ERROR;
           }
-        } else if (waitingList.seatDistributionMode === 'TICKET' && seat.ticketingSystemType) {
-          // non-voucher - tickets are being requested
-          return WAITING_LIST_ACTION_STATUS.CONFIRM; // (-)PENDING
         } else if (seat.status === 'ACCEPTED') {
           // go live
           return WAITING_LIST_ACTION_STATUS.GO_LIVE;
+        } else if (waitingList.seatDistributionMode === 'TICKET' && seat.ticketingSystemType) {
+          // non-voucher - tickets are being requested
+          return WAITING_LIST_ACTION_STATUS.CONFIRM; // (-)PENDING
         } else {
           console.error('[WaitingListService] unexpected seat status: %s', seat.status);
           return WAITING_LIST_ACTION_STATUS.ERROR;
