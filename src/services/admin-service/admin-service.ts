@@ -9,10 +9,13 @@ export class AdminService extends SeatersService {
     super(seatersApi);
   }
 
+  getEvent(eventId: string): Promise<admin.FanGroup> {
+    return this.seatersApi.admin.getEvent(eventId);
+  }
+
   getFanGroup(fanGroupId: string): Promise<admin.FanGroup> {
     return this.seatersApi.admin.getFanGroup(fanGroupId);
   }
-
   getFanGroupProtectionCodes(
     fanGroupId: string,
     page: PagingOptions
@@ -86,6 +89,13 @@ export class AdminService extends SeatersService {
       .requestFanGroupProfileImageUpload(fanGroupId, this.defaultFileName(fileName))
       .then(otf => this.seatersApi.admin.uploadOneTimeFile(otf.url, data))
       .then(() => this.getFanGroup(fanGroupId));
+  }
+
+  updateEventImage(eventId: string, data: any, fileName?: string): Promise<admin.FanGroup> {
+    return this.seatersApi.admin
+      .requestEventImageUpload(eventId, this.defaultFileName(fileName))
+      .then(otf => this.seatersApi.admin.uploadOneTimeFile(otf.url, data))
+      .then(() => this.getEvent(eventId));
   }
 
   // Profiling

@@ -57,6 +57,10 @@ export class AdminApi extends SeatersApiController {
     });
   }
 
+  getEvent(eventId: string): Promise<admin.FanGroup> {
+    return this.apiContext.get('/seaters-admin/events/:id', { id: eventId });
+  }
+
   getFanGroup(fanGroupId: string): Promise<admin.FanGroup> {
     return this.apiContext.get('/seaters-admin/fan-groups/:id', { id: fanGroupId });
   }
@@ -328,6 +332,10 @@ export class AdminApi extends SeatersApiController {
 
   updateWaitingListFull(wl: any): Promise<any> {
     return this.apiContext.put('/seaters-admin/waiting-lists/:id', wl, { id: wl.id });
+  }
+
+  requestEventImageUpload(fanGroupId: string, fileName?: string): Promise<admin.OneTimeFile> {
+    return this.apiContext.put('/seaters-admin/events/:id/image', null, { id: fanGroupId }, { fileName });
   }
 
   /**
