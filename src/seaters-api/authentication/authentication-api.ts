@@ -81,6 +81,11 @@ export class AuthenticationApi {
     return this.apiContext.put('/v2/authentication/reset-password', input);
   }
 
+  verifyOAuth(input: any): any {
+    const endpoint = '/v2/authentication/verify-oauth/';
+    return this.apiContext.put(endpoint, input, null, null);
+  }
+
   /**
    *
    * @param input

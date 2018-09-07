@@ -28,6 +28,10 @@ export class FanGroupService {
     }));
   }
 
+  getOauthAuthorizationCodeUrl(provider: string): Promise<any> {
+    return this.api.fan.oauthAuthorizationCodeUrl(provider);
+  }
+
   getFanGroupLookBySlug(slug: string): Promise<fan.FanGroupLook> {
     return this.api.fan.fanGroupLookBySlug(slug);
   }

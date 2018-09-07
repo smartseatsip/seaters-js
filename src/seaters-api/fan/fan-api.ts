@@ -69,6 +69,10 @@ export class FanApi {
     return this.apiContext.get('/fan/fangroups-by-slug/:slug', { slug });
   }
 
+  oauthAuthorizationCodeUrl(provider: string): Promise<any> {
+    return this.apiContext.get('/v2/authentication/oauth/url/:provider', { provider });
+  }
+
   fanGroupLookBySlug(slug: string): Promise<FanGroupLook> {
     return this.apiContext.get('/fan/fangroups-by-slug/:slug/look', { slug });
   }

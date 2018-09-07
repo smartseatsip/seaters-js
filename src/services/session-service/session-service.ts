@@ -58,6 +58,7 @@ export class SessionService {
 
   /**
    * Log in using an email/password
+   * Log in using an email/password
    *
    * @param email valid email or seaters username
    * @param password plain text password
@@ -120,6 +121,16 @@ export class SessionService {
     return new Promise((resolve, reject) => {
       this.seatersApi.authentication
         .loginWithOAuthCode(oauthProvider, code)
+        .then(r => this.finishLogin(r))
+        .then(r => resolve(r))
+        .catch(r => reject(r));
+    });
+  }
+
+  doVerifyOAuth(input: any): Promise<session.Session> {
+    return new Promise((resolve, reject) => {
+      this.seatersApi.authentication
+        .verifyOAuth(input)
         .then(r => this.finishLogin(r))
         .then(r => resolve(r))
         .catch(r => reject(r));
@@ -361,6 +372,7 @@ export class SessionService {
 
   private finishLogin(authSuccess: AuthenticationSuccess): Promise<session.Session> {
     const expirationDate = normalizeLondonTimezoneDate(authSuccess.token.expirationDate);
+    console.log('TOKEN: ' + expirationDate);
     this.setSession({
       expirationDate,
       token: authSuccess.token.value
