@@ -136,7 +136,7 @@ export class FanApi {
     if (keyWords !== undefined) {
       queryParams = {
         ...queryParams,
-        keyWords: keyWords
+        keyWords
       };
     }
 
@@ -157,7 +157,7 @@ export class FanApi {
     if (keyWords !== undefined) {
       queryParams = {
         ...queryParams,
-        keyWords: keyWords
+        keyWords
       };
     }
     return this.apiContext.get('/fan/groups/waiting-lists', endpointParams, queryParams);
