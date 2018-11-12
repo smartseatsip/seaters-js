@@ -126,19 +126,40 @@ export class FanApi {
     return this.apiContext.get('/fan/groups/:fanGroupId/share', { fanGroupId });
   }
 
-  waitingListsInFanGroup(fanGroupId: string, pagingOptions: PagingOptions): Promise<PagedResult<WaitingList>> {
+  waitingListsInFanGroup(
+    fanGroupId: string,
+    pagingOptions: PagingOptions,
+    keyWords?: string
+  ): Promise<PagedResult<WaitingList>> {
     const endpointParams = { fanGroupId };
-    const queryParams = SeatersApiContext.buildPagingQueryParams(pagingOptions);
+    let queryParams = SeatersApiContext.buildPagingQueryParams(pagingOptions);
+    if (keyWords !== undefined) {
+      queryParams = {
+        ...queryParams,
+        keyWords: keyWords
+      };
+    }
+
     return this.apiContext.get('/fan/groups/:fanGroupId/waiting-lists', endpointParams, queryParams);
   }
 
-  waitingListsInFanGroups(fanGroupIds: string[], pagingOptions: PagingOptions): Promise<PagedResult<WaitingList>> {
+  waitingListsInFanGroups(
+    fanGroupIds: string[],
+    pagingOptions: PagingOptions,
+    keyWords?: string
+  ): Promise<PagedResult<WaitingList>> {
     const endpointParams = {};
     let queryParams = SeatersApiContext.buildPagingQueryParams(pagingOptions);
     queryParams = {
       ...queryParams,
       groupIds: fanGroupIds
     };
+    if (keyWords !== undefined) {
+      queryParams = {
+        ...queryParams,
+        keyWords: keyWords
+      };
+    }
     return this.apiContext.get('/fan/groups/waiting-lists', endpointParams, queryParams);
   }
 

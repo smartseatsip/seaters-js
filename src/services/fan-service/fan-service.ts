@@ -93,18 +93,23 @@ export class FanService extends SeatersService {
     return this.waitingListService.getWaitingLists(waitingListIds);
   }
 
-  getWaitingListsInFanGroup(fanGroupId: string, pagingOptions: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
+  getWaitingListsInFanGroup(
+    fanGroupId: string,
+    pagingOptions: PagingOptions,
+    keyWords?: string
+  ): Promise<PagedResult<fan.WaitingList>> {
     return this.waitingListService
-      .getWaitingListsInFanGroup(fanGroupId, pagingOptions)
+      .getWaitingListsInFanGroup(fanGroupId, pagingOptions, keyWords)
       .then(r => this.convertPagedResult(r));
   }
 
   getWaitingListsInFanGroups(
     fanGroupIds: string[],
-    pagingOptions: PagingOptions
+    pagingOptions: PagingOptions,
+    keyWords?: string
   ): Promise<PagedResult<fan.WaitingList>> {
     return this.waitingListService
-      .getWaitingListsInFanGroups(fanGroupIds, pagingOptions)
+      .getWaitingListsInFanGroups(fanGroupIds, pagingOptions, keyWords)
       .then(r => this.convertPagedResult(r));
   }
 

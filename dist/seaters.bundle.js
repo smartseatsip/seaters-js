@@ -61,7 +61,7 @@ var SeatersSDK = /******/ (function(modules) {
     return Object.prototype.hasOwnProperty.call(object, property);
   }; // __webpack_public_path__
   /******/
-  /******/ /******/ __webpack_require__.p = '/Users/aymenmoussaoui/seaters-js/dist'; // Load entry module and return exports
+  /******/ /******/ __webpack_require__.p = '/home/fdupe/Documents/Seaters/Dev/GitRepo/Sdk/seaters-js/dist'; // Load entry module and return exports
   /******/
   /******/ /******/ return __webpack_require__((__webpack_require__.s = 20));
   /******/
@@ -586,15 +586,21 @@ var SeatersSDK = /******/ (function(modules) {
         FanApi.prototype.shareFanGroup = function(fanGroupId) {
           return this.apiContext.get('/fan/groups/:fanGroupId/share', { fanGroupId: fanGroupId });
         };
-        FanApi.prototype.waitingListsInFanGroup = function(fanGroupId, pagingOptions) {
+        FanApi.prototype.waitingListsInFanGroup = function(fanGroupId, pagingOptions, keyWords) {
           var endpointParams = { fanGroupId: fanGroupId };
           var queryParams = seaters_api_1.SeatersApiContext.buildPagingQueryParams(pagingOptions);
+          if (keyWords !== undefined) {
+            queryParams = __assign({}, queryParams, { keyWords: keyWords });
+          }
           return this.apiContext.get('/fan/groups/:fanGroupId/waiting-lists', endpointParams, queryParams);
         };
-        FanApi.prototype.waitingListsInFanGroups = function(fanGroupIds, pagingOptions) {
+        FanApi.prototype.waitingListsInFanGroups = function(fanGroupIds, pagingOptions, keyWords) {
           var endpointParams = {};
           var queryParams = seaters_api_1.SeatersApiContext.buildPagingQueryParams(pagingOptions);
           queryParams = __assign({}, queryParams, { groupIds: fanGroupIds });
+          if (keyWords !== undefined) {
+            queryParams = __assign({}, queryParams, { keyWords: keyWords });
+          }
           return this.apiContext.get('/fan/groups/waiting-lists', endpointParams, queryParams);
         };
         FanApi.prototype.joinedFanGroups = function(pagingOptions) {
@@ -1356,15 +1362,15 @@ var SeatersSDK = /******/ (function(modules) {
             });
           });
         };
-        WaitingListService.prototype.getWaitingListsInFanGroup = function(fanGroupId, pagingOptions) {
+        WaitingListService.prototype.getWaitingListsInFanGroup = function(fanGroupId, pagingOptions, keyWords) {
           var _this = this;
-          return this.api.fan.waitingListsInFanGroup(fanGroupId, pagingOptions).then(function(wls) {
+          return this.api.fan.waitingListsInFanGroup(fanGroupId, pagingOptions, keyWords).then(function(wls) {
             return _this.extendRawWaitingLists(wls);
           });
         };
-        WaitingListService.prototype.getWaitingListsInFanGroups = function(fanGroupIds, pagingOptions) {
+        WaitingListService.prototype.getWaitingListsInFanGroups = function(fanGroupIds, pagingOptions, keyWords) {
           var _this = this;
-          return this.api.fan.waitingListsInFanGroups(fanGroupIds, pagingOptions).then(function(wls) {
+          return this.api.fan.waitingListsInFanGroups(fanGroupIds, pagingOptions, keyWords).then(function(wls) {
             return _this.extendRawWaitingLists(wls);
           });
         };
@@ -2137,7 +2143,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.35.10';
+      exports.version = '1.35.11';
       __export(__webpack_require__(21));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
@@ -3670,17 +3676,21 @@ var SeatersSDK = /******/ (function(modules) {
         FanService.prototype.getWaitingLists = function(waitingListIds) {
           return this.waitingListService.getWaitingLists(waitingListIds);
         };
-        FanService.prototype.getWaitingListsInFanGroup = function(fanGroupId, pagingOptions) {
+        FanService.prototype.getWaitingListsInFanGroup = function(fanGroupId, pagingOptions, keyWords) {
           var _this = this;
-          return this.waitingListService.getWaitingListsInFanGroup(fanGroupId, pagingOptions).then(function(r) {
-            return _this.convertPagedResult(r);
-          });
+          return this.waitingListService
+            .getWaitingListsInFanGroup(fanGroupId, pagingOptions, keyWords)
+            .then(function(r) {
+              return _this.convertPagedResult(r);
+            });
         };
-        FanService.prototype.getWaitingListsInFanGroups = function(fanGroupIds, pagingOptions) {
+        FanService.prototype.getWaitingListsInFanGroups = function(fanGroupIds, pagingOptions, keyWords) {
           var _this = this;
-          return this.waitingListService.getWaitingListsInFanGroups(fanGroupIds, pagingOptions).then(function(r) {
-            return _this.convertPagedResult(r);
-          });
+          return this.waitingListService
+            .getWaitingListsInFanGroups(fanGroupIds, pagingOptions, keyWords)
+            .then(function(r) {
+              return _this.convertPagedResult(r);
+            });
         };
         FanService.prototype.getMyWaitingListsWithoutSeat = function(page) {
           var _this = this;

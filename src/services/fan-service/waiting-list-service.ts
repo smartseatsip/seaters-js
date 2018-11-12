@@ -35,16 +35,23 @@ export class WaitingListService {
     return this.api.fan.waitingLists(waitingListIds).then(wls => wls.map(wl => this.extendRawWaitingList(wl)));
   }
 
-  getWaitingListsInFanGroup(fanGroupId: string, pagingOptions: PagingOptions): Promise<PagedResult<fan.WaitingList>> {
-    return this.api.fan.waitingListsInFanGroup(fanGroupId, pagingOptions).then(wls => this.extendRawWaitingLists(wls));
+  getWaitingListsInFanGroup(
+    fanGroupId: string,
+    pagingOptions: PagingOptions,
+    keyWords?: string
+  ): Promise<PagedResult<fan.WaitingList>> {
+    return this.api.fan
+      .waitingListsInFanGroup(fanGroupId, pagingOptions, keyWords)
+      .then(wls => this.extendRawWaitingLists(wls));
   }
 
   getWaitingListsInFanGroups(
     fanGroupIds: string[],
-    pagingOptions: PagingOptions
+    pagingOptions: PagingOptions,
+    keyWords?: string
   ): Promise<PagedResult<fan.WaitingList>> {
     return this.api.fan
-      .waitingListsInFanGroups(fanGroupIds, pagingOptions)
+      .waitingListsInFanGroups(fanGroupIds, pagingOptions, keyWords)
       .then(wls => this.extendRawWaitingLists(wls));
   }
 
