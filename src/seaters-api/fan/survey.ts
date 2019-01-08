@@ -46,7 +46,9 @@ export interface SurveyInstance {
   extensionPoint: SURVEY_EXTENSION_POINT;
   surveyId?: string;
   survey?: Survey;
+  inputMode: INPUT_MODE;
 }
 
 export type SURVEY_STATUS = 'ACTIVE' | 'ARCHIVED';
 export type SURVEY_EXTENSION_POINT = 'BEFORE_JOINING_WAITINGLIST' | 'BEFORE_PAYMENT';
+export type INPUT_MODE = 'EDITABLE' | 'LOCKED';
