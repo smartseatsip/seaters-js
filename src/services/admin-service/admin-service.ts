@@ -3,6 +3,8 @@ import { admin } from './admin-types';
 import { mapWaitingList } from './waiting-list-mapper';
 import { profiling, survey } from '../index';
 import { VenueConfig, Event } from '../../seaters-api/admin';
+import { Badge, Category, BADGE_STATUS } from '../../seaters-api/fan';
+import { PagedSortedResult } from '../../seaters-api';
 
 export class AdminService extends SeatersService {
   constructor(seatersApi: SeatersApi) {
@@ -178,6 +180,64 @@ export class AdminService extends SeatersService {
   addAliases(id: string, idsToConvert: string[]): Promise<profiling.ProfilingFanAttribute> {
     return this.seatersApi.admin.addAliases(id, idsToConvert);
   }
+
+
+  // Badge
+
+  getAllBadges(status?: BADGE_STATUS, options?: PagingOptions) : Promise<PagedSortedResult<Badge>> {
+    return this.seatersApi.admin.getAllBadges(status, options);
+  }
+
+  getBadge(badgeId: string) : Promise<Badge> {
+    return this.seatersApi.admin.getBadge(badgeId);
+  }
+
+  createBadge(badge: Badge) : Promise<Badge> {
+    return this.seatersApi.admin.createBadge(badge);
+  }
+
+  deleteBadge(badgeId: string) : Promise<any> {
+    return this.seatersApi.admin.deleteBadge(badgeId);
+  }
+
+  updateBadge(badgeId: string, badge: Badge) : Promise<Badge> { 
+    return this.seatersApi.admin.updateBadge(badgeId, badge);
+  }
+
+
+  // Badge : FanGroup Context
+
+  linkBadgeToFg(fanGroupId: string, badgeId: string) : Promise<any> {
+    return this.seatersApi.admin.linkBadgeToFg(fanGroupId, badgeId);
+  }
+
+  unlinkBadgeToFg(fanGroupId: string, badgeId: string) : Promise<any> {
+    return this.seatersApi.admin.unlinkBadgeToFg(fanGroupId, badgeId);
+  }
+
+  getBadges(fanGroupId: string) : Promise<PagedSortedResult<Badge>> {
+    return this.seatersApi.admin.getBadges(fanGroupId);
+  }
+
+
+  //BADGE : Category
+
+  getBadgeCategories (status?: BADGE_STATUS, options?: PagingOptions, ) : Promise<PagedSortedResult<Category>> {
+    return this.seatersApi.admin.getBadgeCategories(status, options);
+  }
+
+  createBadgeCategory (category: Category) : Promise<Category> {
+    return this.seatersApi.admin.createBadgeCategory(category);
+  }
+
+  updateBadgeCategory (categoryId: string, category: Category) : Promise<Category> {
+    return this.seatersApi.admin.updateBadgeCategory(categoryId, category);
+  }
+
+  deleteBadgeCategory (categoryId: string) : Promise<any> {
+    return this.seatersApi.admin.deleteBadgeCategory(categoryId);
+  }
+
 
   // Survey
   getSurvey(id: string): Promise<survey.Survey> {

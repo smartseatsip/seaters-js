@@ -9,13 +9,15 @@ import { LocalizableText } from '../util';
 
 import { SessionService } from '../session-service';
 import { PublicService } from '../public-service';
-import { AttendeeInfo, Fan, PositionSalesTransactionInput, AdditionalCharges } from '../../seaters-api/fan/fan-types';
+import { AttendeeInfo, Fan, PositionSalesTransactionInput, AdditionalCharges, Badge, BadgeProtection, BadgeGrantOptions, BadgeWlOptions} from '../../seaters-api/fan/fan-types';
 import { BraintreeToken } from '../../seaters-api/fan/braintree-token';
 import { IUpdateEmailDTO, IUpdatePasswordDTO, PhoneNumber } from '../../seaters-api/fan/fan';
 import { StringMap } from '../../api/string-map';
 import { FanProfilingService } from './fan-profiling-service';
 import { FanSurveyService } from './fan-survey-service';
 import { UserInterestUpdateDTO } from '../../seaters-api/fan';
+import { PagedSortedResult } from '../../shared-types';
+
 
 export class FanService extends SeatersService {
   public waitingListService: WaitingListService;
@@ -353,6 +355,54 @@ export class FanService extends SeatersService {
   ): Promise<profiling.WaitingListFanAttribute> {
     return this.waitingListService.unlinkWaitingListFanAttribute(waitingListId, fanAttributeId);
   }
+
+
+  // BADGE : FAN
+
+  getBadges(fanGroupId: string, pagingOptions? : PagingOptions) : Promise<PagedSortedResult<Badge>> {
+    return this.seatersApi.fan.getBadges(fanGroupId, pagingOptions);
+  }
+
+  isBadgeProtected(fanGroupId: string, waitingListId: string): Promise<boolean> {
+    return this.seatersApi.fan.getBadgeProtection(fanGroupId, waitingListId)
+      .then(response => response.state === 'RESTRICTED');
+  }
+
+  getBadgeProtection(fanGroupId: string, waitingListId: string): Promise<any> {
+    return this.seatersApi.fan.getBadgeProtection(fanGroupId, waitingListId);
+  }
+
+
+  // BADGE : FAN GROUP OWNER
+
+  getUserBadges(fanGroupId: string, userId: string, pagingOptions? : PagingOptions): Promise<PagedSortedResult<Badge>> {
+    return this.seatersApi.fan.getUserBadges(fanGroupId, userId, pagingOptions);
+  }
+
+  getFanGroupBadges(fanGroupId: string, pagingOptions? : PagingOptions): Promise<PagedSortedResult<Badge>>{
+    return this.seatersApi.fan.getFanGroupBadges(fanGroupId, pagingOptions);
+  }
+
+  grantBadge(fanGroupId: string, badgeGrantOptions: BadgeGrantOptions) : Promise<any>{
+    return this.seatersApi.fan.grantBadge(fanGroupId, badgeGrantOptions);
+  }
+
+  revokeBadge(fanGroupId: string, badgeGrantOptions: BadgeGrantOptions) : Promise<any> {
+    return this.seatersApi.fan.revokeBadge(fanGroupId, badgeGrantOptions);
+  }
+
+  linkBadgeToWl(waitingListId: string, badgeGrantOptions: BadgeWlOptions) : Promise<any> {
+    return this.seatersApi.fan.linkBadgeToWl(waitingListId, badgeGrantOptions);
+  }
+
+  getWLBadges(waitingListId: string, pagingOptions?: PagingOptions) : Promise<any> {
+    return this.seatersApi.fan.getWLBadges(waitingListId, pagingOptions);
+  }
+
+
+
+
+
 
   // Survey : FAN
 
