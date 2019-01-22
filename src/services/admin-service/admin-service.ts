@@ -2,16 +2,22 @@ import { PagedResult, PagingOptions, SeatersApi, SeatersService } from '../commo
 import { admin } from './admin-types';
 import { mapWaitingList } from './waiting-list-mapper';
 import { profiling, survey } from '../index';
+import { VenueConfig, Event } from '../../seaters-api/admin';
+import { Badge, Category, BADGE_STATUS } from '../../seaters-api/fan';
+import { PagedSortedResult } from '../../seaters-api';
 
 export class AdminService extends SeatersService {
   constructor(seatersApi: SeatersApi) {
     super(seatersApi);
   }
 
+  getEvent(eventId: string): Promise<admin.FanGroup> {
+    return this.seatersApi.admin.getEvent(eventId);
+  }
+
   getFanGroup(fanGroupId: string): Promise<admin.FanGroup> {
     return this.seatersApi.admin.getFanGroup(fanGroupId);
   }
-
   getFanGroupProtectionCodes(
     fanGroupId: string,
     page: PagingOptions
@@ -85,6 +91,13 @@ export class AdminService extends SeatersService {
       .requestFanGroupProfileImageUpload(fanGroupId, this.defaultFileName(fileName))
       .then(otf => this.seatersApi.admin.uploadOneTimeFile(otf.url, data))
       .then(() => this.getFanGroup(fanGroupId));
+  }
+
+  updateEventImage(eventId: string, data: any, fileName?: string): Promise<admin.FanGroup> {
+    return this.seatersApi.admin
+      .requestEventImageUpload(eventId, this.defaultFileName(fileName))
+      .then(otf => this.seatersApi.admin.uploadOneTimeFile(otf.url, data))
+      .then(() => this.getEvent(eventId));
   }
 
   // Profiling
@@ -168,6 +181,64 @@ export class AdminService extends SeatersService {
     return this.seatersApi.admin.addAliases(id, idsToConvert);
   }
 
+
+  // Badge
+
+  getAllBadges(status?: BADGE_STATUS, options?: PagingOptions) : Promise<PagedSortedResult<Badge>> {
+    return this.seatersApi.admin.getAllBadges(status, options);
+  }
+
+  getBadge(badgeId: string) : Promise<Badge> {
+    return this.seatersApi.admin.getBadge(badgeId);
+  }
+
+  createBadge(badge: Badge) : Promise<Badge> {
+    return this.seatersApi.admin.createBadge(badge);
+  }
+
+  deleteBadge(badgeId: string) : Promise<any> {
+    return this.seatersApi.admin.deleteBadge(badgeId);
+  }
+
+  updateBadge(badgeId: string, badge: Badge) : Promise<Badge> { 
+    return this.seatersApi.admin.updateBadge(badgeId, badge);
+  }
+
+
+  // Badge : FanGroup Context
+
+  linkBadgeToFg(fanGroupId: string, badgeId: string) : Promise<any> {
+    return this.seatersApi.admin.linkBadgeToFg(fanGroupId, badgeId);
+  }
+
+  unlinkBadgeToFg(fanGroupId: string, badgeId: string) : Promise<any> {
+    return this.seatersApi.admin.unlinkBadgeToFg(fanGroupId, badgeId);
+  }
+
+  getBadges(fanGroupId: string) : Promise<PagedSortedResult<Badge>> {
+    return this.seatersApi.admin.getBadges(fanGroupId);
+  }
+
+
+  //BADGE : Category
+
+  getBadgeCategories (status?: BADGE_STATUS, options?: PagingOptions, ) : Promise<PagedSortedResult<Category>> {
+    return this.seatersApi.admin.getBadgeCategories(status, options);
+  }
+
+  createBadgeCategory (category: Category) : Promise<Category> {
+    return this.seatersApi.admin.createBadgeCategory(category);
+  }
+
+  updateBadgeCategory (categoryId: string, category: Category) : Promise<Category> {
+    return this.seatersApi.admin.updateBadgeCategory(categoryId, category);
+  }
+
+  deleteBadgeCategory (categoryId: string) : Promise<any> {
+    return this.seatersApi.admin.deleteBadgeCategory(categoryId);
+  }
+
+
   // Survey
   getSurvey(id: string): Promise<survey.Survey> {
     return this.seatersApi.admin.getSurvey(id);
@@ -236,6 +307,29 @@ export class AdminService extends SeatersService {
     return this.seatersApi.admin.updateQuestion(question);
   }
 
+  getVenueConfig(venueId: string): Promise<PagedResult<VenueConfig>> {
+    return this.seatersApi.admin.getVenueConfig(venueId).then(r => this.convertPagedResult(r));
+  }
+
+  createEvent(event: Event): Promise<Event> {
+    return this.seatersApi.admin.createEvent(event);
+  }
+  
+  createWishlist(groupId: string, wishList: any): Promise<any> {
+    return this.seatersApi.admin.createWishlist(groupId, wishList);
+  }
+
+  openWishlist(wishlistId: string): Promise<any> {
+    return this.seatersApi.admin.openWishlist(wishlistId);
+  }
+
+  getWaitingListFull(waitingListId: string): Promise<any> {
+    return this.seatersApi.admin.getWaitingListFull(waitingListId);
+  }
+
+  updateWaitingListFull(wl: any): Promise<any> {
+    return this.seatersApi.admin.updateWaitingListFull(wl);
+  }
   private uploadOneTimeFile(data: any, fileName?: string): Promise<admin.OneTimeFile> {
     return this.seatersApi.admin
       .requestOneTimeFileUpload(this.defaultFileName(fileName))

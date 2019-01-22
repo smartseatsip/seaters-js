@@ -1,10 +1,14 @@
 /* tslint:disable:no-floating-promises */
 import { SeatersApiContext } from '../../seaters-api';
-import { PagedResult } from '../paged-result';
+import { PagedResult, PagedSortedResult } from '../paged-result';
 import { PagingOptions } from '../paging-options';
 import { SeatersApiController } from '../seaters-api-controller';
 import * as admin from './admin-types';
 import { profiling, survey } from '../../services/index';
+
+// TODO Remove ?
+import { VenueConfig, Event } from './event-venue';
+import { Badge, Category, BADGE_STATUS } from '../fan';
 
 export class AdminApi extends SeatersApiController {
   constructor(private apiContext: SeatersApiContext) {
@@ -52,6 +56,10 @@ export class AdminApi extends SeatersApiController {
       userId: ownership.userId,
       fanGroupId: ownership.fanGroupId
     });
+  }
+
+  getEvent(eventId: string): Promise<admin.FanGroup> {
+    return this.apiContext.get('/seaters-admin/events/:id', { id: eventId });
   }
 
   getFanGroup(fanGroupId: string): Promise<admin.FanGroup> {
@@ -221,6 +229,66 @@ export class AdminApi extends SeatersApiController {
     return this.apiContext.post(`/v2/seaters-admin/fan-attributes/${id}/add-alias`, { fanAttributeIds: idsToConvert });
   }
 
+
+  // Badge
+
+  getAllBadges(status?: BADGE_STATUS, options?: PagingOptions) : Promise<any> {
+    return this.apiContext.get('v2/seaters-admin/badges' + (status ? '?status=' + status : '') , null, SeatersApiContext.buildPagingQueryParams(options));
+  }
+
+  getBadge(badgeId: string) : Promise<any> {
+    return this.apiContext.get('v2/seaters-admin/badges/' + badgeId, null, null);
+  }
+
+  createBadge(badge: Badge) : Promise<any> {
+    return this.apiContext.post('v2/seaters-admin/badges', badge, null);
+  }
+
+  deleteBadge(badgeId: string) : Promise<any> {
+    return this.apiContext.delete('v2/seaters-admin/badges/' + badgeId, null, null);
+  }
+
+  updateBadge(badgeId: string, badge: Badge) : Promise<any> { 
+    return this.apiContext.put('v2/seaters-admin/badges/' + badgeId, badge, null);
+  }
+
+
+  // Badge : FanGroup Context
+
+  linkBadgeToFg(fanGroupId: string, badgeId: string) : Promise<any> {
+    return this.apiContext.post('v2/seaters-admin/badges/' + badgeId + '/groups/' + fanGroupId, null, null);
+  }
+
+  unlinkBadgeToFg(fanGroupId: string, badgeId: string) : Promise<any> {
+    return this.apiContext.delete('v2/seaters-admin/badges/' + badgeId + '/groups/' + fanGroupId, null, null);
+  }
+
+  getBadges(fanGroupId: string) : Promise<any> {
+    return this.apiContext.get('v2/seaters-admin/badges/groups/' + fanGroupId);
+  }
+
+
+  //BADGE : Category
+
+  getBadgeCategories (status? : BADGE_STATUS, options?: PagingOptions) : Promise<any> {
+    return this.apiContext.get('v2/seaters-admin/badges/category' + (status ? '?status=' + status : ''), null, SeatersApiContext.buildPagingQueryParams(options));
+  }
+
+  createBadgeCategory (category: Category) : Promise<any> {
+    return this.apiContext.post('v2/seaters-admin/badges/category/', category, null);
+  }
+
+  updateBadgeCategory (categoryId: string, category: Category) : Promise<any> {
+    return this.apiContext.put('v2/seaters-admin/badges/category/' + categoryId, category, null);
+  }
+
+  deleteBadgeCategory (categoryId: string) : Promise<any> {
+    return this.apiContext.delete('v2/seaters-admin/badges/category/' + categoryId);
+  }
+
+
+  
+
   // Survey
   getSurvey(id: string): Promise<survey.Survey> {
     return this.apiContext.get(`/v2/seaters-admin/surveys/${id}`);
@@ -299,6 +367,36 @@ export class AdminApi extends SeatersApiController {
 
   updateQuestion(question: survey.Question): Promise<survey.Question> {
     return this.apiContext.put(`/v2/seaters-admin/surveys/questions/${question.id}`, question);
+  }
+
+  // Added for WL / Event creation bulk update
+  getVenueConfig(venueId: string): Promise<PagedResult<VenueConfig>> {
+    return this.apiContext.get('/seaters-admin/venues/:id/configs/', { id: venueId },
+        SeatersApiContext.buildPagingQueryParams(new PagingOptions(0)));
+  }
+
+  createEvent(event: Event): Promise<Event> {
+    return this.apiContext.post(`/fan-group-owner/events`, event);
+  }
+
+  createWishlist(groupId: string, wl: any): Promise<any> {
+    return this.apiContext.post(`/fan-group-owner/groups/${groupId}/waiting-lists`, wl);
+  }
+
+  openWishlist(wishlistId: string): Promise<any> {
+    return this.apiContext.put(`/fan-group-owner/waiting-lists/${wishlistId}/open/`);
+  }
+
+  getWaitingListFull(waitingListId: string): Promise<any> {
+    return this.apiContext.get('/seaters-admin/waiting-lists/:id', { id: waitingListId });
+  }
+
+  updateWaitingListFull(wl: any): Promise<any> {
+    return this.apiContext.put('/seaters-admin/waiting-lists/:id', wl, { id: wl.id });
+  }
+
+  requestEventImageUpload(fanGroupId: string, fileName?: string): Promise<admin.OneTimeFile> {
+    return this.apiContext.put('/seaters-admin/events/:id/image', null, { id: fanGroupId }, { fileName });
   }
 
   /**

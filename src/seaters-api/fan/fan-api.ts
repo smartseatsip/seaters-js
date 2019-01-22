@@ -28,7 +28,8 @@ import {
   WaitingListFanAttribute,
   WaitingListInterest,
   WaitingListShare,
-  AdditionalCharges
+  AdditionalCharges,
+  Badge
 } from './fan-types';
 
 import { WaitingListRequest } from './waiting-list';
@@ -37,6 +38,7 @@ import { UserInterest } from './profiling';
 import { PhoneNumber, UserFanAttributeActionStatusEnum, UserFanAttributeUpdateDTO } from './index';
 import { IUpdateEmailDTO, IUpdatePasswordDTO } from './fan';
 import { payment } from '../../services/payment-service/payment-types';
+import { BadgeGrantOptions, BadgeWlOptions, BadgeProtection } from './badges';
 
 export class FanApi {
   constructor(private apiContext: SeatersApiContext) {}
@@ -458,6 +460,54 @@ export class FanApi {
       {}
     );
   }
+
+  // BADGE : FAN
+
+  getBadges(fanGroupId: string, pagingOptions? : PagingOptions): Promise<PagedSortedResult<Badge>> {
+    const queryParams = pagingOptions ? SeatersApiContext.buildPagingSortingQueryParams(pagingOptions) : null;
+    return this.apiContext.get('v2/fan/groups/' + fanGroupId + '/badges', null, queryParams);
+  }
+
+  getBadgeProtection(fanGroupId: string, waitingListId: string): Promise<BadgeProtection> {
+    return this.apiContext.get('v2/fan/waiting-lists/' + waitingListId + '/badges');
+  }
+
+  // BADGE : FAN GROUP OWNER
+
+  getUserBadges(fanGroupId: string, userId: string, pagingOptions? : PagingOptions): Promise<PagedSortedResult<Badge>> {
+    return this.apiContext.get('v2/fan-group-owner/groups/' + fanGroupId + '/badges/users/' + userId, null, SeatersApiContext.buildPagingSortingQueryParams(pagingOptions));
+  }
+
+  getFanGroupBadges(fanGroupId: string, pagingOptions? : PagingOptions): Promise<PagedSortedResult<Badge>>{
+    return this.apiContext.get('v2/fan-group-owner/groups/' + fanGroupId + '/badges', null, SeatersApiContext.buildPagingSortingQueryParams(pagingOptions));
+  }
+
+  grantBadge(fanGroupId: string, body: BadgeGrantOptions) : Promise<any>{
+    return this.apiContext.post('v2/fan-group-owner/groups/' + fanGroupId + '/badges/grant/', body, null);
+  }
+
+  revokeBadge(fanGroupId: string, body: BadgeGrantOptions) : Promise<any> {
+    return this.apiContext.post('v2/fan-group-owner/groups/' + fanGroupId + '/badges/revoke/', body, null);
+  }
+
+  linkBadgeToWl(waitingListId: string, body: BadgeWlOptions) : Promise<any> {
+    return this.apiContext.post('v2/fan-group-owner/waiting-lists/' + waitingListId + '/badges', body, null);
+  }
+
+  getWLBadges(waitingListId: string, pagingOptions?: PagingOptions) : Promise<any> {
+    return this.apiContext.get('v2/fan-group-owner/waiting-lists/' + waitingListId + '/badges', null, SeatersApiContext.buildPagingSortingQueryParams(pagingOptions));
+  }
+
+
+  // BADGE : ADMIN
+
+  
+
+
+
+
+
+
 
   // SURVEY : FAN
   /**

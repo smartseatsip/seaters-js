@@ -46,7 +46,34 @@ export default function(options: RequestOptions): Promise<ServerResponse> {
     console.log('data: %s', options.body);
     req.write(options.body);
   }
+
+  if (options.formData) {
+    writeBinaryPostData(req, options.formData);
+  }
+
   req.end();
 
   return deferred.promise;
 }
+
+function writeBinaryPostData(req, filepath) {
+  const fs = require('fs');
+  const data = fs.readFileSync(filepath);
+
+  const crlf = "\r\n";
+  const boundaryKey = Math.random().toString(16);
+  const boundary = `--${boundaryKey}`;
+  const delimeter = `${crlf}--${boundary}`;
+  const headers = ['Content-Disposition: form-data; name="file"; filename="test.jpg"' + crlf];
+  const closeDelimeter = `${delimeter}--`;
+  const multipartBody = Buffer.concat([
+      new Buffer(delimeter + crlf + headers.join('') + crlf),
+      data,
+      new Buffer(closeDelimeter)]
+  );
+
+  req.setHeader('Content-Type', 'multipart/form-data; boundary=' + boundary);
+  req.setHeader('Content-Length', multipartBody.length);
+  req.write(multipartBody);
+}
+
