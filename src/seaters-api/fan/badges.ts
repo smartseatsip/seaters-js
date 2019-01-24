@@ -47,6 +47,11 @@ export interface BadgeWlOptions {
     badgeAttribute: string;
 }
 
+export interface BadgeForWl {
+    state: BADGE_STATE;
+    badgeFanViews: Badge[];
+}
+
 export interface Category {
     id?: string;
     name: TranslationItem[];
@@ -54,6 +59,7 @@ export interface Category {
     status?: BADGE_STATUS;
 
 }
+
 
 
 export type BADGE_STATUS = 'ACTIVE' | 'ARCHIVED';

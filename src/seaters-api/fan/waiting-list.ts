@@ -3,6 +3,7 @@ import { ExtendedPosition } from './extended-position';
 import { EVENT_REQUIRED_ATTENDEE_INFO } from './attendee-info';
 import { LanguageCode } from '../app/app-types';
 import { Price } from './price';
+import { BadgeForWl } from './badges';
 
 export interface WaitingList {
   /**
@@ -334,6 +335,12 @@ export interface WaitingList {
    * Experience (description) (locale => value)
    */
   description: any;
+
+
+  /**
+   * List of Badges
+   */
+  waitingListJoinInfoFanView: BadgeForWl;
 }
 
 export type WL_ACCESS_MODE = 'PUBLIC' | 'PRIVATE' | 'CODE_PROTECTED';
@@ -392,6 +399,8 @@ export interface Seat {
    * Seat text: {string =>string}
    */
   seatText: any;
+
+  
 }
 
 export type TICKETING_SYSTEM_TYPE = 'DIGITICK' | 'VERITIX' | 'UPLOAD';
