@@ -1,4 +1,4 @@
-interface TranslationItem {
+export interface TranslationBadge {
     lang: string;
     text: string;
 }
@@ -13,12 +13,12 @@ export interface BadgeToUser {
 
 export interface Badge {
     id: string;
-    name: TranslationItem[];
-    description: TranslationItem[];
+    name: TranslationBadge[];
+    description: TranslationBadge[];
     categoryId?: string;
     displayedLogoImageId?: string;
     displayedLogoUrl?: string;
-    displayedText?:TranslationItem[];
+    displayedText?:TranslationBadge[];
     mood?: BADGE_MOOD;
     status?: BADGE_STATUS;
     hidden?: boolean;
@@ -54,7 +54,7 @@ export interface BadgeForWl {
 
 export interface Category {
     id?: string;
-    name: TranslationItem[];
+    name: TranslationBadge[];
     order?: number;
     status?: BADGE_STATUS;
 

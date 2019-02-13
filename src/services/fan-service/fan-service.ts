@@ -369,12 +369,12 @@ export class FanService extends SeatersService {
   }
 
   isBadgeProtected(fanGroupId: string, waitingListId: string): Promise<boolean> {
-    return this.seatersApi.fan.getBadgeProtection(fanGroupId, waitingListId)
+    return this.seatersApi.fan.getBadgeProtection(waitingListId)
       .then(response => response.state === 'RESTRICTED');
   }
 
-  getBadgeProtection(fanGroupId: string, waitingListId: string): Promise<any> {
-    return this.seatersApi.fan.getBadgeProtection(fanGroupId, waitingListId);
+  getBadgesProtection(fanGroupId: string, waitingListId: string): Promise<any> {
+    return this.seatersApi.fan.getBadgeProtection(waitingListId);
   }
 
 

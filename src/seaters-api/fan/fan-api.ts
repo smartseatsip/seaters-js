@@ -468,7 +468,7 @@ export class FanApi {
     return this.apiContext.get('v2/fan/groups/' + fanGroupId + '/badges', null, queryParams);
   }
 
-  getBadgeProtection(fanGroupId: string, waitingListId: string): Promise<BadgeProtection> {
+  getBadgeProtection(waitingListId: string): Promise<BadgeProtection> {
     return this.apiContext.get('v2/fan/waiting-lists/' + waitingListId + '/badges');
   }
 

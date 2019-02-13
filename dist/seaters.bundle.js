@@ -795,7 +795,7 @@ var FanApi = /** @class */function () {
         var queryParams = pagingOptions ? seaters_api_1.SeatersApiContext.buildPagingSortingQueryParams(pagingOptions) : null;
         return this.apiContext.get('v2/fan/groups/' + fanGroupId + '/badges', null, queryParams);
     };
-    FanApi.prototype.getBadgeProtection = function (fanGroupId, waitingListId) {
+    FanApi.prototype.getBadgeProtection = function (waitingListId) {
         return this.apiContext.get('v2/fan/waiting-lists/' + waitingListId + '/badges');
     };
     // BADGE : FAN GROUP OWNER
@@ -2001,7 +2001,7 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 //noinspection TsLint
 // tslint:disable-next-line
-exports.version = '1.35.16';
+exports.version = '1.35.17';
 __export(__webpack_require__(22));
 var fan_types_1 = __webpack_require__(2);
 exports.fan = fan_types_1.fan;
@@ -3634,12 +3634,12 @@ var FanService = /** @class */function (_super) {
         return this.seatersApi.fan.getBadges(fanGroupId, pagingOptions);
     };
     FanService.prototype.isBadgeProtected = function (fanGroupId, waitingListId) {
-        return this.seatersApi.fan.getBadgeProtection(fanGroupId, waitingListId).then(function (response) {
+        return this.seatersApi.fan.getBadgeProtection(waitingListId).then(function (response) {
             return response.state === 'RESTRICTED';
         });
     };
-    FanService.prototype.getBadgeProtection = function (fanGroupId, waitingListId) {
-        return this.seatersApi.fan.getBadgeProtection(fanGroupId, waitingListId);
+    FanService.prototype.getBadgesProtection = function (fanGroupId, waitingListId) {
+        return this.seatersApi.fan.getBadgeProtection(waitingListId);
     };
     // BADGE : FAN GROUP OWNER
     FanService.prototype.getUserBadges = function (fanGroupId, userId, pagingOptions) {
