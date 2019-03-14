@@ -471,6 +471,9 @@ export class WaitingListService {
         } else if (seat.status === 'ACCEPTED') {
           // go live
           return WAITING_LIST_ACTION_STATUS.GO_LIVE;
+        } else if (seat.status === 'RSVP_ACCEPTED') {
+          // go live
+          return WAITING_LIST_ACTION_STATUS.GO_LIVE;
         } else if (waitingList.seatDistributionMode === 'TICKET' && seat.ticketingSystemType) {
           // non-voucher - tickets are being requested
           return WAITING_LIST_ACTION_STATUS.CONFIRM; // (-)PENDING
