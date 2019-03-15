@@ -407,7 +407,7 @@ export type TICKETING_SYSTEM_TYPE = 'DIGITICK' | 'VERITIX' | 'UPLOAD';
 
 export type DELIVERY_METHOD = 'DOWNLOAD' | 'EMAIL';
 
-export type SEAT_STATUS = 'ASSIGNED' | 'ACCEPTED' | 'REJECTED' | 'ARCHIVED';
+export type SEAT_STATUS = 'ASSIGNED' | 'ACCEPTED' | 'REJECTED' | 'ARCHIVED' | 'ASSIGNED_WITHOUT_SEATS' | 'RSVP_ACCEPTED';
 
 export interface FeeCalculationParameters {
   /**

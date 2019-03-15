@@ -22,7 +22,8 @@ export namespace fan {
     WAIT,
     CONFIRM,
     GO_LIVE,
-    ERROR
+    ERROR,
+    NO_SEATS
   }
 
   export interface WaitingList extends _WaitingList {

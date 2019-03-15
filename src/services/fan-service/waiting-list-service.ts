@@ -450,7 +450,7 @@ export class WaitingListService {
     // In WL with seat
     if (position.status === 'HAS_SEAT') {
       if (seat) {
-        if (seat.status === 'ASSIGNED') {
+        if (seat.status === 'ASSIGNED' || seat.status === 'ASSIGNED_WITHOUT_SEATS') {
           // free WL
           if (waitingList.freeWaitingList) {
             return WAITING_LIST_ACTION_STATUS.CONFIRM;
@@ -471,6 +471,9 @@ export class WaitingListService {
         } else if (seat.status === 'ACCEPTED') {
           // go live
           return WAITING_LIST_ACTION_STATUS.GO_LIVE;
+        } else if (seat.status === 'RSVP_ACCEPTED') {
+          // go live
+          return WAITING_LIST_ACTION_STATUS.NO_SEATS;
         } else if (waitingList.seatDistributionMode === 'TICKET' && seat.ticketingSystemType) {
           // non-voucher - tickets are being requested
           return WAITING_LIST_ACTION_STATUS.CONFIRM; // (-)PENDING
