@@ -128,6 +128,7 @@ var fan;
         WAITING_LIST_ACTION_STATUS[WAITING_LIST_ACTION_STATUS["CONFIRM"] = 4] = "CONFIRM";
         WAITING_LIST_ACTION_STATUS[WAITING_LIST_ACTION_STATUS["GO_LIVE"] = 5] = "GO_LIVE";
         WAITING_LIST_ACTION_STATUS[WAITING_LIST_ACTION_STATUS["ERROR"] = 6] = "ERROR";
+        WAITING_LIST_ACTION_STATUS[WAITING_LIST_ACTION_STATUS["NO_SEATS"] = 7] = "NO_SEATS";
     })(WAITING_LIST_ACTION_STATUS = fan.WAITING_LIST_ACTION_STATUS || (fan.WAITING_LIST_ACTION_STATUS = {}));
     var FAN_GROUP_ACTION_STATUS;
     (function (FAN_GROUP_ACTION_STATUS) {
@@ -1633,7 +1634,7 @@ var WaitingListService = /** @class */function () {
         // In WL with seat
         if (position.status === 'HAS_SEAT') {
             if (seat) {
-                if (seat.status === 'ASSIGNED') {
+                if (seat.status === 'ASSIGNED' || seat.status === 'ASSIGNED_WITHOUT_SEATS') {
                     // free WL
                     if (waitingList.freeWaitingList) {
                         return WAITING_LIST_ACTION_STATUS.CONFIRM;
@@ -1654,6 +1655,9 @@ var WaitingListService = /** @class */function () {
                 } else if (seat.status === 'ACCEPTED') {
                     // go live
                     return WAITING_LIST_ACTION_STATUS.GO_LIVE;
+                } else if (seat.status === 'RSVP_ACCEPTED') {
+                    // go live
+                    return WAITING_LIST_ACTION_STATUS.NO_SEATS;
                 } else if (waitingList.seatDistributionMode === 'TICKET' && seat.ticketingSystemType) {
                     // non-voucher - tickets are being requested
                     return WAITING_LIST_ACTION_STATUS.CONFIRM; // (-)PENDING
@@ -2001,7 +2005,7 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 //noinspection TsLint
 // tslint:disable-next-line
-exports.version = '1.35.18';
+exports.version = '1.35.19';
 __export(__webpack_require__(22));
 var fan_types_1 = __webpack_require__(2);
 exports.fan = fan_types_1.fan;
