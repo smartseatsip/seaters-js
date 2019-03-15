@@ -565,7 +565,7 @@ export class WaitingListService {
 
   private waitUntilCanGoLive(waitingListId: string): Promise<fan.WaitingList> {
     return this.pollWaitingList(waitingListId, wl => {
-      return wl.actionStatus === WAITING_LIST_ACTION_STATUS.GO_LIVE;
+      return wl.actionStatus === WAITING_LIST_ACTION_STATUS.GO_LIVE || wl.actionStatus === WAITING_LIST_ACTION_STATUS.NO_SEATS;
     });
   }
 

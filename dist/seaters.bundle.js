@@ -1739,7 +1739,7 @@ var WaitingListService = /** @class */function () {
     };
     WaitingListService.prototype.waitUntilCanGoLive = function (waitingListId) {
         return this.pollWaitingList(waitingListId, function (wl) {
-            return wl.actionStatus === WAITING_LIST_ACTION_STATUS.GO_LIVE;
+            return wl.actionStatus === WAITING_LIST_ACTION_STATUS.GO_LIVE || wl.actionStatus === WAITING_LIST_ACTION_STATUS.NO_SEATS;
         });
     };
     WaitingListService.prototype.waitUntilSeatsCanBeExported = function (waitingListId) {
