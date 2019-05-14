@@ -147,7 +147,7 @@ export class FanApi {
 
 
   waitingListsInFanGroupByKeywords(
-    groupsIds: string,
+    groupIds: string,
     pagingOptions: PagingOptions,
     keyWords?: string
   ): Promise<PagedResult<WaitingList>> {
@@ -156,7 +156,7 @@ export class FanApi {
       queryParams = {
         ...queryParams,
         keyWords,
-        groupsIds
+        groupIds
       };
     }
 

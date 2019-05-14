@@ -571,11 +571,11 @@ var FanApi = /** @class */function () {
         }
         return this.apiContext.get('/fan/groups/:fanGroupId/waiting-lists', endpointParams, queryParams);
     };
-    FanApi.prototype.waitingListsInFanGroupByKeywords = function (groupsIds, pagingOptions, keyWords) {
+    FanApi.prototype.waitingListsInFanGroupByKeywords = function (groupIds, pagingOptions, keyWords) {
         var queryParams = seaters_api_1.SeatersApiContext.buildPagingQueryParams(pagingOptions);
         if (keyWords !== undefined) {
             queryParams = __assign({}, queryParams, { keyWords: keyWords,
-                groupsIds: groupsIds });
+                groupIds: groupIds });
         }
         return this.apiContext.get('/v2/fan/groups/waiting-lists/filter', null, queryParams);
     };
@@ -2025,7 +2025,7 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 //noinspection TsLint
 // tslint:disable-next-line
-exports.version = '1.35.22';
+exports.version = '1.35.24';
 __export(__webpack_require__(22));
 var fan_types_1 = __webpack_require__(2);
 exports.fan = fan_types_1.fan;
