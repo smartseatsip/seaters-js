@@ -160,7 +160,7 @@ export class FanApi {
       };
     }
 
-    return this.apiContext.get('/fan/groups/waiting-lists/filter', null, queryParams);
+    return this.apiContext.get('/v2/fan/groups/waiting-lists/filter', null, queryParams);
   }
 
 
