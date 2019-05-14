@@ -577,7 +577,7 @@ var FanApi = /** @class */function () {
             queryParams = __assign({}, queryParams, { keyWords: keyWords,
                 groupsIds: groupsIds });
         }
-        return this.apiContext.get('/fan/groups/waiting-lists/filter', null, queryParams);
+        return this.apiContext.get('/v2/fan/groups/waiting-lists/filter', null, queryParams);
     };
     FanApi.prototype.waitingListsInFanGroups = function (fanGroupIds, pagingOptions, keyWords) {
         var endpointParams = {};
@@ -2025,7 +2025,7 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 //noinspection TsLint
 // tslint:disable-next-line
-exports.version = '1.35.20';
+exports.version = '1.35.22';
 __export(__webpack_require__(22));
 var fan_types_1 = __webpack_require__(2);
 exports.fan = fan_types_1.fan;
