@@ -145,6 +145,27 @@ export class FanApi {
     return this.apiContext.get('/fan/groups/:fanGroupId/waiting-lists', endpointParams, queryParams);
   }
 
+
+  waitingListsInFanGroupByKeywords(
+    groupsIds: string,
+    pagingOptions: PagingOptions,
+    keyWords?: string
+  ): Promise<PagedResult<WaitingList>> {
+    let queryParams = SeatersApiContext.buildPagingQueryParams(pagingOptions);
+    if (keyWords !== undefined) {
+      queryParams = {
+        ...queryParams,
+        keyWords,
+        groupsIds
+      };
+    }
+
+    return this.apiContext.get('/fan/groups/waiting-lists/filter', null, queryParams);
+  }
+
+
+  
+
   waitingListsInFanGroups(
     fanGroupIds: string[],
     pagingOptions: PagingOptions,
@@ -324,6 +345,14 @@ export class FanApi {
 
   getTranslatedVenueConditions(waitingListId: string): Promise<string> {
     return this.apiContext.get('/fan/waiting-lists/:waitingListId/translated-venue-conditions', { waitingListId });
+  }
+
+  getWaitingListsAsFGO(fanGroupId: string): Promise<any> {
+    return this.apiContext.get('/fan-group-owner/groups/:fanGroupId/waiting-lists', {fanGroupId},  {maxPageSize: 9999});
+  }
+
+  updateWaitingList(waitingList: any): Promise<any> {
+    return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId', waitingList, {waitingListId: waitingList.waitingListId});
   }
 
   // PROFILING : FAN

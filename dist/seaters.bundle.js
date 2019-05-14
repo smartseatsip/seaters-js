@@ -571,6 +571,14 @@ var FanApi = /** @class */function () {
         }
         return this.apiContext.get('/fan/groups/:fanGroupId/waiting-lists', endpointParams, queryParams);
     };
+    FanApi.prototype.waitingListsInFanGroupByKeywords = function (groupsIds, pagingOptions, keyWords) {
+        var queryParams = seaters_api_1.SeatersApiContext.buildPagingQueryParams(pagingOptions);
+        if (keyWords !== undefined) {
+            queryParams = __assign({}, queryParams, { keyWords: keyWords,
+                groupsIds: groupsIds });
+        }
+        return this.apiContext.get('/fan/groups/waiting-lists/filter', null, queryParams);
+    };
     FanApi.prototype.waitingListsInFanGroups = function (fanGroupIds, pagingOptions, keyWords) {
         var endpointParams = {};
         var queryParams = seaters_api_1.SeatersApiContext.buildPagingQueryParams(pagingOptions);
@@ -694,6 +702,12 @@ var FanApi = /** @class */function () {
     };
     FanApi.prototype.getTranslatedVenueConditions = function (waitingListId) {
         return this.apiContext.get('/fan/waiting-lists/:waitingListId/translated-venue-conditions', { waitingListId: waitingListId });
+    };
+    FanApi.prototype.getWaitingListsAsFGO = function (fanGroupId) {
+        return this.apiContext.get('/fan-group-owner/groups/:fanGroupId/waiting-lists', { fanGroupId: fanGroupId }, { maxPageSize: 9999 });
+    };
+    FanApi.prototype.updateWaitingList = function (waitingList) {
+        return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId', waitingList, { waitingListId: waitingList.waitingListId });
     };
     // PROFILING : FAN
     /**
@@ -1332,6 +1346,12 @@ var WaitingListService = /** @class */function () {
     WaitingListService.prototype.getWaitingListsInFanGroup = function (fanGroupId, pagingOptions, keyWords) {
         var _this = this;
         return this.api.fan.waitingListsInFanGroup(fanGroupId, pagingOptions, keyWords).then(function (wls) {
+            return _this.extendRawWaitingLists(wls);
+        });
+    };
+    WaitingListService.prototype.getWaitingListsInFanGroupByKeywords = function (fanGroupId, pagingOptions, keyWords) {
+        var _this = this;
+        return this.api.fan.waitingListsInFanGroupByKeywords(fanGroupId, pagingOptions, keyWords).then(function (wls) {
             return _this.extendRawWaitingLists(wls);
         });
     };
@@ -3431,6 +3451,12 @@ var FanService = /** @class */function (_super) {
     FanService.prototype.getWaitingListsInFanGroup = function (fanGroupId, pagingOptions, keyWords) {
         var _this = this;
         return this.waitingListService.getWaitingListsInFanGroup(fanGroupId, pagingOptions, keyWords).then(function (r) {
+            return _this.convertPagedResult(r);
+        });
+    };
+    FanService.prototype.getWaitingListsInFanGroupByKeywords = function (fanGroupId, pagingOptions, keyWords) {
+        var _this = this;
+        return this.waitingListService.getWaitingListsInFanGroupByKeywords(fanGroupId, pagingOptions, keyWords).then(function (r) {
             return _this.convertPagedResult(r);
         });
     };

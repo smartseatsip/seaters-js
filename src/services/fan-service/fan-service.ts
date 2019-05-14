@@ -105,6 +105,14 @@ export class FanService extends SeatersService {
       .then(r => this.convertPagedResult(r));
   }
 
+  getWaitingListsInFanGroupByKeywords(fanGroupId: string,
+    pagingOptions: PagingOptions,
+    keyWords?: string) : Promise<PagedResult<fan.WaitingList>> {
+      return this.waitingListService
+        .getWaitingListsInFanGroupByKeywords(fanGroupId, pagingOptions, keyWords)
+        .then(r => this.convertPagedResult(r));
+    }
+
   getWaitingListsInFanGroups(
     fanGroupIds: string[],
     pagingOptions: PagingOptions,
@@ -403,9 +411,6 @@ export class FanService extends SeatersService {
   getWLBadges(waitingListId: string, pagingOptions?: PagingOptions) : Promise<any> {
     return this.seatersApi.fan.getWLBadges(waitingListId, pagingOptions);
   }
-
-
-
 
 
 

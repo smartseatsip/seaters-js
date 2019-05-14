@@ -45,6 +45,16 @@ export class WaitingListService {
       .then(wls => this.extendRawWaitingLists(wls));
   }
 
+   getWaitingListsInFanGroupByKeywords(
+    fanGroupId: string,
+    pagingOptions: PagingOptions,
+    keyWords?: string
+  ): Promise<PagedResult<fan.WaitingList>> {
+    return this.api.fan
+      .waitingListsInFanGroupByKeywords(fanGroupId, pagingOptions, keyWords)
+      .then(wls => this.extendRawWaitingLists(wls));
+  }
+
   getWaitingListsInFanGroups(
     fanGroupIds: string[],
     pagingOptions: PagingOptions,
