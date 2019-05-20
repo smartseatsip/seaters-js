@@ -428,6 +428,12 @@ export class FanService extends SeatersService {
   submitAnswers(surveyId: string, answers: survey.Answer[]): Promise<survey.Answer[]> {
     return this.fanSurveyService.submitAnswers(surveyId, answers);
   }
+
+  getChoices(questionId: string, pagingOptions?: any): any {
+    return this.fanSurveyService.getChoices(questionId, pagingOptions);
+  }
+
+
   // Survey : FGO
   getWaitingListSurveys(
     waitingListId: string,

@@ -23,6 +23,10 @@ export class FanSurveyService {
     return this.seatersApi.fan.getAnswers(surveyInstanceId);
   }
 
+  getChoices(questionId, pagingOptions?) : any {
+    return this.seatersApi.fan.getChoices(questionId, pagingOptions);
+  }
+
   submitAnswers(surveyInstanceId: string, answers: survey.Answer[]): Promise<survey.Answer[]> {
     return this.seatersApi.fan.submitAnswers(surveyInstanceId, answers);
   }

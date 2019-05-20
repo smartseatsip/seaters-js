@@ -548,6 +548,11 @@ export class FanApi {
     return this.apiContext.get('v2/fan/survey/instances', null, queryParams);
   }
 
+
+  getChoices(questionId: string, pagingOptions?: any) : any {
+    return this.apiContext.get('v2/fan/surveys/question/:questionId/choices', {questionId}, {itemOffset: pagingOptions.itemOffset, maxPageSize: pagingOptions.maxPageSize});
+  }
+
   /**
    * Gets list of answers for a given surveyInstanceId
    * @param {string} surveyInstanceId

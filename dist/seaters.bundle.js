@@ -842,6 +842,9 @@ var FanApi = /** @class */function () {
         var queryParams = seaters_api_1.SeatersApiContext.buildPagingSortingQueryParams(pagingOptions);
         return this.apiContext.get('v2/fan/survey/instances', null, queryParams);
     };
+    FanApi.prototype.getChoices = function (questionId, pagingOptions) {
+        return this.apiContext.get('v2/fan/surveys/question/:questionId/choices', { questionId: questionId }, { itemOffset: pagingOptions.itemOffset, maxPageSize: pagingOptions.maxPageSize });
+    };
     /**
      * Gets list of answers for a given surveyInstanceId
      * @param {string} surveyInstanceId
@@ -3700,6 +3703,9 @@ var FanService = /** @class */function (_super) {
     FanService.prototype.submitAnswers = function (surveyId, answers) {
         return this.fanSurveyService.submitAnswers(surveyId, answers);
     };
+    FanService.prototype.getChoices = function (questionId, pagingOptions) {
+        return this.fanSurveyService.getChoices(questionId, pagingOptions);
+    };
     // Survey : FGO
     FanService.prototype.getWaitingListSurveys = function (waitingListId, extensionPoint) {
         return this.fanSurveyService.getWaitingListSurveys(waitingListId, extensionPoint).then(this.convertPagedSortedResult);
@@ -3822,6 +3828,9 @@ var FanSurveyService = /** @class */function () {
     };
     FanSurveyService.prototype.getAnswers = function (surveyInstanceId) {
         return this.seatersApi.fan.getAnswers(surveyInstanceId);
+    };
+    FanSurveyService.prototype.getChoices = function (questionId, pagingOptions) {
+        return this.seatersApi.fan.getChoices(questionId, pagingOptions);
     };
     FanSurveyService.prototype.submitAnswers = function (surveyInstanceId, answers) {
         return this.seatersApi.fan.submitAnswers(surveyInstanceId, answers);
