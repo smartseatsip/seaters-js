@@ -433,6 +433,14 @@ export class FanService extends SeatersService {
     return this.fanSurveyService.getChoices(questionId, pagingOptions);
   }
 
+  addChoices(questionId: string, choices): any  {
+    return  this.seatersApi.fan.addChoices(questionId, choices);
+  }
+
+  getChoicesAsFO(questionId: string, pagingOptions: any = {itemOffset: 0, maxPageSize: 200000}): any  {
+    return this.seatersApi.fan.getChoices(questionId, pagingOptions);
+  }
+
 
   // Survey : FGO
   getWaitingListSurveys(

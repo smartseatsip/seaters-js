@@ -399,6 +399,10 @@ export class AdminApi extends SeatersApiController {
     return this.apiContext.put('/seaters-admin/events/:id/image', null, { id: fanGroupId }, { fileName });
   }
 
+  requestVoucherImageUpload(waitingListId: string, fileId?: string): Promise<any> {
+    return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:id/image', null, { id: waitingListId }, { fileId });
+  }
+
   /**
    * HELPERS
    */

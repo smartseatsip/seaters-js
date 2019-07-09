@@ -845,6 +845,15 @@ var FanApi = /** @class */function () {
     FanApi.prototype.getChoices = function (questionId, pagingOptions) {
         return this.apiContext.get('v2/fan/surveys/question/:questionId/choices', { questionId: questionId }, { itemOffset: pagingOptions.itemOffset, maxPageSize: pagingOptions.maxPageSize });
     };
+    FanApi.prototype.addChoices = function (questionId, choices) {
+        return this.apiContext.post('v2/admin/surveys/questions/:questionId/choices', { choices: choices }, { questionId: questionId }, null);
+    };
+    FanApi.prototype.getChoicesAsFO = function (questionId, pagingOptions) {
+        if (pagingOptions === void 0) {
+            pagingOptions = { itemOffset: 0, maxPageSize: 200000 };
+        }
+        return this.apiContext.get('v2/admin/surveys/questions/:questionId/choices', { questionId: questionId }, { pagingOptions: pagingOptions });
+    };
     /**
      * Gets list of answers for a given surveyInstanceId
      * @param {string} surveyInstanceId
@@ -2028,7 +2037,7 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 //noinspection TsLint
 // tslint:disable-next-line
-exports.version = '1.35.24';
+exports.version = '1.35.25';
 __export(__webpack_require__(22));
 var fan_types_1 = __webpack_require__(2);
 exports.fan = fan_types_1.fan;
@@ -3055,6 +3064,9 @@ var AdminApi = /** @class */function (_super) {
     AdminApi.prototype.requestEventImageUpload = function (fanGroupId, fileName) {
         return this.apiContext.put('/seaters-admin/events/:id/image', null, { id: fanGroupId }, { fileName: fileName });
     };
+    AdminApi.prototype.requestVoucherImageUpload = function (waitingListId, fileId) {
+        return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:id/image', null, { id: waitingListId }, { fileId: fileId });
+    };
     /**
      * HELPERS
      */
@@ -3705,6 +3717,15 @@ var FanService = /** @class */function (_super) {
     };
     FanService.prototype.getChoices = function (questionId, pagingOptions) {
         return this.fanSurveyService.getChoices(questionId, pagingOptions);
+    };
+    FanService.prototype.addChoices = function (questionId, choices) {
+        return this.seatersApi.fan.addChoices(questionId, choices);
+    };
+    FanService.prototype.getChoicesAsFO = function (questionId, pagingOptions) {
+        if (pagingOptions === void 0) {
+            pagingOptions = { itemOffset: 0, maxPageSize: 200000 };
+        }
+        return this.seatersApi.fan.getChoices(questionId, pagingOptions);
     };
     // Survey : FGO
     FanService.prototype.getWaitingListSurveys = function (waitingListId, extensionPoint) {
@@ -5377,6 +5398,9 @@ var AdminService = /** @class */function (_super) {
     };
     AdminService.prototype.updateWaitingListFull = function (wl) {
         return this.seatersApi.admin.updateWaitingListFull(wl);
+    };
+    AdminService.prototype.requestVoucherImageUpload = function (fanGroupId, fileName) {
+        return this.seatersApi.admin.requestVoucherImageUpload(fanGroupId, fileName);
     };
     AdminService.prototype.uploadOneTimeFile = function (data, fileName) {
         var _this = this;

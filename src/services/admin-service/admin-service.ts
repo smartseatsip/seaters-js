@@ -330,11 +330,20 @@ export class AdminService extends SeatersService {
   updateWaitingListFull(wl: any): Promise<any> {
     return this.seatersApi.admin.updateWaitingListFull(wl);
   }
+
+
+  requestVoucherImageUpload(fanGroupId: string, fileName?: string): Promise<any> {
+    return this.seatersApi.admin.requestVoucherImageUpload(fanGroupId, fileName);
+  }
+  
   private uploadOneTimeFile(data: any, fileName?: string): Promise<admin.OneTimeFile> {
     return this.seatersApi.admin
       .requestOneTimeFileUpload(this.defaultFileName(fileName))
       .then(otf => this.seatersApi.admin.uploadOneTimeFile(otf.url, data).then(() => otf));
   }
+
+
+
 
   private defaultFileName(fileName?: string): string {
     if (fileName && fileName !== '') {

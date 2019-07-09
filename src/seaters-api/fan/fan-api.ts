@@ -553,6 +553,14 @@ export class FanApi {
     return this.apiContext.get('v2/fan/surveys/question/:questionId/choices', {questionId}, {itemOffset: pagingOptions.itemOffset, maxPageSize: pagingOptions.maxPageSize});
   }
 
+  addChoices(questionId: string, choices): any  {
+    return this.apiContext.post('v2/admin/surveys/questions/:questionId/choices', {choices}, {questionId}, null);
+  }
+
+  getChoicesAsFO(questionId: string, pagingOptions: any = {itemOffset: 0, maxPageSize: 200000}): any  {
+    return this.apiContext.get('v2/admin/surveys/questions/:questionId/choices', {questionId}, {pagingOptions});
+  }
+
   /**
    * Gets list of answers for a given surveyInstanceId
    * @param {string} surveyInstanceId
