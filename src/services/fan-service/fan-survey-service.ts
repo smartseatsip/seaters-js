@@ -6,14 +6,23 @@ export class FanSurveyService {
   // FAN
   getSurvey(
     waitingListId: string,
-    extensionPoint: survey.SURVEY_EXTENSION_POINT
+    extensionPoint: survey.SURVEY_EXTENSION_POINT,
+    fanGroupId?: string
   ): Promise<PagedSortedResult<survey.SurveyInstance>> {
     const pagingOptions: any = {};
     if (!pagingOptions.filters) {
-      pagingOptions.filters = {
-        waitinglist_id: waitingListId,
-        extension_point: extensionPoint
-      };
+      
+      if(waitingListId) {
+        pagingOptions.filters = {
+          waitinglist_id: waitingListId,
+          extension_point: extensionPoint
+        };
+      } else {
+        pagingOptions.filters = {
+          fangroup_id: fanGroupId,
+          extension_point: extensionPoint
+        };
+      }
     }
 
     return this.seatersApi.fan.getSurveys(pagingOptions);

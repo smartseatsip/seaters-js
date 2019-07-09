@@ -335,6 +335,10 @@ export class FanApi {
     return this.apiContext.get('/fan/waiting-lists/:waitingListId/event-description', { waitingListId });
   }
 
+  searchEvent(eventName: string, date: string): Promise<any> {
+    return this.apiContext.put('/fan-group-owner/search-event', {query: eventName, date, source: 'SEATERS'}, {maxPageSize: 9999});
+  }
+
   getVenueConditions(waitingListId: string): Promise<TranslationMap> {
     return this.apiContext.get('/fan/waiting-lists/:waitingListId/venue-conditions', { waitingListId });
   }

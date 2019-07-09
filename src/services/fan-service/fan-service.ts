@@ -212,6 +212,10 @@ export class FanService extends SeatersService {
       .then(translationMap => new LocalizableText(translationMap));
   }
 
+  searchEvent(eventName: string, date: string) {
+    return this.seatersApi.fan.searchEvent(eventName, date);
+  }
+
   getTranslatedEventDescriptionForWaitingList(waitingListId: string): Promise<string> {
     return this.waitingListService.getTranslatedEventDescriptionForWaitingList(waitingListId);
   }
@@ -418,9 +422,10 @@ export class FanService extends SeatersService {
 
   getSurveys(
     waitingListId: string,
-    extensionPoint: survey.SURVEY_EXTENSION_POINT
+    extensionPoint: survey.SURVEY_EXTENSION_POINT,
+    fanGroupId?: string
   ): Promise<PagedResult<survey.SurveyInstance>> {
-    return this.fanSurveyService.getSurvey(waitingListId, extensionPoint).then(this.convertPagedSortedResult);
+    return this.fanSurveyService.getSurvey(waitingListId, extensionPoint, fanGroupId).then(this.convertPagedSortedResult);
   }
   getAnswers(surveyId: string): Promise<PagedResult<survey.Answer>> {
     return this.fanSurveyService.getAnswers(surveyId).then(this.convertPagedSortedResult);

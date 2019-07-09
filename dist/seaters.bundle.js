@@ -694,6 +694,9 @@ var FanApi = /** @class */function () {
     FanApi.prototype.getEventDescription = function (waitingListId) {
         return this.apiContext.get('/fan/waiting-lists/:waitingListId/event-description', { waitingListId: waitingListId });
     };
+    FanApi.prototype.searchEvent = function (eventName, date) {
+        return this.apiContext.put('/fan-group-owner/search-event', { query: eventName, date: date, source: 'SEATERS' }, { maxPageSize: 9999 });
+    };
     FanApi.prototype.getVenueConditions = function (waitingListId) {
         return this.apiContext.get('/fan/waiting-lists/:waitingListId/venue-conditions', { waitingListId: waitingListId });
     };
@@ -3548,6 +3551,9 @@ var FanService = /** @class */function (_super) {
             return new util_1.LocalizableText(translationMap);
         });
     };
+    FanService.prototype.searchEvent = function (eventName, date) {
+        return this.seatersApi.fan.searchEvent(eventName, date);
+    };
     FanService.prototype.getTranslatedEventDescriptionForWaitingList = function (waitingListId) {
         return this.waitingListService.getTranslatedEventDescriptionForWaitingList(waitingListId);
     };
@@ -3706,8 +3712,8 @@ var FanService = /** @class */function (_super) {
         return this.seatersApi.fan.getWLBadges(waitingListId, pagingOptions);
     };
     // Survey : FAN
-    FanService.prototype.getSurveys = function (waitingListId, extensionPoint) {
-        return this.fanSurveyService.getSurvey(waitingListId, extensionPoint).then(this.convertPagedSortedResult);
+    FanService.prototype.getSurveys = function (waitingListId, extensionPoint, fanGroupId) {
+        return this.fanSurveyService.getSurvey(waitingListId, extensionPoint, fanGroupId).then(this.convertPagedSortedResult);
     };
     FanService.prototype.getAnswers = function (surveyId) {
         return this.fanSurveyService.getAnswers(surveyId).then(this.convertPagedSortedResult);
@@ -3837,13 +3843,20 @@ var FanSurveyService = /** @class */function () {
         this.seatersApi = seatersApi;
     }
     // FAN
-    FanSurveyService.prototype.getSurvey = function (waitingListId, extensionPoint) {
+    FanSurveyService.prototype.getSurvey = function (waitingListId, extensionPoint, fanGroupId) {
         var pagingOptions = {};
         if (!pagingOptions.filters) {
-            pagingOptions.filters = {
-                waitinglist_id: waitingListId,
-                extension_point: extensionPoint
-            };
+            if (waitingListId) {
+                pagingOptions.filters = {
+                    waitinglist_id: waitingListId,
+                    extension_point: extensionPoint
+                };
+            } else {
+                pagingOptions.filters = {
+                    fangroup_id: fanGroupId,
+                    extension_point: extensionPoint
+                };
+            }
         }
         return this.seatersApi.fan.getSurveys(pagingOptions);
     };
