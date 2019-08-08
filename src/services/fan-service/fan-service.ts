@@ -416,6 +416,10 @@ export class FanService extends SeatersService {
     return this.seatersApi.fan.getWLBadges(waitingListId, pagingOptions);
   }
 
+  updateWaitingList(waitingList: any): Promise<any> {
+    return this.seatersApi.fan.updateWaitingList(waitingList);
+  }
+
 
 
   // Survey : FAN
@@ -427,6 +431,8 @@ export class FanService extends SeatersService {
   ): Promise<PagedResult<survey.SurveyInstance>> {
     return this.fanSurveyService.getSurvey(waitingListId, extensionPoint, fanGroupId).then(this.convertPagedSortedResult);
   }
+
+
   getAnswers(surveyId: string): Promise<PagedResult<survey.Answer>> {
     return this.fanSurveyService.getAnswers(surveyId).then(this.convertPagedSortedResult);
   }

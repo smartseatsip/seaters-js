@@ -3711,6 +3711,9 @@ var FanService = /** @class */function (_super) {
     FanService.prototype.getWLBadges = function (waitingListId, pagingOptions) {
         return this.seatersApi.fan.getWLBadges(waitingListId, pagingOptions);
     };
+    FanService.prototype.updateWaitingList = function (waitingList) {
+        return this.seatersApi.fan.updateWaitingList(waitingList);
+    };
     // Survey : FAN
     FanService.prototype.getSurveys = function (waitingListId, extensionPoint, fanGroupId) {
         return this.fanSurveyService.getSurvey(waitingListId, extensionPoint, fanGroupId).then(this.convertPagedSortedResult);
