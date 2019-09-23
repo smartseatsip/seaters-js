@@ -619,11 +619,11 @@ var FanApi = /** @class */function () {
         };
         return this.apiContext.get(endpoint, endpointParams);
     };
-    FanApi.prototype.joinWaitingList = function (waitingListId, numberOfSeats, additionalQueryParams) {
+    FanApi.prototype.joinWaitingList = function (waitingListId, numberOfSeats, selectedSeats, additionalQueryParams) {
         var endpoint = '/fan/waiting-lists/:waitingListId/position';
         var endpointParams = { waitingListId: waitingListId };
         var queryParams = additionalQueryParams;
-        var data = { numberOfSeats: numberOfSeats };
+        var data = { numberOfSeats: numberOfSeats, pickedSeatsId: selectedSeats };
         return this.apiContext.post(endpoint, data, endpointParams, queryParams);
     };
     FanApi.prototype.joinProtectedWaitingList = function (wl, code, numberOfSeats, additionalQueryParams) {
@@ -711,6 +711,12 @@ var FanApi = /** @class */function () {
     };
     FanApi.prototype.updateWaitingList = function (waitingList) {
         return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId', waitingList, { waitingListId: waitingList.waitingListId });
+    };
+    FanApi.prototype.getAvailableSeats = function (wlId) {
+        return this.apiContext.get('/v2/fan/waiting-lists/' + wlId + '/available-seats');
+    };
+    FanApi.prototype.getSeatingMap = function (wlId) {
+        return this.apiContext.get('/v2/fan/waiting-lists/' + wlId + '/seating-map');
     };
     // PROFILING : FAN
     /**
@@ -1431,9 +1437,9 @@ var WaitingListService = /** @class */function () {
             return __assign({}, paymentInfo.seatersConfig, { virtualEnabled: paymentInfo.seatersConfig.paymentMethods.indexOf('VIRTUAL') !== -1 });
         });
     };
-    WaitingListService.prototype.joinWaitingList = function (waitingListId, numberOfSeats, additionalQueryParams) {
+    WaitingListService.prototype.joinWaitingList = function (waitingListId, numberOfSeats, selectedSeats, additionalQueryParams) {
         var _this = this;
-        return this.api.fan.joinWaitingList(waitingListId, numberOfSeats, additionalQueryParams).then(function () {
+        return this.api.fan.joinWaitingList(waitingListId, numberOfSeats, selectedSeats, additionalQueryParams).then(function () {
             return _this.pollWaitingList(waitingListId, function (wl) {
                 return wl.actionStatus !== WAITING_LIST_ACTION_STATUS.BOOK;
             });
@@ -2040,7 +2046,7 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 //noinspection TsLint
 // tslint:disable-next-line
-exports.version = '1.35.25';
+exports.version = '1.35.26';
 __export(__webpack_require__(22));
 var fan_types_1 = __webpack_require__(2);
 exports.fan = fan_types_1.fan;
@@ -3506,8 +3512,8 @@ var FanService = /** @class */function (_super) {
     FanService.prototype.getPositionSeatersPaymentInfo = function (waitingListId) {
         return this.waitingListService.getPositionSeatersPaymentInfo(waitingListId);
     };
-    FanService.prototype.joinWaitingList = function (waitingListId, numberOfSeats, additionalQueryParams) {
-        return this.waitingListService.joinWaitingList(waitingListId, numberOfSeats, __assign({}, additionalQueryParams));
+    FanService.prototype.joinWaitingList = function (waitingListId, numberOfSeats, selectedSeats, additionalQueryParams) {
+        return this.waitingListService.joinWaitingList(waitingListId, numberOfSeats, selectedSeats, __assign({}, additionalQueryParams));
     };
     FanService.prototype.joinProtectedWaitingList = function (waitingListId, code, numberOfSeats, additionalQueryParams) {
         return this.waitingListService.joinProtectedWaitingList(waitingListId, code, numberOfSeats, __assign({}, additionalQueryParams));
@@ -3745,6 +3751,15 @@ var FanService = /** @class */function (_super) {
     };
     FanService.prototype.loadAdditionalCharges = function (waitingListId) {
         return this.waitingListService.loadAdditionalCharges(waitingListId);
+    };
+    FanService.prototype.getWaitingListsAsFGO = function (fanGroupId) {
+        return this.seatersApi.fan.getWaitingListsAsFGO(fanGroupId);
+    };
+    FanService.prototype.getAvailableSeats = function (waitingListId) {
+        return this.seatersApi.fan.getAvailableSeats(waitingListId);
+    };
+    FanService.prototype.getSeatingMap = function (waitingListId) {
+        return this.seatersApi.fan.getSeatingMap(waitingListId);
     };
     return FanService;
 }(common_1.SeatersService);

@@ -44,12 +44,16 @@ export interface Survey {
 export interface SurveyInstance {
 	id?: string;
 	waitinglistId: string;
-	extensionPoint: SURVEY_EXTENSION_POINT;
+	extensionPoint: string;
 	surveyId?: string;
 	survey?: Survey;
-	inputMode?: SURVEY_INPUT_MODE;
+	inputMode?: string;
 }
 
 export type SURVEY_STATUS = 'ACTIVE' | 'ARCHIVED';
-export type SURVEY_EXTENSION_POINT = 'BEFORE_JOINING_WAITINGLIST' | 'BEFORE_PAYMENT' | 'AFTER_REGISTRATION';
+export type SURVEY_EXTENSION_POINT =
+	| 'BEFORE_JOINING_WAITINGLIST'
+	| 'BEFORE_PAYMENT'
+	| 'AFTER_REGISTRATION'
+	| 'AT_CHECKOUT';
 export type SURVEY_INPUT_MODE = 'EDITABLE' | 'LOCKED';

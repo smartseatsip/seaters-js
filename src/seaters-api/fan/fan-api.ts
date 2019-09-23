@@ -235,12 +235,13 @@ export class FanApi {
   joinWaitingList(
     waitingListId: string,
     numberOfSeats: number,
+    selectedSeats: any,
     additionalQueryParams: StringMap
   ): Promise<WaitingList> {
     const endpoint = '/fan/waiting-lists/:waitingListId/position';
     const endpointParams = { waitingListId };
     const queryParams = additionalQueryParams;
-    const data = { numberOfSeats };
+    const data = { numberOfSeats, pickedSeatsId: selectedSeats };
 
     return this.apiContext.post(endpoint, data, endpointParams, queryParams);
   }
@@ -357,6 +358,15 @@ export class FanApi {
 
   updateWaitingList(waitingList: any): Promise<any> {
     return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId', waitingList, {waitingListId: waitingList.waitingListId});
+  }
+
+
+  getAvailableSeats(wlId) : Promise<any> {
+    return this.apiContext.get('/v2/fan/waiting-lists/' + wlId + '/available-seats');
+  }
+
+  getSeatingMap(wlId) : Promise<any> {
+    return this.apiContext.get('/v2/fan/waiting-lists/' + wlId + '/seating-map');
   }
 
   // PROFILING : FAN

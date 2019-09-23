@@ -147,9 +147,10 @@ export class FanService extends SeatersService {
   joinWaitingList(
     waitingListId: string,
     numberOfSeats: number,
+    selectedSeats: any,
     additionalQueryParams?: StringMap
   ): Promise<fan.WaitingList> {
-    return this.waitingListService.joinWaitingList(waitingListId, numberOfSeats, { ...additionalQueryParams });
+    return this.waitingListService.joinWaitingList(waitingListId, numberOfSeats, selectedSeats, { ...additionalQueryParams });
   }
 
   joinProtectedWaitingList(
@@ -468,5 +469,19 @@ export class FanService extends SeatersService {
 
   loadAdditionalCharges(waitingListId: string): Promise<AdditionalCharges[]> {
     return this.waitingListService.loadAdditionalCharges(waitingListId);
+  }
+
+
+  getWaitingListsAsFGO(fanGroupId: string) : Promise<any> {
+    return this.seatersApi.fan.getWaitingListsAsFGO(fanGroupId);
+  }
+
+
+  getAvailableSeats(waitingListId: string) : Promise<any> {
+    return this.seatersApi.fan.getAvailableSeats(waitingListId);
+  }
+
+  getSeatingMap(waitingListId: string) : Promise<any> {
+    return this.seatersApi.fan.getSeatingMap(waitingListId);
   }
 }

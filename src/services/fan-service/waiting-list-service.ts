@@ -145,11 +145,12 @@ export class WaitingListService {
   joinWaitingList(
     waitingListId: string,
     numberOfSeats: number,
+    selectedSeats: any,
     additionalQueryParams: StringMap
   ): Promise<fan.WaitingList> {
     return (
       this.api.fan
-        .joinWaitingList(waitingListId, numberOfSeats, additionalQueryParams)
+        .joinWaitingList(waitingListId, numberOfSeats, selectedSeats, additionalQueryParams)
         .then(() => this.pollWaitingList(waitingListId, wl => wl.actionStatus !== WAITING_LIST_ACTION_STATUS.BOOK))
         // Wait for direct sales when applicable
         // TODO - remove unneeded cast - for now typescript seems to think wl is a WaitingList type rather than fan.WaitingList
