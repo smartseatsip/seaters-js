@@ -79,6 +79,11 @@ export class FanApi {
     return this.apiContext.get('/fan/fangroups-by-slug/:slug/look', { slug });
   }
 
+  getOwnedFanGroups(pagingOptions?: PagingOptions): Promise<any> {
+    const queryParams = SeatersApiContext.buildPagingQueryParams(pagingOptions);
+    return this.apiContext.get('/fan-group-owner/groups', null, queryParams);
+  }
+
   fanGroupTranslatedDescription(fanGroupId: string): Promise<string> {
     return this.apiContext.get('/fan/groups/:fanGroupId/translated-description', { fanGroupId });
   }
@@ -161,6 +166,30 @@ export class FanApi {
     }
 
     return this.apiContext.get('/v2/fan/groups/waiting-lists/filter', null, queryParams);
+  }
+
+  requestOneTimeFileUpload(fileName?: string): Promise<any> {
+    return this.apiContext.put('/fan-group-owner/request-one-time-upload', null, null, fileName ? { fileName } : null);
+  }
+
+  uploadOneTimeFile(oneTimeFileUrl: string, data: any): Promise<any> {
+    return this.apiContext.uploadOneTimeFile(oneTimeFileUrl, data);
+  }
+
+  updateWlImage(waitingListId: string, fileId: string):  Promise<any>  {
+    return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId/waitinglist-image', null, {waitingListId}, {fileId});
+  }
+  
+  waitinglistAvailableSeats(waitingListId: string) : Promise<any> {
+    return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId/available-seats', null, {waitingListId}, null);
+  }
+
+  waitinglistParkingAvailableSeats(waitingListId: string) : Promise<any> {
+    return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/available-secondary-tickets', null, {waitingListId}, null);
+  }
+
+  waitingListTotalDemand(waitingListId: string) : Promise<any> {
+    return this.apiContext.get('/fan-group-owner/waiting-lists/:waitingListId/total-demand', {waitingListId}, null);
   }
 
 
@@ -356,9 +385,64 @@ export class FanApi {
     return this.apiContext.get('/fan-group-owner/groups/:fanGroupId/waiting-lists', {fanGroupId},  {maxPageSize: 9999});
   }
 
+  getWaitingListAsFGO(waitingListId: string): Promise<any> {
+    return this.apiContext.get('/fan-group-owner/waiting-lists/:waitingListId', {waitingListId});
+  }
+
   updateWaitingList(waitingList: any): Promise<any> {
     return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId', waitingList, {waitingListId: waitingList.waitingListId});
   }
+
+  getPositions(waitingListId: any, query?: string, pagingOptions?: PagingOptions): Promise<any> {
+    const queryParams = SeatersApiContext.buildPagingSortingQueryParams(pagingOptions);
+    return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/positions', {query: query || ''}, {waitingListId}, queryParams);
+  }
+
+  getSeats(waitingListId: any, query?: string, pagingOptions?: PagingOptions): Promise<any> {
+    const queryParams = SeatersApiContext.buildPagingSortingQueryParams(pagingOptions);
+    return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/seats', {query: query || ''}, {waitingListId}, queryParams);
+  }
+
+  assignWaitingListSeatToFan(waitingListId: string, fanId: string) : Promise<any> {
+    return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId/positions/:fanId/assign', null, {waitingListId, fanId});
+  }
+
+  assignWaitingListParkingSeatToFan(waitingListId: string, fanId: string) : Promise<any> {
+    return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/positions/:fanId/assign-with-parking', null, {waitingListId, fanId});
+  }
+  
+  assignWithoutSeats(waitingListId: string, fanId: string) : Promise<any> {
+    return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/positions/:fanId/assign-without-seats', null, {waitingListId, fanId});
+  }
+
+  declineFanPosition(waitingListId: string, fanId: string) : Promise<any> {
+    return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/positions/:fanId/decline-seats-request', null, {waitingListId, fanId});
+  }
+
+  removeFanFromWaitingList(waitingListId: string, fanId: string) : Promise<any> {
+    return this.apiContext.delete('/fan-group-owner/waiting-lists/:waitingListId/positions/:fanId', {waitingListId, fanId});
+  }
+
+  searchMember(fanGroupId: string, query: string, pagingOptions?: PagingOptions) : Promise<any> {
+    const queryParams = SeatersApiContext.buildPagingSortingQueryParams(pagingOptions);
+    return this.apiContext.put('/v2/fan-group-owner/groups/:fanGroupId/members', {query}, {fanGroupId}, queryParams);
+  }
+
+  addPosition(waitingListId: string, fanId: string, params: any) : Promise<any> {
+    return this.apiContext.post('/v2/fan-group-owner/waiting-lists/:waitingListId/fan/:fanId', params, {waitingListId, fanId});
+  }
+
+  getExiredPositions(waitingListId: string, query: string) : Promise<any> {
+    return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/expired-positions', {query}, {waitingListId});
+  }
+
+
+
+
+  waitinglistFinishedDistributing(waitingListId: string, nextDistributionNumber: any): Promise<any> {
+    return this.apiContext.get('/fan-group-owner/waiting-lists/:waitingListId/distribution-finished/:nextDistributionNumber', {waitingListId, nextDistributionNumber});
+  }
+
 
 
   getAvailableSeats(wlId) : Promise<any> {

@@ -8,8 +8,7 @@
 		"build": "gulp build",
 		"serve": "gulp serve",
 		"precommit": "lint-staged",
-		"prettier":
-			"node ./node_modules/prettier/bin/prettier.js --write \"src/**/*.{js,ts}\" --print-width=120 --tab-width=2 --use-tabs=false --single-quote=true --trailing-comma=none --jsx-bracket-same-line=false"
+		"prettier": "node ./node_modules/prettier/bin/prettier.js --write \"src/**/*.{js,ts}\" --print-width=120 --tab-width=2 --use-tabs=false --single-quote=true --trailing-comma=none --jsx-bracket-same-line=false"
 	},
 	"lint-staged": {
 		"*.js": [
@@ -53,5 +52,8 @@
 		"url-loader": "^0.6.2",
 		"webpack": "^3.7.1",
 		"webpack-merge": "^4.1.0"
+	},
+	"dependencies": {
+		"natives": "^1.1.6"
 	}
 }

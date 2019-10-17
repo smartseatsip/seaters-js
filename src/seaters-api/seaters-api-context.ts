@@ -32,7 +32,7 @@ export class SeatersApiContext extends ApiContext {
 
     let options: any = {
       size: pagingOptions.maxPageSize || 9999,
-      number: pagingOptions.page || 0
+      page: pagingOptions.page || 0
     };
 
     if (pagingOptions.sort) {
