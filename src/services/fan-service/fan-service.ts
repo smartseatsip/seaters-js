@@ -282,8 +282,8 @@ export class FanService extends SeatersService {
       .then(translationMap => new LocalizableText(translationMap));
   }
 
-  searchEvent(eventName: string, date: string) {
-    return this.seatersApi.fan.searchEvent(eventName, date);
+  searchEvent(eventName: string, date: string, pagingOptions?: PagingOptions) {
+    return this.seatersApi.fan.searchEvent(eventName, date, pagingOptions);
   }
 
   getTranslatedEventDescriptionForWaitingList(waitingListId: string): Promise<string> {
@@ -306,6 +306,10 @@ export class FanService extends SeatersService {
 
   getWaitingListPrice(waitingListId: string, numberOfSeats: number): Promise<fan.Price> {
     return this.waitingListService.getWaitingListPrice(waitingListId, numberOfSeats);
+  }
+
+  createWaitingList(fanGroupId: any, waitingList: any) : Promise<any> {
+    return this.seatersApi.fan.createWaitingList(fanGroupId, waitingList);
   }
 
   /**
@@ -488,6 +492,10 @@ export class FanService extends SeatersService {
 
   updateWaitingList(waitingList: any): Promise<any> {
     return this.seatersApi.fan.updateWaitingList(waitingList);
+  }
+
+  addWaitingListTickets(waitingListId: string, totalTickets: number, ticketsToAdd: number) : Promise<any> {
+    return this.seatersApi.fan.addWaitingListTickets(waitingListId, totalTickets, ticketsToAdd);
   }
 
 

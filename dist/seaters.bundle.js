@@ -716,8 +716,9 @@ var FanApi = /** @class */function () {
     FanApi.prototype.getEventDescription = function (waitingListId) {
         return this.apiContext.get('/fan/waiting-lists/:waitingListId/event-description', { waitingListId: waitingListId });
     };
-    FanApi.prototype.searchEvent = function (eventName, date) {
-        return this.apiContext.put('/fan-group-owner/search-event', { query: eventName, date: date, source: 'SEATERS' }, { maxPageSize: 9999 });
+    FanApi.prototype.searchEvent = function (eventName, date, pagingOptions) {
+        var queryParams = seaters_api_1.SeatersApiContext.buildPagingQueryParams(pagingOptions);
+        return this.apiContext.put('/fan-group-owner/search-event', { query: eventName, date: date, source: 'SEATERS' }, null, queryParams);
     };
     FanApi.prototype.getVenueConditions = function (waitingListId) {
         return this.apiContext.get('/fan/waiting-lists/:waitingListId/venue-conditions', { waitingListId: waitingListId });
@@ -736,6 +737,9 @@ var FanApi = /** @class */function () {
     };
     FanApi.prototype.updateWaitingList = function (waitingList) {
         return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId', waitingList, { waitingListId: waitingList.waitingListId });
+    };
+    FanApi.prototype.createWaitingList = function (fanGroupId, waitingList) {
+        return this.apiContext.post('/fan-group-owner/groups/:fanGroupId/waiting-lists/', waitingList, { fanGroupId: fanGroupId }, null);
     };
     FanApi.prototype.getPositions = function (waitingListId, query, pagingOptions) {
         var queryParams = seaters_api_1.SeatersApiContext.buildPagingSortingQueryParams(pagingOptions);
@@ -769,6 +773,9 @@ var FanApi = /** @class */function () {
     };
     FanApi.prototype.getExiredPositions = function (waitingListId, query) {
         return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/expired-positions', { query: query }, { waitingListId: waitingListId });
+    };
+    FanApi.prototype.addWaitingListTickets = function (waitingListId, totalTickets, ticketsToAdd) {
+        return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId/add-tickets', { originalNumberOfTickets: totalTickets, ticketsToAdd: ticketsToAdd }, { waitingListId: waitingListId });
     };
     FanApi.prototype.waitinglistFinishedDistributing = function (waitingListId, nextDistributionNumber) {
         return this.apiContext.get('/fan-group-owner/waiting-lists/:waitingListId/distribution-finished/:nextDistributionNumber', { waitingListId: waitingListId, nextDistributionNumber: nextDistributionNumber });
@@ -3666,8 +3673,8 @@ var FanService = /** @class */function (_super) {
             return new util_1.LocalizableText(translationMap);
         });
     };
-    FanService.prototype.searchEvent = function (eventName, date) {
-        return this.seatersApi.fan.searchEvent(eventName, date);
+    FanService.prototype.searchEvent = function (eventName, date, pagingOptions) {
+        return this.seatersApi.fan.searchEvent(eventName, date, pagingOptions);
     };
     FanService.prototype.getTranslatedEventDescriptionForWaitingList = function (waitingListId) {
         return this.waitingListService.getTranslatedEventDescriptionForWaitingList(waitingListId);
@@ -3685,6 +3692,9 @@ var FanService = /** @class */function (_super) {
     };
     FanService.prototype.getWaitingListPrice = function (waitingListId, numberOfSeats) {
         return this.waitingListService.getWaitingListPrice(waitingListId, numberOfSeats);
+    };
+    FanService.prototype.createWaitingList = function (fanGroupId, waitingList) {
+        return this.seatersApi.fan.createWaitingList(fanGroupId, waitingList);
     };
     /**
      * FANS
@@ -3828,6 +3838,9 @@ var FanService = /** @class */function (_super) {
     };
     FanService.prototype.updateWaitingList = function (waitingList) {
         return this.seatersApi.fan.updateWaitingList(waitingList);
+    };
+    FanService.prototype.addWaitingListTickets = function (waitingListId, totalTickets, ticketsToAdd) {
+        return this.seatersApi.fan.addWaitingListTickets(waitingListId, totalTickets, ticketsToAdd);
     };
     FanService.prototype.getPositions = function (waitingListId, query, pagingOptions) {
         return this.seatersApi.fan.getPositions(waitingListId, query, pagingOptions);

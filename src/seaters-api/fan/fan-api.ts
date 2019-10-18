@@ -365,8 +365,9 @@ export class FanApi {
     return this.apiContext.get('/fan/waiting-lists/:waitingListId/event-description', { waitingListId });
   }
 
-  searchEvent(eventName: string, date: string): Promise<any> {
-    return this.apiContext.put('/fan-group-owner/search-event', {query: eventName, date, source: 'SEATERS'}, {maxPageSize: 9999});
+  searchEvent(eventName: string, date: string, pagingOptions?: PagingOptions): Promise<any> {
+    const queryParams = SeatersApiContext.buildPagingQueryParams(pagingOptions);
+    return this.apiContext.put('/fan-group-owner/search-event', {query: eventName, date, source: 'SEATERS'}, null, queryParams);
   }
 
   getVenueConditions(waitingListId: string): Promise<TranslationMap> {
@@ -391,6 +392,10 @@ export class FanApi {
 
   updateWaitingList(waitingList: any): Promise<any> {
     return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId', waitingList, {waitingListId: waitingList.waitingListId});
+  }
+
+  createWaitingList(fanGroupId: any, waitingList: any): Promise<any> {
+    return this.apiContext.post('/fan-group-owner/groups/:fanGroupId/waiting-lists/',waitingList,  {fanGroupId}, null);
   }
 
   getPositions(waitingListId: any, query?: string, pagingOptions?: PagingOptions): Promise<any> {
@@ -434,6 +439,10 @@ export class FanApi {
 
   getExiredPositions(waitingListId: string, query: string) : Promise<any> {
     return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/expired-positions', {query}, {waitingListId});
+  }
+
+  addWaitingListTickets(waitingListId: string, totalTickets: number, ticketsToAdd: number) : Promise<any> {
+    return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId/add-tickets', {originalNumberOfTickets: totalTickets, ticketsToAdd}, {waitingListId});
   }
 
 
