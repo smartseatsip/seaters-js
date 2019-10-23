@@ -137,6 +137,23 @@ export class FanService extends SeatersService {
   searchMember(fanGroupId: string, query: string, pagingOptions?: PagingOptions) : Promise<any> {
     return this.seatersApi.fan.searchMember(fanGroupId, query, pagingOptions);
   }
+  
+  getFanInfo(fanId: string) : Promise<any> {
+    return this.seatersApi.fan.getFanInfo(fanId);
+  }
+
+  getFanAttribute(fanId: string) : Promise<any> {
+    return this.seatersApi.fan.getFanAttribute(fanId);
+  }
+
+  getFanInterests(fanId: string) : Promise<any> {
+    return this.seatersApi.fan.getFanInterests(fanId);
+  }
+
+  getFanActivities(fanId: string, fanGroupId: string) : Promise<any>  {
+    return this.seatersApi.fan.getFanActivities(fanId, fanGroupId);
+  }
+
 
   addPosition(waitingListId: string, fanId: string, params: any) : Promise<any> {
     return this.seatersApi.fan.addPosition(waitingListId, fanId, params);
@@ -486,6 +503,14 @@ export class FanService extends SeatersService {
     return this.seatersApi.fan.linkBadgeToWl(waitingListId, badgeGrantOptions);
   }
 
+  unlinkBadgeToWl(waitingListId: string, linkId: string) : Promise<any> {
+    return this.seatersApi.fan.unlinkBadgeToWl(waitingListId, linkId);
+  }
+  
+  relinkBadgeToWl(waitingListId: string, linkId: string) : Promise<any> {
+    return this.seatersApi.fan.relinkBadgeToWl(waitingListId, linkId);
+  } 
+
   getWLBadges(waitingListId: string, pagingOptions?: PagingOptions) : Promise<any> {
     return this.seatersApi.fan.getWLBadges(waitingListId, pagingOptions);
   }
@@ -493,6 +518,24 @@ export class FanService extends SeatersService {
   updateWaitingList(waitingList: any): Promise<any> {
     return this.seatersApi.fan.updateWaitingList(waitingList);
   }
+
+  draftWaitingList(waitingListId: string): Promise<any> {
+    return  this.seatersApi.fan.draftWaitingList(waitingListId);
+  }
+
+  openWaitingList(waitingListId: string): Promise<any> {
+    return  this.seatersApi.fan.openWaitingList(waitingListId);
+  }
+
+  closeWaitingList(waitingListId: string): Promise<any> {
+    return  this.seatersApi.fan.closeWaitingList(waitingListId);
+  }
+
+  publishWaitingList(waitingListId: string): Promise<any> {
+    return  this.seatersApi.fan.publishWaitingList(waitingListId);
+  }
+
+
 
   addWaitingListTickets(waitingListId: string, totalTickets: number, ticketsToAdd: number) : Promise<any> {
     return this.seatersApi.fan.addWaitingListTickets(waitingListId, totalTickets, ticketsToAdd);
@@ -557,8 +600,8 @@ export class FanService extends SeatersService {
   }
 
 
-  getWaitingListsAsFGO(fanGroupId: string) : Promise<any> {
-    return this.seatersApi.fan.getWaitingListsAsFGO(fanGroupId);
+  getWaitingListsAsFGO(fanGroupId: string, searchOptions, pagingOptions?: PagingOptions) : Promise<any> {
+    return this.seatersApi.fan.getWaitingListsAsFGO(fanGroupId, searchOptions, pagingOptions);
   }
 
   getWaitingListAsFGO(waitingListId: string) : Promise<any> {

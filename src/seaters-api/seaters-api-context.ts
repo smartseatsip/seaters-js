@@ -43,6 +43,14 @@ export class SeatersApiContext extends ApiContext {
       options = { ...options, ...pagingOptions.filters };
     }
 
+    if (pagingOptions.query) {
+      options.query = pagingOptions.query;
+    }
+
+    if (pagingOptions.validated) {
+      options.validated = pagingOptions.validated;
+    }
+
     return options;
   }
 

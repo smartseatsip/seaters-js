@@ -382,8 +382,9 @@ export class FanApi {
     return this.apiContext.get('/fan/waiting-lists/:waitingListId/translated-venue-conditions', { waitingListId });
   }
 
-  getWaitingListsAsFGO(fanGroupId: string): Promise<any> {
-    return this.apiContext.get('/fan-group-owner/groups/:fanGroupId/waiting-lists', {fanGroupId},  {maxPageSize: 9999});
+  getWaitingListsAsFGO(fanGroupId: string, searchOptions, pagingOptions?: PagingOptions): Promise<any> {
+    const queryParams = SeatersApiContext.buildPagingQueryParams(pagingOptions);
+    return this.apiContext.put('/fan-group-owner/groups/:fanGroupId/waiting-lists/search', searchOptions, {fanGroupId}, queryParams);
   }
 
   getWaitingListAsFGO(waitingListId: string): Promise<any> {
@@ -392,6 +393,22 @@ export class FanApi {
 
   updateWaitingList(waitingList: any): Promise<any> {
     return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId', waitingList, {waitingListId: waitingList.waitingListId});
+  }
+
+  draftWaitingList(waitingListId: string): Promise<any> {
+    return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId/draft', null, {waitingListId}, null);
+  }
+
+  openWaitingList(waitingListId: string): Promise<any> {
+    return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId/open', null, {waitingListId}, null);
+  }
+
+  closeWaitingList(waitingListId: string): Promise<any> {
+    return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId/close', null, {waitingListId}, null);
+  }
+
+  publishWaitingList(waitingListId: string): Promise<any> {
+    return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId/publish', null, {waitingListId}, null);
   }
 
   createWaitingList(fanGroupId: any, waitingList: any): Promise<any> {
@@ -432,6 +449,24 @@ export class FanApi {
     const queryParams = SeatersApiContext.buildPagingSortingQueryParams(pagingOptions);
     return this.apiContext.put('/v2/fan-group-owner/groups/:fanGroupId/members', {query}, {fanGroupId}, queryParams);
   }
+
+  getFanInfo(fanId: string) : Promise<any> {
+    return this.apiContext.get('v2/fan-group-owner/fan/:fanId/personal-infos', {fanId}, null);
+  }
+
+  getFanAttribute(fanId: string) : Promise<any> {
+    return this.apiContext.get('v2/fan-group-owner/fan/:fanId/attirbutes?user_fan_attribute_status=LINKED', {fanId}, null);
+  }
+
+  getFanInterests(fanId: string) : Promise<any> {
+    return this.apiContext.get('v2/fan-group-owner/fan/:fanId/interests??user_interest_status=LIKE&user_interest_status=DISLIKE&user_interest_status=NEUTRAL&size=9999', {fanId}, null);
+  }
+
+  getFanActivities(fanId: string, fanGroupId: string) : Promise<any>  {
+    return this.apiContext.get('v2/fan-group-owner/fan/:fanId/groups/:fanGroupId', {fanId, fanGroupId}, null);
+  }
+
+
 
   addPosition(waitingListId: string, fanId: string, params: any) : Promise<any> {
     return this.apiContext.post('/v2/fan-group-owner/waiting-lists/:waitingListId/fan/:fanId', params, {waitingListId, fanId});
@@ -629,6 +664,16 @@ export class FanApi {
   linkBadgeToWl(waitingListId: string, body: BadgeWlOptions) : Promise<any> {
     return this.apiContext.post('v2/fan-group-owner/waiting-lists/' + waitingListId + '/badges', body, null);
   }
+
+  unlinkBadgeToWl(waitingListId: string, linkId: string) : Promise<any> {
+    return this.apiContext.delete('v2/fan-group-owner/waiting-lists/' + waitingListId + '/wl-badges/' + linkId, null, null);
+  }
+  
+  relinkBadgeToWl(waitingListId: string, linkId: string) : Promise<any> {
+    return this.apiContext.put('v2/fan-group-owner/waiting-lists/' + waitingListId + '/wl-badges/' + linkId, null, null, null);
+  } 
+
+
 
   getWLBadges(waitingListId: string, pagingOptions?: PagingOptions) : Promise<any> {
     return this.apiContext.get('v2/fan-group-owner/waiting-lists/' + waitingListId + '/badges', null, SeatersApiContext.buildPagingSortingQueryParams(pagingOptions));
