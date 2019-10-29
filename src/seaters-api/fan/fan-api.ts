@@ -320,7 +320,7 @@ export class FanApi {
   }
 
   exportSeats(waitingListId: string): Promise<void> {
-    const endpoint = '/fan/waiting-lists/:waitingListId/export-seat';
+    const endpoint = '/fan/waiting-lists/:waitingListId/export-seats';
     const endpointParams = { waitingListId };
     return this.apiContext.put(endpoint, null, endpointParams);
   }
@@ -368,6 +368,11 @@ export class FanApi {
   searchEvent(eventName: string, date: string, pagingOptions?: PagingOptions): Promise<any> {
     const queryParams = SeatersApiContext.buildPagingQueryParams(pagingOptions);
     return this.apiContext.put('/fan-group-owner/search-event', {query: eventName, date, source: 'SEATERS'}, null, queryParams);
+  }
+
+  searchVenues(venueName?: string, pagingOptions?: PagingOptions): Promise<any> {
+    const queryParams = SeatersApiContext.buildPagingQueryParams(pagingOptions);
+    return this.apiContext.put('/fan-group-owner/search-venue', {query: venueName}, null, queryParams);
   }
 
   getVenueConditions(waitingListId: string): Promise<TranslationMap> {

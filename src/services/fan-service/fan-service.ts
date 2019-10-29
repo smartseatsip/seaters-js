@@ -303,6 +303,10 @@ export class FanService extends SeatersService {
     return this.seatersApi.fan.searchEvent(eventName, date, pagingOptions);
   }
 
+  searchVenues(venueName?: string, pagingOptions?: PagingOptions) {
+    return this.seatersApi.fan.searchVenues(venueName, pagingOptions);
+  }
+
   getTranslatedEventDescriptionForWaitingList(waitingListId: string): Promise<string> {
     return this.waitingListService.getTranslatedEventDescriptionForWaitingList(waitingListId);
   }

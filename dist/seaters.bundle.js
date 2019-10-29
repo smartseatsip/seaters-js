@@ -726,6 +726,10 @@ var FanApi = /** @class */function () {
         var queryParams = seaters_api_1.SeatersApiContext.buildPagingQueryParams(pagingOptions);
         return this.apiContext.put('/fan-group-owner/search-event', { query: eventName, date: date, source: 'SEATERS' }, null, queryParams);
     };
+    FanApi.prototype.searchVenues = function (venueName, pagingOptions) {
+        var queryParams = seaters_api_1.SeatersApiContext.buildPagingQueryParams(pagingOptions);
+        return this.apiContext.put('/fan-group-owner/search-venue', { query: venueName }, null, queryParams);
+    };
     FanApi.prototype.getVenueConditions = function (waitingListId) {
         return this.apiContext.get('/fan/waiting-lists/:waitingListId/venue-conditions', { waitingListId: waitingListId });
     };
@@ -2973,7 +2977,7 @@ var AdminApi = /** @class */function (_super) {
         return this.apiContext.put('/seaters-admin/waiting-lists/:id', wl, { id: wl.id });
     };
     AdminApi.prototype.deleteWaitingList = function (waitingListId) {
-        return this.apiContext.put('/seaters-admin/waiting-lists/:id', { id: waitingListId });
+        return this.apiContext.delete('/seaters-admin/waiting-lists/:id', { id: waitingListId });
     };
     AdminApi.prototype.createFanGroupProtectionCode = function (fanGroupId, code, maxTimesUsed) {
         return this.apiContext.post('/seaters-admin/fan-groups/:id/protection-codes', { code: code, maxTimesUsed: maxTimesUsed }, { id: fanGroupId });
@@ -3162,6 +3166,9 @@ var AdminApi = /** @class */function (_super) {
     };
     AdminApi.prototype.createEvent = function (event) {
         return this.apiContext.post("/fan-group-owner/events", event);
+    };
+    AdminApi.prototype.createVenue = function (venue) {
+        return this.apiContext.post("/fan-group-owner/venues", venue);
     };
     AdminApi.prototype.createWishlist = function (groupId, wl) {
         return this.apiContext.post("/fan-group-owner/groups/" + groupId + "/waiting-lists", wl);
@@ -3724,6 +3731,9 @@ var FanService = /** @class */function (_super) {
     };
     FanService.prototype.searchEvent = function (eventName, date, pagingOptions) {
         return this.seatersApi.fan.searchEvent(eventName, date, pagingOptions);
+    };
+    FanService.prototype.searchVenues = function (venueName, pagingOptions) {
+        return this.seatersApi.fan.searchVenues(venueName, pagingOptions);
     };
     FanService.prototype.getTranslatedEventDescriptionForWaitingList = function (waitingListId) {
         return this.waitingListService.getTranslatedEventDescriptionForWaitingList(waitingListId);
@@ -5615,6 +5625,9 @@ var AdminService = /** @class */function (_super) {
     };
     AdminService.prototype.createEvent = function (event) {
         return this.seatersApi.admin.createEvent(event);
+    };
+    AdminService.prototype.createVenue = function (venue) {
+        return this.seatersApi.admin.createVenue(venue);
     };
     AdminService.prototype.createWishlist = function (groupId, wishList) {
         return this.seatersApi.admin.createWishlist(groupId, wishList);

@@ -314,6 +314,12 @@ export class AdminService extends SeatersService {
   createEvent(event: Event): Promise<Event> {
     return this.seatersApi.admin.createEvent(event);
   }
+
+  createVenue(venue: any): Promise<Event> {
+    return this.seatersApi.admin.createVenue(venue);
+  }
+
+
   
   createWishlist(groupId: string, wishList: any): Promise<any> {
     return this.seatersApi.admin.createWishlist(groupId, wishList);
