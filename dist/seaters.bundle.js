@@ -691,6 +691,11 @@ var FanApi = /** @class */function () {
         var endpointParams = { waitingListId: waitingListId };
         return this.apiContext.put(endpoint, null, endpointParams);
     };
+    FanApi.prototype.sendExportedSeats = function (waitingListId) {
+        var endpoint = 'v2/fan/waiting-lists/:waitingListId/send-exported-seat';
+        var endpointParams = { waitingListId: waitingListId };
+        return this.apiContext.put(endpoint, null, endpointParams);
+    };
     FanApi.prototype.positionPaymentInfo = function (waitingListId) {
         var endpoint = '/fan/waiting-lists/:waitingListId/position/payment-info';
         var endpointParams = { waitingListId: waitingListId };
@@ -820,6 +825,9 @@ var FanApi = /** @class */function () {
     };
     FanApi.prototype.getSeatingMap = function (wlId) {
         return this.apiContext.get('/v2/fan/waiting-lists/' + wlId + '/seating-map');
+    };
+    FanApi.prototype.getPickedSeats = function (wlId) {
+        return this.apiContext.get('/v2/fan/waiting-lists/' + wlId + '/picked-seats');
     };
     // PROFILING : FAN
     /**
@@ -961,7 +969,8 @@ var FanApi = /** @class */function () {
         return this.apiContext.get('v2/fan/survey/instances', null, queryParams);
     };
     FanApi.prototype.getChoices = function (questionId, pagingOptions) {
-        return this.apiContext.get('v2/fan/surveys/question/:questionId/choices', { questionId: questionId }, { itemOffset: pagingOptions.itemOffset, maxPageSize: pagingOptions.maxPageSize });
+        var queryParams = seaters_api_1.SeatersApiContext.buildPagingSortingQueryParams(pagingOptions);
+        return this.apiContext.get('v2/fan/surveys/question/:questionId/choices', { questionId: questionId }, queryParams);
     };
     FanApi.prototype.addChoices = function (questionId, choices) {
         return this.apiContext.post('v2/admin/surveys/questions/:questionId/choices', { choices: choices }, { questionId: questionId }, null);
@@ -2155,7 +2164,7 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 //noinspection TsLint
 // tslint:disable-next-line
-exports.version = '1.35.27';
+exports.version = '1.35.32';
 __export(__webpack_require__(22));
 var fan_types_1 = __webpack_require__(2);
 exports.fan = fan_types_1.fan;
@@ -3724,6 +3733,9 @@ var FanService = /** @class */function (_super) {
     FanService.prototype.exportSeats = function (waitingListId) {
         return this.waitingListService.exportSeats(waitingListId);
     };
+    FanService.prototype.sendExportedSeats = function (waitingListId) {
+        return this.seatersApi.fan.sendExportedSeats(waitingListId);
+    };
     FanService.prototype.getEventDescriptionForWaitingList = function (waitingListId) {
         return this.waitingListService.getEventDescriptionForWaitingList(waitingListId).then(function (translationMap) {
             return new util_1.LocalizableText(translationMap);
@@ -3968,6 +3980,9 @@ var FanService = /** @class */function (_super) {
     };
     FanService.prototype.getSeatingMap = function (waitingListId) {
         return this.seatersApi.fan.getSeatingMap(waitingListId);
+    };
+    FanService.prototype.getPickedSeats = function (waitingListId) {
+        return this.seatersApi.fan.getPickedSeats(waitingListId);
     };
     return FanService;
 }(common_1.SeatersService);

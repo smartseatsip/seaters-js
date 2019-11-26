@@ -707,7 +707,8 @@ export class FanApi {
 
 
   getChoices(questionId: string, pagingOptions?: any) : any {
-    return this.apiContext.get('v2/fan/surveys/question/:questionId/choices', {questionId}, {itemOffset: pagingOptions.itemOffset, maxPageSize: pagingOptions.maxPageSize});
+    const queryParams = SeatersApiContext.buildPagingSortingQueryParams(pagingOptions);
+    return this.apiContext.get('v2/fan/surveys/question/:questionId/choices', {questionId}, queryParams);
   }
 
   addChoices(questionId: string, choices): any  {
