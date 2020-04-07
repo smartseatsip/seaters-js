@@ -378,6 +378,10 @@ export class AdminApi extends SeatersApiController {
   createEvent(event: Event): Promise<Event> {
     return this.apiContext.post(`/fan-group-owner/events`, event);
   }
+  
+  updatEvent(event: Event, eventId): Promise<Event> {
+    return this.apiContext.put('/seaters-admin/events/:id', {...event}, {id: eventId});
+  }
 
   createVenue(venue: any): Promise<Event> {
     return this.apiContext.post(`/fan-group-owner/venues`, venue);
@@ -405,6 +409,11 @@ export class AdminApi extends SeatersApiController {
 
   requestVoucherImageUpload(waitingListId: string, fileId?: string): Promise<any> {
     return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:id/image', null, { id: waitingListId }, { fileId });
+  }
+
+  // SIGNALS 
+  replaySignal(bus, id) {
+    return this.apiContext.put('/seaters-admin/signals/:bus/:id/replay', null, {bus, id});
   }
 
   /**

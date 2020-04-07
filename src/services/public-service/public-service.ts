@@ -1,7 +1,8 @@
 import { RequestDriver } from '../../api';
 import { PagedResult, PagingOptions } from '../../shared-types';
 import { SeatersApi } from '../../seaters-api';
-import { AlgoliaForSeatersService, SearchSeatersContentOptions, TypedSearchResult } from '../algolia-for-seaters';
+import { AlgoliaForSeatersService, SearchSeatersContentOptions, TypedSearchResult, GeoLoc} from '../algolia-for-seaters';
+
 import { AppService } from '../app-service';
 import { pub } from './public-types';
 import { fan } from '../fan-service/fan-types';
@@ -39,9 +40,9 @@ export class PublicService {
       .then(wl => ({ ...wl, actionStatus: this.getWaitingListActionStatus(wl) }));
   }
 
-  getWaitingListsInFanGroup(fanGroupId: string, pagingOptions: PagingOptions): Promise<PagedResult<pub.WaitingList>> {
+  getWaitingListsInFanGroup(fanGroupId: string, pagingOptions: PagingOptions, geoLoc?: GeoLoc, keywords?: string[], dateTimeStamp?: string): Promise<PagedResult<pub.WaitingList>> {
     return this.algoliaForSeatersService
-      .getWaitingListsByFanGroupId(fanGroupId, pagingOptions.maxPageSize, pagingOptions.page)
+      .getWaitingListsByFanGroupId(fanGroupId, pagingOptions.maxPageSize, pagingOptions.page, geoLoc, keywords, dateTimeStamp)
       .then(result => this.convertAlgoliaResultSet(result))
       .then(result => {
         result.items = result.items.map(wl => ({ ...wl, actionStatus: this.getWaitingListActionStatus(wl) }));

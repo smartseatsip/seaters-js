@@ -10,3 +10,8 @@ export interface SearchSeatersContentOptions {
   onlyFanGroups?: boolean;
   onlyWaitingLists?: boolean;
 }
+
+export interface GeoLoc {
+  coord: string;
+  radius: number;
+}

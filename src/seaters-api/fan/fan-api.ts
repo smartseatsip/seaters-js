@@ -320,7 +320,13 @@ export class FanApi {
   }
 
   exportSeats(waitingListId: string): Promise<void> {
-    const endpoint = '/fan/waiting-lists/:waitingListId/export-seats';
+    const endpoint = '/fan/waiting-lists/:waitingListId/export-seat';
+    const endpointParams = { waitingListId };
+    return this.apiContext.put(endpoint, null, endpointParams);
+  }
+
+  sendExportedSeats(waitingListId: string) : Promise<any> {
+    const endpoint = 'v2/fan/waiting-lists/:waitingListId/send-exported-seat';
     const endpointParams = { waitingListId };
     return this.apiContext.put(endpoint, null, endpointParams);
   }
@@ -416,6 +422,10 @@ export class FanApi {
     return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId/publish', null, {waitingListId}, null);
   }
 
+  scheduleWaitingList(waitingListId: string, date: string) : Promise<any> {
+    return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId/scheduule', {date}, {waitingListId}, null);    
+  }
+
   createWaitingList(fanGroupId: any, waitingList: any): Promise<any> {
     return this.apiContext.post('/fan-group-owner/groups/:fanGroupId/waiting-lists/',waitingList,  {fanGroupId}, null);
   }
@@ -500,6 +510,10 @@ export class FanApi {
 
   getSeatingMap(wlId) : Promise<any> {
     return this.apiContext.get('/v2/fan/waiting-lists/' + wlId + '/seating-map');
+  }
+
+  getPickedSeats(wlId): Promise<any> {
+    return this.apiContext.get('/v2/fan/waiting-lists/' + wlId + '/picked-seats');
   }
 
   // PROFILING : FAN

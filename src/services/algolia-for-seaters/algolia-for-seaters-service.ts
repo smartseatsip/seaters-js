@@ -10,7 +10,8 @@ import {
   TypedSearchResult,
   TYPO_TOLERANCE_STRICT,
   WaitingList,
-  WL_ALGOLIA_TYPE
+  WL_ALGOLIA_TYPE,
+  GeoLoc
 } from './algolia-for-seaters-types';
 
 const DEFAULT_LOCALE = 'en';
@@ -49,10 +50,13 @@ export class AlgoliaForSeatersService {
   getWaitingListsByFanGroupId(
     fanGroupId: string,
     hitsPerPage: number,
-    page: number
+    page: number,
+    geoLoc?: GeoLoc, 
+    keywords?: string[], 
+    dateTimeStamp?: string
   ): Promise<TypedSearchResult<WaitingList>> {
     // TODO: sort by date ascending
-    const q = this.buildExactQuery(fanGroupId, 'groupId', 'WAITING_LIST');
+    const q = this.buildExactQuery(fanGroupId, 'groupId', 'WAITING_LIST', geoLoc, keywords, dateTimeStamp);
     q.page = page;
     q.hitsPerPage = hitsPerPage;
     return this.search(q).then(r => this.stripAlgoliaFieldsFromSearchResultHits(r));
@@ -107,6 +111,7 @@ export class AlgoliaForSeatersService {
             value: fanGroupId
           }
         ],
+       
         restrictSearchableAttributes: searchableAttributes,
         hitsPerPage,
         page
@@ -163,7 +168,7 @@ export class AlgoliaForSeatersService {
     return this._apiP;
   }
 
-  private buildExactQuery(query: string, field: string, type: string): SearchQuery {
+  private buildExactQuery(query: string, field: string, type: string, geoLoc?: GeoLoc, keywords?: string[], dateTimeStamp?: string): SearchQuery {
     return {
       query,
       typoTolerance: 'strict',
@@ -173,6 +178,10 @@ export class AlgoliaForSeatersService {
           value: type
         }
       ],
+      aroundLatLng: geoLoc ? geoLoc.coord : undefined,
+      aroundRadius: geoLoc ? geoLoc.radius : undefined,
+      filters:  dateTimeStamp ? `eventStartDateTimestamp:${dateTimeStamp}` : undefined,
+      tagFilters: keywords,
       restrictSearchableAttributes: [field]
     } as SearchQuery;
   }
@@ -228,7 +237,7 @@ export class AlgoliaForSeatersService {
   }
 
   private stripAlgoliaFieldsFromObject<T>(result: any): T {
-    delete result._geoloc;
+    // delete result._geoloc;
     delete result._tags;
     delete result._highlightResult;
     delete result.objectID;

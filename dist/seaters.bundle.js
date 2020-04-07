@@ -766,6 +766,9 @@ var FanApi = /** @class */function () {
     FanApi.prototype.publishWaitingList = function (waitingListId) {
         return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId/publish', null, { waitingListId: waitingListId }, null);
     };
+    FanApi.prototype.scheduleWaitingList = function (waitingListId, date) {
+        return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId/scheduule', { date: date }, { waitingListId: waitingListId }, null);
+    };
     FanApi.prototype.createWaitingList = function (fanGroupId, waitingList) {
         return this.apiContext.post('/fan-group-owner/groups/:fanGroupId/waiting-lists/', waitingList, { fanGroupId: fanGroupId }, null);
     };
@@ -2164,7 +2167,7 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 //noinspection TsLint
 // tslint:disable-next-line
-exports.version = '1.35.32';
+exports.version = '1.35.35';
 __export(__webpack_require__(22));
 var fan_types_1 = __webpack_require__(2);
 exports.fan = fan_types_1.fan;
@@ -2925,6 +2928,15 @@ var __extends = undefined && undefined.__extends || function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 }();
+var __assign = undefined && undefined.__assign || Object.assign || function (t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) {
+            if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+        }
+    }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 /* tslint:disable:no-floating-promises */
 var seaters_api_1 = __webpack_require__(1);
@@ -3176,6 +3188,9 @@ var AdminApi = /** @class */function (_super) {
     AdminApi.prototype.createEvent = function (event) {
         return this.apiContext.post("/fan-group-owner/events", event);
     };
+    AdminApi.prototype.updatEvent = function (event, eventId) {
+        return this.apiContext.put('/seaters-admin/events/:id', __assign({}, event), { id: eventId });
+    };
     AdminApi.prototype.createVenue = function (venue) {
         return this.apiContext.post("/fan-group-owner/venues", venue);
     };
@@ -3196,6 +3211,10 @@ var AdminApi = /** @class */function (_super) {
     };
     AdminApi.prototype.requestVoucherImageUpload = function (waitingListId, fileId) {
         return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:id/image', null, { id: waitingListId }, { fileId: fileId });
+    };
+    // SIGNALS 
+    AdminApi.prototype.replaySignal = function (bus, id) {
+        return this.apiContext.put('/seaters-admin/signals/:bus/:id/replay', null, { bus: bus, id: id });
     };
     /**
      * HELPERS
@@ -3922,6 +3941,9 @@ var FanService = /** @class */function (_super) {
     FanService.prototype.openWaitingList = function (waitingListId) {
         return this.seatersApi.fan.openWaitingList(waitingListId);
     };
+    FanService.prototype.scheduleWaitingList = function (waitingListId, date) {
+        return this.seatersApi.fan.scheduleWaitingList(waitingListId, date);
+    };
     FanService.prototype.closeWaitingList = function (waitingListId) {
         return this.seatersApi.fan.closeWaitingList(waitingListId);
     };
@@ -4200,9 +4222,9 @@ var PublicService = /** @class */function () {
             return __assign({}, wl, { actionStatus: _this.getWaitingListActionStatus(wl) });
         });
     };
-    PublicService.prototype.getWaitingListsInFanGroup = function (fanGroupId, pagingOptions) {
+    PublicService.prototype.getWaitingListsInFanGroup = function (fanGroupId, pagingOptions, geoLoc, keywords, dateTimeStamp) {
         var _this = this;
-        return this.algoliaForSeatersService.getWaitingListsByFanGroupId(fanGroupId, pagingOptions.maxPageSize, pagingOptions.page).then(function (result) {
+        return this.algoliaForSeatersService.getWaitingListsByFanGroupId(fanGroupId, pagingOptions.maxPageSize, pagingOptions.page, geoLoc, keywords, dateTimeStamp).then(function (result) {
             return _this.convertAlgoliaResultSet(result);
         }).then(function (result) {
             result.items = result.items.map(function (wl) {
@@ -4378,10 +4400,10 @@ var AlgoliaForSeatersService = /** @class */function () {
         };
         return this.findExactlyN(q, fanGroupIds);
     };
-    AlgoliaForSeatersService.prototype.getWaitingListsByFanGroupId = function (fanGroupId, hitsPerPage, page) {
+    AlgoliaForSeatersService.prototype.getWaitingListsByFanGroupId = function (fanGroupId, hitsPerPage, page, geoLoc, keywords, dateTimeStamp) {
         var _this = this;
         // TODO: sort by date ascending
-        var q = this.buildExactQuery(fanGroupId, 'groupId', 'WAITING_LIST');
+        var q = this.buildExactQuery(fanGroupId, 'groupId', 'WAITING_LIST', geoLoc, keywords, dateTimeStamp);
         q.page = page;
         q.hitsPerPage = hitsPerPage;
         return this.search(q).then(function (r) {
@@ -4487,7 +4509,7 @@ var AlgoliaForSeatersService = /** @class */function () {
         }
         return this._apiP;
     };
-    AlgoliaForSeatersService.prototype.buildExactQuery = function (query, field, type) {
+    AlgoliaForSeatersService.prototype.buildExactQuery = function (query, field, type, geoLoc, keywords, dateTimeStamp) {
         return {
             query: query,
             typoTolerance: 'strict',
@@ -4495,6 +4517,10 @@ var AlgoliaForSeatersService = /** @class */function () {
                 facet: 'type',
                 value: type
             }],
+            aroundLatLng: geoLoc ? geoLoc.coord : undefined,
+            aroundRadius: geoLoc ? geoLoc.radius : undefined,
+            filters: dateTimeStamp ? "eventStartDateTimestamp:" + dateTimeStamp : undefined,
+            tagFilters: keywords,
             restrictSearchableAttributes: [field]
         };
     };
@@ -4544,7 +4570,7 @@ var AlgoliaForSeatersService = /** @class */function () {
         });
     };
     AlgoliaForSeatersService.prototype.stripAlgoliaFieldsFromObject = function (result) {
-        delete result._geoloc;
+        // delete result._geoloc;
         delete result._tags;
         delete result._highlightResult;
         delete result.objectID;
@@ -4689,6 +4715,7 @@ var IndicesApi = /** @class */function () {
     };
     IndicesApi.prototype.serializeSearchQuery = function (searchQuery) {
         var params = [];
+        console.log('QUERY =>', searchQuery);
         function defaultSerializer(item) {
             return encodeURIComponent(item);
         }
@@ -4708,13 +4735,17 @@ var IndicesApi = /** @class */function () {
             typoTolerance: defaultSerializer,
             maxValuesPerFacet: defaultSerializer,
             tagFilters: defaultArraySerializer,
-            filters: defaultSerializer
+            filters: defaultSerializer,
+            aroundLatLng: defaultSerializer,
+            aroundRadius: defaultSerializer
         };
         Object.keys(searchQuery).forEach(function (key) {
             if (!serializers.hasOwnProperty(key)) {
                 throw new Error('Unmapped SearchQuery property: ' + key);
             }
-            params.push(key + '=' + serializers[key](searchQuery[key]));
+            if (searchQuery[key]) {
+                params.push(key + '=' + serializers[key](searchQuery[key]));
+            }
         });
         return params.join('&');
     };
@@ -5658,6 +5689,12 @@ var AdminService = /** @class */function (_super) {
     };
     AdminService.prototype.requestVoucherImageUpload = function (fanGroupId, fileName) {
         return this.seatersApi.admin.requestVoucherImageUpload(fanGroupId, fileName);
+    };
+    AdminService.prototype.replaySignal = function (bus, id) {
+        return this.seatersApi.admin.replaySignal(bus, id);
+    };
+    AdminService.prototype.updatEvent = function (event, eventId) {
+        return this.seatersApi.admin.updatEvent(event, eventId);
     };
     AdminService.prototype.uploadOneTimeFile = function (data, fileName) {
         var _this = this;

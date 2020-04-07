@@ -5,6 +5,9 @@ export interface SearchQuery {
    */
   query?: string;
 
+  aroundLatLng?: string;
+  aroundRadius?: number;
+
   /**
    * https://www.algolia.com/doc/rest-api/search/#hitsperpage
    * default: 20

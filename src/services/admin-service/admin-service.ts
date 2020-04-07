@@ -341,6 +341,14 @@ export class AdminService extends SeatersService {
   requestVoucherImageUpload(fanGroupId: string, fileName?: string): Promise<any> {
     return this.seatersApi.admin.requestVoucherImageUpload(fanGroupId, fileName);
   }
+
+  replaySignal(bus, id) {
+    return this.seatersApi.admin.replaySignal(bus, id);
+  }
+
+  updatEvent(event, eventId): any {
+    return this.seatersApi.admin.updatEvent(event, eventId);
+  }
   
   private uploadOneTimeFile(data: any, fileName?: string): Promise<admin.OneTimeFile> {
     return this.seatersApi.admin
@@ -348,7 +356,7 @@ export class AdminService extends SeatersService {
       .then(otf => this.seatersApi.admin.uploadOneTimeFile(otf.url, data).then(() => otf));
   }
 
-
+ 
 
 
   private defaultFileName(fileName?: string): string {

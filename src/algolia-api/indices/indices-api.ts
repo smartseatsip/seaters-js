@@ -37,6 +37,7 @@ export class IndicesApi {
 
   private serializeSearchQuery(searchQuery: SearchQuery): string {
     const params = [];
+    console.log('QUERY =>', searchQuery);
 
     function defaultSerializer(item: any) {
       return encodeURIComponent(item);
@@ -57,13 +58,17 @@ export class IndicesApi {
       typoTolerance: defaultSerializer as any,
       maxValuesPerFacet: defaultSerializer as any,
       tagFilters: defaultArraySerializer as any,
-      filters: defaultSerializer as any
+      filters: defaultSerializer as any,
+      aroundLatLng: defaultSerializer as any,
+      aroundRadius: defaultSerializer as any
     };
     Object.keys(searchQuery).forEach(key => {
       if (!serializers.hasOwnProperty(key)) {
         throw new Error('Unmapped SearchQuery property: ' + key);
       }
-      params.push(key + '=' + serializers[key](searchQuery[key]));
+      if (searchQuery[key]) {
+        params.push(key + '=' + serializers[key](searchQuery[key]));
+      }
     });
     return params.join('&');
   }

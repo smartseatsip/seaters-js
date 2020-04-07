@@ -87,6 +87,7 @@ export class FanService extends SeatersService {
   getJoinedFanGroups(pagingOptions: PagingOptions): Promise<PagedResult<fan.FanGroup>> {
     return this.fanGroupService.joinedFanGroups(pagingOptions).then(r => this.convertPagedResult(r));
   }
+  
 
 
   requestOneTimeFileUpload(fileName?: string): Promise<any> {
@@ -293,6 +294,10 @@ export class FanService extends SeatersService {
     return this.waitingListService.exportSeats(waitingListId);
   }
 
+  sendExportedSeats(waitingListId: string): Promise<any> {
+    return this.seatersApi.fan.sendExportedSeats(waitingListId);
+  }
+  
   getEventDescriptionForWaitingList(waitingListId: string): Promise<LocalizableText> {
     return this.waitingListService
       .getEventDescriptionForWaitingList(waitingListId)
@@ -531,6 +536,11 @@ export class FanService extends SeatersService {
     return  this.seatersApi.fan.openWaitingList(waitingListId);
   }
 
+  
+  scheduleWaitingList(waitingListId: string, date: string): Promise<any> {
+    return  this.seatersApi.fan.scheduleWaitingList(waitingListId, date);
+  }
+
   closeWaitingList(waitingListId: string): Promise<any> {
     return  this.seatersApi.fan.closeWaitingList(waitingListId);
   }
@@ -619,5 +629,9 @@ export class FanService extends SeatersService {
 
   getSeatingMap(waitingListId: string) : Promise<any> {
     return this.seatersApi.fan.getSeatingMap(waitingListId);
+  }
+
+  getPickedSeats(waitingListId: string) : Promise<any> {
+    return this.seatersApi.fan.getPickedSeats(waitingListId);
   }
 }
