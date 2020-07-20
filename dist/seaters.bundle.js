@@ -58,7 +58,7 @@ var SeatersSDK =
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/home/aymen/Documents/Seaters/Projects/seaters-js/dist";
+/******/ 	__webpack_require__.p = "C:\\Users\\sajid\\Documents\\Seaters\\Projects\\seaters-js/dist";
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 21);
@@ -598,6 +598,11 @@ var FanApi = /** @class */function () {
     FanApi.prototype.updateWlImage = function (waitingListId, fileId) {
         return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId/waitinglist-image', null, { waitingListId: waitingListId }, { fileId: fileId });
     };
+    FanApi.prototype.addProperties = function (waitingListId, properties) {
+        return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/properties', {
+            publicProperties: properties
+        }, { waitingListId: waitingListId }, null);
+    };
     FanApi.prototype.waitinglistAvailableSeats = function (waitingListId) {
         return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId/available-seats', null, { waitingListId: waitingListId }, null);
     };
@@ -638,6 +643,9 @@ var FanApi = /** @class */function () {
         return this.apiContext.put(endpoint, {
             waitingListIds: waitingListIds
         });
+    };
+    FanApi.prototype.getAdditionalInfos = function (waitingListId) {
+        return this.apiContext.get('/v2/fan/waiting-lists/:waitingListId/additional-infos', { waitingListId: waitingListId });
     };
     FanApi.prototype.waitingListPrice = function (waitingListId, numberOfSeats) {
         var endpoint = '/fan/waiting-lists/:waitingListId/price/:numberOfSeats';
@@ -767,7 +775,7 @@ var FanApi = /** @class */function () {
         return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId/publish', null, { waitingListId: waitingListId }, null);
     };
     FanApi.prototype.scheduleWaitingList = function (waitingListId, date) {
-        return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId/scheduule', { date: date }, { waitingListId: waitingListId }, null);
+        return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId/schedule', { date: date }, { waitingListId: waitingListId }, null);
     };
     FanApi.prototype.createWaitingList = function (fanGroupId, waitingList) {
         return this.apiContext.post('/fan-group-owner/groups/:fanGroupId/waiting-lists/', waitingList, { fanGroupId: fanGroupId }, null);
@@ -1021,6 +1029,12 @@ var FanApi = /** @class */function () {
     };
     FanApi.prototype.loadAdditionalCharges = function (waitingListId) {
         return this.apiContext.get('v2/fan/waiting-lists/:waitingListId/additional-charges', { waitingListId: waitingListId });
+    };
+    FanApi.prototype.getBasicConnectedAppToken = function () {
+        return this.apiContext.post('connected-app/authenticated/basic/token', { grant_type: 'client_credentials' }, null, null);
+    };
+    FanApi.prototype.getJoinsCount = function () {
+        return this.apiContext.get('connected-app/services/fangroup/count/joins');
     };
     return FanApi;
 }();
@@ -2167,7 +2181,7 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 //noinspection TsLint
 // tslint:disable-next-line
-exports.version = '1.35.35';
+exports.version = '1.35.36';
 __export(__webpack_require__(22));
 var fan_types_1 = __webpack_require__(2);
 exports.fan = fan_types_1.fan;
@@ -3000,6 +3014,9 @@ var AdminApi = /** @class */function (_super) {
     AdminApi.prototype.deleteWaitingList = function (waitingListId) {
         return this.apiContext.delete('/seaters-admin/waiting-lists/:id', { id: waitingListId });
     };
+    AdminApi.prototype.scheduleClosingDate = function (waitingListId, date) {
+        return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId/schedule-closing', { date: date }, { waitingListId: waitingListId });
+    };
     AdminApi.prototype.createFanGroupProtectionCode = function (fanGroupId, code, maxTimesUsed) {
         return this.apiContext.post('/seaters-admin/fan-groups/:id/protection-codes', { code: code, maxTimesUsed: maxTimesUsed }, { id: fanGroupId });
     };
@@ -3187,6 +3204,9 @@ var AdminApi = /** @class */function (_super) {
     };
     AdminApi.prototype.createEvent = function (event) {
         return this.apiContext.post("/fan-group-owner/events", event);
+    };
+    AdminApi.prototype.deleteEvent = function (eventId) {
+        return this.apiContext.delete('/seaters-admin/events/:id', { id: eventId });
     };
     AdminApi.prototype.updatEvent = function (event, eventId) {
         return this.apiContext.put('/seaters-admin/events/:id', __assign({}, event), { id: eventId });
@@ -3997,14 +4017,23 @@ var FanService = /** @class */function (_super) {
     FanService.prototype.getWaitingListAsFGO = function (waitingListId) {
         return this.seatersApi.fan.getWaitingListAsFGO(waitingListId);
     };
+    FanService.prototype.getAdditionalInfos = function (waitingListId) {
+        return this.seatersApi.fan.getAdditionalInfos(waitingListId);
+    };
     FanService.prototype.getAvailableSeats = function (waitingListId) {
         return this.seatersApi.fan.getAvailableSeats(waitingListId);
+    };
+    FanService.prototype.addProperties = function (waitingListId, properties) {
+        return this.seatersApi.fan.addProperties(waitingListId, properties);
     };
     FanService.prototype.getSeatingMap = function (waitingListId) {
         return this.seatersApi.fan.getSeatingMap(waitingListId);
     };
     FanService.prototype.getPickedSeats = function (waitingListId) {
         return this.seatersApi.fan.getPickedSeats(waitingListId);
+    };
+    FanService.prototype.getBasicConnectedAppToken = function () {
+        return this.seatersApi.fan.getBasicConnectedAppToken();
     };
     return FanService;
 }(common_1.SeatersService);
@@ -5446,6 +5475,12 @@ var AdminService = /** @class */function (_super) {
     };
     AdminService.prototype.deleteWaitingList = function (waitingListId) {
         return this.seatersApi.admin.deleteWaitingList(waitingListId);
+    };
+    AdminService.prototype.deleteEvent = function (eventId) {
+        return this.seatersApi.admin.deleteEvent(eventId);
+    };
+    AdminService.prototype.scheduleClosingDate = function (waitingListId, date) {
+        return this.seatersApi.admin.scheduleClosingDate(waitingListId, date);
     };
     /**
      * Add a new protection code to a FanGroup

@@ -179,6 +179,12 @@ export class FanApi {
   updateWlImage(waitingListId: string, fileId: string):  Promise<any>  {
     return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId/waitinglist-image', null, {waitingListId}, {fileId});
   }
+
+  addProperties(waitingListId: string, properties): Promise<any> {
+    return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/properties', {
+      publicProperties: properties
+    }, {waitingListId}, null);
+  }
   
   waitinglistAvailableSeats(waitingListId: string) : Promise<any> {
     return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId/available-seats', null, {waitingListId}, null);
@@ -250,6 +256,10 @@ export class FanApi {
     return this.apiContext.put(endpoint, {
       waitingListIds
     });
+  }
+
+  getAdditionalInfos(waitingListId: string) : Promise<any> {
+    return this.apiContext.get('/v2/fan/waiting-lists/:waitingListId/additional-infos', {waitingListId});
   }
 
   waitingListPrice(waitingListId: string, numberOfSeats: number): Promise<Price> {
@@ -423,7 +433,7 @@ export class FanApi {
   }
 
   scheduleWaitingList(waitingListId: string, date: string) : Promise<any> {
-    return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId/scheduule', {date}, {waitingListId}, null);    
+    return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId/schedule', {date}, {waitingListId}, null);    
   }
 
   createWaitingList(fanGroupId: any, waitingList: any): Promise<any> {
@@ -794,6 +804,16 @@ export class FanApi {
   loadAdditionalCharges(waitingListId: string): Promise<AdditionalCharges[]> {
     return this.apiContext.get('v2/fan/waiting-lists/:waitingListId/additional-charges', { waitingListId });
   }
+
+
+  getBasicConnectedAppToken(): Promise<any> {
+    return this.apiContext.post('connected-app/authenticated/basic/token', {grant_type: 'client_credentials'}, null, null);
+  }
+
+  getJoinsCount(): Promise<any> {
+    return this.apiContext.get('connected-app/services/fangroup/count/joins');
+  }
+
 }
 
 /* tslint:enable:no-floating-promises */

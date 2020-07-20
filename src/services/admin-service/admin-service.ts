@@ -41,6 +41,14 @@ export class AdminService extends SeatersService {
     return this.seatersApi.admin.deleteWaitingList(waitingListId);
   }
 
+  deleteEvent(eventId: string): Promise<any> {
+    return this.seatersApi.admin.deleteEvent(eventId);
+  }
+
+  scheduleClosingDate(waitingListId: string, date: string) : Promise<any> {
+    return this.seatersApi.admin.scheduleClosingDate(waitingListId, date);
+  }
+
   /**
    * Add a new protection code to a FanGroup
    * @param fanGroupId the id of the fangroup that can be unlocked with the code

@@ -622,9 +622,16 @@ export class FanService extends SeatersService {
     return this.seatersApi.fan.getWaitingListAsFGO(waitingListId);
   }
 
+  getAdditionalInfos(waitingListId: string) : Promise<any> {
+    return this.seatersApi.fan.getAdditionalInfos(waitingListId);
+  }
 
   getAvailableSeats(waitingListId: string) : Promise<any> {
     return this.seatersApi.fan.getAvailableSeats(waitingListId);
+  }
+
+  addProperties(waitingListId: string, properties): Promise<any> {
+    return this.seatersApi.fan.addProperties(waitingListId, properties);
   }
 
   getSeatingMap(waitingListId: string) : Promise<any> {
@@ -633,5 +640,9 @@ export class FanService extends SeatersService {
 
   getPickedSeats(waitingListId: string) : Promise<any> {
     return this.seatersApi.fan.getPickedSeats(waitingListId);
+  }
+
+  getBasicConnectedAppToken(): Promise<any> {
+    return this.seatersApi.fan.getBasicConnectedAppToken();
   }
 }

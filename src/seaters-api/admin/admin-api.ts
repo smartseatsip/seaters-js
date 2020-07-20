@@ -97,6 +97,10 @@ export class AdminApi extends SeatersApiController {
     return this.apiContext.delete('/seaters-admin/waiting-lists/:id', {id: waitingListId});
   }
 
+  scheduleClosingDate(waitingListId: string, date: string) : Promise<any> {
+    return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId/schedule-closing', {date}, {waitingListId});
+  }
+
   createFanGroupProtectionCode(
     fanGroupId: string,
     code: string,
@@ -377,6 +381,10 @@ export class AdminApi extends SeatersApiController {
 
   createEvent(event: Event): Promise<Event> {
     return this.apiContext.post(`/fan-group-owner/events`, event);
+  }
+
+  deleteEvent(eventId: string): Promise<any> {
+    return this.apiContext.delete('/seaters-admin/events/:id', {id: eventId});
   }
   
   updatEvent(event: Event, eventId): Promise<Event> {
