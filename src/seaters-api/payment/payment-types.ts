@@ -1,6 +1,6 @@
 import { LanguageCode } from '../app/app-types';
 
-export type PAYMENT_SYSTEM_TYPE = 'PAYPAL' | 'ADYEN' | 'BRAINTREE' | 'SEATERS';
+export type PAYMENT_SYSTEM_TYPE = 'PAYPAL' | 'ADYEN' | 'BRAINTREE' | 'SEATERS' | 'PAYNL';
 export type SEATERS_PAYMENT_METHODS = 'VIRTUAL';
 
 export interface PaymentInfo {
@@ -34,6 +34,11 @@ export interface PaymentInfo {
    * Config for seaters-based payments
    */
   seatersConfig: PaymentInfoSeatersConfig;
+
+  /**
+   * Config for paynl-based payments
+   */
+  paynlConfig: PaymentInfoPaynlConfig;
 }
 
 export interface PaymentInfoTransaction {
@@ -121,6 +126,10 @@ export interface PaymentInfoSeatersConfig {
   virtualEnabled: boolean;
 }
 
+export interface PaymentInfoPaynlConfig {
+  // TODO: finish here
+}
+
 export interface PaymentSystemBase {
   configuration: { [key: string]: string };
   isDefault: boolean;
@@ -132,5 +141,5 @@ export interface PaymentSystem extends PaymentSystemBase {
   id: string;
 }
 
-export interface PaymentSystemCreateDTO extends PaymentSystemBase {}
-export interface PaymentSystemUpdateDTO extends PaymentSystemBase {}
+export interface PaymentSystemCreateDTO extends PaymentSystemBase { }
+export interface PaymentSystemUpdateDTO extends PaymentSystemBase { }
