@@ -5,6 +5,7 @@ import {
   PaymentInfoBraintreeConfig as _PaymentInfoBraintreeConfig,
   PaymentInfoPaypalConfig as _PaymentInfoPaypalConfig,
   PaymentInfoSeatersConfig as _PaymentInfoSeatersConfig,
+  PaymentInfoPaynlConfig as _PaymentInfoPaynlConfig,
   PaymentInfoTransaction as _PaymentInfoTransaction,
   PaymentInfoTransactionItem as _PaymentInfoTransactionItem,
   PaymentSystem as _PaymentSystem,
@@ -23,6 +24,7 @@ export namespace payment {
   export interface PaymentInfoBraintreeConfig extends _PaymentInfoBraintreeConfig {}
   export interface PaymentInfoPaypalConfig extends _PaymentInfoPaypalConfig {}
   export interface PaymentInfoSeatersConfig extends _PaymentInfoSeatersConfig {}
+  export interface PaymentInfoPaynlConfig extends _PaymentInfoPaynlConfig {}
   export interface PaymentInfoTransaction extends _PaymentInfoTransaction {}
   export interface PaymentInfoTransactionItem extends _PaymentInfoTransactionItem {}
 

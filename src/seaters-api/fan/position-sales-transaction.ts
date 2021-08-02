@@ -37,11 +37,12 @@ export interface PositionSalesTransaction {
 }
 
 export type POSITION_TRANSACTION_STATUS =
-  'CREATING'
+  | 'CREATING'
   | 'FAILURE'
   | 'CREATED'
   | 'APPROVED'
   | 'CANCELLED'
   | 'COMPLETED'
   | 'REFUNDING'
-  | 'REFUNDED';
+  | 'REFUNDED'
+  | 'PENDING';

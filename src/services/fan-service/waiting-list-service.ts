@@ -45,7 +45,7 @@ export class WaitingListService {
       .then(wls => this.extendRawWaitingLists(wls));
   }
 
-   getWaitingListsInFanGroupByKeywords(
+  getWaitingListsInFanGroupByKeywords(
     fanGroupId: string,
     pagingOptions: PagingOptions,
     keyWords?: string
@@ -142,6 +142,27 @@ export class WaitingListService {
     });
   }
 
+  getPositionPaynlPaymentInfo(waitingListId: string): Promise<any> {
+    return this.getPositionPaymentInfo(waitingListId).then(paymentInfo => {
+      if (paymentInfo.paymentSystemType !== 'PAY') {
+        throw new Error('WaitingList ' + waitingListId + ' is not configured to use Paynl');
+      }
+
+      if (paymentInfo.transactions.length !== 1) {
+        console.error(
+          '[FanService] unexpected nbr of transactions for wl (%s) : %s',
+          waitingListId,
+          paymentInfo.transactions.length
+        );
+        throw new Error('Unexpected number of transactions for Pay payment for WL ' + waitingListId);
+      }
+
+      return {
+        ...paymentInfo
+      };
+    });
+  }
+
   joinWaitingList(
     waitingListId: string,
     numberOfSeats: number,
@@ -207,6 +228,10 @@ export class WaitingListService {
         // wait for WL state to be 'GO_LIVE'
         .then(() => this.waitUntilCanGoLive(waitingListId))
     );
+  }
+
+  sendPendingPayment(waitingListId: string, transaction: PositionSalesTransactionInput): any {
+    return this.api.fan.createPositionSalesTransaction(waitingListId, transaction);
   }
 
   preauthorizePosition(waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
@@ -354,6 +379,9 @@ export class WaitingListService {
     if (WAITING_LIST_ACTION_STATUS.WAIT === wl.actionStatus) {
       return !!wl.position.expirationDate;
     } else if (WAITING_LIST_ACTION_STATUS.CONFIRM === wl.actionStatus) {
+      if (wl.position.transactionStatus === 'PENDING') {
+        return true;
+      }
       return !wl.position.transactionStatus || wl.position.transactionStatus === 'FAILURE';
     } else {
       return false;
@@ -472,7 +500,9 @@ export class WaitingListService {
           } else if (['FAILURE', 'CANCELLED', 'REFUNDED'].indexOf(position.transactionStatus) >= 0) {
             // failed payment
             return WAITING_LIST_ACTION_STATUS.CONFIRM;
-          } else if (['CREATING', 'CREATED', 'APPROVED', 'REFUNDING'].indexOf(position.transactionStatus) >= 0) {
+          } else if (
+            ['CREATING', 'CREATED', 'APPROVED', 'REFUNDING', 'PENDING'].indexOf(position.transactionStatus) >= 0
+          ) {
             // payment in progress
             return WAITING_LIST_ACTION_STATUS.CONFIRM; // (-)PENDING
           } else {
@@ -576,7 +606,10 @@ export class WaitingListService {
 
   private waitUntilCanGoLive(waitingListId: string): Promise<fan.WaitingList> {
     return this.pollWaitingList(waitingListId, wl => {
-      return wl.actionStatus === WAITING_LIST_ACTION_STATUS.GO_LIVE || wl.actionStatus === WAITING_LIST_ACTION_STATUS.NO_SEATS;
+      return (
+        wl.actionStatus === WAITING_LIST_ACTION_STATUS.GO_LIVE ||
+        wl.actionStatus === WAITING_LIST_ACTION_STATUS.NO_SEATS
+      );
     });
   }
 
@@ -645,7 +678,7 @@ export class WaitingListService {
   }
 
   private hasProcessedPayment(wl: fan.WaitingList): boolean {
-    return wl.position && ['FAILURE', 'COMPLETED'].indexOf(wl.position.transactionStatus) >= 0;
+    return wl.position && ['FAILURE', 'COMPLETED', 'PENDING'].indexOf(wl.position.transactionStatus) >= 0;
   }
 
   private hasFailedPayment(wl: fan.WaitingList): boolean {

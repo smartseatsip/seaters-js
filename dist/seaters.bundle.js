@@ -1867,6 +1867,22 @@ var SeatersSDK = /******/ (function(modules) {
             });
           });
         };
+        WaitingListService.prototype.getPositionPaynlPaymentInfo = function(waitingListId) {
+          return this.getPositionPaymentInfo(waitingListId).then(function(paymentInfo) {
+            if (paymentInfo.paymentSystemType !== 'PAY') {
+              throw new Error('WaitingList ' + waitingListId + ' is not configured to use Paynl');
+            }
+            if (paymentInfo.transactions.length !== 1) {
+              console.error(
+                '[FanService] unexpected nbr of transactions for wl (%s) : %s',
+                waitingListId,
+                paymentInfo.transactions.length
+              );
+              throw new Error('Unexpected number of transactions for Pay payment for WL ' + waitingListId);
+            }
+            return __assign({}, paymentInfo);
+          });
+        };
         WaitingListService.prototype.joinWaitingList = function(
           waitingListId,
           numberOfSeats,
@@ -1933,6 +1949,9 @@ var SeatersSDK = /******/ (function(modules) {
           return this.submitTransaction(waitingListId, transaction).then(function() {
             return _this.waitUntilCanGoLive(waitingListId);
           });
+        };
+        WaitingListService.prototype.sendPendingPayment = function(waitingListId, transaction) {
+          return this.api.fan.createPositionSalesTransaction(waitingListId, transaction);
         };
         WaitingListService.prototype.preauthorizePosition = function(waitingListId, transaction) {
           var _this = this;
@@ -2050,6 +2069,9 @@ var SeatersSDK = /******/ (function(modules) {
           if (WAITING_LIST_ACTION_STATUS.WAIT === wl.actionStatus) {
             return !!wl.position.expirationDate;
           } else if (WAITING_LIST_ACTION_STATUS.CONFIRM === wl.actionStatus) {
+            if (wl.position.transactionStatus === 'PENDING') {
+              return true;
+            }
             return !wl.position.transactionStatus || wl.position.transactionStatus === 'FAILURE';
           } else {
             return false;
@@ -2160,7 +2182,9 @@ var SeatersSDK = /******/ (function(modules) {
                 } else if (['FAILURE', 'CANCELLED', 'REFUNDED'].indexOf(position.transactionStatus) >= 0) {
                   // failed payment
                   return WAITING_LIST_ACTION_STATUS.CONFIRM;
-                } else if (['CREATING', 'CREATED', 'APPROVED', 'REFUNDING'].indexOf(position.transactionStatus) >= 0) {
+                } else if (
+                  ['CREATING', 'CREATED', 'APPROVED', 'REFUNDING', 'PENDING'].indexOf(position.transactionStatus) >= 0
+                ) {
                   // payment in progress
                   return WAITING_LIST_ACTION_STATUS.CONFIRM; // (-)PENDING
                 } else {
@@ -2357,7 +2381,7 @@ var SeatersSDK = /******/ (function(modules) {
             });
         };
         WaitingListService.prototype.hasProcessedPayment = function(wl) {
-          return wl.position && ['FAILURE', 'COMPLETED'].indexOf(wl.position.transactionStatus) >= 0;
+          return wl.position && ['FAILURE', 'COMPLETED', 'PENDING'].indexOf(wl.position.transactionStatus) >= 0;
         };
         WaitingListService.prototype.hasFailedPayment = function(wl) {
           return wl.position && wl.position.transactionStatus === 'FAILURE';
@@ -2578,7 +2602,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.35.36';
+      exports.version = '1.35.37';
       __export(__webpack_require__(22));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
@@ -4342,6 +4366,9 @@ var SeatersSDK = /******/ (function(modules) {
         FanService.prototype.getPositionSeatersPaymentInfo = function(waitingListId) {
           return this.waitingListService.getPositionSeatersPaymentInfo(waitingListId);
         };
+        FanService.prototype.getPositionPaynlPaymentInfo = function(waitingListId) {
+          return this.waitingListService.getPositionPaynlPaymentInfo(waitingListId);
+        };
         FanService.prototype.joinWaitingList = function(
           waitingListId,
           numberOfSeats,
@@ -4379,6 +4406,9 @@ var SeatersSDK = /******/ (function(modules) {
         };
         FanService.prototype.payPosition = function(waitingListId, transaction) {
           return this.waitingListService.payPosition(waitingListId, transaction);
+        };
+        FanService.prototype.sendPendingPayment = function(waitingListId, transaction) {
+          return this.waitingListService.sendPendingPayment(waitingListId, transaction);
         };
         FanService.prototype.preauthorizePosition = function(waitingListId, transaction) {
           return this.waitingListService.preauthorizePosition(waitingListId, transaction);
