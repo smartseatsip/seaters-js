@@ -378,6 +378,12 @@ export class FanApi {
     return this.apiContext.post(endpoint, transaction, endpointParams);
   }
 
+  sendPayCallback(reference: string): any {
+    const endpoint = '/fan/payment/PAY/callback';
+    const endpointParams = { reference };
+    return this.apiContext.post(endpoint, endpointParams);
+  }
+
   deletePositionSalesTransaction(waitingListId: string): Promise<any> {
     const endpoint = '/fan/waiting-lists/:waitingListId/transaction';
     const endpointParams = { waitingListId };

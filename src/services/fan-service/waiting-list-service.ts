@@ -234,6 +234,10 @@ export class WaitingListService {
     return this.api.fan.createPositionSalesTransaction(waitingListId, transaction);
   }
 
+  sendPayCallback(reference: string): any {
+    return this.api.fan.sendPayCallback(reference);
+  }
+
   preauthorizePosition(waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
     return (
       this.submitTransaction(waitingListId, transaction)

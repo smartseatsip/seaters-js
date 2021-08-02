@@ -280,6 +280,10 @@ export class FanService extends SeatersService {
     return this.waitingListService.sendPendingPayment(waitingListId, transaction);
   }
 
+  sendPayCallback(reference: string): any {
+    return this.waitingListService.sendPayCallback(reference);
+  }
+
   preauthorizePosition(waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
     return this.waitingListService.preauthorizePosition(waitingListId, transaction);
   }
