@@ -795,6 +795,11 @@ var SeatersSDK = /******/ (function(modules) {
           var endpointParams = { waitingListId: waitingListId };
           return this.apiContext.post(endpoint, transaction, endpointParams);
         };
+        FanApi.prototype.sendPayCallback = function(reference) {
+          var endpoint = '/fan/payment/PAY/callback';
+          var endpointParams = { reference: reference };
+          return this.apiContext.post(endpoint, endpointParams);
+        };
         FanApi.prototype.deletePositionSalesTransaction = function(waitingListId) {
           var endpoint = '/fan/waiting-lists/:waitingListId/transaction';
           var endpointParams = { waitingListId: waitingListId };
@@ -1953,6 +1958,9 @@ var SeatersSDK = /******/ (function(modules) {
         WaitingListService.prototype.sendPendingPayment = function(waitingListId, transaction) {
           return this.api.fan.createPositionSalesTransaction(waitingListId, transaction);
         };
+        WaitingListService.prototype.sendPayCallback = function(reference) {
+          return this.api.fan.sendPayCallback(reference);
+        };
         WaitingListService.prototype.preauthorizePosition = function(waitingListId, transaction) {
           var _this = this;
           return this.submitTransaction(waitingListId, transaction).then(function() {
@@ -2602,7 +2610,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.35.37';
+      exports.version = '1.35.82';
       __export(__webpack_require__(22));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
@@ -4409,6 +4417,9 @@ var SeatersSDK = /******/ (function(modules) {
         };
         FanService.prototype.sendPendingPayment = function(waitingListId, transaction) {
           return this.waitingListService.sendPendingPayment(waitingListId, transaction);
+        };
+        FanService.prototype.sendPayCallback = function(reference) {
+          return this.waitingListService.sendPayCallback(reference);
         };
         FanService.prototype.preauthorizePosition = function(waitingListId, transaction) {
           return this.waitingListService.preauthorizePosition(waitingListId, transaction);
