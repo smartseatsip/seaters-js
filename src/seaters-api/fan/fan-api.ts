@@ -379,7 +379,7 @@ export class FanApi {
   }
 
   sendPayCallback(reference: string): any {
-    const endpoint = '/fan/payment/PAY/callback';
+    const endpoint = '/v2/fan/payment/PAY/callback';
     const endpointParams = { reference };
     return this.apiContext.post(endpoint, endpointParams);
   }
