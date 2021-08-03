@@ -796,7 +796,7 @@ var SeatersSDK = /******/ (function(modules) {
           return this.apiContext.post(endpoint, transaction, endpointParams);
         };
         FanApi.prototype.sendPayCallback = function(reference) {
-          var endpoint = '/fan/payment/PAY/callback';
+          var endpoint = '/v2/fan/payment/PAY/callback';
           var endpointParams = { reference: reference };
           return this.apiContext.post(endpoint, endpointParams);
         };
@@ -2610,7 +2610,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.35.82';
+      exports.version = '1.35.83';
       __export(__webpack_require__(22));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
