@@ -36,6 +36,7 @@ export function retryUntil<T>(
 
       if (conditionIsMet) {
         console.log('[retryUntil] - condition has been met');
+        console.log('RESULT', result);
         deferred.resolve(result);
         return undefined;
       } else {

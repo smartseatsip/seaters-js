@@ -1961,6 +1961,9 @@ var SeatersSDK = /******/ (function(modules) {
         WaitingListService.prototype.sendPayCallback = function(reference) {
           return this.api.fan.sendPayCallback(reference);
         };
+        WaitingListService.prototype.checkIfGoLive = function(waitingListId) {
+          return this.waitUntilCanGoLive(waitingListId);
+        };
         WaitingListService.prototype.preauthorizePosition = function(waitingListId, transaction) {
           var _this = this;
           return this.submitTransaction(waitingListId, transaction).then(function() {
@@ -2610,7 +2613,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.35.83';
+      exports.version = '1.35.84';
       __export(__webpack_require__(22));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
@@ -2940,6 +2943,7 @@ var SeatersSDK = /******/ (function(modules) {
             }
             if (conditionIsMet) {
               console.log('[retryUntil] - condition has been met');
+              console.log('RESULT', result);
               deferred.resolve(result);
               return undefined;
             } else {
@@ -4417,6 +4421,9 @@ var SeatersSDK = /******/ (function(modules) {
         };
         FanService.prototype.sendPendingPayment = function(waitingListId, transaction) {
           return this.waitingListService.sendPendingPayment(waitingListId, transaction);
+        };
+        FanService.prototype.checkIfGoLive = function(waitingListId) {
+          return this.waitingListService.checkIfGoLive(waitingListId);
         };
         FanService.prototype.sendPayCallback = function(reference) {
           return this.waitingListService.sendPayCallback(reference);

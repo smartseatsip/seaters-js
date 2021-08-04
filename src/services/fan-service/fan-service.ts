@@ -280,6 +280,10 @@ export class FanService extends SeatersService {
     return this.waitingListService.sendPendingPayment(waitingListId, transaction);
   }
 
+  checkIfGoLive(waitingListId: string): any {
+    return this.waitingListService.checkIfGoLive(waitingListId);
+  }
+
   sendPayCallback(reference: string): any {
     return this.waitingListService.sendPayCallback(reference);
   }

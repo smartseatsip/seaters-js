@@ -238,6 +238,10 @@ export class WaitingListService {
     return this.api.fan.sendPayCallback(reference);
   }
 
+  checkIfGoLive(waitingListId: string): any {
+    return this.waitUntilCanGoLive(waitingListId);
+  }
+
   preauthorizePosition(waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
     return (
       this.submitTransaction(waitingListId, transaction)
