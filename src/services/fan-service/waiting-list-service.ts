@@ -239,7 +239,18 @@ export class WaitingListService {
   }
 
   checkIfGoLive(waitingListId: string): any {
-    return this.waitUntilCanGoLive(waitingListId);
+    return this.pollWaitingList(
+      waitingListId,
+      wl => {
+        return (
+          wl.actionStatus === WAITING_LIST_ACTION_STATUS.GO_LIVE ||
+          wl.actionStatus === WAITING_LIST_ACTION_STATUS.NO_SEATS
+        );
+      },
+      10,
+      1000,
+      false
+    );
   }
 
   preauthorizePosition(waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
@@ -612,7 +623,7 @@ export class WaitingListService {
     }
   }
 
-  private waitUntilCanGoLive(waitingListId: string): Promise<fan.WaitingList> {
+  private waitUntilCanGoLive(waitingListId: string, useRawWishList?: boolean): Promise<fan.WaitingList> {
     return this.pollWaitingList(waitingListId, wl => {
       return (
         wl.actionStatus === WAITING_LIST_ACTION_STATUS.GO_LIVE ||
