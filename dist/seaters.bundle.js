@@ -795,6 +795,11 @@ var SeatersSDK = /******/ (function(modules) {
           var endpointParams = { waitingListId: waitingListId };
           return this.apiContext.post(endpoint, transaction, endpointParams);
         };
+        FanApi.prototype.getPositionSalesTransaction = function(waitingListId) {
+          var endpoint = '/fan/waiting-lists/:waitingListId/transaction';
+          var endpointParams = { waitingListId: waitingListId };
+          return this.apiContext.get(endpoint, endpointParams);
+        };
         FanApi.prototype.sendPayCallback = function(reference) {
           var endpoint = '/v2/fan/payment/PAY/callback';
           var endpointParams = { reference: reference };
@@ -1962,7 +1967,21 @@ var SeatersSDK = /******/ (function(modules) {
           return this.api.fan.sendPayCallback(reference);
         };
         WaitingListService.prototype.checkIfGoLive = function(waitingListId) {
-          return this.waitUntilCanGoLive(waitingListId);
+          return this.pollWaitingList(
+            waitingListId,
+            function(wl) {
+              return (
+                wl.actionStatus === WAITING_LIST_ACTION_STATUS.GO_LIVE ||
+                wl.actionStatus === WAITING_LIST_ACTION_STATUS.NO_SEATS
+              );
+            },
+            10,
+            1000,
+            false
+          );
+        };
+        WaitingListService.prototype.getSalesTransaction = function(waitingListId) {
+          return this.api.fan.getPositionSalesTransaction(waitingListId);
         };
         WaitingListService.prototype.preauthorizePosition = function(waitingListId, transaction) {
           var _this = this;
@@ -2198,6 +2217,9 @@ var SeatersSDK = /******/ (function(modules) {
                 ) {
                   // payment in progress
                   return WAITING_LIST_ACTION_STATUS.CONFIRM; // (-)PENDING
+                } else if (position.transactionStatus === 'COMPLETED') {
+                  // payment in progress
+                  return WAITING_LIST_ACTION_STATUS.GO_LIVE;
                 } else {
                   console.error('[WaitingListService] - unexpected transactionStatus: %s', position.transactionStatus);
                   return WAITING_LIST_ACTION_STATUS.ERROR;
@@ -2300,7 +2322,7 @@ var SeatersSDK = /******/ (function(modules) {
               throw new Error('Unknown WL seatDistributionMode ' + JSON.stringify(wl.seatDistributionMode));
           }
         };
-        WaitingListService.prototype.waitUntilCanGoLive = function(waitingListId) {
+        WaitingListService.prototype.waitUntilCanGoLive = function(waitingListId, useRawWishList) {
           return this.pollWaitingList(waitingListId, function(wl) {
             return (
               wl.actionStatus === WAITING_LIST_ACTION_STATUS.GO_LIVE ||
@@ -2613,7 +2635,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.35.84';
+      exports.version = '1.35.87';
       __export(__webpack_require__(22));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
@@ -4424,6 +4446,9 @@ var SeatersSDK = /******/ (function(modules) {
         };
         FanService.prototype.checkIfGoLive = function(waitingListId) {
           return this.waitingListService.checkIfGoLive(waitingListId);
+        };
+        FanService.prototype.getSalesTransaction = function(waitingListId) {
+          return this.waitingListService.getSalesTransaction(waitingListId);
         };
         FanService.prototype.sendPayCallback = function(reference) {
           return this.waitingListService.sendPayCallback(reference);

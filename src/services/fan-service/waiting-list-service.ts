@@ -253,6 +253,10 @@ export class WaitingListService {
     );
   }
 
+  getSalesTransaction(waitingListId: string): any {
+    return this.api.fan.getPositionSalesTransaction(waitingListId);
+  }
+
   preauthorizePosition(waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
     return (
       this.submitTransaction(waitingListId, transaction)
@@ -524,6 +528,9 @@ export class WaitingListService {
           ) {
             // payment in progress
             return WAITING_LIST_ACTION_STATUS.CONFIRM; // (-)PENDING
+          } else if (position.transactionStatus === 'COMPLETED') {
+            // payment in progress
+            return WAITING_LIST_ACTION_STATUS.GO_LIVE;
           } else {
             console.error('[WaitingListService] - unexpected transactionStatus: %s', position.transactionStatus);
             return WAITING_LIST_ACTION_STATUS.ERROR;
