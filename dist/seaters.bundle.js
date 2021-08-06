@@ -1983,6 +1983,9 @@ var SeatersSDK = /******/ (function(modules) {
         WaitingListService.prototype.getSalesTransaction = function(waitingListId) {
           return this.api.fan.getPositionSalesTransaction(waitingListId);
         };
+        WaitingListService.prototype.deleteSalesTransaction = function(waitingListId) {
+          return this.api.fan.deletePositionSalesTransaction(waitingListId);
+        };
         WaitingListService.prototype.preauthorizePosition = function(waitingListId, transaction) {
           var _this = this;
           return this.submitTransaction(waitingListId, transaction).then(function() {
@@ -2635,7 +2638,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.35.87';
+      exports.version = '1.35.89';
       __export(__webpack_require__(22));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
@@ -4446,6 +4449,9 @@ var SeatersSDK = /******/ (function(modules) {
         };
         FanService.prototype.checkIfGoLive = function(waitingListId) {
           return this.waitingListService.checkIfGoLive(waitingListId);
+        };
+        FanService.prototype.deleteSalesTransaction = function(waitingListId) {
+          return this.waitingListService.deleteSalesTransaction(waitingListId);
         };
         FanService.prototype.getSalesTransaction = function(waitingListId) {
           return this.waitingListService.getSalesTransaction(waitingListId);
