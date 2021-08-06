@@ -257,6 +257,10 @@ export class WaitingListService {
     return this.api.fan.getPositionSalesTransaction(waitingListId);
   }
 
+  deleteSalesTransaction(waitingListId: string): any {
+    return this.api.fan.deletePositionSalesTransaction(waitingListId);
+  }
+
   preauthorizePosition(waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
     return (
       this.submitTransaction(waitingListId, transaction)

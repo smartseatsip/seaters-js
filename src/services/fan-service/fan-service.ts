@@ -284,6 +284,10 @@ export class FanService extends SeatersService {
     return this.waitingListService.checkIfGoLive(waitingListId);
   }
 
+  deleteSalesTransaction(waitingListId: string): any {
+    return this.waitingListService.deleteSalesTransaction(waitingListId);
+  }
+
   getSalesTransaction(waitingListId: string): any {
     return this.waitingListService.getSalesTransaction(waitingListId);
   }
