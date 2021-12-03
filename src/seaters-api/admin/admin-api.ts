@@ -58,6 +58,14 @@ export class AdminApi extends SeatersApiController {
     });
   }
 
+  insertUserInGroup(userId: string, fanGroupId: string): Promise<any> {
+    return this.apiContext.post('/v2/seaters-admin/users/:userId/groups/:fanGroupId', null, {userId, fanGroupId});
+  }
+
+  updateIntegrationProfile(userId: string, integrationId: string, fanGroupId: string): Promise<any> {
+    return this.apiContext.put('/v2/fan-group-owner/groups/:fanGroupId/integrations/:integrationId/users/:userId/update-profile', null, {fanGroupId, integrationId, userId});
+  }
+
   getEvent(eventId: string): Promise<admin.FanGroup> {
     return this.apiContext.get('/seaters-admin/events/:id', { id: eventId });
   }
@@ -95,6 +103,14 @@ export class AdminApi extends SeatersApiController {
 
   deleteWaitingList(waitingListId: string): Promise<any> {
     return this.apiContext.delete('/seaters-admin/waiting-lists/:id', {id: waitingListId});
+  }
+
+  getWaitingListProperties(waitingListId: string): Promise<any> {
+    return this.apiContext.get('/v2/fan-group-owner/waiting-lists/:waitingListId/properties', {waitingListId});
+  }
+
+  updateWaitingListProperties(waitingListId: string, body: any): Promise<any> {
+    return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/properties', body, {waitingListId});
   }
 
   scheduleClosingDate(waitingListId: string, date: string) : Promise<any> {

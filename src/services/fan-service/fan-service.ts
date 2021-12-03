@@ -18,6 +18,7 @@ import { FanSurveyService } from './fan-survey-service';
 import { UserInterestUpdateDTO } from '../../seaters-api/fan';
 import { PagedSortedResult } from '../../shared-types';
 
+const WAITING_LIST_ACTION_STATUS = fan.WAITING_LIST_ACTION_STATUS;
 
 export class FanService extends SeatersService {
   public waitingListService: WaitingListService;
@@ -118,6 +119,15 @@ export class FanService extends SeatersService {
     return this.seatersApi.fan.assignWaitingListSeatToFan(waitingListId, fanId);
   }
 
+  assignWaitingListSeatToFanQvax(waitingListId: string, nrOfSeats: string, body: any) : Promise<any> {
+    return this.seatersApi.fan.assignWaitingListSeatToFanQvax(waitingListId, nrOfSeats, body);
+  }
+
+  distributionStatusQvax(waitingListId: string, distriNumber: string) : Promise<any> {
+    return this.seatersApi.fan.distributionStatusQvax(waitingListId, distriNumber);
+  }
+
+
   assignWaitingListParkingSeatToFan(waitingListId: string, fanId: string) : Promise<any> {
     return this.seatersApi.fan.assignWaitingListParkingSeatToFan(waitingListId, fanId);
   }
@@ -141,6 +151,10 @@ export class FanService extends SeatersService {
   
   getFanInfo(fanId: string) : Promise<any> {
     return this.seatersApi.fan.getFanInfo(fanId);
+  }
+
+  requestDelete(fanGroupId: string): Promise<any> {
+    return this.seatersApi.fan.requestDelete(fanGroupId);
   }
 
   getFanAttribute(fanId: string) : Promise<any> {
@@ -258,6 +272,10 @@ export class FanService extends SeatersService {
   leaveWaitingList(waitingListId: string): Promise<fan.WaitingList> {
     return this.waitingListService.leaveWaitingList(waitingListId);
   }
+  
+  getIngenicoSession(waitingListId: string): Promise<any> {
+    return this.seatersApi.fan.getIngenicoSession(waitingListId);
+  }
 
   getPositionPaymentInfo(waitingListId: string): Promise<payment.PaymentInfo> {
     return this.waitingListService.getPositionPaymentInfo(waitingListId);
@@ -265,6 +283,20 @@ export class FanService extends SeatersService {
 
   payPosition(waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
     return this.waitingListService.payPosition(waitingListId, transaction);
+  }
+
+  submitTransaction(waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
+    return this.waitingListService.submitTransaction(waitingListId, transaction);
+  }
+
+  waitUntilCanGoLive(waitingListId: string): Promise<fan.WaitingList> {
+    return this.waitingListService.pollWaitingList(waitingListId, wl => {
+      return wl.actionStatus === WAITING_LIST_ACTION_STATUS.GO_LIVE || wl.actionStatus === WAITING_LIST_ACTION_STATUS.NO_SEATS;
+    });
+  }
+
+  waitUntilPaymentProcessed(waitingListId: string) : Promise<any> {
+    return this.waitingListService.waitUntilPaymentProcessed(waitingListId);
   }
 
   preauthorizePosition(waitingListId: string, transaction: PositionSalesTransactionInput): Promise<fan.WaitingList> {
@@ -348,6 +380,54 @@ export class FanService extends SeatersService {
    */
   fan(): Promise<Fan> {
     return this.seatersApi.fan.fan();
+  }
+
+  fanGroupOwner() : Promise<any> {
+    return this.seatersApi.fan.fanGroupOwner();
+  }
+
+  customProfile(fanGroupId): Promise<any> {
+    return this.seatersApi.fan.customProfile(fanGroupId);
+  }
+
+  customProfileVaccin(listId: string) : Promise<any> {
+    return this.seatersApi.fan.customProfileVaccin(listId);
+  }
+
+  positionAttribute(listId: string) : Promise<any> {
+    return this.seatersApi.fan.positionAttribute(listId);
+  }
+  
+  getAllVaccinationCenter(fanGroupId: string): Promise<any> {
+    return this.seatersApi.fan.getAllVaccinationCenter(fanGroupId);
+  }
+  
+  getVaccincationCenterByWl(fanGroupId: string, waitingListId: string): Promise<any> {
+    return this.seatersApi.fan.getVaccincationCenterByWl(fanGroupId, waitingListId);
+  }
+
+  getCachedVaccincationCenterByWl(fanGroupId: string, waitingListId: string): Promise<any> {
+    return this.seatersApi.fan.getCachedVaccincationCenterByWl(fanGroupId, waitingListId);
+  }
+
+
+
+  
+
+  getDoclrAvailableSlots(fanGroupId: string, waitingListId: string, body: any): Promise<any> {
+    return this.seatersApi.fan.getDoclrAvailableSlots(fanGroupId, waitingListId,body);
+  }
+
+  reactivateDoclrUser(fanGroupId: string, body?: any) : Promise<any> {
+    return this.seatersApi.fan.reactivateDoclrUser(fanGroupId, body);
+  }
+
+  consentVaccinationSchema(fanGroupId: string, body?: any) : Promise<any> {
+    return this.seatersApi.fan.consentVaccinationSchema(fanGroupId, body);
+  }
+
+  deleteConsentVaccinationSchema(fanGroupId: string, body?: any) : Promise<any> {
+    return this.seatersApi.fan.deleteConsentVaccinationSchema(fanGroupId, body);
   }
 
   /**
@@ -559,6 +639,34 @@ export class FanService extends SeatersService {
 
   getPositions(waitingListId: string, query?: string, pagingOptions?: PagingOptions): Promise<any> {
     return this.seatersApi.fan.getPositions(waitingListId, query, pagingOptions);
+  }
+
+  getAnonymousPositions(waitingListId: string, body?: any): Promise<any> {
+    return this.seatersApi.fan.getAnonymousPositions(waitingListId, body);
+  }
+
+  getAnonymousStats(waitingListId: string): Promise<any> {
+    return this.seatersApi.fan.getAnonymousStats(waitingListId);
+  }
+
+  getContactSeats(waitingListId: string, body?: any): Promise<any> {
+    return this.seatersApi.fan.getContactSeats(waitingListId, body);
+  }
+  
+  getAnonymousSeatsSchema(waitingListId: string, body?: any): Promise<any> {
+    return this.seatersApi.fan.getAnonymousSeatsSchema(waitingListId, body);
+  }
+
+  getAnonymousStatsBySlot(waitingListId: string, body?: any): Promise<any> {
+    return this.seatersApi.fan.getAnonymousStatsBySlot(waitingListId, body);
+  }
+
+  getAnonymousSeats(waitingListId: string, body?: any): Promise<any> {
+    return this.seatersApi.fan.getAnonymousSeats(waitingListId, body);
+  }
+
+  getWishListsDistriQvax(fanGroupId: string): Promise<any> {
+    return this.seatersApi.fan.getWishListsDistriQvax(fanGroupId);
   }
 
   getSeats(waitingListId: string, query?: string, pagingOptions?: PagingOptions): Promise<any> {

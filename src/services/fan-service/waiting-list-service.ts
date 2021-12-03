@@ -338,26 +338,54 @@ export class WaitingListService {
     return this.api.fan.loadAdditionalCharges(waitingListId);
   }
 
+  pollWaitingList(
+    waitingListId: string,
+    condition: (wl: fan.WaitingList) => boolean,
+    limit?: number,
+    delayInMs?: number,
+    useRawWaitingList?: boolean
+  ): Promise<fan.WaitingList> {
+    return retryUntil<fan.WaitingList>(
+      // We use the raw waitinglist data instead to prevent an infinite loop when re-fetching the waiting list
+      () =>
+        (useRawWaitingList ? this.getRawWaitingList(waitingListId) : this.getWaitingList(waitingListId)) as Promise<
+          fan.WaitingList
+        >,
+      condition,
+      limit || 10,
+      delayInMs || 1000
+    );
+  }
+
+  submitTransaction(
+    waitingListId: string,
+    transaction: PositionSalesTransactionInput
+  ): Promise<fan.WaitingList> {
+    return this.getWaitingList(waitingListId)
+      .then(wl => this.ensureFanCanPayPosition(wl))
+      .then(wl => this.removePreviousTransactionIfAny(wl))
+      .then(wl => this.createTransaction(waitingListId, transaction))
+      .then(res => {
+        return res;
+      }, err => {
+        console.error('[WaitingListService] submitTransaction failed: %s', err, transaction);
+        throw err;
+      });
+  }
+
+  waitUntilPaymentProcessed(waitingListId: string) {
+    return this.pollWaitingList(waitingListId, wl => this.hasProcessedPayment(wl), 60, 1000)
+    .then((wl: any) => {
+      if (this.hasFailedPayment(wl)) {
+        const errorMessage = wl.position ? wl.position.paymentFailureMessage : 'Payment Failed!';
+        return Promise.reject(errorMessage);
+      }
+      return wl;
+    });
+  }
+
   private hasPreviousPayment(wl: fan.WaitingList): boolean {
     return !!(wl.position && wl.position.transactionStatus);
-  }
-
-  private hasPaymentInProgress(wl: fan.WaitingList): boolean {
-    if (!wl.position) {
-      return false;
-    } else {
-      return ['CREATING', 'CREATED', 'APPROVED', 'CANCELLED', 'REFUNDING'].indexOf(wl.position.transactionStatus) >= 0;
-    }
-  }
-
-  private canPay(wl: fan.WaitingList): boolean {
-    if (WAITING_LIST_ACTION_STATUS.WAIT === wl.actionStatus) {
-      return !!wl.position.expirationDate;
-    } else if (WAITING_LIST_ACTION_STATUS.CONFIRM === wl.actionStatus) {
-      return !wl.position.transactionStatus || wl.position.transactionStatus === 'FAILURE';
-    } else {
-      return false;
-    }
   }
 
   private checkUnlockStatus(wl: fan.WaitingList) {
@@ -397,25 +425,6 @@ export class WaitingListService {
   private extendRawWaitingLists(wls: PagedResult<WaitingList>): PagedResult<fan.WaitingList> {
     wls.items = wls.items.map(wl => this.extendRawWaitingList(wl));
     return wls as PagedResult<fan.WaitingList>;
-  }
-
-  private pollWaitingList(
-    waitingListId: string,
-    condition: (wl: fan.WaitingList) => boolean,
-    limit?: number,
-    delayInMs?: number,
-    useRawWaitingList?: boolean
-  ): Promise<fan.WaitingList> {
-    return retryUntil<fan.WaitingList>(
-      // We use the raw waitinglist data instead to prevent an infinite loop when re-fetching the waiting list
-      () =>
-        (useRawWaitingList ? this.getRawWaitingList(waitingListId) : this.getWaitingList(waitingListId)) as Promise<
-          fan.WaitingList
-        >,
-      condition,
-      limit || 10,
-      delayInMs || 1000
-    );
   }
 
   private getWaitingListActionStatus(waitingList: WaitingList): fan.WAITING_LIST_ACTION_STATUS {
@@ -472,7 +481,7 @@ export class WaitingListService {
           } else if (['FAILURE', 'CANCELLED', 'REFUNDED'].indexOf(position.transactionStatus) >= 0) {
             // failed payment
             return WAITING_LIST_ACTION_STATUS.CONFIRM;
-          } else if (['CREATING', 'CREATED', 'APPROVED', 'REFUNDING'].indexOf(position.transactionStatus) >= 0) {
+          } else if (['CREATING', 'CREATED', 'APPROVED', 'PENDING', 'REFUNDING'].indexOf(position.transactionStatus) >= 0) {
             // payment in progress
             return WAITING_LIST_ACTION_STATUS.CONFIRM; // (-)PENDING
           } else {
@@ -509,7 +518,6 @@ export class WaitingListService {
     if (!wl.directSalesEnabled) {
       return Promise.resolve(wl);
     }
-    console.log('waiting list is direct sales', wl);
     // Instantly resolve when waiting list was already confirmed
     if (wl.actionStatus === WAITING_LIST_ACTION_STATUS.CONFIRM) {
       return Promise.resolve(wl);
@@ -593,20 +601,6 @@ export class WaitingListService {
     }
   }
 
-  private submitTransaction(
-    waitingListId: string,
-    transaction: PositionSalesTransactionInput
-  ): Promise<fan.WaitingList> {
-    return this.getWaitingList(waitingListId)
-      .then(wl => this.ensureFanCanPayPosition(wl))
-      .then(wl => this.removePreviousTransactionIfAny(wl))
-      .then(wl => this.createTransaction(waitingListId, transaction))
-      .then(undefined, err => {
-        console.error('[WaitingListService] submitTransaction failed: %s', err, transaction);
-        throw err;
-      });
-  }
-
   private ensureFanCanPayPosition(wl: fan.WaitingList): Promise<fan.WaitingList> {
     if (!this.canPay(wl)) {
       throw new Error('Trying to submit transaction for WL that is not in a state that requires payment');
@@ -616,6 +610,26 @@ export class WaitingListService {
       return Promise.resolve(wl);
     }
   }
+
+  private canPay(wl: fan.WaitingList): boolean {
+    if (WAITING_LIST_ACTION_STATUS.WAIT === wl.actionStatus) {
+      return !!wl.position.expirationDate;
+    } else if (WAITING_LIST_ACTION_STATUS.CONFIRM === wl.actionStatus) {
+      return !wl.position.transactionStatus || wl.position.transactionStatus === 'FAILURE';
+    } else {
+      return false;
+    }
+  }
+
+  private hasPaymentInProgress(wl: fan.WaitingList): boolean {
+    if (!wl.position) {
+      return false;
+    } else {
+      return ['CREATING', 'CREATED', 'APPROVED', 'CANCELLED', 'REFUNDING'].indexOf(wl.position.transactionStatus) >= 0;
+    }
+  }
+
+  
 
   private removePreviousTransactionIfAny(wl: fan.WaitingList): Promise<fan.WaitingList> {
     if (!this.hasPreviousPayment(wl)) {
@@ -629,23 +643,13 @@ export class WaitingListService {
   private createTransaction(
     waitingListId: string,
     transaction: PositionSalesTransactionInput
-  ): Promise<fan.WaitingList> {
+  ): Promise<any> {
     return this.api.fan
-      .createPositionSalesTransaction(waitingListId, transaction)
-      .then(() => {
-        return this.pollWaitingList(waitingListId, wl => this.hasProcessedPayment(wl), 60, 1000);
-      })
-      .then((wl: any) => {
-        if (this.hasFailedPayment(wl)) {
-          const errorMessage = wl.position ? wl.position.paymentFailureMessage : 'Payment Failed!';
-          return Promise.reject(errorMessage);
-        }
-        return wl;
-      });
+      .createPositionSalesTransaction(waitingListId, transaction);
   }
 
   private hasProcessedPayment(wl: fan.WaitingList): boolean {
-    return wl.position && ['FAILURE', 'COMPLETED'].indexOf(wl.position.transactionStatus) >= 0;
+    return wl.position && ['FAILURE' , 'COMPLETED'].indexOf(wl.position.transactionStatus) >= 0;
   }
 
   private hasFailedPayment(wl: fan.WaitingList): boolean {

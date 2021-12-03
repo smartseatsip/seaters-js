@@ -53,10 +53,11 @@ export class AlgoliaForSeatersService {
     page: number,
     geoLoc?: GeoLoc, 
     keywords?: string[], 
-    dateTimeStamp?: string
+    dateTimeStamp?: string,
+    filter?: string
   ): Promise<TypedSearchResult<WaitingList>> {
     // TODO: sort by date ascending
-    const q = this.buildExactQuery(fanGroupId, 'groupId', 'WAITING_LIST', geoLoc, keywords, dateTimeStamp);
+    const q = this.buildExactQuery(fanGroupId, 'groupId', 'WAITING_LIST', geoLoc, keywords, dateTimeStamp, filter);
     q.page = page;
     q.hitsPerPage = hitsPerPage;
     return this.search(q).then(r => this.stripAlgoliaFieldsFromSearchResultHits(r));
@@ -168,7 +169,7 @@ export class AlgoliaForSeatersService {
     return this._apiP;
   }
 
-  private buildExactQuery(query: string, field: string, type: string, geoLoc?: GeoLoc, keywords?: string[], dateTimeStamp?: string): SearchQuery {
+  private buildExactQuery(query: string, field: string, type: string, geoLoc?: GeoLoc, keywords?: string[], dateTimeStamp?: string, filter?: string): SearchQuery {
     return {
       query,
       typoTolerance: 'strict',
@@ -180,7 +181,7 @@ export class AlgoliaForSeatersService {
       ],
       aroundLatLng: geoLoc ? geoLoc.coord : undefined,
       aroundRadius: geoLoc ? geoLoc.radius : undefined,
-      filters:  dateTimeStamp ? `eventStartDateTimestamp:${dateTimeStamp}` : undefined,
+      filters: filter ? filter : dateTimeStamp ? `eventStartDateTimestamp:${dateTimeStamp}` : undefined,
       tagFilters: keywords,
       restrictSearchableAttributes: [field]
     } as SearchQuery;

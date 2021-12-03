@@ -15,6 +15,7 @@ export type PromiseMiddleware<T> = (promise: Promise<any>) => T;
 export interface SeatersClientOptions {
   apiPrefix: string;
   requestDriver?: REQUEST_DRIVER_TYPE;
+  appKey?: string;
 }
 
 export class SeatersClient {
@@ -41,7 +42,7 @@ export class SeatersClient {
     options = { ...SeatersClient.DEFAULT_OPTIONS, ...options };
     const requestDriver = getRequestDriver(options.requestDriver);
 
-    this.seatersApi = new SeatersApi(options.apiPrefix, requestDriver);
+    this.seatersApi = new SeatersApi(options.apiPrefix, requestDriver, options.appKey);
     this.sessionService = new SessionService(this.seatersApi);
     this.appService = new AppService(this.seatersApi);
     this.publicService = new PublicService(this.appService, requestDriver, this.seatersApi);

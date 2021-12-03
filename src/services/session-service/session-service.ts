@@ -1,7 +1,7 @@
 import { normalizeLondonTimezoneDate, uuidv4 } from '../util';
 import { SeatersApi } from '../../seaters-api';
 import { session } from './session-types';
-import { AuthenticationSuccess, MobilePhoneValidationData } from '../../seaters-api/authentication';
+import { AuthenticationSuccess, MobilePhoneValidationData, SignupData } from '../../seaters-api/authentication';
 import { IUpdatePasswordDTO } from '../../seaters-api/fan/fan';
 
 const AUTH_HEADER = 'Authorization';
@@ -50,9 +50,11 @@ export class SessionService {
    *
    * @param fan latest fan object
    */
-  updatePassword(data: IUpdatePasswordDTO): Promise<session.Fan> {
+  updatePassword(data: IUpdatePasswordDTO): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.seatersApi.authentication.updatePassword(data);
+      this.seatersApi.authentication.updatePassword(data)
+        .then(a => resolve('SUCCESS'))
+        .catch(r => reject(r));
     });
   }
 
@@ -144,6 +146,16 @@ export class SessionService {
     this.sessionToken = undefined;
   }
 
+  doFormSignup(signupForm: SignupData) {
+    return new Promise((resolve, reject) => {
+      this.seatersApi.authentication
+        .signup(signupForm)
+        .then(() => this.doEmailPasswordLogin(signupForm.email, signupForm.password))
+        .then(r => resolve(r))
+        .catch(r => reject(r));
+    });
+  }
+
   // TODO: handle error case
   doEmailPasswordSignUp(
     email: string,
@@ -152,7 +164,8 @@ export class SessionService {
     lastname: string,
     language: string,
     redirect: string,
-    fanGroupReference: string
+    fanGroupReference: string,
+    mtCaptchaToken?: string
   ): Promise<session.Session> {
     return new Promise((resolve, reject) => {
       this.seatersApi.authentication
@@ -163,11 +176,24 @@ export class SessionService {
           lastName: lastname,
           language: language || 'en',
           confirmationReturnURLPath: redirect,
-          registeredFromFanGroupId: fanGroupReference
+          registeredFromFanGroupId: fanGroupReference,
+          mtCaptchaToken
         })
         .then(() => this.doEmailPasswordLogin(email, password))
         .then(r => resolve(r))
         .catch(r => reject(r));
+    });
+  }
+
+  verify(body?: any): Promise<any> {
+    return this.seatersApi.authentication.verify(body)
+    .then(sess => {
+      const expirationDate = normalizeLondonTimezoneDate(sess.expiresOn);
+      this.setSession({
+        expirationDate,
+        token: sess.token
+      });
+      return sess;
     });
   }
 
@@ -349,6 +375,19 @@ export class SessionService {
     });
   }
 
+  public doRefreshTokenLogin(refreshToken: string, mfaToken?: string): Promise<session.Session> {
+    return new Promise((resolve, reject) => {
+      this.seatersApi.authentication
+        .refreshTokenLogin({
+          token: refreshToken,
+          mfaToken
+        })
+        .then(r => this.finishLogin(r))
+        .then(r => resolve(r))
+        .catch(r => reject(r));
+    });
+  }
+
   private waitUntilMillisBeforeSessionExpires(s: session.SessionToken, msBefore: number): Promise<any> {
     const expirationDate = normalizeLondonTimezoneDate(s.expirationDate);
     const diff = new Date(expirationDate).getTime() - new Date().getTime();
@@ -372,7 +411,6 @@ export class SessionService {
 
   private finishLogin(authSuccess: AuthenticationSuccess): Promise<session.Session> {
     const expirationDate = normalizeLondonTimezoneDate(authSuccess.token.expirationDate);
-    console.log('TOKEN: ' + expirationDate);
     this.setSession({
       expirationDate,
       token: authSuccess.token.value
@@ -386,19 +424,6 @@ export class SessionService {
             token: authSuccess.token.value
           };
         })
-        .then(r => resolve(r))
-        .catch(r => reject(r));
-    });
-  }
-
-  private doRefreshTokenLogin(refreshToken: string, mfaToken?: string): Promise<session.Session> {
-    return new Promise((resolve, reject) => {
-      this.seatersApi.authentication
-        .refreshTokenLogin({
-          token: refreshToken,
-          mfaToken
-        })
-        .then(r => this.finishLogin(r))
         .then(r => resolve(r))
         .catch(r => reject(r));
     });

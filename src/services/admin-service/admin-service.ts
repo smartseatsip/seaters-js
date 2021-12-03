@@ -11,6 +11,30 @@ export class AdminService extends SeatersService {
     super(seatersApi);
   }
 
+  createUserOwnership(ownership: any): Promise<any> {
+    return this.seatersApi.admin.createUserOwnership(ownership);
+  }
+
+  createUser(user: any): Promise<any> {
+    return this.seatersApi.admin.createUser(user);
+  }
+  
+  getWaitingListProperties(waitingListId: string): Promise<any> {
+    return this.seatersApi.admin.getWaitingListProperties(waitingListId);
+  }
+
+  updateWaitingListProperties(waitingListId: string, body: any): Promise<any> {
+    return this.seatersApi.admin.updateWaitingListProperties(waitingListId, body);
+  }
+
+  insertUserInGroup(userId: string, fanGroupId: string): Promise<any> {
+    return this.seatersApi.admin.insertUserInGroup(userId, fanGroupId);
+  }
+
+  updateIntegrationProfile(userId: string, integrationId: string, fanGroupId: string): Promise<any> {
+    return this.seatersApi.admin.updateIntegrationProfile(userId, integrationId, fanGroupId);
+  }
+
   getEvent(eventId: string): Promise<admin.FanGroup> {
     return this.seatersApi.admin.getEvent(eventId);
   }

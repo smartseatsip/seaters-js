@@ -509,8 +509,44 @@ var FanApi = /** @class */function () {
     FanApi.prototype.fan = function () {
         return this.apiContext.get('/fan');
     };
+    FanApi.prototype.fanGroupOwner = function () {
+        return this.apiContext.get('/fan-group-owner');
+    };
     FanApi.prototype.updateFan = function (fan) {
         return this.apiContext.put('/fan', fan);
+    };
+    FanApi.prototype.requestDelete = function (fanGroupId) {
+        return this.apiContext.post('/v2/fan/groups/:fanGroupId/deletion-request', null, { fanGroupId: fanGroupId });
+    };
+    FanApi.prototype.customProfile = function (fanGroupId) {
+        return this.apiContext.get('/v2/fan/groups/:fanGroupId/custom-info', { fanGroupId: fanGroupId });
+    };
+    FanApi.prototype.customProfileVaccin = function (listId) {
+        return this.apiContext.get('/v2/fan/waiting-lists/:listId/custom-profile', { listId: listId });
+    };
+    FanApi.prototype.getAllVaccinationCenter = function (fanGroupId) {
+        return this.apiContext.get('/v2/fan-group-owner/groups/:fanGroupId/integrations/doclr/vaccination-centers', { fanGroupId: fanGroupId });
+    };
+    FanApi.prototype.getVaccincationCenterByWl = function (fanGroupId, waitingListId) {
+        return this.apiContext.get('/v2/fan-group-owner/groups/:fanGroupId/integrations/doclr/waiting-lists/:waitingListId/vaccination-centers', { fanGroupId: fanGroupId, waitingListId: waitingListId });
+    };
+    FanApi.prototype.getCachedVaccincationCenterByWl = function (fanGroupId, waitingListId) {
+        return this.apiContext.get('/v2/fan-group-owner/groups/:fanGroupId/integrations/doclr/waiting-lists/:waitingListId/cached-vaccination-centers', { fanGroupId: fanGroupId, waitingListId: waitingListId });
+    };
+    FanApi.prototype.getDoclrAvailableSlots = function (fanGroupId, waitingListId, body) {
+        return this.apiContext.put('/v2/fan-group-owner/groups/:fanGroupId/integrations/doclr/waiting-lists/:waitingListId/available-slots', body, { fanGroupId: fanGroupId, waitingListId: waitingListId });
+    };
+    FanApi.prototype.reactivateDoclrUser = function (fanGroupId, body) {
+        return this.apiContext.post('/v2/fan/groups/:fanGroupId/integrations/smalls/reactivate', body, { fanGroupId: fanGroupId });
+    };
+    FanApi.prototype.consentVaccinationSchema = function (fanGroupId, body) {
+        return this.apiContext.put('/v2/fan/groups/:fanGroupId/integrations/smalls/consent', body, { fanGroupId: fanGroupId });
+    };
+    FanApi.prototype.deleteConsentVaccinationSchema = function (fanGroupId, body) {
+        return this.apiContext.delete('/v2/fan/groups/:fanGroupId/integrations/smalls/consent', { fanGroupId: fanGroupId });
+    };
+    FanApi.prototype.positionAttribute = function (listId) {
+        return this.apiContext.get('/v2/fan/waiting-lists/:listId/position-attributes', { listId: listId });
     };
     FanApi.prototype.updatePassword = function (data) {
         return this.apiContext.put('/fan/password', data.password);
@@ -714,6 +750,11 @@ var FanApi = /** @class */function () {
         var endpointParams = { waitingListId: waitingListId };
         return this.apiContext.get(endpoint, endpointParams);
     };
+    FanApi.prototype.getIngenicoSession = function (waitingListId) {
+        var endpoint = '/v2/fan/waiting-lists/:waitingListId/position/ingenico-session';
+        var endpointParams = { waitingListId: waitingListId };
+        return this.apiContext.get(endpoint, endpointParams);
+    };
     FanApi.prototype.createPositionSalesTransaction = function (waitingListId, transaction) {
         var endpoint = '/fan/waiting-lists/:waitingListId/transaction';
         var endpointParams = { waitingListId: waitingListId };
@@ -784,12 +825,39 @@ var FanApi = /** @class */function () {
         var queryParams = seaters_api_1.SeatersApiContext.buildPagingSortingQueryParams(pagingOptions);
         return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/positions', { query: query || '' }, { waitingListId: waitingListId }, queryParams);
     };
+    FanApi.prototype.getAnonymousPositions = function (waitingListId, body) {
+        return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/anonymous-positions', body, { waitingListId: waitingListId });
+    };
+    FanApi.prototype.getAnonymousStats = function (waitingListId, body) {
+        return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/anonymous-stats', null, { waitingListId: waitingListId });
+    };
+    FanApi.prototype.getAnonymousStatsBySlot = function (waitingListId, body) {
+        return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/anonymous-stats-by-slot', body, { waitingListId: waitingListId });
+    };
+    FanApi.prototype.getAnonymousSeats = function (waitingListId, body) {
+        return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/anonymous-seats', body, { waitingListId: waitingListId });
+    };
+    FanApi.prototype.getAnonymousSeatsSchema = function (waitingListId, body) {
+        return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/anonymous-seats-schema', body, { waitingListId: waitingListId });
+    };
+    FanApi.prototype.getWishListsDistriQvax = function (fanGroupId) {
+        return this.apiContext.get('/fan-group-owner/groups/:fanGroupId/waiting-lists/distribution', { fanGroupId: fanGroupId });
+    };
+    FanApi.prototype.getContactSeats = function (waitingListId, body) {
+        return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/contact-seats', body, { waitingListId: waitingListId });
+    };
     FanApi.prototype.getSeats = function (waitingListId, query, pagingOptions) {
         var queryParams = seaters_api_1.SeatersApiContext.buildPagingSortingQueryParams(pagingOptions);
         return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/seats', { query: query || '' }, { waitingListId: waitingListId }, queryParams);
     };
     FanApi.prototype.assignWaitingListSeatToFan = function (waitingListId, fanId) {
         return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId/positions/:fanId/assign', null, { waitingListId: waitingListId, fanId: fanId });
+    };
+    FanApi.prototype.assignWaitingListSeatToFanQvax = function (waitingListId, nrOfSeats, body) {
+        return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/positions/assign/:nrOfSeats/custom', body, { waitingListId: waitingListId, nrOfSeats: nrOfSeats });
+    };
+    FanApi.prototype.distributionStatusQvax = function (waitingListId, distriNumber) {
+        return this.apiContext.get('/v2/fan-group-owner/waiting-lists/:waitingListId/distributions/:distriNumber', { waitingListId: waitingListId, distriNumber: distriNumber });
     };
     FanApi.prototype.assignWaitingListParkingSeatToFan = function (waitingListId, fanId) {
         return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/positions/:fanId/assign-with-parking', null, { waitingListId: waitingListId, fanId: fanId });
@@ -1207,11 +1275,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /* tslint:disable:no-floating-promises */
 var seaters_api_context_1 = __webpack_require__(6);
 var AppApi = /** @class */function () {
-    function AppApi(apiContext) {
+    function AppApi(apiContext, appKey) {
         this.apiContext = apiContext;
+        this.appKey = appKey;
     }
     AppApi.prototype.env = function () {
-        return this.apiContext.get('/app/env');
+        var endpoint = this.appKey ? '/app/env/' + this.appKey : '/app/env';
+        return this.apiContext.get(endpoint);
     };
     AppApi.prototype.countries = function (pagingOptions) {
         var queryParams = seaters_api_context_1.SeatersApiContext.buildPagingQueryParams(pagingOptions);
@@ -1404,6 +1474,9 @@ var AuthenticationApi = /** @class */function () {
     AuthenticationApi.prototype.verifyOAuth = function (input) {
         var endpoint = '/v2/authentication/verify-oauth/';
         return this.apiContext.put(endpoint, input, null, null);
+    };
+    AuthenticationApi.prototype.verify = function (body) {
+        return this.apiContext.put('/auth/verify', body, null);
     };
     /**
      *
@@ -1710,24 +1783,43 @@ var WaitingListService = /** @class */function () {
     WaitingListService.prototype.loadAdditionalCharges = function (waitingListId) {
         return this.api.fan.loadAdditionalCharges(waitingListId);
     };
+    WaitingListService.prototype.pollWaitingList = function (waitingListId, condition, limit, delayInMs, useRawWaitingList) {
+        var _this = this;
+        return util_1.retryUntil(
+        // We use the raw waitinglist data instead to prevent an infinite loop when re-fetching the waiting list
+        function () {
+            return useRawWaitingList ? _this.getRawWaitingList(waitingListId) : _this.getWaitingList(waitingListId);
+        }, condition, limit || 10, delayInMs || 1000);
+    };
+    WaitingListService.prototype.submitTransaction = function (waitingListId, transaction) {
+        var _this = this;
+        return this.getWaitingList(waitingListId).then(function (wl) {
+            return _this.ensureFanCanPayPosition(wl);
+        }).then(function (wl) {
+            return _this.removePreviousTransactionIfAny(wl);
+        }).then(function (wl) {
+            return _this.createTransaction(waitingListId, transaction);
+        }).then(function (res) {
+            return res;
+        }, function (err) {
+            console.error('[WaitingListService] submitTransaction failed: %s', err, transaction);
+            throw err;
+        });
+    };
+    WaitingListService.prototype.waitUntilPaymentProcessed = function (waitingListId) {
+        var _this = this;
+        return this.pollWaitingList(waitingListId, function (wl) {
+            return _this.hasProcessedPayment(wl);
+        }, 60, 1000).then(function (wl) {
+            if (_this.hasFailedPayment(wl)) {
+                var errorMessage = wl.position ? wl.position.paymentFailureMessage : 'Payment Failed!';
+                return Promise.reject(errorMessage);
+            }
+            return wl;
+        });
+    };
     WaitingListService.prototype.hasPreviousPayment = function (wl) {
         return !!(wl.position && wl.position.transactionStatus);
-    };
-    WaitingListService.prototype.hasPaymentInProgress = function (wl) {
-        if (!wl.position) {
-            return false;
-        } else {
-            return ['CREATING', 'CREATED', 'APPROVED', 'CANCELLED', 'REFUNDING'].indexOf(wl.position.transactionStatus) >= 0;
-        }
-    };
-    WaitingListService.prototype.canPay = function (wl) {
-        if (WAITING_LIST_ACTION_STATUS.WAIT === wl.actionStatus) {
-            return !!wl.position.expirationDate;
-        } else if (WAITING_LIST_ACTION_STATUS.CONFIRM === wl.actionStatus) {
-            return !wl.position.transactionStatus || wl.position.transactionStatus === 'FAILURE';
-        } else {
-            return false;
-        }
     };
     WaitingListService.prototype.checkUnlockStatus = function (wl) {
         if (!wl.request) {
@@ -1762,14 +1854,6 @@ var WaitingListService = /** @class */function () {
             return _this.extendRawWaitingList(wl);
         });
         return wls;
-    };
-    WaitingListService.prototype.pollWaitingList = function (waitingListId, condition, limit, delayInMs, useRawWaitingList) {
-        var _this = this;
-        return util_1.retryUntil(
-        // We use the raw waitinglist data instead to prevent an infinite loop when re-fetching the waiting list
-        function () {
-            return useRawWaitingList ? _this.getRawWaitingList(waitingListId) : _this.getWaitingList(waitingListId);
-        }, condition, limit || 10, delayInMs || 1000);
     };
     WaitingListService.prototype.getWaitingListActionStatus = function (waitingList) {
         var seat = waitingList.seat;
@@ -1821,7 +1905,7 @@ var WaitingListService = /** @class */function () {
                     } else if (['FAILURE', 'CANCELLED', 'REFUNDED'].indexOf(position.transactionStatus) >= 0) {
                         // failed payment
                         return WAITING_LIST_ACTION_STATUS.CONFIRM;
-                    } else if (['CREATING', 'CREATED', 'APPROVED', 'REFUNDING'].indexOf(position.transactionStatus) >= 0) {
+                    } else if (['CREATING', 'CREATED', 'APPROVED', 'PENDING', 'REFUNDING'].indexOf(position.transactionStatus) >= 0) {
                         // payment in progress
                         return WAITING_LIST_ACTION_STATUS.CONFIRM; // (-)PENDING
                     } else {
@@ -1858,7 +1942,6 @@ var WaitingListService = /** @class */function () {
         if (!wl.directSalesEnabled) {
             return Promise.resolve(wl);
         }
-        console.log('waiting list is direct sales', wl);
         // Instantly resolve when waiting list was already confirmed
         if (wl.actionStatus === WAITING_LIST_ACTION_STATUS.CONFIRM) {
             return Promise.resolve(wl);
@@ -1932,19 +2015,6 @@ var WaitingListService = /** @class */function () {
             return true;
         }
     };
-    WaitingListService.prototype.submitTransaction = function (waitingListId, transaction) {
-        var _this = this;
-        return this.getWaitingList(waitingListId).then(function (wl) {
-            return _this.ensureFanCanPayPosition(wl);
-        }).then(function (wl) {
-            return _this.removePreviousTransactionIfAny(wl);
-        }).then(function (wl) {
-            return _this.createTransaction(waitingListId, transaction);
-        }).then(undefined, function (err) {
-            console.error('[WaitingListService] submitTransaction failed: %s', err, transaction);
-            throw err;
-        });
-    };
     WaitingListService.prototype.ensureFanCanPayPosition = function (wl) {
         if (!this.canPay(wl)) {
             throw new Error('Trying to submit transaction for WL that is not in a state that requires payment');
@@ -1952,6 +2022,22 @@ var WaitingListService = /** @class */function () {
             throw new Error('Trying to submit transaction for WL which has a payment in progress');
         } else {
             return Promise.resolve(wl);
+        }
+    };
+    WaitingListService.prototype.canPay = function (wl) {
+        if (WAITING_LIST_ACTION_STATUS.WAIT === wl.actionStatus) {
+            return !!wl.position.expirationDate;
+        } else if (WAITING_LIST_ACTION_STATUS.CONFIRM === wl.actionStatus) {
+            return !wl.position.transactionStatus || wl.position.transactionStatus === 'FAILURE';
+        } else {
+            return false;
+        }
+    };
+    WaitingListService.prototype.hasPaymentInProgress = function (wl) {
+        if (!wl.position) {
+            return false;
+        } else {
+            return ['CREATING', 'CREATED', 'APPROVED', 'CANCELLED', 'REFUNDING'].indexOf(wl.position.transactionStatus) >= 0;
         }
     };
     WaitingListService.prototype.removePreviousTransactionIfAny = function (wl) {
@@ -1966,18 +2052,7 @@ var WaitingListService = /** @class */function () {
         });
     };
     WaitingListService.prototype.createTransaction = function (waitingListId, transaction) {
-        var _this = this;
-        return this.api.fan.createPositionSalesTransaction(waitingListId, transaction).then(function () {
-            return _this.pollWaitingList(waitingListId, function (wl) {
-                return _this.hasProcessedPayment(wl);
-            }, 60, 1000);
-        }).then(function (wl) {
-            if (_this.hasFailedPayment(wl)) {
-                var errorMessage = wl.position ? wl.position.paymentFailureMessage : 'Payment Failed!';
-                return Promise.reject(errorMessage);
-            }
-            return wl;
-        });
+        return this.api.fan.createPositionSalesTransaction(waitingListId, transaction);
     };
     WaitingListService.prototype.hasProcessedPayment = function (wl) {
         return wl.position && ['FAILURE', 'COMPLETED'].indexOf(wl.position.transactionStatus) >= 0;
@@ -2181,7 +2256,7 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 //noinspection TsLint
 // tslint:disable-next-line
-exports.version = '1.35.36';
+exports.version = '1.35.81';
 __export(__webpack_require__(22));
 var fan_types_1 = __webpack_require__(2);
 exports.fan = fan_types_1.fan;
@@ -2212,7 +2287,7 @@ var SeatersClient = /** @class */function () {
     function SeatersClient(options) {
         options = __assign({}, SeatersClient.DEFAULT_OPTIONS, options);
         var requestDriver = api_1.getRequestDriver(options.requestDriver);
-        this.seatersApi = new seaters_api_1.SeatersApi(options.apiPrefix, requestDriver);
+        this.seatersApi = new seaters_api_1.SeatersApi(options.apiPrefix, requestDriver, options.appKey);
         this.sessionService = new services_1.SessionService(this.seatersApi);
         this.appService = new services_1.AppService(this.seatersApi);
         this.publicService = new services_1.PublicService(this.appService, requestDriver, this.seatersApi);
@@ -2829,9 +2904,9 @@ var ticketing_1 = __webpack_require__(40);
 var payment_1 = __webpack_require__(42);
 var seaters_api_context_1 = __webpack_require__(6);
 var SeatersApi = /** @class */function () {
-    function SeatersApi(prefix, requestDriver) {
+    function SeatersApi(prefix, requestDriver, appKey) {
         this.apiContext = new seaters_api_context_1.SeatersApiContext(prefix, requestDriver);
-        this.app = new app_api_1.AppApi(this.apiContext);
+        this.app = new app_api_1.AppApi(this.apiContext, appKey);
         this.fan = new fan_api_1.FanApi(this.apiContext);
         this.admin = new admin_1.AdminApi(this.apiContext);
         this.health = new health_1.HealthApi(this.apiContext);
@@ -2993,6 +3068,12 @@ var AdminApi = /** @class */function (_super) {
             fanGroupId: ownership.fanGroupId
         });
     };
+    AdminApi.prototype.insertUserInGroup = function (userId, fanGroupId) {
+        return this.apiContext.post('/v2/seaters-admin/users/:userId/groups/:fanGroupId', null, { userId: userId, fanGroupId: fanGroupId });
+    };
+    AdminApi.prototype.updateIntegrationProfile = function (userId, integrationId, fanGroupId) {
+        return this.apiContext.put('/v2/fan-group-owner/groups/:fanGroupId/integrations/:integrationId/users/:userId/update-profile', null, { fanGroupId: fanGroupId, integrationId: integrationId, userId: userId });
+    };
     AdminApi.prototype.getEvent = function (eventId) {
         return this.apiContext.get('/seaters-admin/events/:id', { id: eventId });
     };
@@ -3013,6 +3094,12 @@ var AdminApi = /** @class */function (_super) {
     };
     AdminApi.prototype.deleteWaitingList = function (waitingListId) {
         return this.apiContext.delete('/seaters-admin/waiting-lists/:id', { id: waitingListId });
+    };
+    AdminApi.prototype.getWaitingListProperties = function (waitingListId) {
+        return this.apiContext.get('/v2/fan-group-owner/waiting-lists/:waitingListId/properties', { waitingListId: waitingListId });
+    };
+    AdminApi.prototype.updateWaitingListProperties = function (waitingListId, body) {
+        return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/properties', body, { waitingListId: waitingListId });
     };
     AdminApi.prototype.scheduleClosingDate = function (waitingListId, date) {
         return this.apiContext.put('/fan-group-owner/waiting-lists/:waitingListId/schedule-closing', { date: date }, { waitingListId: waitingListId });
@@ -3566,9 +3653,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var common_1 = __webpack_require__(3);
 var waiting_list_service_1 = __webpack_require__(18);
 var fan_group_service_1 = __webpack_require__(19);
+var fan_types_1 = __webpack_require__(2);
 var util_1 = __webpack_require__(0);
 var fan_profiling_service_1 = __webpack_require__(50);
 var fan_survey_service_1 = __webpack_require__(51);
+var WAITING_LIST_ACTION_STATUS = fan_types_1.fan.WAITING_LIST_ACTION_STATUS;
 var FanService = /** @class */function (_super) {
     __extends(FanService, _super);
     function FanService(seatersApi, sessionService, publicService) {
@@ -3647,6 +3736,12 @@ var FanService = /** @class */function (_super) {
     FanService.prototype.assignWaitingListSeatToFan = function (waitingListId, fanId) {
         return this.seatersApi.fan.assignWaitingListSeatToFan(waitingListId, fanId);
     };
+    FanService.prototype.assignWaitingListSeatToFanQvax = function (waitingListId, nrOfSeats, body) {
+        return this.seatersApi.fan.assignWaitingListSeatToFanQvax(waitingListId, nrOfSeats, body);
+    };
+    FanService.prototype.distributionStatusQvax = function (waitingListId, distriNumber) {
+        return this.seatersApi.fan.distributionStatusQvax(waitingListId, distriNumber);
+    };
     FanService.prototype.assignWaitingListParkingSeatToFan = function (waitingListId, fanId) {
         return this.seatersApi.fan.assignWaitingListParkingSeatToFan(waitingListId, fanId);
     };
@@ -3664,6 +3759,9 @@ var FanService = /** @class */function (_super) {
     };
     FanService.prototype.getFanInfo = function (fanId) {
         return this.seatersApi.fan.getFanInfo(fanId);
+    };
+    FanService.prototype.requestDelete = function (fanGroupId) {
+        return this.seatersApi.fan.requestDelete(fanGroupId);
     };
     FanService.prototype.getFanAttribute = function (fanId) {
         return this.seatersApi.fan.getFanAttribute(fanId);
@@ -3744,11 +3842,25 @@ var FanService = /** @class */function (_super) {
     FanService.prototype.leaveWaitingList = function (waitingListId) {
         return this.waitingListService.leaveWaitingList(waitingListId);
     };
+    FanService.prototype.getIngenicoSession = function (waitingListId) {
+        return this.seatersApi.fan.getIngenicoSession(waitingListId);
+    };
     FanService.prototype.getPositionPaymentInfo = function (waitingListId) {
         return this.waitingListService.getPositionPaymentInfo(waitingListId);
     };
     FanService.prototype.payPosition = function (waitingListId, transaction) {
         return this.waitingListService.payPosition(waitingListId, transaction);
+    };
+    FanService.prototype.submitTransaction = function (waitingListId, transaction) {
+        return this.waitingListService.submitTransaction(waitingListId, transaction);
+    };
+    FanService.prototype.waitUntilCanGoLive = function (waitingListId) {
+        return this.waitingListService.pollWaitingList(waitingListId, function (wl) {
+            return wl.actionStatus === WAITING_LIST_ACTION_STATUS.GO_LIVE || wl.actionStatus === WAITING_LIST_ACTION_STATUS.NO_SEATS;
+        });
+    };
+    FanService.prototype.waitUntilPaymentProcessed = function (waitingListId) {
+        return this.waitingListService.waitUntilPaymentProcessed(waitingListId);
     };
     FanService.prototype.preauthorizePosition = function (waitingListId, transaction) {
         return this.waitingListService.preauthorizePosition(waitingListId, transaction);
@@ -3815,6 +3927,39 @@ var FanService = /** @class */function (_super) {
      */
     FanService.prototype.fan = function () {
         return this.seatersApi.fan.fan();
+    };
+    FanService.prototype.fanGroupOwner = function () {
+        return this.seatersApi.fan.fanGroupOwner();
+    };
+    FanService.prototype.customProfile = function (fanGroupId) {
+        return this.seatersApi.fan.customProfile(fanGroupId);
+    };
+    FanService.prototype.customProfileVaccin = function (listId) {
+        return this.seatersApi.fan.customProfileVaccin(listId);
+    };
+    FanService.prototype.positionAttribute = function (listId) {
+        return this.seatersApi.fan.positionAttribute(listId);
+    };
+    FanService.prototype.getAllVaccinationCenter = function (fanGroupId) {
+        return this.seatersApi.fan.getAllVaccinationCenter(fanGroupId);
+    };
+    FanService.prototype.getVaccincationCenterByWl = function (fanGroupId, waitingListId) {
+        return this.seatersApi.fan.getVaccincationCenterByWl(fanGroupId, waitingListId);
+    };
+    FanService.prototype.getCachedVaccincationCenterByWl = function (fanGroupId, waitingListId) {
+        return this.seatersApi.fan.getCachedVaccincationCenterByWl(fanGroupId, waitingListId);
+    };
+    FanService.prototype.getDoclrAvailableSlots = function (fanGroupId, waitingListId, body) {
+        return this.seatersApi.fan.getDoclrAvailableSlots(fanGroupId, waitingListId, body);
+    };
+    FanService.prototype.reactivateDoclrUser = function (fanGroupId, body) {
+        return this.seatersApi.fan.reactivateDoclrUser(fanGroupId, body);
+    };
+    FanService.prototype.consentVaccinationSchema = function (fanGroupId, body) {
+        return this.seatersApi.fan.consentVaccinationSchema(fanGroupId, body);
+    };
+    FanService.prototype.deleteConsentVaccinationSchema = function (fanGroupId, body) {
+        return this.seatersApi.fan.deleteConsentVaccinationSchema(fanGroupId, body);
     };
     /**
      * Send a new SMS containing the code needed to validate email / phone.
@@ -3975,6 +4120,27 @@ var FanService = /** @class */function (_super) {
     };
     FanService.prototype.getPositions = function (waitingListId, query, pagingOptions) {
         return this.seatersApi.fan.getPositions(waitingListId, query, pagingOptions);
+    };
+    FanService.prototype.getAnonymousPositions = function (waitingListId, body) {
+        return this.seatersApi.fan.getAnonymousPositions(waitingListId, body);
+    };
+    FanService.prototype.getAnonymousStats = function (waitingListId) {
+        return this.seatersApi.fan.getAnonymousStats(waitingListId);
+    };
+    FanService.prototype.getContactSeats = function (waitingListId, body) {
+        return this.seatersApi.fan.getContactSeats(waitingListId, body);
+    };
+    FanService.prototype.getAnonymousSeatsSchema = function (waitingListId, body) {
+        return this.seatersApi.fan.getAnonymousSeatsSchema(waitingListId, body);
+    };
+    FanService.prototype.getAnonymousStatsBySlot = function (waitingListId, body) {
+        return this.seatersApi.fan.getAnonymousStatsBySlot(waitingListId, body);
+    };
+    FanService.prototype.getAnonymousSeats = function (waitingListId, body) {
+        return this.seatersApi.fan.getAnonymousSeats(waitingListId, body);
+    };
+    FanService.prototype.getWishListsDistriQvax = function (fanGroupId) {
+        return this.seatersApi.fan.getWishListsDistriQvax(fanGroupId);
     };
     FanService.prototype.getSeats = function (waitingListId, query, pagingOptions) {
         return this.seatersApi.fan.getSeats(waitingListId, query, pagingOptions);
@@ -4251,9 +4417,9 @@ var PublicService = /** @class */function () {
             return __assign({}, wl, { actionStatus: _this.getWaitingListActionStatus(wl) });
         });
     };
-    PublicService.prototype.getWaitingListsInFanGroup = function (fanGroupId, pagingOptions, geoLoc, keywords, dateTimeStamp) {
+    PublicService.prototype.getWaitingListsInFanGroup = function (fanGroupId, pagingOptions, geoLoc, keywords, dateTimeStamp, filter) {
         var _this = this;
-        return this.algoliaForSeatersService.getWaitingListsByFanGroupId(fanGroupId, pagingOptions.maxPageSize, pagingOptions.page, geoLoc, keywords, dateTimeStamp).then(function (result) {
+        return this.algoliaForSeatersService.getWaitingListsByFanGroupId(fanGroupId, pagingOptions.maxPageSize, pagingOptions.page, geoLoc, keywords, dateTimeStamp, filter).then(function (result) {
             return _this.convertAlgoliaResultSet(result);
         }).then(function (result) {
             result.items = result.items.map(function (wl) {
@@ -4429,10 +4595,10 @@ var AlgoliaForSeatersService = /** @class */function () {
         };
         return this.findExactlyN(q, fanGroupIds);
     };
-    AlgoliaForSeatersService.prototype.getWaitingListsByFanGroupId = function (fanGroupId, hitsPerPage, page, geoLoc, keywords, dateTimeStamp) {
+    AlgoliaForSeatersService.prototype.getWaitingListsByFanGroupId = function (fanGroupId, hitsPerPage, page, geoLoc, keywords, dateTimeStamp, filter) {
         var _this = this;
         // TODO: sort by date ascending
-        var q = this.buildExactQuery(fanGroupId, 'groupId', 'WAITING_LIST', geoLoc, keywords, dateTimeStamp);
+        var q = this.buildExactQuery(fanGroupId, 'groupId', 'WAITING_LIST', geoLoc, keywords, dateTimeStamp, filter);
         q.page = page;
         q.hitsPerPage = hitsPerPage;
         return this.search(q).then(function (r) {
@@ -4538,7 +4704,7 @@ var AlgoliaForSeatersService = /** @class */function () {
         }
         return this._apiP;
     };
-    AlgoliaForSeatersService.prototype.buildExactQuery = function (query, field, type, geoLoc, keywords, dateTimeStamp) {
+    AlgoliaForSeatersService.prototype.buildExactQuery = function (query, field, type, geoLoc, keywords, dateTimeStamp, filter) {
         return {
             query: query,
             typoTolerance: 'strict',
@@ -4548,7 +4714,7 @@ var AlgoliaForSeatersService = /** @class */function () {
             }],
             aroundLatLng: geoLoc ? geoLoc.coord : undefined,
             aroundRadius: geoLoc ? geoLoc.radius : undefined,
-            filters: dateTimeStamp ? "eventStartDateTimestamp:" + dateTimeStamp : undefined,
+            filters: filter ? filter : dateTimeStamp ? "eventStartDateTimestamp:" + dateTimeStamp : undefined,
             tagFilters: keywords,
             restrictSearchableAttributes: [field]
         };
@@ -4744,7 +4910,6 @@ var IndicesApi = /** @class */function () {
     };
     IndicesApi.prototype.serializeSearchQuery = function (searchQuery) {
         var params = [];
-        console.log('QUERY =>', searchQuery);
         function defaultSerializer(item) {
             return encodeURIComponent(item);
         }
@@ -4868,7 +5033,11 @@ var SessionService = /** @class */function () {
     SessionService.prototype.updatePassword = function (data) {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            _this.seatersApi.authentication.updatePassword(data);
+            _this.seatersApi.authentication.updatePassword(data).then(function (a) {
+                return resolve('SUCCESS');
+            }).catch(function (r) {
+                return reject(r);
+            });
         });
     };
     /**
@@ -4965,8 +5134,20 @@ var SessionService = /** @class */function () {
         this.currentFan = undefined;
         this.sessionToken = undefined;
     };
+    SessionService.prototype.doFormSignup = function (signupForm) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.seatersApi.authentication.signup(signupForm).then(function () {
+                return _this.doEmailPasswordLogin(signupForm.email, signupForm.password);
+            }).then(function (r) {
+                return resolve(r);
+            }).catch(function (r) {
+                return reject(r);
+            });
+        });
+    };
     // TODO: handle error case
-    SessionService.prototype.doEmailPasswordSignUp = function (email, password, firstname, lastname, language, redirect, fanGroupReference) {
+    SessionService.prototype.doEmailPasswordSignUp = function (email, password, firstname, lastname, language, redirect, fanGroupReference, mtCaptchaToken) {
         var _this = this;
         return new Promise(function (resolve, reject) {
             _this.seatersApi.authentication.signup({
@@ -4976,7 +5157,8 @@ var SessionService = /** @class */function () {
                 lastName: lastname,
                 language: language || 'en',
                 confirmationReturnURLPath: redirect,
-                registeredFromFanGroupId: fanGroupReference
+                registeredFromFanGroupId: fanGroupReference,
+                mtCaptchaToken: mtCaptchaToken
             }).then(function () {
                 return _this.doEmailPasswordLogin(email, password);
             }).then(function (r) {
@@ -4984,6 +5166,17 @@ var SessionService = /** @class */function () {
             }).catch(function (r) {
                 return reject(r);
             });
+        });
+    };
+    SessionService.prototype.verify = function (body) {
+        var _this = this;
+        return this.seatersApi.authentication.verify(body).then(function (sess) {
+            var expirationDate = util_1.normalizeLondonTimezoneDate(sess.expiresOn);
+            _this.setSession({
+                expirationDate: expirationDate,
+                token: sess.token
+            });
+            return sess;
         });
     };
     SessionService.prototype.doEmailSignUp = function (email, fanGroupId, language, origin) {
@@ -5161,6 +5354,21 @@ var SessionService = /** @class */function () {
             });
         });
     };
+    SessionService.prototype.doRefreshTokenLogin = function (refreshToken, mfaToken) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.seatersApi.authentication.refreshTokenLogin({
+                token: refreshToken,
+                mfaToken: mfaToken
+            }).then(function (r) {
+                return _this.finishLogin(r);
+            }).then(function (r) {
+                return resolve(r);
+            }).catch(function (r) {
+                return reject(r);
+            });
+        });
+    };
     SessionService.prototype.waitUntilMillisBeforeSessionExpires = function (s, msBefore) {
         var expirationDate = util_1.normalizeLondonTimezoneDate(s.expirationDate);
         var diff = new Date(expirationDate).getTime() - new Date().getTime();
@@ -5188,7 +5396,6 @@ var SessionService = /** @class */function () {
     SessionService.prototype.finishLogin = function (authSuccess) {
         var _this = this;
         var expirationDate = util_1.normalizeLondonTimezoneDate(authSuccess.token.expirationDate);
-        console.log('TOKEN: ' + expirationDate);
         this.setSession({
             expirationDate: expirationDate,
             token: authSuccess.token.value
@@ -5200,21 +5407,6 @@ var SessionService = /** @class */function () {
                     identity: identity,
                     token: authSuccess.token.value
                 };
-            }).then(function (r) {
-                return resolve(r);
-            }).catch(function (r) {
-                return reject(r);
-            });
-        });
-    };
-    SessionService.prototype.doRefreshTokenLogin = function (refreshToken, mfaToken) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            _this.seatersApi.authentication.refreshTokenLogin({
-                token: refreshToken,
-                mfaToken: mfaToken
-            }).then(function (r) {
-                return _this.finishLogin(r);
             }).then(function (r) {
                 return resolve(r);
             }).catch(function (r) {
@@ -5449,6 +5641,24 @@ var AdminService = /** @class */function (_super) {
     function AdminService(seatersApi) {
         return _super.call(this, seatersApi) || this;
     }
+    AdminService.prototype.createUserOwnership = function (ownership) {
+        return this.seatersApi.admin.createUserOwnership(ownership);
+    };
+    AdminService.prototype.createUser = function (user) {
+        return this.seatersApi.admin.createUser(user);
+    };
+    AdminService.prototype.getWaitingListProperties = function (waitingListId) {
+        return this.seatersApi.admin.getWaitingListProperties(waitingListId);
+    };
+    AdminService.prototype.updateWaitingListProperties = function (waitingListId, body) {
+        return this.seatersApi.admin.updateWaitingListProperties(waitingListId, body);
+    };
+    AdminService.prototype.insertUserInGroup = function (userId, fanGroupId) {
+        return this.seatersApi.admin.insertUserInGroup(userId, fanGroupId);
+    };
+    AdminService.prototype.updateIntegrationProfile = function (userId, integrationId, fanGroupId) {
+        return this.seatersApi.admin.updateIntegrationProfile(userId, integrationId, fanGroupId);
+    };
     AdminService.prototype.getEvent = function (eventId) {
         return this.seatersApi.admin.getEvent(eventId);
     };

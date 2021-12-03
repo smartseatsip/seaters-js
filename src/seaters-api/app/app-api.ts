@@ -4,10 +4,11 @@ import { Country, Currency, Env, Language, TimeZone, Translation, TRANSLATION_TA
 import { PagingOptions } from '../../shared-types';
 
 export class AppApi {
-  constructor(private apiContext: SeatersApiContext) {}
+  constructor(private apiContext: SeatersApiContext, private appKey?: string) {}
 
   env(): Promise<Env> {
-    return this.apiContext.get('/app/env');
+    const endpoint = this.appKey ? '/app/env/' + this.appKey : '/app/env';
+    return this.apiContext.get(endpoint);
   }
 
   countries(pagingOptions?: PagingOptions): Promise<Country[]> {

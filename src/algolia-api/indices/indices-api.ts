@@ -37,7 +37,6 @@ export class IndicesApi {
 
   private serializeSearchQuery(searchQuery: SearchQuery): string {
     const params = [];
-    console.log('QUERY =>', searchQuery);
 
     function defaultSerializer(item: any) {
       return encodeURIComponent(item);
