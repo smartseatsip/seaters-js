@@ -349,9 +349,13 @@ export class FanApi {
   }
 
   exportSeats(waitingListId: string, formatUsed: string): Promise<void> {
+    console.log(formatUsed);
     const data = {
       format: (formatUsed && formatUsed !== '' || formatUsed !== null || formatUsed !== undefined || formatUsed.length > 0) ? formatUsed : null
     };
+
+    console.log(data);
+    console.log(waitingListId);
     const endpoint = '/fan/waiting-lists/:waitingListId/export-seat';
     const endpointParams = { waitingListId };
     return this.apiContext.put(endpoint, data, endpointParams);

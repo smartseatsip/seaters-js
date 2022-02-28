@@ -698,9 +698,12 @@ var FanApi = /** @class */function () {
         return this.apiContext.post(endpoint, null, endpointParams);
     };
     FanApi.prototype.exportSeats = function (waitingListId, formatUsed) {
+        console.log(formatUsed);
         var data = {
             format: formatUsed && formatUsed !== '' || formatUsed !== null || formatUsed !== undefined || formatUsed.length > 0 ? formatUsed : null
         };
+        console.log(data);
+        console.log(waitingListId);
         var endpoint = '/fan/waiting-lists/:waitingListId/export-seat';
         var endpointParams = { waitingListId: waitingListId };
         return this.apiContext.put(endpoint, data, endpointParams);
@@ -2243,7 +2246,7 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 //noinspection TsLint
 // tslint:disable-next-line
-exports.version = '1.35.91';
+exports.version = '1.35.92';
 __export(__webpack_require__(22));
 var fan_types_1 = __webpack_require__(2);
 exports.fan = fan_types_1.fan;
