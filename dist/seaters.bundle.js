@@ -686,7 +686,7 @@ var FanApi = /** @class */function () {
     };
     FanApi.prototype.acceptSeats = function (waitingListId, formatUsed) {
         var data = {
-            format: formatUsed && formatUsed !== '' || formatUsed !== null || formatUsed !== undefined || formatUsed.length > 0 ? formatUsed : null
+            format: formatUsed.length > 0 ? formatUsed : null
         };
         var endpoint = '/fan/waiting-lists/:waitingListId/accept';
         var endpointParams = { waitingListId: waitingListId };
@@ -700,7 +700,7 @@ var FanApi = /** @class */function () {
     FanApi.prototype.exportSeats = function (waitingListId, formatUsed) {
         console.log(formatUsed);
         var data = {
-            format: formatUsed && formatUsed !== '' || formatUsed !== null || formatUsed !== undefined || formatUsed.length > 0 ? formatUsed : null
+            format: formatUsed.length > 0 ? formatUsed : formatUsed
         };
         console.log(data);
         console.log(waitingListId);
@@ -1712,6 +1712,7 @@ var WaitingListService = /** @class */function () {
     };
     WaitingListService.prototype.exportSeats = function (waitingListId, formatUsed) {
         var _this = this;
+        console.log(formatUsed, waitingListId);
         return this.waitUntilSeatsCanBeExported(waitingListId).then(function () {
             return _this.api.fan.exportSeats(waitingListId, formatUsed);
         }).then(function () {
@@ -2246,7 +2247,7 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 //noinspection TsLint
 // tslint:disable-next-line
-exports.version = '1.35.92';
+exports.version = '1.35.93';
 __export(__webpack_require__(22));
 var fan_types_1 = __webpack_require__(2);
 exports.fan = fan_types_1.fan;

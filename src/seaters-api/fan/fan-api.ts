@@ -335,7 +335,7 @@ export class FanApi {
 
   acceptSeats(waitingListId: string, formatUsed: string): Promise<WaitingList> {
     const data = {
-      format: (formatUsed && formatUsed !== '' || formatUsed !== null || formatUsed !== undefined || formatUsed.length > 0) ? formatUsed : null
+      format: (formatUsed.length > 0) ? formatUsed : null
     };
     const endpoint = '/fan/waiting-lists/:waitingListId/accept';
     const endpointParams = { waitingListId };
@@ -351,7 +351,7 @@ export class FanApi {
   exportSeats(waitingListId: string, formatUsed: string): Promise<void> {
     console.log(formatUsed);
     const data = {
-      format: (formatUsed && formatUsed !== '' || formatUsed !== null || formatUsed !== undefined || formatUsed.length > 0) ? formatUsed : null
+      format: (formatUsed.length > 0) ? formatUsed : formatUsed
     };
 
     console.log(data);
