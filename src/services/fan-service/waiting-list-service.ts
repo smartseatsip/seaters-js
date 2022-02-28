@@ -290,8 +290,8 @@ export class WaitingListService {
     );
   }
 
-  acceptSeats(waitingListId: string): Promise<fan.WaitingList> {
-    return this.api.fan.acceptSeats(waitingListId).then(() => this.waitUntilCanGoLive(waitingListId));
+  acceptSeats(waitingListId: string, formatUsed: string): Promise<fan.WaitingList> {
+    return this.api.fan.acceptSeats(waitingListId, formatUsed).then(() => this.waitUntilCanGoLive(waitingListId));
   }
 
   rejectSeats(waitingListId: string): Promise<fan.WaitingList> {
@@ -306,9 +306,9 @@ export class WaitingListService {
       );
   }
 
-  exportSeats(waitingListId: string): Promise<fan.WaitingList> {
+  exportSeats(waitingListId: string, formatUsed: string): Promise<fan.WaitingList> {
     return this.waitUntilSeatsCanBeExported(waitingListId)
-      .then(() => this.api.fan.exportSeats(waitingListId))
+      .then(() => this.api.fan.exportSeats(waitingListId, formatUsed))
       .then(() =>
         this.pollWaitingList(
           waitingListId,

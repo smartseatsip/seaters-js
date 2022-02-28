@@ -311,16 +311,16 @@ export class FanService extends SeatersService {
     return this.waitingListService.saveAttendeesInfo(waitingListId, attendeesInfo);
   }
 
-  acceptSeats(waitingListId: string): Promise<fan.WaitingList> {
-    return this.waitingListService.acceptSeats(waitingListId);
+  acceptSeats(waitingListId: string, formatUsed: string): Promise<fan.WaitingList> {
+    return this.waitingListService.acceptSeats(waitingListId, formatUsed);
   }
 
   rejectSeats(waitingListId: string): Promise<fan.WaitingList> {
     return this.waitingListService.rejectSeats(waitingListId);
   }
 
-  exportSeats(waitingListId: string): Promise<fan.WaitingList> {
-    return this.waitingListService.exportSeats(waitingListId);
+  exportSeats(waitingListId: string, formatUsed: string): Promise<fan.WaitingList> {
+    return this.waitingListService.exportSeats(waitingListId, formatUsed);
   }
 
   sendExportedSeats(waitingListId: string): Promise<any> {

@@ -61,7 +61,7 @@ var SeatersSDK = /******/ (function(modules) {
     return Object.prototype.hasOwnProperty.call(object, property);
   }; // __webpack_public_path__
   /******/
-  /******/ /******/ __webpack_require__.p = 'C:\\Users\\wadieh\\Documents\\seaters\\seaters-js/dist'; // Load entry module and return exports
+  /******/ /******/ __webpack_require__.p = 'C:\\ProjetsSeaters\\seaters-js/dist'; // Load entry module and return exports
   /******/
   /******/ /******/ return __webpack_require__((__webpack_require__.s = 21));
   /******/
@@ -760,20 +760,26 @@ var SeatersSDK = /******/ (function(modules) {
           var endpointParams = { waitingListId: waitingListId };
           return this.apiContext.delete(endpoint, endpointParams);
         };
-        FanApi.prototype.acceptSeats = function(waitingListId) {
+        FanApi.prototype.acceptSeats = function(waitingListId, formatUsed) {
+          var data = {
+            format: formatUsed.length > 0 ? formatUsed : null
+          };
           var endpoint = '/fan/waiting-lists/:waitingListId/accept';
           var endpointParams = { waitingListId: waitingListId };
-          return this.apiContext.post(endpoint, null, endpointParams);
+          return this.apiContext.post(endpoint, data, endpointParams);
         };
         FanApi.prototype.rejectSeats = function(waitingListId) {
           var endpoint = '/fan/waiting-lists/:waitingListId/reject';
           var endpointParams = { waitingListId: waitingListId };
           return this.apiContext.post(endpoint, null, endpointParams);
         };
-        FanApi.prototype.exportSeats = function(waitingListId) {
+        FanApi.prototype.exportSeats = function(waitingListId, formatUsed) {
+          var data = {
+            format: formatUsed.length > 0 ? formatUsed : null
+          };
           var endpoint = '/fan/waiting-lists/:waitingListId/export-seat';
           var endpointParams = { waitingListId: waitingListId };
-          return this.apiContext.put(endpoint, null, endpointParams);
+          return this.apiContext.put(endpoint, data, endpointParams);
         };
         FanApi.prototype.sendExportedSeats = function(waitingListId) {
           var endpoint = 'v2/fan/waiting-lists/:waitingListId/send-exported-seat';
@@ -2008,9 +2014,9 @@ var SeatersSDK = /******/ (function(modules) {
               });
             });
         };
-        WaitingListService.prototype.acceptSeats = function(waitingListId) {
+        WaitingListService.prototype.acceptSeats = function(waitingListId, formatUsed) {
           var _this = this;
-          return this.api.fan.acceptSeats(waitingListId).then(function() {
+          return this.api.fan.acceptSeats(waitingListId, formatUsed).then(function() {
             return _this.waitUntilCanGoLive(waitingListId);
           });
         };
@@ -2025,11 +2031,11 @@ var SeatersSDK = /******/ (function(modules) {
             });
           });
         };
-        WaitingListService.prototype.exportSeats = function(waitingListId) {
+        WaitingListService.prototype.exportSeats = function(waitingListId, formatUsed) {
           var _this = this;
           return this.waitUntilSeatsCanBeExported(waitingListId)
             .then(function() {
-              return _this.api.fan.exportSeats(waitingListId);
+              return _this.api.fan.exportSeats(waitingListId, formatUsed);
             })
             .then(function() {
               return _this.pollWaitingList(waitingListId, function(wl) {
@@ -2638,7 +2644,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.35.89';
+      exports.version = '1.35.90';
       __export(__webpack_require__(22));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
@@ -4472,14 +4478,14 @@ var SeatersSDK = /******/ (function(modules) {
         FanService.prototype.saveAttendeesInfo = function(waitingListId, attendeesInfo) {
           return this.waitingListService.saveAttendeesInfo(waitingListId, attendeesInfo);
         };
-        FanService.prototype.acceptSeats = function(waitingListId) {
-          return this.waitingListService.acceptSeats(waitingListId);
+        FanService.prototype.acceptSeats = function(waitingListId, formatUsed) {
+          return this.waitingListService.acceptSeats(waitingListId, formatUsed);
         };
         FanService.prototype.rejectSeats = function(waitingListId) {
           return this.waitingListService.rejectSeats(waitingListId);
         };
-        FanService.prototype.exportSeats = function(waitingListId) {
-          return this.waitingListService.exportSeats(waitingListId);
+        FanService.prototype.exportSeats = function(waitingListId, formatUsed) {
+          return this.waitingListService.exportSeats(waitingListId, formatUsed);
         };
         FanService.prototype.sendExportedSeats = function(waitingListId) {
           return this.seatersApi.fan.sendExportedSeats(waitingListId);

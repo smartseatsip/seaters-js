@@ -333,10 +333,13 @@ export class FanApi {
     return this.apiContext.delete(endpoint, endpointParams);
   }
 
-  acceptSeats(waitingListId: string): Promise<WaitingList> {
+  acceptSeats(waitingListId: string, formatUsed: string): Promise<WaitingList> {
+    const data = {
+      format: formatUsed.length > 0 ? formatUsed : null
+    };
     const endpoint = '/fan/waiting-lists/:waitingListId/accept';
     const endpointParams = { waitingListId };
-    return this.apiContext.post(endpoint, null, endpointParams);
+    return this.apiContext.post(endpoint, data, endpointParams);
   }
 
   rejectSeats(waitingListId: string): Promise<WaitingList> {
@@ -345,10 +348,13 @@ export class FanApi {
     return this.apiContext.post(endpoint, null, endpointParams);
   }
 
-  exportSeats(waitingListId: string): Promise<void> {
+  exportSeats(waitingListId: string, formatUsed: string): Promise<void> {
+    const data = {
+      format: formatUsed.length > 0 ? formatUsed : null
+    };
     const endpoint = '/fan/waiting-lists/:waitingListId/export-seat';
     const endpointParams = { waitingListId };
-    return this.apiContext.put(endpoint, null, endpointParams);
+    return this.apiContext.put(endpoint, data, endpointParams);
   }
 
   sendExportedSeats(waitingListId: string): Promise<any> {
