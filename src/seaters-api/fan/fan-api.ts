@@ -334,6 +334,7 @@ export class FanApi {
   }
 
   acceptSeats(waitingListId: string, formatUsed: string): Promise<WaitingList> {
+    console.log(formatUsed);
     const data = {
       format: (formatUsed.length > 0) ? formatUsed : null
     };

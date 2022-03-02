@@ -685,6 +685,7 @@ var FanApi = /** @class */function () {
         return this.apiContext.delete(endpoint, endpointParams);
     };
     FanApi.prototype.acceptSeats = function (waitingListId, formatUsed) {
+        console.log(formatUsed);
         var data = {
             format: formatUsed.length > 0 ? formatUsed : null
         };
@@ -2247,7 +2248,7 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 //noinspection TsLint
 // tslint:disable-next-line
-exports.version = '1.35.93';
+exports.version = '1.35.38-RC';
 __export(__webpack_require__(22));
 var fan_types_1 = __webpack_require__(2);
 exports.fan = fan_types_1.fan;
