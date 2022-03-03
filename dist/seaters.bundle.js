@@ -761,9 +761,8 @@ var SeatersSDK = /******/ (function(modules) {
           return this.apiContext.delete(endpoint, endpointParams);
         };
         FanApi.prototype.acceptSeats = function(waitingListId, formatUsed) {
-          console.log(formatUsed);
           var data = {
-            format: formatUsed.length > 0 ? formatUsed : null
+            format: formatUsed.length > 0 || formatUsed != null ? formatUsed : null
           };
           var endpoint = '/fan/waiting-lists/:waitingListId/accept';
           var endpointParams = { waitingListId: waitingListId };
@@ -775,12 +774,9 @@ var SeatersSDK = /******/ (function(modules) {
           return this.apiContext.post(endpoint, null, endpointParams);
         };
         FanApi.prototype.exportSeats = function(waitingListId, formatUsed) {
-          console.log(formatUsed);
           var data = {
-            format: formatUsed.length > 0 ? formatUsed : formatUsed
+            format: formatUsed.length > 0 || formatUsed != null ? formatUsed : null
           };
-          console.log(data);
-          console.log(waitingListId);
           var endpoint = '/fan/waiting-lists/:waitingListId/export-seat';
           var endpointParams = { waitingListId: waitingListId };
           return this.apiContext.put(endpoint, data, endpointParams);
@@ -2037,7 +2033,6 @@ var SeatersSDK = /******/ (function(modules) {
         };
         WaitingListService.prototype.exportSeats = function(waitingListId, formatUsed) {
           var _this = this;
-          console.log(formatUsed, waitingListId);
           return this.waitUntilSeatsCanBeExported(waitingListId)
             .then(function() {
               return _this.api.fan.exportSeats(waitingListId, formatUsed);
@@ -2649,7 +2644,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.35.43-RC';
+      exports.version = '1.35.45-RC';
       __export(__webpack_require__(22));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
