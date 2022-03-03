@@ -762,7 +762,7 @@ var SeatersSDK = /******/ (function(modules) {
         };
         FanApi.prototype.acceptSeats = function(waitingListId, formatUsed) {
           var data = {
-            format: formatUsed.length > 0 || formatUsed != null ? formatUsed : null
+            format: formatUsed != null ? formatUsed : null
           };
           var endpoint = '/fan/waiting-lists/:waitingListId/accept';
           var endpointParams = { waitingListId: waitingListId };
@@ -775,7 +775,7 @@ var SeatersSDK = /******/ (function(modules) {
         };
         FanApi.prototype.exportSeats = function(waitingListId, formatUsed) {
           var data = {
-            format: formatUsed.length > 0 || formatUsed != null ? formatUsed : null
+            format: formatUsed != null ? formatUsed : null
           };
           var endpoint = '/fan/waiting-lists/:waitingListId/export-seat';
           var endpointParams = { waitingListId: waitingListId };
@@ -2644,7 +2644,7 @@ var SeatersSDK = /******/ (function(modules) {
       Object.defineProperty(exports, '__esModule', { value: true });
       //noinspection TsLint
       // tslint:disable-next-line
-      exports.version = '1.35.45-RC';
+      exports.version = '1.35.47-RC';
       __export(__webpack_require__(22));
       var fan_types_1 = __webpack_require__(2);
       exports.fan = fan_types_1.fan;
