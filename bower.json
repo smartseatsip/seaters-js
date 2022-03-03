@@ -1,6 +1,6 @@
 {
   "name": "seaters",
-  "version": "1.22.2-RC",
+  "version": "1.22.3-RC",
   "description": "Seaters functionality in a box!",
   "main": "./dist/seaters.bundle.js",
   "authors": [
