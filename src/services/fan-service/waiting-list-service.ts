@@ -307,7 +307,6 @@ export class WaitingListService {
   }
 
   exportSeats(waitingListId: string, formatUsed: string): Promise<fan.WaitingList> {
-    console.log(formatUsed, waitingListId);
     return this.waitUntilSeatsCanBeExported(waitingListId)
       .then(() => this.api.fan.exportSeats(waitingListId, formatUsed))
       .then(() =>
