@@ -47,8 +47,68 @@ export class FanApi {
     return this.apiContext.get('/fan');
   }
 
+  fanGroupOwner(): Promise<any> {
+    return this.apiContext.get('/fan-group-owner');
+  }
+
   updateFan(fan: Fan): Promise<Fan> {
     return this.apiContext.put('/fan', fan);
+  }
+
+  requestDelete(fanGroupId: string): Promise<any> {
+    return this.apiContext.post('/v2/fan/groups/:fanGroupId/deletion-request', null, { fanGroupId });
+  }
+
+  customProfile(fanGroupId: string): Promise<any> {
+    return this.apiContext.get('/v2/fan/groups/:fanGroupId/custom-info', { fanGroupId });
+  }
+
+  customProfileVaccin(listId: string): Promise<any> {
+    return this.apiContext.get('/v2/fan/waiting-lists/:listId/custom-profile', { listId });
+  }
+
+  getAllVaccinationCenter(fanGroupId: string): Promise<any> {
+    return this.apiContext.get('/v2/fan-group-owner/groups/:fanGroupId/integrations/doclr/vaccination-centers', {
+      fanGroupId
+    });
+  }
+
+  getVaccincationCenterByWl(fanGroupId: string, waitingListId: string): Promise<any> {
+    return this.apiContext.get(
+      '/v2/fan-group-owner/groups/:fanGroupId/integrations/doclr/waiting-lists/:waitingListId/vaccination-centers',
+      { fanGroupId, waitingListId }
+    );
+  }
+
+  getCachedVaccincationCenterByWl(fanGroupId: string, waitingListId: string): Promise<any> {
+    return this.apiContext.get(
+      '/v2/fan-group-owner/groups/:fanGroupId/integrations/doclr/waiting-lists/:waitingListId/cached-vaccination-centers',
+      { fanGroupId, waitingListId }
+    );
+  }
+
+  getDoclrAvailableSlots(fanGroupId: string, waitingListId: string, body?: any): Promise<any> {
+    return this.apiContext.put(
+      '/v2/fan-group-owner/groups/:fanGroupId/integrations/doclr/waiting-lists/:waitingListId/available-slots',
+      body,
+      { fanGroupId, waitingListId }
+    );
+  }
+
+  reactivateDoclrUser(fanGroupId: string, body?: any): Promise<any> {
+    return this.apiContext.post('/v2/fan/groups/:fanGroupId/integrations/smalls/reactivate', body, { fanGroupId });
+  }
+
+  consentVaccinationSchema(fanGroupId: string, body?: any): Promise<any> {
+    return this.apiContext.put('/v2/fan/groups/:fanGroupId/integrations/smalls/consent', body, { fanGroupId });
+  }
+
+  deleteConsentVaccinationSchema(fanGroupId: string, body?: any): Promise<any> {
+    return this.apiContext.delete('/v2/fan/groups/:fanGroupId/integrations/smalls/consent', { fanGroupId });
+  }
+
+  positionAttribute(listId: string): Promise<any> {
+    return this.apiContext.get('/v2/fan/waiting-lists/:listId/position-attributes', { listId });
   }
 
   updatePassword(data: IUpdatePasswordDTO): Promise<Fan> {
@@ -375,6 +435,12 @@ export class FanApi {
     return this.apiContext.get(endpoint, endpointParams);
   }
 
+  getIngenicoSession(waitingListId: string): Promise<any> {
+    const endpoint = '/v2/fan/waiting-lists/:waitingListId/position/ingenico-session';
+    const endpointParams = { waitingListId };
+    return this.apiContext.get(endpoint, endpointParams);
+  }
+
   createPositionSalesTransaction(
     waitingListId: string,
     transaction: PositionSalesTransactionInput
@@ -506,6 +572,46 @@ export class FanApi {
     );
   }
 
+  getAnonymousPositions(waitingListId: string, body?: any): Promise<any> {
+    return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/anonymous-positions', body, {
+      waitingListId
+    });
+  }
+
+  getAnonymousStats(waitingListId: string, body?: any): Promise<any> {
+    return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/anonymous-stats', null, {
+      waitingListId
+    });
+  }
+
+  getAnonymousStatsBySlot(waitingListId: string, body?: any): Promise<any> {
+    return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/anonymous-stats-by-slot', body, {
+      waitingListId
+    });
+  }
+
+  getAnonymousSeats(waitingListId: string, body?: any): Promise<any> {
+    return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/anonymous-seats', body, {
+      waitingListId
+    });
+  }
+
+  getAnonymousSeatsSchema(waitingListId: string, body?: any): Promise<any> {
+    return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/anonymous-seats-schema', body, {
+      waitingListId
+    });
+  }
+
+  getWishListsDistriQvax(fanGroupId: string): Promise<any> {
+    return this.apiContext.get('/fan-group-owner/groups/:fanGroupId/waiting-lists/distribution', { fanGroupId });
+  }
+
+  getContactSeats(waitingListId: string, body?: any): Promise<any> {
+    return this.apiContext.put('/v2/fan-group-owner/waiting-lists/:waitingListId/contact-seats', body, {
+      waitingListId
+    });
+  }
+
   getSeats(waitingListId: any, query?: string, pagingOptions?: PagingOptions): Promise<any> {
     const queryParams = SeatersApiContext.buildPagingSortingQueryParams(pagingOptions);
     return this.apiContext.put(
@@ -529,6 +635,21 @@ export class FanApi {
       null,
       { waitingListId, fanId }
     );
+  }
+
+  assignWaitingListSeatToFanQvax(waitingListId: string, nrOfSeats: string, body: any): Promise<any> {
+    return this.apiContext.put(
+      '/v2/fan-group-owner/waiting-lists/:waitingListId/positions/assign/:nrOfSeats/custom',
+      body,
+      { waitingListId, nrOfSeats }
+    );
+  }
+
+  distributionStatusQvax(waitingListId: string, distriNumber: string): Promise<any> {
+    return this.apiContext.get('/v2/fan-group-owner/waiting-lists/:waitingListId/distributions/:distriNumber', {
+      waitingListId,
+      distriNumber
+    });
   }
 
   assignWithoutSeats(waitingListId: string, fanId: string): Promise<any> {

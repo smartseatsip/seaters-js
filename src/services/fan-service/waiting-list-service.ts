@@ -390,6 +390,50 @@ export class WaitingListService {
     return this.api.fan.loadAdditionalCharges(waitingListId);
   }
 
+  pollWaitingList(
+    waitingListId: string,
+    condition: (wl: fan.WaitingList) => boolean,
+    limit?: number,
+    delayInMs?: number,
+    useRawWaitingList?: boolean
+  ): Promise<fan.WaitingList> {
+    return retryUntil<fan.WaitingList>(
+      // We use the raw waitinglist data instead to prevent an infinite loop when re-fetching the waiting list
+      () =>
+        (useRawWaitingList ? this.getRawWaitingList(waitingListId) : this.getWaitingList(waitingListId)) as Promise<
+          fan.WaitingList
+        >,
+      condition,
+      limit || 10,
+      delayInMs || 1000
+    );
+  }
+
+  submitTransaction(
+    waitingListId: string,
+    transaction: PositionSalesTransactionInput
+  ): Promise<fan.WaitingList> {
+    return this.getWaitingList(waitingListId)
+      .then(wl => this.ensureFanCanPayPosition(wl))
+      .then(wl => this.removePreviousTransactionIfAny(wl))
+      .then(wl => this.createTransaction(waitingListId, transaction))
+      .then(undefined, err => {
+        console.error('[WaitingListService] submitTransaction failed: %s', err, transaction);
+        throw err;
+      });
+  }
+
+  waitUntilPaymentProcessed(waitingListId: string) {
+    return this.pollWaitingList(waitingListId, wl => this.hasProcessedPayment(wl), 60, 1000)
+    .then((wl: any) => {
+      if (this.hasFailedPayment(wl)) {
+        const errorMessage = wl.position ? wl.position.paymentFailureMessage : 'Payment Failed!';
+        return Promise.reject(errorMessage);
+      }
+      return wl;
+    });
+  }
+
   private hasPreviousPayment(wl: fan.WaitingList): boolean {
     return !!(wl.position && wl.position.transactionStatus);
   }
@@ -452,25 +496,6 @@ export class WaitingListService {
   private extendRawWaitingLists(wls: PagedResult<WaitingList>): PagedResult<fan.WaitingList> {
     wls.items = wls.items.map(wl => this.extendRawWaitingList(wl));
     return wls as PagedResult<fan.WaitingList>;
-  }
-
-  private pollWaitingList(
-    waitingListId: string,
-    condition: (wl: fan.WaitingList) => boolean,
-    limit?: number,
-    delayInMs?: number,
-    useRawWaitingList?: boolean
-  ): Promise<fan.WaitingList> {
-    return retryUntil<fan.WaitingList>(
-      // We use the raw waitinglist data instead to prevent an infinite loop when re-fetching the waiting list
-      () =>
-        (useRawWaitingList ? this.getRawWaitingList(waitingListId) : this.getWaitingList(waitingListId)) as Promise<
-          fan.WaitingList
-        >,
-      condition,
-      limit || 10,
-      delayInMs || 1000
-    );
   }
 
   private getWaitingListActionStatus(waitingList: WaitingList): fan.WAITING_LIST_ACTION_STATUS {
@@ -654,20 +679,6 @@ export class WaitingListService {
     } else {
       return true;
     }
-  }
-
-  private submitTransaction(
-    waitingListId: string,
-    transaction: PositionSalesTransactionInput
-  ): Promise<fan.WaitingList> {
-    return this.getWaitingList(waitingListId)
-      .then(wl => this.ensureFanCanPayPosition(wl))
-      .then(wl => this.removePreviousTransactionIfAny(wl))
-      .then(wl => this.createTransaction(waitingListId, transaction))
-      .then(undefined, err => {
-        console.error('[WaitingListService] submitTransaction failed: %s', err, transaction);
-        throw err;
-      });
   }
 
   private ensureFanCanPayPosition(wl: fan.WaitingList): Promise<fan.WaitingList> {

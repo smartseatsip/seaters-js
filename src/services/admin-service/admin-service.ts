@@ -11,6 +11,30 @@ export class AdminService extends SeatersService {
     super(seatersApi);
   }
 
+  createUserOwnership(ownership: any): Promise<any> {
+    return this.seatersApi.admin.createUserOwnership(ownership);
+  }
+
+  createUser(user: any): Promise<any> {
+    return this.seatersApi.admin.createUser(user);
+  }
+
+  getWaitingListProperties(waitingListId: string): Promise<any> {
+    return this.seatersApi.admin.getWaitingListProperties(waitingListId);
+  }
+
+  updateWaitingListProperties(waitingListId: string, body: any): Promise<any> {
+    return this.seatersApi.admin.updateWaitingListProperties(waitingListId, body);
+  }
+
+  insertUserInGroup(userId: string, fanGroupId: string): Promise<any> {
+    return this.seatersApi.admin.insertUserInGroup(userId, fanGroupId);
+  }
+
+  updateIntegrationProfile(userId: string, integrationId: string, fanGroupId: string): Promise<any> {
+    return this.seatersApi.admin.updateIntegrationProfile(userId, integrationId, fanGroupId);
+  }
+
   getEvent(eventId: string): Promise<admin.FanGroup> {
     return this.seatersApi.admin.getEvent(eventId);
   }
@@ -45,7 +69,7 @@ export class AdminService extends SeatersService {
     return this.seatersApi.admin.deleteEvent(eventId);
   }
 
-  scheduleClosingDate(waitingListId: string, date: string) : Promise<any> {
+  scheduleClosingDate(waitingListId: string, date: string): Promise<any> {
     return this.seatersApi.admin.scheduleClosingDate(waitingListId, date);
   }
 
@@ -189,63 +213,59 @@ export class AdminService extends SeatersService {
     return this.seatersApi.admin.addAliases(id, idsToConvert);
   }
 
-
   // Badge
 
-  getAllBadges(status?: BADGE_STATUS, options?: PagingOptions) : Promise<PagedSortedResult<Badge>> {
+  getAllBadges(status?: BADGE_STATUS, options?: PagingOptions): Promise<PagedSortedResult<Badge>> {
     return this.seatersApi.admin.getAllBadges(status, options);
   }
 
-  getBadge(badgeId: string) : Promise<Badge> {
+  getBadge(badgeId: string): Promise<Badge> {
     return this.seatersApi.admin.getBadge(badgeId);
   }
 
-  createBadge(badge: Badge) : Promise<Badge> {
+  createBadge(badge: Badge): Promise<Badge> {
     return this.seatersApi.admin.createBadge(badge);
   }
 
-  deleteBadge(badgeId: string) : Promise<any> {
+  deleteBadge(badgeId: string): Promise<any> {
     return this.seatersApi.admin.deleteBadge(badgeId);
   }
 
-  updateBadge(badgeId: string, badge: Badge) : Promise<Badge> { 
+  updateBadge(badgeId: string, badge: Badge): Promise<Badge> {
     return this.seatersApi.admin.updateBadge(badgeId, badge);
   }
 
-
   // Badge : FanGroup Context
 
-  linkBadgeToFg(fanGroupId: string, badgeId: string) : Promise<any> {
+  linkBadgeToFg(fanGroupId: string, badgeId: string): Promise<any> {
     return this.seatersApi.admin.linkBadgeToFg(fanGroupId, badgeId);
   }
 
-  unlinkBadgeToFg(fanGroupId: string, badgeId: string) : Promise<any> {
+  unlinkBadgeToFg(fanGroupId: string, badgeId: string): Promise<any> {
     return this.seatersApi.admin.unlinkBadgeToFg(fanGroupId, badgeId);
   }
 
-  getBadges(fanGroupId: string) : Promise<PagedSortedResult<Badge>> {
+  getBadges(fanGroupId: string): Promise<PagedSortedResult<Badge>> {
     return this.seatersApi.admin.getBadges(fanGroupId);
   }
 
-
   //BADGE : Category
 
-  getBadgeCategories (status?: BADGE_STATUS, options?: PagingOptions, ) : Promise<PagedSortedResult<Category>> {
+  getBadgeCategories(status?: BADGE_STATUS, options?: PagingOptions): Promise<PagedSortedResult<Category>> {
     return this.seatersApi.admin.getBadgeCategories(status, options);
   }
 
-  createBadgeCategory (category: Category) : Promise<Category> {
+  createBadgeCategory(category: Category): Promise<Category> {
     return this.seatersApi.admin.createBadgeCategory(category);
   }
 
-  updateBadgeCategory (categoryId: string, category: Category) : Promise<Category> {
+  updateBadgeCategory(categoryId: string, category: Category): Promise<Category> {
     return this.seatersApi.admin.updateBadgeCategory(categoryId, category);
   }
 
-  deleteBadgeCategory (categoryId: string) : Promise<any> {
+  deleteBadgeCategory(categoryId: string): Promise<any> {
     return this.seatersApi.admin.deleteBadgeCategory(categoryId);
   }
-
 
   // Survey
   getSurvey(id: string): Promise<survey.Survey> {
@@ -327,8 +347,6 @@ export class AdminService extends SeatersService {
     return this.seatersApi.admin.createVenue(venue);
   }
 
-
-  
   createWishlist(groupId: string, wishList: any): Promise<any> {
     return this.seatersApi.admin.createWishlist(groupId, wishList);
   }
@@ -345,7 +363,6 @@ export class AdminService extends SeatersService {
     return this.seatersApi.admin.updateWaitingListFull(wl);
   }
 
-
   requestVoucherImageUpload(fanGroupId: string, fileName?: string): Promise<any> {
     return this.seatersApi.admin.requestVoucherImageUpload(fanGroupId, fileName);
   }
@@ -357,15 +374,12 @@ export class AdminService extends SeatersService {
   updatEvent(event, eventId): any {
     return this.seatersApi.admin.updatEvent(event, eventId);
   }
-  
+
   private uploadOneTimeFile(data: any, fileName?: string): Promise<admin.OneTimeFile> {
     return this.seatersApi.admin
       .requestOneTimeFileUpload(this.defaultFileName(fileName))
       .then(otf => this.seatersApi.admin.uploadOneTimeFile(otf.url, data).then(() => otf));
   }
-
- 
-
 
   private defaultFileName(fileName?: string): string {
     if (fileName && fileName !== '') {

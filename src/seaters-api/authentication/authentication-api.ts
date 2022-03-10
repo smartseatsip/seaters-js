@@ -86,6 +86,10 @@ export class AuthenticationApi {
     return this.apiContext.put(endpoint, input, null, null);
   }
 
+  verify(body?: any): Promise<any> {
+    return this.apiContext.put('/auth/verify', body, null);
+  }
+
   /**
    *
    * @param input

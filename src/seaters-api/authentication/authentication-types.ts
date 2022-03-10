@@ -8,6 +8,10 @@ export interface SignupData {
   password: string;
   confirmationReturnURLPath: string;
   registeredFromFanGroupId: string;
+  mtCaptchaToken?: string;
+  idNumber?: string;
+  contactEmail?: string;
+  contactPhoneNumber?: any;
 }
 
 export interface AnonymousSignupData {
