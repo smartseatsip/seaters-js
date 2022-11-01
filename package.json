@@ -30,7 +30,7 @@
         "css-loader": "^0.28.7",
         "del-cli": "^1.1.0",
         "file-loader": "^1.1.5",
-        "gulp": "^3.9.1",
+        "gulp": "^4.0.2",
         "gulp-clean": "^0.3.2",
         "gulp-load-plugins": "^1.5.0",
         "gulp-typescript": "^3.2.2",
